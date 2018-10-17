@@ -1,0 +1,11 @@
+	
+
+' DIGITAR SOMENTE NUMEROS NO CONTROLE
+	If Not Char.IsNumber(e.KeyChar) And Not e.KeyChar = vbBack Then
+		e.Handled = True
+	End If
+
+' CRIA UM ARQUIVO XSD A PARTIR DE UM XML
+    Dim ds As DataSet = New DataSet()
+    ds.ReadXml(xmlCaminhoCompleto, XmlReadMode.InferTypedSchema)
+    ds.WriteXmlSchema(pasta & "\teste.xsd")
