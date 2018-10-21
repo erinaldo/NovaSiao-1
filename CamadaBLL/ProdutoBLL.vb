@@ -350,6 +350,40 @@ Public Class ProdutoBLL
     End Function
     '
     '-----------------------------------------------------------------------------------------------------------------
+    ' RETORNA UMA DATATABLE DE CATEGORIAS DE PRODUTOS
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function GetCategorias(Optional IDTipo As Integer? = Nothing,
+                                  Optional Ativo As Boolean? = Nothing) As DataTable
+        '
+        Dim SQL As New SQLControl
+        Dim strSQL As String = "SELECT * FROM tblProdutoCategoria"
+        '
+        '--- determina as possibiliadades da clausula WHERE
+        If Not IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo & " Ativo = '" & CBool(Ativo).ToString & "'"
+        ElseIf IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE Ativo = '" & CBool(Ativo).ToString & "'"
+        ElseIf Not IDTipo Is Nothing AndAlso Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo
+        End If
+        '
+        '--- executa o comando
+        Try
+            SQL.ExecQuery(strSQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            Return SQL.DBDT
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
     ' RETORNA UMA DATATABLE DE FABRICANTES DE PRODUTO
     '-----------------------------------------------------------------------------------------------------------------
     Public Function GetFabricantes(Optional Ativo As Boolean? = Nothing) As DataTable

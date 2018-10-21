@@ -10,8 +10,6 @@ Public Class frmProduto
     Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
-    Private ControlaCmbTipoAtivo As Boolean = False
-    Private EvitaNulificarCombos As Boolean = False
     Private _acao As FlagAcao
     Private _formOrigem As Form
     '
@@ -28,7 +26,7 @@ Public Class frmProduto
             _Sit = value
             If _Sit = FlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
-                btnNovo.Enabled = True
+                btnNovoProduto.Enabled = True
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = False
                 btnProcurar.Enabled = True
@@ -37,7 +35,7 @@ Public Class frmProduto
                 AtivoButtonImage()
             ElseIf _Sit = FlagEstado.Alterado Then
                 btnSalvar.Enabled = True
-                btnNovo.Enabled = False
+                btnNovoProduto.Enabled = False
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = True
                 btnProcurar.Enabled = False
@@ -45,7 +43,7 @@ Public Class frmProduto
             ElseIf _Sit = FlagEstado.NovoRegistro Then
                 txtProduto.Select()
                 btnSalvar.Enabled = True
-                btnNovo.Enabled = False
+                btnNovoProduto.Enabled = False
                 btnExcluir.Enabled = False
                 btnProcurar.Enabled = False
                 lblIDProduto.Text = "NOVO"
@@ -97,8 +95,6 @@ Public Class frmProduto
                 AddHandler _produto.AoAlterar, AddressOf HandlerAoAlterar
             End If
             '
-            ControlaCmbTipo()
-            '
         End Set
     End Property
     '
@@ -119,33 +115,8 @@ Public Class frmProduto
     ' EVENTO LOAD
     Private Sub frmProduto_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
-        ControlaCmbTipoAtivo = True
-        Criar_Tooltips()
+        addToolTipHandler()
         '
-    End Sub
-    '
-    Private Sub Criar_Tooltips()
-        ' Cria a ToolTip e associa com o Form container.
-        Dim toolTip1 As New ToolTip()
-        ' Define o delay para a ToolTip.
-        With toolTip1
-            .AutoPopDelay = 5000
-            .InitialDelay = 1000
-            .ReshowDelay = 500
-            .IsBalloon = True
-        End With
-        ' Força a o texto da ToolTip a ser exibido mesmo que o form não esta ativo
-        toolTip1.ShowAlways = True
-        ' Define o texto da ToolTip para o Button, TextBox, Checkbox e Label
-        toolTip1.SetToolTip(txtMargem, "Margem Bruta aplicada sobre Preço de Compra")
-        toolTip1.SetToolTip(txtMargemMin, "Margem Mínima de lucro, mesmo com desconto máximo")
-        toolTip1.SetToolTip(txtDesconto, "Desconto Máximo para alcançar a Margem Mínima")
-        toolTip1.SetToolTip(txtDescontoCompra, "Abrir caixa para cálculo do Preço de Venda")
-        toolTip1.SetToolTip(chkArredondar, "Arrendondar centavos para cima")
-        toolTip1.SetToolTip(btnProcuraRG, "Procurar um Novo Reg. vazio para o Produto")
-        toolTip1.SetToolTip(btnNovoTipo, "Editar Tipos, Classificação e Categoria de Produtos")
-        toolTip1.SetToolTip(btnFabricantes, "Editar Fabricantes de Produtos")
-        toolTip1.SetToolTip(btnAutoresLista, "Escolher Autor pelo Nome")
     End Sub
     '
 #End Region
@@ -158,6 +129,11 @@ Public Class frmProduto
         lblIDProduto.DataBindings.Add("Tag", bindP, "IDProduto")
         txtRGProduto.DataBindings.Add("Text", bindP, "RGProduto", True, DataSourceUpdateMode.OnPropertyChanged)
         txtProduto.DataBindings.Add("Text", bindP, "Produto", True, DataSourceUpdateMode.OnPropertyChanged)
+
+        txtProdutoTipo.DataBindings.Add("Text", bindP, "ProdutoTipo", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtProdutoSubTipo.DataBindings.Add("Text", bindP, "ProdutoSubTipo", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtProdutoCategoria.DataBindings.Add("Text", bindP, "ProdutoCategoria", True, DataSourceUpdateMode.OnPropertyChanged)
+
         txtAutor.DataBindings.Add("Text", bindP, "Autor", True, DataSourceUpdateMode.OnPropertyChanged)
         txtUnidade.DataBindings.Add("Text", bindP, "Unidade", True, DataSourceUpdateMode.OnPropertyChanged)
         txtPCompra.DataBindings.Add("Text", bindP, "PCompra", True, DataSourceUpdateMode.OnPropertyChanged)
@@ -167,7 +143,6 @@ Public Class frmProduto
         txtCodBarrasA.DataBindings.Add("Text", bindP, "CodBarrasA", True, DataSourceUpdateMode.OnPropertyChanged)
         txtEstoqueIdeal.DataBindings.Add("Text", bindP, "EstoqueIdeal", True, DataSourceUpdateMode.OnPropertyChanged)
         txtEstoqueNivel.DataBindings.Add("Text", bindP, "EstoqueNivel", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtProdutoTipo.DataBindings.Add("Text", bindP, "ProdutoTipo", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler txtPCompra.DataBindings("Text").Format, AddressOf FormatCUR
@@ -180,9 +155,6 @@ Public Class frmProduto
         '
         ' CARREGA OS COMBOBOX
         CarregaComboFabricante()
-        CarregaComboProdutoTipo()
-        CarregaComboProdutoSubTipo()
-        CarregaComboCategoria()
         CarregaComboSitTributaria()
         '
         ' ADD HANDLER PARA DATABINGS
@@ -214,6 +186,8 @@ Public Class frmProduto
     '
     ' CARREGA OS COMBOBOX
     '--------------------------------------------------------------------------------------------------------
+    '
+    '--- COMBO FABRICANTE
     Private Sub CarregaComboFabricante()
         Dim sql As New SQLControl
         '
@@ -239,102 +213,7 @@ Public Class frmProduto
         sql = Nothing
     End Sub
     '
-    Private Sub CarregaComboProdutoTipo()
-        Dim sql As New SQLControl
-        '
-        If Not IsNothing(_produto.IDProdutoTipo) Then
-            sql.ExecQuery("SELECT * FROM tblProdutoTipo WHERE Ativo = 'TRUE' OR " &
-                          "IDProdutoTipo = " & _produto.IDProdutoTipo)
-        Else
-            sql.ExecQuery("SELECT * FROM tblProdutoTipo WHERE Ativo = 'TRUE';")
-        End If
-        '
-        If sql.HasException(True) Then
-            Exit Sub
-        End If
-        '
-        With cmbIDProdutoTipo
-            .DataSource = sql.DBDT
-            .ValueMember = "IDProdutoTipo"
-            .DisplayMember = "ProdutoTipo"
-            If .DataBindings.Count = 0 Then
-                .DataBindings.Add("SelectedValue", bindP, "IDProdutoTipo", True, DataSourceUpdateMode.OnPropertyChanged)
-            End If
-        End With
-        '
-        sql = Nothing
-    End Sub
-    '
-    Private Sub CarregaComboProdutoSubTipo()
-        '
-        If IsNothing(_produto.IDProdutoTipo) Then
-            cmbIDProdutoSubTipo.DataSource = Nothing
-            cmbIDProdutoSubTipo.Items.Clear()
-            Exit Sub
-        End If
-        '
-        Dim sql As New SQLControl
-        '
-        If Not IsNothing(_produto.IDProdutoSubTipo) Then
-            sql.ExecQuery("SELECT * FROM tblProdutoSubTipo WHERE (Ativo = 'TRUE' " &
-                      "AND IDProdutoTipo = " & _produto.IDProdutoTipo & ") OR " &
-                      "IDProdutoSubTipo = " & _produto.IDProdutoSubTipo)
-        Else
-            sql.ExecQuery("SELECT * FROM tblProdutoSubTipo WHERE Ativo = 'TRUE' " &
-                          "AND IDProdutoTipo = " & _produto.IDProdutoTipo)
-        End If
-        '
-        If sql.HasException(True) Then
-            Exit Sub
-        End If
-        '
-        With cmbIDProdutoSubTipo
-            .DataSource = sql.DBDT
-            .ValueMember = "IDProdutoSubTipo"
-            .DisplayMember = "ProdutoSubTipo"
-            If .DataBindings.Count = 0 Then
-                .DataBindings.Add("SelectedValue", bindP, "IDProdutoSubTipo", True, DataSourceUpdateMode.OnPropertyChanged)
-            End If
-        End With
-        sql = Nothing
-    End Sub
-    '
-    Private Sub CarregaComboCategoria()
-        '
-        If IsNothing(_produto.IDProdutoTipo) Then
-            cmbIDProdutoSubTipo.DataSource = Nothing
-            cmbIDProdutoSubTipo.Items.Clear()
-            Exit Sub
-        End If
-        '
-        Dim sql As New SQLControl
-        '
-        If Not IsNothing(_produto.IDCategoria) Then
-            sql.ExecQuery("SELECT * FROM tblProdutoCategoria WHERE (Ativo = 'TRUE' " &
-                      "AND IDProdutoTipo = " & _produto.IDProdutoTipo & ") OR " &
-                      "IDCategoria = " & _produto.IDCategoria)
-        Else
-            sql.ExecQuery("SELECT * FROM tblProdutoCategoria WHERE Ativo = 'TRUE' " &
-                          "AND IDProdutoTipo = " & _produto.IDProdutoTipo)
-        End If
-
-        '
-        If sql.HasException(True) Then
-            Exit Sub
-        End If
-        '
-        With cmbIDCategoria
-            .DataSource = sql.DBDT
-            .ValueMember = "IDCategoria"
-            .DisplayMember = "ProdutoCategoria"
-            If .DataBindings.Count = 0 Then
-                .DataBindings.Add("SelectedValue", bindP, "IDCategoria", True, DataSourceUpdateMode.OnPropertyChanged)
-            End If
-        End With
-        '
-        sql = Nothing
-    End Sub
-    '
+    '--- COMBO SITUACAO TRIBUTARIA
     Private Sub CarregaComboSitTributaria()
         Dim dtSexo As New DataTable
         'Adiciona todas as possibilidades de instrucao
@@ -353,72 +232,6 @@ Public Class frmProduto
         End With
     End Sub
     '
-#End Region
-    '
-#Region "CONTROLA COMBO TIPO"
-    '--------------------------------------------------------------------------------
-    ' AO ALTERAR O CMBTIPO, PREENCHE LISTA SUBTIPO E CATEGORIA
-    '--------------------------------------------------------------------------------
-    Private Sub ControlaCmbTipo(Optional Atualizar As Boolean = False)
-        '---------------------------------------------------------------------------------------------------- 
-        ' examina alterações no controle IDProdutoTipo
-        ' se for nulo então desabilita e nulifica os controles SUBTIPO E CATEGORIA
-        ' ao alterar e se não for nulo, atualiza e nulifica os controles SUBTIPO E CATEGORIA 
-        '----------------------------------------------------------------------------------------------------
-        '
-        If Atualizar = True Then
-            CarregaComboProdutoSubTipo()
-            CarregaComboCategoria()
-            '
-            ' qdo vem do BINDCANCEL evita esvaziar os combos para que retornem ao valor anterior 
-            If EvitaNulificarCombos = False Then
-                _produto.IDProdutoSubTipo = Nothing
-                cmbIDProdutoSubTipo.DataBindings.Item("SelectedValue").ReadValue()
-                _produto.IDCategoria = Nothing
-                cmbIDCategoria.DataBindings.Item("SelectedValue").ReadValue()
-            End If
-            '
-        End If
-        '
-        '--- habilita ou desabilita os combos
-        If IsNothing(_produto.IDProdutoTipo) Then
-            ' qdo não há TIPO desabilita SUBTIPO E CATEGORIA
-            cmbIDProdutoSubTipo.Enabled = False
-            cmbIDCategoria.Enabled = False
-        ElseIf cmbIDCategoria.Items.Count = 0 Then
-            ' qdo o TIPO não tem Categorias desabilita CATEGORIA
-            cmbIDProdutoSubTipo.Enabled = True
-            cmbIDCategoria.Enabled = False
-        Else
-            ' qdo houver TIPO então habilita SUBTIPO E CATEGORIA
-            cmbIDProdutoSubTipo.Enabled = True
-            cmbIDCategoria.Enabled = True
-        End If
-        '
-    End Sub
-    '
-    Private Sub cmbIDProdutoTipo_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cmbIDProdutoTipo.SelectedIndexChanged
-        '--- verifica o momento que esse controle vai começar a ser examinado
-        If ControlaCmbTipoAtivo = True Then
-            ControlaCmbTipo(True)
-        End If
-    End Sub
-    '
-    Private Sub cmbIDProdutoTipo_KeyDown(sender As Object, e As KeyEventArgs) Handles cmbIDProdutoTipo.KeyDown
-        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
-            If Not IsNothing(_produto.IDProdutoTipo) Then
-                cmbIDProdutoSubTipo.Enabled = True
-                cmbIDProdutoSubTipo.Focus()
-            End If
-        End If
-    End Sub
-    '
-    Private Sub cmbIDProdutoTipo_LostFocus(sender As Object, e As EventArgs) Handles cmbIDProdutoTipo.LostFocus
-        If Not IsNothing(_produto.IDProdutoTipo) Then
-            cmbIDProdutoSubTipo.Focus()
-        End If
-    End Sub
-    '---------------------------------------------------------------------------------------------------------------------------------------
 #End Region
     '
 #Region "SALVAR REGISTRO"
@@ -501,11 +314,11 @@ Public Class frmProduto
             Return False
         End If
         '
-        If Not f.VerificaControlesForm(cmbIDProdutoTipo, "Tipo do Produto", EProvider) Then
+        If Not f.VerificaControlesForm(txtProdutoTipo, "Tipo do Produto", EProvider) Then
             Return False
         End If
         '
-        If Not f.VerificaControlesForm(cmbIDProdutoSubTipo, "Classificação do Produto", EProvider) Then
+        If Not f.VerificaControlesForm(txtProdutoSubTipo, "Classificação do Produto", EProvider) Then
             Return False
         End If
         '
@@ -601,9 +414,7 @@ Public Class frmProduto
         If MessageBox.Show("Deseja cancelar todas as alterações feitas no registro atual?",
                            "Cancelar Alterações", MessageBoxButtons.YesNo,
                            MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes Then
-            EvitaNulificarCombos = True
             bindP.CancelEdit()
-            EvitaNulificarCombos = False
             txtProduto.Focus()
             Sit = FlagEstado.RegistroSalvo
         End If
@@ -659,7 +470,7 @@ Public Class frmProduto
     End Sub
     '
     ' BOTÃO NOVO REGISTRO
-    Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
+    Private Sub btnNovoProduto_Click(sender As Object, e As EventArgs) Handles btnNovoProduto.Click
         propProduto = New clProduto
         propAcao = FlagAcao.INSERIR
     End Sub
@@ -738,11 +549,50 @@ Public Class frmProduto
         '
     End Sub
     '
+    '
+    '--- BLOQUEIA PRESS A TECLA (+)
+    Private Sub me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
+        '
+        If e.KeyChar = "+" Then
+            '--- cria uma lista de controles que serao impedidos de receber '+'
+            Dim controlesBloqueados As String() = {
+                "txtRGProduto",
+                "txtProdutoTipo",
+                "txtProdutoSubTipo",
+                "txtProdutoCategoria",
+                "txtAutor",
+                "cmbIDFabricante",
+                "txtDescontoCompra",
+                "txtPCompra",
+                "txtPVenda",
+                "txtMargem",
+                "txtMargemMin",
+                "txtDesconto",
+                "txtProdutoSubTipo",
+                "txtProdutoCategoria"
+            }
+            If controlesBloqueados.Contains(ActiveControl.Name) Then
+                e.Handled = True
+            End If
+        End If
+        '
+    End Sub
+    '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtRGProduto.KeyDown, txtProdutoTipo.KeyDown,
-            txtAutor.KeyDown, cmbIDFabricante.KeyDown, cmbIDProdutoSubTipo.KeyDown, cmbIDCategoria.KeyDown,
-            txtDescontoCompra.KeyDown, txtPCompra.KeyDown, txtPVenda.KeyDown,
-            txtMargem.KeyDown, txtMargemMin.KeyDown, txtDesconto.KeyDown
+    '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _
+        Handles txtRGProduto.KeyDown,
+                txtProdutoTipo.KeyDown,
+                txtProdutoSubTipo.KeyDown,
+                txtProdutoCategoria.KeyDown,
+                txtAutor.KeyDown,
+                cmbIDFabricante.KeyDown,
+                txtDescontoCompra.KeyDown,
+                txtPCompra.KeyDown,
+                txtPVenda.KeyDown,
+                txtMargem.KeyDown,
+                txtMargemMin.KeyDown,
+                txtDesconto.KeyDown 'cmbIDProdutoSubTipo.KeyDown, cmbIDCategoria.KeyDown,
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '
@@ -753,11 +603,11 @@ Public Class frmProduto
                 Case "txtRGProduto"
                     btnProcuraRG_Click(New Object, New EventArgs)
                 Case "txtProdutoTipo"
-                    btnNovoTipo_Click(_produto.IDProdutoTipo, New EventArgs)
-                Case "cmbIDProdutoSubTipo"
-                    btnNovoTipo_Click(cmbIDProdutoSubTipo, New EventArgs)
-                Case "cmbIDCategoria"
-                    btnNovoTipo_Click(cmbIDCategoria, New EventArgs)
+                    ProcurarEscolherTipo(sender)
+                Case "txtProdutoSubTipo"
+                    ProcurarEscolherTipo(sender)
+                Case "txtProdutoCategoria"
+                    ProcurarEscolherTipo(sender)
                 Case "txtAutor"
                     btnAutoresLista_Click(New Object, New EventArgs)
                 Case "cmbIDFabricante"
@@ -776,15 +626,32 @@ Public Class frmProduto
                     FechaPainelMargem()
             End Select
             '
-        End If
-        '
-    End Sub
-    '
-    '--- quando pressiona a tecla (+) envia vazio
-    Private Sub me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
-        '
-        If e.KeyChar = "+" Then
-            e.KeyChar = ""
+        ElseIf e.KeyCode = Keys.Delete Then
+            e.Handled = True
+            Select Case ctr.Name
+                Case "txtProdutoTipo"
+                    If Not IsNothing(_produto.IDProdutoTipo) Then Sit = FlagEstado.Alterado
+                    txtProdutoTipo.Clear()
+                    _produto.IDProdutoTipo = Nothing
+                Case "txtProdutoSubTipo"
+                    If Not IsNothing(_produto.IDProdutoSubTipo) Then Sit = FlagEstado.Alterado
+                    txtProdutoSubTipo.Clear()
+                    _produto.IDProdutoSubTipo = Nothing
+                Case "txtProdutoCategoria"
+                    If Not IsNothing(_produto.IDCategoria) Then Sit = FlagEstado.Alterado
+                    txtProdutoCategoria.Clear()
+                    _produto.IDCategoria = Nothing
+            End Select
+            '
+        Else
+            '--- cria uma lista de controles que serão bloqueados de alteracao
+            Dim controlesBloqueados As New List(Of String)
+            controlesBloqueados.AddRange({"txtProdutoTipo", "txtProdutoSubTipo", "txtProdutoCategoria"})
+            '
+            If controlesBloqueados.Contains(ctr.Name) Then
+                e.Handled = True
+                e.SuppressKeyPress = True
+            End If
         End If
         '
     End Sub
@@ -1029,40 +896,136 @@ Public Class frmProduto
 #End Region
     '
 #Region "BOTOES FUNCAO"
-    Private Sub btnNovoTipo_Click(sender As Object, e As EventArgs) Handles btnNovoTipo.Click, VButton1.Click
+    '
+    '--- BOTAO PROCURAR TIPO
+    Private Sub btnProcurarTipo_Click(sender As Object, e As EventArgs) Handles btnProcurarTipo.Click
+        ProcurarEscolherTipo(txtProdutoTipo)
+    End Sub
+    '
+    '--- ESCOLHER TIPO DE PRODUTO | SUBTIPO DE PRODUTO | CATEGORIA
+    Private Sub ProcurarEscolherTipo(sender As Control)
         '
-        Dim c As Control = DirectCast(sender, Control)
-        Dim frmTipo As Form = Nothing
-        Dim myTipo As Integer? = _produto.IDProdutoTipo
+        Dim frmT As Form = Nothing
+        Dim oldID As Integer?
         '
         '--- abre o formulário de ProdutoTipo, SubTipo e Categoria
-        Select Case c.Name
-            Case "btnNovoTipo"
-                frmTipo = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.Tipo, myTipo)
-            Case "cmbIDProdutoTipo"
-                frmTipo = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.Tipo, myTipo)
-            Case "cmbIDProdutoSubTipo"
-                frmTipo = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.SubTipo, myTipo)
-            Case "cmbIDCategoria"
-                frmTipo = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.Categoria, myTipo)
+        Select Case sender.Name
+            '
+            Case "txtProdutoTipo"
+                '
+                oldID = _produto.IDProdutoTipo
+                frmT = New frmProdutoProcurarTipo(Me, oldID)
+                '
+            Case "txtProdutoSubTipo"
+                '
+                ' verifica se existe TIPO selecionado
+                If IsNothing(_produto.IDProdutoTipo) Then
+                    MessageBox.Show("Favor escolher o TIPO de produto, antes de escolher o SUBTIPO/CLASSIFICAÇÃO...",
+                        "Escolher Tipo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    txtProdutoTipo.Focus()
+                    Return
+                End If
+                '
+                oldID = _produto.IDProdutoSubTipo
+                frmT = New frmProdutoProcurarSubTipo(Me, oldID, _produto.IDProdutoTipo)
+                '
+            Case "txtProdutoCategoria"
+                '
+                ' verifica se existe TIPO selecionado
+                If IsNothing(_produto.IDProdutoTipo) Then
+                    MessageBox.Show("Favor escolher o TIPO de produto, antes de escolher a CATEGORIA...",
+                        "Escolher Tipo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    txtProdutoTipo.Focus()
+                    Return
+                End If
+                '
+                oldID = _produto.IDCategoria
+                frmT = New frmProdutoProcurarCategoria(Me, oldID, _produto.IDProdutoTipo)
+                '
         End Select
+        '
+        ' revela o formulario dependendo do controle acionado
+        frmT.ShowDialog()
+        '
+        ' ao fechar dialog verifica o resultado
+        If frmT.DialogResult <> DialogResult.Cancel Then
+            '
+            Select Case sender.Name
+            '
+                Case "txtProdutoTipo"
+                    txtProdutoTipo.Text = DirectCast(frmT, frmProdutoProcurarTipo).propTipo_Escolha
+                    _produto.IDProdutoTipo = DirectCast(frmT, frmProdutoProcurarTipo).propIdTipo_Escolha
+                    '
+                    ' altera o FlagEstado para ALTERADO
+                    If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDProdutoTipo), 0, _produto.IDProdutoTipo) Then
+                        '
+                        ' remove o SUBTIPO e a CATEGORIA porque o TIPO foi alterado
+                        txtProdutoSubTipo.Text = ""
+                        _produto.IDProdutoSubTipo = Nothing
+                        txtProdutoCategoria.Text = ""
+                        _produto.IDCategoria = Nothing
+                        '
+                        ' altera o FLAGestado
+                        Sit = FlagEstado.Alterado
+                        '
+                    End If
+                    '
+                    ' move focus
+                    txtProdutoTipo.Focus()
+                    '
+                Case "txtProdutoSubTipo"
+                    '
+                    ' define o SubTipo escolhido
+                    txtProdutoSubTipo.Text = DirectCast(frmT, frmProdutoProcurarSubTipo).propSubTipo_Escolha
+                    _produto.IDProdutoSubTipo = DirectCast(frmT, frmProdutoProcurarSubTipo).propIdSubTipo_Escolha
+                    '
+                    ' altera o FlagEstado para ALTERADO
+                    If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDProdutoSubTipo), 0, _produto.IDProdutoSubTipo) Then
+                        Sit = FlagEstado.Alterado
+                    End If
+                    '
+                    ' move focus
+                    txtProdutoSubTipo.Focus()
+                    '
+                Case "txtProdutoCategoria"
+                    '
+                    ' define a categoria escolhida
+                    txtProdutoCategoria.Text = DirectCast(frmT, frmProdutoProcurarCategoria).propCategoria_Escolha
+                    _produto.IDCategoria = DirectCast(frmT, frmProdutoProcurarCategoria).propIdCategoria_Escolha
+                    '
+                    ' altera o FlagEstado para ALTERADO
+                    If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDCategoria), 0, _produto.IDCategoria) Then
+                        Sit = FlagEstado.Alterado
+                    End If
+                    '
+                    ' move focus
+                    txtProdutoCategoria.Focus()
+                    '
+            End Select
+            '
+        End If
+        '
+    End Sub
+    '
+    Private Sub btnNovoTipo_Click(sender As Object, e As EventArgs) Handles btnNovoTipo.Click
+        '
+        Dim myTipo As Integer? = _produto.IDProdutoTipo
+        Dim frmTipo As Form = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.Tipo, myTipo)
         '
         Panel1.BackColor = Color.Silver
         frmTipo.ShowDialog()
         Panel1.BackColor = Color.SlateGray
+        '
         '--- suspende o Binding para preservar os valores
-        EvitaNulificarCombos = True
-        ControlaCmbTipoAtivo = False
         lblIDProduto.Tag = 0
         bindP.SuspendBinding()
+        '
         '--- carrega os combos novamente
-        CarregaComboProdutoTipo()
-        CarregaComboProdutoSubTipo()
-        CarregaComboCategoria()
+        'VerificaAlteracoes_Tipo_SubTipo_Categoria
+
+        '
         '--- retoma os Binding que foi suspenso
         bindP.ResumeBinding()
-        EvitaNulificarCombos = False
-        ControlaCmbTipoAtivo = True
         '
     End Sub
 
@@ -1089,8 +1052,6 @@ Public Class frmProduto
         frmFab.ShowDialog()
         '
         '--- suspende o Binding para preservar os valores
-        EvitaNulificarCombos = True
-        ControlaCmbTipoAtivo = False
         lblIDProduto.Tag = 0
         bindP.SuspendBinding()
         '
@@ -1099,8 +1060,6 @@ Public Class frmProduto
         '
         '--- retoma os Binding que foi suspenso
         bindP.ResumeBinding()
-        EvitaNulificarCombos = False
-        ControlaCmbTipoAtivo = True
         '
         '--- seleciona o focu
         cmbIDFabricante.Focus()
@@ -1170,6 +1129,70 @@ Public Class frmProduto
         '
         e.Graphics.DrawLine(p, p1, p2)
         e.Graphics.DrawLine(p, p3, p4)
+        '
+    End Sub
+    '
+#End Region
+    '
+#Region "TOOLTIPS"
+    '
+    Private Sub addToolTipHandler()
+        '
+        ' Define o texto da ToolTip para o Button, TextBox, Checkbox e Label
+        txtMargem.Tag = "Margem Bruta aplicada sobre Preço de Compra"
+        txtMargemMin.Tag = "Margem Mínima de lucro, mesmo com desconto máximo"
+        txtDesconto.Tag = "Desconto Máximo para alcançar a Margem Mínima"
+        txtDescontoCompra.Tag = "Abrir caixa para cálculo do Preço de Venda"
+        chkArredondar.Tag = "Arrendondar centavos para cima"
+        btnProcuraRG.Tag = "Procurar um Novo Reg. vazio para o Produto"
+        btnFabricantes.Tag = "Editar Fabricantes de Produtos"
+        btnAutoresLista.Tag = "Escolher Autor pelo Nome"
+        '
+        Dim listControles As New List(Of Control)
+        '
+        listControles.Add(txtProdutoTipo)
+        listControles.Add(txtProdutoSubTipo)
+        listControles.Add(txtProdutoCategoria)
+        listControles.Add(txtAutor)
+        listControles.Add(cmbIDFabricante)
+        listControles.Add(txtMargem)
+        listControles.Add(txtMargemMin)
+        listControles.Add(txtDesconto)
+        listControles.Add(txtDescontoCompra)
+        listControles.Add(chkArredondar)
+        listControles.Add(btnProcuraRG)
+        listControles.Add(btnFabricantes)
+        listControles.Add(btnAutoresLista)
+        '
+        For Each c As Control In listControles
+            AddHandler c.GotFocus, AddressOf showToolTip
+            AddHandler c.MouseHover, AddressOf showToolTip
+        Next
+        '
+    End Sub
+    '
+    Private Sub showToolTip(sender As Object, e As EventArgs)
+        '
+        Dim myControl As Control = DirectCast(sender, Control)
+        '
+        ' Cria a ToolTip e associa com o Form container.
+        Dim toolTip1 As New ToolTip()
+        '
+        ' Define o delay para a ToolTip.
+        With toolTip1
+            .AutoPopDelay = 2000
+            .InitialDelay = 1000
+            .ReshowDelay = 500
+            .IsBalloon = True
+            .UseAnimation = True
+            .UseFading = True
+        End With
+        '
+        If myControl.Tag = "" Then
+            toolTip1.Show("Pressione '+'  para escolher...", myControl, myControl.Width - 30, -40, 1000)
+        Else
+            toolTip1.Show(myControl.Tag, myControl, myControl.Width - 30, -40, 1000)
+        End If
         '
     End Sub
     '

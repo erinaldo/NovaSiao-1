@@ -70,8 +70,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BetterListViewExpress-net45, Version=3.15.0.0, Culture=neutral, PublicKeyToken=e6c91a3add447be2, processorArchitecture=MSIL" />
-    <Reference Include="CheckedButton_OnOff">
-      <HintPath>..\..\CheckedButton_OnOff\CheckedButton_OnOff\bin\Debug\CheckedButton_OnOff.dll</HintPath>
+    <Reference Include="CheckedButton_OnOff, Version=1.0.6292.17686, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Material\Controls\CheckedButton_OnOff.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.Common, Version=14.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.ReportingServices.ReportViewerControl.Winforms.140.1000.523\lib\net40\Microsoft.ReportViewer.Common.dll</HintPath>
@@ -527,10 +528,22 @@
     <Compile Include="Produtos\frmProdutoEtiquetaControle.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Produtos\frmProdutoListagem.designer.vb">
+      <DependentUpon>frmProdutoListagem.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Produtos\frmProdutoListagem.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Produtos\frmProdutoProcurar.Designer.vb">
       <DependentUpon>frmProdutoProcurar.vb</DependentUpon>
     </Compile>
     <Compile Include="Produtos\frmProdutoProcurar.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Produtos\frmProdutoProcurarCategoria.designer.vb">
+      <DependentUpon>frmProdutoProcurarCategoria.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Produtos\frmProdutoProcurarCategoria.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Produtos\frmProdutoProcurarSubTipo.designer.vb">
@@ -834,8 +847,14 @@
     <EmbeddedResource Include="Produtos\frmProdutoEtiquetaControle.resx">
       <DependentUpon>frmProdutoEtiquetaControle.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Produtos\frmProdutoListagem.resx">
+      <DependentUpon>frmProdutoListagem.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Produtos\frmProdutoProcurar.resx">
       <DependentUpon>frmProdutoProcurar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Produtos\frmProdutoProcurarCategoria.resx">
+      <DependentUpon>frmProdutoProcurarCategoria.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Produtos\frmProdutoProcurarSubTipo.resx">
       <DependentUpon>frmProdutoProcurarSubTipo.vb</DependentUpon>

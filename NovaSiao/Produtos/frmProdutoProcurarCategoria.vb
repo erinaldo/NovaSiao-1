@@ -2,33 +2,33 @@
 Imports CamadaBLL
 Imports ComponentOwl.BetterListView
 
-Public Class frmProdutoProcurarSubTipo
-    Private dtSubTipos As DataTable = Nothing
+Public Class frmProdutoProcurarCategoria
+    Private dtCategoria As DataTable = Nothing
     Private ItemAtivo As Image = My.Resources.accept
     Private ItemInativo As Image = My.Resources.block
     Private _formOrigem As Form = Nothing
     Private indexTipoPadrao As Integer? = Nothing '--- index na listagem do IDpadrao informado
     '
-    Property propIdSubTipo_Escolha As Integer
-    Property propSubTipo_Escolha As String
+    Property propIdCategoria_Escolha As Integer
+    Property propCategoria_Escolha As String
     '
 #Region "SUB NEW | PROPERTYS"
     '
-    Sub New(formOrigem As Form, Optional idSubTipoPadrao As Integer? = Nothing, Optional idTipoPadrao As Integer? = Nothing)
+    Sub New(formOrigem As Form, Optional idCategoriaPadrao As Integer? = Nothing, Optional idTipoPadrao As Integer? = Nothing)
         '
         ' This call is required by the designer.
         InitializeComponent()
         '
         ' Add any initialization after the InitializeComponent() call.
-        ObterSubTipo(idTipoPadrao)
+        ObterCategoria(idTipoPadrao)
         PreencheListagem()
         '
         _formOrigem = formOrigem
         '
         '--- verifica o subtipo padrao para selecionar na listagem
-        If Not IsNothing(idSubTipoPadrao) Then
+        If Not IsNothing(idCategoriaPadrao) Then
             For Each i As BetterListViewItem In lstItens
-                If i.Text = idSubTipoPadrao Then
+                If i.Text = idCategoriaPadrao Then
                     i.Selected = True
                     indexTipoPadrao = i.Index
                 Else
@@ -43,7 +43,7 @@ Public Class frmProdutoProcurarSubTipo
         '
     End Sub
     '
-    Private Sub frmFabricanteProcurar_Load(sender As Object, e As EventArgs) Handles Me.Load
+    Private Sub me_Load(sender As Object, e As EventArgs) Handles Me.Load
         '
         '--- quando há IDPadrao informado pelo usuário
         '--- garante que o item selecionado esteja visível na listagem
@@ -58,20 +58,20 @@ Public Class frmProdutoProcurarSubTipo
 #Region "LISTAGEM"
     '
     '--- OBTER OS TIPOS
-    Private Sub ObterSubTipo(myTipo As Integer?)
+    Private Sub ObterCategoria(myTipo As Integer?)
         '
         Dim pBLL As New ProdutoBLL
         '
         Try
             '
             If IsNothing(myTipo) Then
-                dtSubTipos = pBLL.GetSubTipos
+                dtCategoria = pBLL.GetCategorias()
             Else
-                dtSubTipos = pBLL.GetSubTipos(myTipo)
+                dtCategoria = pBLL.GetCategorias(myTipo)
             End If
             '
         Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao obter lista de Tipos de Produtos", "Exceção",
+            MessageBox.Show("Uma exceção ocorreu ao obter lista de Categorias de Produto", "Exceção",
                             MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         '
@@ -79,7 +79,7 @@ Public Class frmProdutoProcurarSubTipo
     '
     '--- PREENCHE LISTAGEM
     Private Sub PreencheListagem()
-        lstItens.DataSource = dtSubTipos
+        lstItens.DataSource = dtCategoria
         FormataListagem()
     End Sub
     '
@@ -89,8 +89,8 @@ Public Class frmProdutoProcurarSubTipo
         lstItens.MultiSelect = False
         lstItens.HideSelection = False
         '
-        clnID.DisplayMember = "IDProdutoSubTipo"
-        clnSubTipo.DisplayMember = "ProdutoSubTipo"
+        clnID.DisplayMember = "IDCategoria"
+        clnCategoria.DisplayMember = "ProdutoCategoria"
         clnAtivo.DisplayMember = "Ativo"
         clnAtivo.Width = 0
         '
@@ -140,15 +140,15 @@ Public Class frmProdutoProcurarSubTipo
     Private Sub btnEscolher_Click(sender As Object, e As EventArgs) Handles btnEscolher.Click
         '
         If lstItens.SelectedItems.Count = 0 Then
-            MessageBox.Show("Não nenhum SUBTIPO selecionado..." & vbNewLine &
-                            "Favor antes selecione um TIPO!",
-                            "Escolher SUBTIPO", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Não nenhuma CATEGORIA selecionado..." & vbNewLine &
+                            "Favor antes selecione uma CATEGORIA!",
+                            "Escolher CATEGORIA", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
         End If
         '
         ' DEFINIR O VALOR
-        propIdSubTipo_Escolha = CInt(lstItens.SelectedItems(0).Text) ' ID DO TIPO
-        propSubTipo_Escolha = lstItens.SelectedItems(0).SubItems(1).Text ' DESCRICAO DO TIPO
+        propIdCategoria_Escolha = CInt(lstItens.SelectedItems(0).Text) ' ID DO TIPO
+        propCategoria_Escolha = lstItens.SelectedItems(0).SubItems(1).Text ' DESCRICAO DO TIPO
         '
         Me.DialogResult = DialogResult.OK
         Me.Close()
@@ -215,12 +215,12 @@ Public Class frmProdutoProcurarSubTipo
     ' PROCURAR TIPO
     Private Sub ProcurarST()
         '
-        Dim dvClientes As DataView = dtSubTipos.DefaultView
+        Dim dvClientes As DataView = dtCategoria.DefaultView
         '
         If txtProcura.TextLength > 0 AndAlso IsNumeric(txtProcura.Text.Substring(0, 1)) Then
-            dvClientes.RowFilter = "IDProdutoSubTipo = " & txtProcura.Text
+            dvClientes.RowFilter = "IDCategoria = " & txtProcura.Text
         Else
-            dvClientes.RowFilter = "ProdutoSubTipo LIKE '*" & txtProcura.Text & "*'" ' PROCURA PELO NOME
+            dvClientes.RowFilter = "ProdutoCategoria LIKE '*" & txtProcura.Text & "*'" ' PROCURA PELO NOME
         End If
         '
     End Sub

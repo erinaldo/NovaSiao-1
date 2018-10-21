@@ -11,7 +11,7 @@
       <Value Profile="(Default)">Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;User ID=sa;Password=123456</Value>
     </Setting>
     <Setting Name="ConexaoString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;User ID=sa;Password=123456</Value>
+      <Value Profile="(Default)">Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;User ID=sa;Password=123456</Value>
     </Setting>
     <Setting Name="StringTemp" Type="System.String" Scope="User">
       <Value Profile="(Default)">Password=123456;Persist Security Info=True;User ID=sa;Initial Catalog=NovaSiao;Data Source=VTSERVER\SQLPADRAO</Value>

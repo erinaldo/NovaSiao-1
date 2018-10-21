@@ -33,6 +33,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Material", "Material", "{C7
 		Material\Mapping.txt = Material\Mapping.txt
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Controls", "Controls", "{76E82ED2-A021-48AE-B151-91DCB348D19A}"
+	ProjectSection(SolutionItems) = preProject
+		Material\Controls\CheckedButton_OnOff.dll = Material\Controls\CheckedButton_OnOff.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -62,6 +67,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{76E82ED2-A021-48AE-B151-91DCB348D19A} = {C75CF875-BD09-49F3-82FF-255ACF69ABC6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CFFD0AAE-5F84-43DE-AED2-847CCBFB057C}

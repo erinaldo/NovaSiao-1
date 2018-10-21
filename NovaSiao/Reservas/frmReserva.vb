@@ -472,9 +472,14 @@ Public Class frmReserva
     End Sub
     '
     '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtProdutoTipo.KeyDown,
-        txtFuncionario.KeyDown, txtAutor.KeyDown, txtFabricante.KeyDown, txtFornecedor.KeyDown,
-        txtRGProduto.KeyDown, txtProduto.KeyDown
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _
+        Handles txtProdutoTipo.KeyDown,
+                txtFuncionario.KeyDown,
+                txtAutor.KeyDown,
+                txtFabricante.KeyDown,
+                txtFornecedor.KeyDown,
+                txtRGProduto.KeyDown,
+                txtProduto.KeyDown
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '

@@ -35,9 +35,6 @@ Partial Class frmProduto
         Me.Label13 = New System.Windows.Forms.Label()
         Me.txtProduto = New System.Windows.Forms.TextBox()
         Me.cmbIDFabricante = New Controles.ComboBox_OnlyValues()
-        Me.cmbIDProdutoTipo = New Controles.ComboBox_OnlyValues()
-        Me.cmbIDCategoria = New Controles.ComboBox_OnlyValues()
-        Me.cmbIDProdutoSubTipo = New Controles.ComboBox_OnlyValues()
         Me.txtAutor = New System.Windows.Forms.TextBox()
         Me.txtUnidade = New System.Windows.Forms.TextBox()
         Me.txtPCompra = New Controles.Text_Monetario()
@@ -46,7 +43,12 @@ Partial Class frmProduto
         Me.txtNCM = New System.Windows.Forms.MaskedTextBox()
         Me.tsMenu = New System.Windows.Forms.ToolStrip()
         Me.btnProcurar = New System.Windows.Forms.ToolStripButton()
-        Me.btnNovo = New System.Windows.Forms.ToolStripButton()
+        Me.btnNovoGroup = New System.Windows.Forms.ToolStripDropDownButton()
+        Me.btnNovoProduto = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnNovoTipo = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnNovoSubTipo = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnNovaCategoria = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnSalvar = New System.Windows.Forms.ToolStripButton()
         Me.btnCancelar = New System.Windows.Forms.ToolStripButton()
@@ -78,7 +80,7 @@ Partial Class frmProduto
         Me.txtEstoqueNivel = New Controles.Text_SoNumeros()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.Label21 = New System.Windows.Forms.Label()
-        Me.btnNovoTipo = New VIBlend.WinForms.Controls.vButton()
+        Me.btnProcurarTipo = New VIBlend.WinForms.Controls.vButton()
         Me.ShapeContainer1 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
         Me.LineShape4 = New Microsoft.VisualBasic.PowerPacks.LineShape()
         Me.LineShape3 = New Microsoft.VisualBasic.PowerPacks.LineShape()
@@ -89,7 +91,8 @@ Partial Class frmProduto
         Me.txtDescontoCompra = New System.Windows.Forms.TextBox()
         Me.Label22 = New System.Windows.Forms.Label()
         Me.txtProdutoTipo = New System.Windows.Forms.TextBox()
-        Me.VButton1 = New VIBlend.WinForms.Controls.vButton()
+        Me.txtProdutoSubTipo = New System.Windows.Forms.TextBox()
+        Me.txtProdutoCategoria = New System.Windows.Forms.TextBox()
         Me.Panel1.SuspendLayout()
         Me.tsMenu.SuspendLayout()
         CType(Me.EProvider, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -100,7 +103,7 @@ Partial Class frmProduto
         '
         Me.Panel1.Controls.Add(Me.lblIDProduto)
         Me.Panel1.Controls.Add(Me.lbl_IdTexto)
-        Me.Panel1.Size = New System.Drawing.Size(754, 50)
+        Me.Panel1.Size = New System.Drawing.Size(802, 50)
         Me.Panel1.TabIndex = 0
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lbl_IdTexto, 0)
@@ -108,7 +111,7 @@ Partial Class frmProduto
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(524, 0)
+        Me.lblTitulo.Location = New System.Drawing.Point(572, 0)
         Me.lblTitulo.Size = New System.Drawing.Size(230, 50)
         Me.lblTitulo.TabIndex = 2
         Me.lblTitulo.Text = "Cadastro de Produtos"
@@ -116,11 +119,11 @@ Partial Class frmProduto
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(97, 107)
+        Me.Label1.Location = New System.Drawing.Point(82, 106)
         Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(73, 19)
+        Me.Label1.Size = New System.Drawing.Size(125, 19)
         Me.Label1.TabIndex = 2
-        Me.Label1.Text = "Descrição"
+        Me.Label1.Text = "Descrição | Título"
         '
         'lblIDProduto
         '
@@ -152,7 +155,7 @@ Partial Class frmProduto
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(93, 273)
+        Me.Label2.Location = New System.Drawing.Point(130, 272)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(77, 19)
         Me.Label2.TabIndex = 19
@@ -161,16 +164,16 @@ Partial Class frmProduto
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(133, 174)
+        Me.Label3.Location = New System.Drawing.Point(96, 173)
         Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(37, 19)
+        Me.Label3.Size = New System.Drawing.Size(111, 19)
         Me.Label3.TabIndex = 9
-        Me.Label3.Text = "Tipo"
+        Me.Label3.Text = "Tipo de Produto"
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(410, 207)
+        Me.Label4.Location = New System.Drawing.Point(447, 206)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(72, 19)
         Me.Label4.TabIndex = 14
@@ -179,16 +182,16 @@ Partial Class frmProduto
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(69, 207)
+        Me.Label5.Location = New System.Drawing.Point(47, 206)
         Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(101, 19)
+        Me.Label5.Size = New System.Drawing.Size(160, 19)
         Me.Label5.TabIndex = 12
-        Me.Label5.Text = "Class/SubTipo"
+        Me.Label5.Text = "Classificação | SubTipo"
         '
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(126, 240)
+        Me.Label6.Location = New System.Drawing.Point(163, 239)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(44, 19)
         Me.Label6.TabIndex = 16
@@ -197,7 +200,7 @@ Partial Class frmProduto
         'Label9
         '
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(111, 342)
+        Me.Label9.Location = New System.Drawing.Point(148, 341)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(63, 19)
         Me.Label9.TabIndex = 23
@@ -206,7 +209,7 @@ Partial Class frmProduto
         'Label10
         '
         Me.Label10.AutoSize = True
-        Me.Label10.Location = New System.Drawing.Point(52, 478)
+        Me.Label10.Location = New System.Drawing.Point(89, 480)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(119, 19)
         Me.Label10.TabIndex = 35
@@ -215,16 +218,16 @@ Partial Class frmProduto
         'Label11
         '
         Me.Label11.AutoSize = True
-        Me.Label11.Location = New System.Drawing.Point(472, 478)
+        Me.Label11.Location = New System.Drawing.Point(509, 480)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(109, 19)
-        Me.Label11.TabIndex = 37
+        Me.Label11.TabIndex = 40
         Me.Label11.Text = "Preço de Venda"
         '
         'Label12
         '
         Me.Label12.AutoSize = True
-        Me.Label12.Location = New System.Drawing.Point(40, 408)
+        Me.Label12.Location = New System.Drawing.Point(77, 407)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(130, 19)
         Me.Label12.TabIndex = 30
@@ -233,7 +236,7 @@ Partial Class frmProduto
         'Label13
         '
         Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(366, 408)
+        Me.Label13.Location = New System.Drawing.Point(403, 407)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(41, 19)
         Me.Label13.TabIndex = 32
@@ -242,7 +245,7 @@ Partial Class frmProduto
         'txtProduto
         '
         Me.txtProduto.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
-        Me.txtProduto.Location = New System.Drawing.Point(176, 104)
+        Me.txtProduto.Location = New System.Drawing.Point(213, 103)
         Me.txtProduto.MaxLength = 50
         Me.txtProduto.Name = "txtProduto"
         Me.txtProduto.Size = New System.Drawing.Size(511, 27)
@@ -253,49 +256,15 @@ Partial Class frmProduto
         Me.cmbIDFabricante.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
         Me.cmbIDFabricante.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
         Me.cmbIDFabricante.FormattingEnabled = True
-        Me.cmbIDFabricante.Location = New System.Drawing.Point(176, 270)
+        Me.cmbIDFabricante.Location = New System.Drawing.Point(213, 269)
         Me.cmbIDFabricante.Name = "cmbIDFabricante"
         Me.cmbIDFabricante.RestrictContentToListItems = True
         Me.cmbIDFabricante.Size = New System.Drawing.Size(271, 27)
         Me.cmbIDFabricante.TabIndex = 20
         '
-        'cmbIDProdutoTipo
-        '
-        Me.cmbIDProdutoTipo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDProdutoTipo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDProdutoTipo.FormattingEnabled = True
-        Me.cmbIDProdutoTipo.Location = New System.Drawing.Point(316, 62)
-        Me.cmbIDProdutoTipo.Name = "cmbIDProdutoTipo"
-        Me.cmbIDProdutoTipo.RestrictContentToListItems = True
-        Me.cmbIDProdutoTipo.Size = New System.Drawing.Size(199, 27)
-        Me.cmbIDProdutoTipo.TabIndex = 10
-        '
-        'cmbIDCategoria
-        '
-        Me.cmbIDCategoria.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDCategoria.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDCategoria.FormattingEnabled = True
-        Me.cmbIDCategoria.Items.AddRange(New Object() {""})
-        Me.cmbIDCategoria.Location = New System.Drawing.Point(488, 204)
-        Me.cmbIDCategoria.Name = "cmbIDCategoria"
-        Me.cmbIDCategoria.RestrictContentToListItems = True
-        Me.cmbIDCategoria.Size = New System.Drawing.Size(199, 27)
-        Me.cmbIDCategoria.TabIndex = 15
-        '
-        'cmbIDProdutoSubTipo
-        '
-        Me.cmbIDProdutoSubTipo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDProdutoSubTipo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDProdutoSubTipo.FormattingEnabled = True
-        Me.cmbIDProdutoSubTipo.Location = New System.Drawing.Point(176, 204)
-        Me.cmbIDProdutoSubTipo.Name = "cmbIDProdutoSubTipo"
-        Me.cmbIDProdutoSubTipo.RestrictContentToListItems = True
-        Me.cmbIDProdutoSubTipo.Size = New System.Drawing.Size(199, 27)
-        Me.cmbIDProdutoSubTipo.TabIndex = 13
-        '
         'txtAutor
         '
-        Me.txtAutor.Location = New System.Drawing.Point(176, 237)
+        Me.txtAutor.Location = New System.Drawing.Point(213, 236)
         Me.txtAutor.MaxLength = 50
         Me.txtAutor.Name = "txtAutor"
         Me.txtAutor.Size = New System.Drawing.Size(471, 27)
@@ -303,7 +272,7 @@ Partial Class frmProduto
         '
         'txtUnidade
         '
-        Me.txtUnidade.Location = New System.Drawing.Point(176, 339)
+        Me.txtUnidade.Location = New System.Drawing.Point(213, 338)
         Me.txtUnidade.MaxLength = 10
         Me.txtUnidade.Name = "txtUnidade"
         Me.txtUnidade.Size = New System.Drawing.Size(50, 27)
@@ -311,7 +280,7 @@ Partial Class frmProduto
         '
         'txtPCompra
         '
-        Me.txtPCompra.Location = New System.Drawing.Point(176, 475)
+        Me.txtPCompra.Location = New System.Drawing.Point(213, 477)
         Me.txtPCompra.MaxLength = 10
         Me.txtPCompra.Name = "txtPCompra"
         Me.txtPCompra.Size = New System.Drawing.Size(100, 27)
@@ -320,11 +289,11 @@ Partial Class frmProduto
         '
         'txtPVenda
         '
-        Me.txtPVenda.Location = New System.Drawing.Point(587, 475)
+        Me.txtPVenda.Location = New System.Drawing.Point(624, 477)
         Me.txtPVenda.MaxLength = 10
         Me.txtPVenda.Name = "txtPVenda"
         Me.txtPVenda.Size = New System.Drawing.Size(100, 27)
-        Me.txtPVenda.TabIndex = 40
+        Me.txtPVenda.TabIndex = 41
         Me.txtPVenda.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'cmbSitTributaria
@@ -332,7 +301,7 @@ Partial Class frmProduto
         Me.cmbSitTributaria.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
         Me.cmbSitTributaria.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
         Me.cmbSitTributaria.FormattingEnabled = True
-        Me.cmbSitTributaria.Location = New System.Drawing.Point(176, 405)
+        Me.cmbSitTributaria.Location = New System.Drawing.Point(213, 404)
         Me.cmbSitTributaria.Name = "cmbSitTributaria"
         Me.cmbSitTributaria.RestrictContentToListItems = True
         Me.cmbSitTributaria.Size = New System.Drawing.Size(173, 27)
@@ -340,7 +309,7 @@ Partial Class frmProduto
         '
         'txtNCM
         '
-        Me.txtNCM.Location = New System.Drawing.Point(413, 405)
+        Me.txtNCM.Location = New System.Drawing.Point(450, 404)
         Me.txtNCM.Name = "txtNCM"
         Me.txtNCM.Size = New System.Drawing.Size(150, 27)
         Me.txtNCM.TabIndex = 33
@@ -352,13 +321,13 @@ Partial Class frmProduto
         Me.tsMenu.Dock = System.Windows.Forms.DockStyle.None
         Me.tsMenu.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tsMenu.ImageScalingSize = New System.Drawing.Size(30, 30)
-        Me.tsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnProcurar, Me.btnNovo, Me.ToolStripSeparator5, Me.btnSalvar, Me.btnCancelar, Me.ToolStripSeparator1, Me.btnExcluir, Me.btnAtivo, Me.btnFechar})
+        Me.tsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnProcurar, Me.btnNovoGroup, Me.ToolStripSeparator5, Me.btnSalvar, Me.btnCancelar, Me.ToolStripSeparator1, Me.btnExcluir, Me.btnAtivo, Me.btnFechar})
         Me.tsMenu.Location = New System.Drawing.Point(2, 550)
         Me.tsMenu.Name = "tsMenu"
         Me.tsMenu.Padding = New System.Windows.Forms.Padding(0)
         Me.tsMenu.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional
-        Me.tsMenu.Size = New System.Drawing.Size(750, 48)
-        Me.tsMenu.TabIndex = 0
+        Me.tsMenu.Size = New System.Drawing.Size(798, 48)
+        Me.tsMenu.TabIndex = 44
         Me.tsMenu.TabStop = True
         Me.tsMenu.Text = "Menu Cliente PF"
         '
@@ -371,14 +340,51 @@ Partial Class frmProduto
         Me.btnProcurar.Text = "&Procurar"
         Me.btnProcurar.ToolTipText = "Procurar Produto"
         '
-        'btnNovo
+        'btnNovoGroup
         '
-        Me.btnNovo.Image = Global.NovaSiao.My.Resources.Resources.produto
-        Me.btnNovo.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnNovo.Name = "btnNovo"
-        Me.btnNovo.Size = New System.Drawing.Size(76, 45)
-        Me.btnNovo.Text = "&Novo"
-        Me.btnNovo.ToolTipText = "Novo Produto"
+        Me.btnNovoGroup.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnNovoProduto, Me.ToolStripSeparator2, Me.btnNovoTipo, Me.btnNovoSubTipo, Me.btnNovaCategoria})
+        Me.btnNovoGroup.Image = Global.NovaSiao.My.Resources.Resources.produto
+        Me.btnNovoGroup.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnNovoGroup.Name = "btnNovoGroup"
+        Me.btnNovoGroup.Size = New System.Drawing.Size(130, 45)
+        Me.btnNovoGroup.Text = "Inserir Novo"
+        '
+        'btnNovoProduto
+        '
+        Me.btnNovoProduto.Image = Global.NovaSiao.My.Resources.Resources.add
+        Me.btnNovoProduto.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnNovoProduto.Name = "btnNovoProduto"
+        Me.btnNovoProduto.Size = New System.Drawing.Size(178, 24)
+        Me.btnNovoProduto.Text = "Novo Produto"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(175, 6)
+        '
+        'btnNovoTipo
+        '
+        Me.btnNovoTipo.Image = Global.NovaSiao.My.Resources.Resources.add
+        Me.btnNovoTipo.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnNovoTipo.Name = "btnNovoTipo"
+        Me.btnNovoTipo.Size = New System.Drawing.Size(178, 24)
+        Me.btnNovoTipo.Text = "Novo Tipo"
+        '
+        'btnNovoSubTipo
+        '
+        Me.btnNovoSubTipo.Image = Global.NovaSiao.My.Resources.Resources.add
+        Me.btnNovoSubTipo.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnNovoSubTipo.Name = "btnNovoSubTipo"
+        Me.btnNovoSubTipo.Size = New System.Drawing.Size(178, 24)
+        Me.btnNovoSubTipo.Text = "Novo SubTipo"
+        '
+        'btnNovaCategoria
+        '
+        Me.btnNovaCategoria.Image = Global.NovaSiao.My.Resources.Resources.add
+        Me.btnNovaCategoria.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnNovaCategoria.Name = "btnNovaCategoria"
+        Me.btnNovaCategoria.Size = New System.Drawing.Size(178, 24)
+        Me.btnNovaCategoria.Text = "Nova Categoria"
         '
         'ToolStripSeparator5
         '
@@ -479,25 +485,25 @@ Partial Class frmProduto
         'lblMargem
         '
         Me.lblMargem.AutoSize = True
-        Me.lblMargem.Location = New System.Drawing.Point(172, 507)
+        Me.lblMargem.Location = New System.Drawing.Point(209, 509)
         Me.lblMargem.Name = "lblMargem"
         Me.lblMargem.Size = New System.Drawing.Size(126, 19)
-        Me.lblMargem.TabIndex = 42
+        Me.lblMargem.TabIndex = 37
         Me.lblMargem.Text = "Margem de 0,00%"
         '
         'lblDesconto
         '
         Me.lblDesconto.AutoSize = True
-        Me.lblDesconto.Location = New System.Drawing.Point(583, 507)
+        Me.lblDesconto.Location = New System.Drawing.Point(620, 509)
         Me.lblDesconto.Name = "lblDesconto"
         Me.lblDesconto.Size = New System.Drawing.Size(133, 19)
-        Me.lblDesconto.TabIndex = 43
+        Me.lblDesconto.TabIndex = 42
         Me.lblDesconto.Text = "Desconto de 0,00%"
         '
         'Label16
         '
         Me.Label16.AutoSize = True
-        Me.Label16.Location = New System.Drawing.Point(82, 141)
+        Me.Label16.Location = New System.Drawing.Point(119, 140)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(88, 19)
         Me.Label16.TabIndex = 4
@@ -505,7 +511,7 @@ Partial Class frmProduto
         '
         'txtRGProduto
         '
-        Me.txtRGProduto.Location = New System.Drawing.Point(176, 138)
+        Me.txtRGProduto.Location = New System.Drawing.Point(213, 137)
         Me.txtRGProduto.MaxLength = 10
         Me.txtRGProduto.Name = "txtRGProduto"
         Me.txtRGProduto.Size = New System.Drawing.Size(79, 27)
@@ -514,7 +520,7 @@ Partial Class frmProduto
         'Label17
         '
         Me.Label17.AutoSize = True
-        Me.Label17.Location = New System.Drawing.Point(398, 141)
+        Me.Label17.Location = New System.Drawing.Point(435, 140)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(84, 19)
         Me.Label17.TabIndex = 7
@@ -522,7 +528,7 @@ Partial Class frmProduto
         '
         'txtCodBarrasA
         '
-        Me.txtCodBarrasA.Location = New System.Drawing.Point(488, 138)
+        Me.txtCodBarrasA.Location = New System.Drawing.Point(525, 137)
         Me.txtCodBarrasA.MaxLength = 15
         Me.txtCodBarrasA.Name = "txtCodBarrasA"
         Me.txtCodBarrasA.Size = New System.Drawing.Size(199, 27)
@@ -538,7 +544,7 @@ Partial Class frmProduto
         Me.btnProcuraRG.BackColor = System.Drawing.Color.Transparent
         Me.btnProcuraRG.FlatAppearance.BorderColor = System.Drawing.Color.Black
         Me.btnProcuraRG.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnProcuraRG.Location = New System.Drawing.Point(261, 138)
+        Me.btnProcuraRG.Location = New System.Drawing.Point(298, 137)
         Me.btnProcuraRG.Name = "btnProcuraRG"
         Me.btnProcuraRG.RoundedCornersMask = CType(15, Byte)
         Me.btnProcuraRG.RoundedCornersRadius = 0
@@ -560,10 +566,10 @@ Partial Class frmProduto
         Me.pnlCalculo.Controls.Add(Me.Label20)
         Me.pnlCalculo.Controls.Add(Me.Label19)
         Me.pnlCalculo.Controls.Add(Me.Label18)
-        Me.pnlCalculo.Location = New System.Drawing.Point(429, 339)
+        Me.pnlCalculo.Location = New System.Drawing.Point(466, 347)
         Me.pnlCalculo.Name = "pnlCalculo"
         Me.pnlCalculo.Size = New System.Drawing.Size(258, 130)
-        Me.pnlCalculo.TabIndex = 41
+        Me.pnlCalculo.TabIndex = 43
         Me.pnlCalculo.Visible = False
         '
         'chkArredondar
@@ -574,7 +580,7 @@ Partial Class frmProduto
         Me.chkArredondar.Location = New System.Drawing.Point(132, 24)
         Me.chkArredondar.Name = "chkArredondar"
         Me.chkArredondar.Size = New System.Drawing.Size(108, 42)
-        Me.chkArredondar.TabIndex = 6
+        Me.chkArredondar.TabIndex = 4
         Me.chkArredondar.TabStop = False
         Me.chkArredondar.Text = "Arrendondar" & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "Centavos"
         Me.chkArredondar.UseVisualStyleBackColor = True
@@ -585,7 +591,7 @@ Partial Class frmProduto
         Me.txtDesconto.MaxLength = 5
         Me.txtDesconto.Name = "txtDesconto"
         Me.txtDesconto.Size = New System.Drawing.Size(100, 27)
-        Me.txtDesconto.TabIndex = 5
+        Me.txtDesconto.TabIndex = 6
         Me.txtDesconto.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtMargemMin
@@ -621,7 +627,7 @@ Partial Class frmProduto
         Me.Label19.Location = New System.Drawing.Point(144, 67)
         Me.Label19.Name = "Label19"
         Me.Label19.Size = New System.Drawing.Size(92, 19)
-        Me.Label19.TabIndex = 4
+        Me.Label19.TabIndex = 5
         Me.Label19.Text = "Desc. Max.%"
         '
         'Label18
@@ -647,7 +653,7 @@ Partial Class frmProduto
         'txtEstoqueIdeal
         '
         Me.txtEstoqueIdeal.Inteiro = True
-        Me.txtEstoqueIdeal.Location = New System.Drawing.Point(348, 339)
+        Me.txtEstoqueIdeal.Location = New System.Drawing.Point(385, 338)
         Me.txtEstoqueIdeal.Name = "txtEstoqueIdeal"
         Me.txtEstoqueIdeal.Size = New System.Drawing.Size(50, 27)
         Me.txtEstoqueIdeal.TabIndex = 26
@@ -656,7 +662,7 @@ Partial Class frmProduto
         'txtEstoqueNivel
         '
         Me.txtEstoqueNivel.Inteiro = True
-        Me.txtEstoqueNivel.Location = New System.Drawing.Point(513, 339)
+        Me.txtEstoqueNivel.Location = New System.Drawing.Point(550, 338)
         Me.txtEstoqueNivel.Name = "txtEstoqueNivel"
         Me.txtEstoqueNivel.Size = New System.Drawing.Size(50, 27)
         Me.txtEstoqueNivel.TabIndex = 28
@@ -665,7 +671,7 @@ Partial Class frmProduto
         'Label8
         '
         Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(245, 342)
+        Me.Label8.Location = New System.Drawing.Point(282, 341)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(98, 19)
         Me.Label8.TabIndex = 25
@@ -674,29 +680,29 @@ Partial Class frmProduto
         'Label21
         '
         Me.Label21.AutoSize = True
-        Me.Label21.Location = New System.Drawing.Point(410, 342)
+        Me.Label21.Location = New System.Drawing.Point(447, 341)
         Me.Label21.Name = "Label21"
         Me.Label21.Size = New System.Drawing.Size(97, 19)
         Me.Label21.TabIndex = 27
         Me.Label21.Text = "Estoque Ideal"
         '
-        'btnNovoTipo
+        'btnProcurarTipo
         '
-        Me.btnNovoTipo.AllowAnimations = True
-        Me.btnNovoTipo.BackColor = System.Drawing.Color.Transparent
-        Me.btnNovoTipo.FlatAppearance.BorderColor = System.Drawing.Color.Black
-        Me.btnNovoTipo.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnNovoTipo.Location = New System.Drawing.Point(381, 171)
-        Me.btnNovoTipo.Name = "btnNovoTipo"
-        Me.btnNovoTipo.RoundedCornersMask = CType(15, Byte)
-        Me.btnNovoTipo.RoundedCornersRadius = 0
-        Me.btnNovoTipo.Size = New System.Drawing.Size(34, 27)
-        Me.btnNovoTipo.TabIndex = 11
-        Me.btnNovoTipo.TabStop = False
-        Me.btnNovoTipo.Text = "..."
-        Me.btnNovoTipo.UseCompatibleTextRendering = True
-        Me.btnNovoTipo.UseVisualStyleBackColor = False
-        Me.btnNovoTipo.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        Me.btnProcurarTipo.AllowAnimations = True
+        Me.btnProcurarTipo.BackColor = System.Drawing.Color.Transparent
+        Me.btnProcurarTipo.FlatAppearance.BorderColor = System.Drawing.Color.Black
+        Me.btnProcurarTipo.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnProcurarTipo.Location = New System.Drawing.Point(418, 170)
+        Me.btnProcurarTipo.Name = "btnProcurarTipo"
+        Me.btnProcurarTipo.RoundedCornersMask = CType(15, Byte)
+        Me.btnProcurarTipo.RoundedCornersRadius = 0
+        Me.btnProcurarTipo.Size = New System.Drawing.Size(34, 27)
+        Me.btnProcurarTipo.TabIndex = 11
+        Me.btnProcurarTipo.TabStop = False
+        Me.btnProcurarTipo.Text = "..."
+        Me.btnProcurarTipo.UseCompatibleTextRendering = True
+        Me.btnProcurarTipo.UseVisualStyleBackColor = False
+        Me.btnProcurarTipo.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
         'ShapeContainer1
         '
@@ -704,7 +710,7 @@ Partial Class frmProduto
         Me.ShapeContainer1.Margin = New System.Windows.Forms.Padding(0)
         Me.ShapeContainer1.Name = "ShapeContainer1"
         Me.ShapeContainer1.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.LineShape4, Me.LineShape3, Me.LineShape2, Me.LineShape1})
-        Me.ShapeContainer1.Size = New System.Drawing.Size(754, 600)
+        Me.ShapeContainer1.Size = New System.Drawing.Size(802, 600)
         Me.ShapeContainer1.TabIndex = 1
         Me.ShapeContainer1.TabStop = False
         '
@@ -714,7 +720,7 @@ Partial Class frmProduto
         Me.LineShape4.BorderWidth = 3
         Me.LineShape4.Name = "LineShape4"
         Me.LineShape4.X1 = 115
-        Me.LineShape4.X2 = 730
+        Me.LineShape4.X2 = 760
         Me.LineShape4.Y1 = 318
         Me.LineShape4.Y2 = 318
         '
@@ -724,7 +730,7 @@ Partial Class frmProduto
         Me.LineShape3.BorderWidth = 3
         Me.LineShape3.Name = "LineShape3"
         Me.LineShape3.X1 = 95
-        Me.LineShape3.X2 = 730
+        Me.LineShape3.X2 = 760
         Me.LineShape3.Y1 = 453
         Me.LineShape3.Y2 = 453
         '
@@ -734,7 +740,7 @@ Partial Class frmProduto
         Me.LineShape2.BorderWidth = 3
         Me.LineShape2.Name = "LineShape2"
         Me.LineShape2.X1 = 145
-        Me.LineShape2.X2 = 730
+        Me.LineShape2.X2 = 760
         Me.LineShape2.Y1 = 386
         Me.LineShape2.Y2 = 386
         '
@@ -744,7 +750,7 @@ Partial Class frmProduto
         Me.LineShape1.BorderWidth = 3
         Me.LineShape1.Name = "LineShape1"
         Me.LineShape1.X1 = 120
-        Me.LineShape1.X2 = 730
+        Me.LineShape1.X2 = 760
         Me.LineShape1.Y1 = 78
         Me.LineShape1.Y2 = 78
         '
@@ -754,7 +760,7 @@ Partial Class frmProduto
         Me.btnAutoresLista.BackColor = System.Drawing.Color.Transparent
         Me.btnAutoresLista.FlatAppearance.BorderColor = System.Drawing.Color.Black
         Me.btnAutoresLista.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnAutoresLista.Location = New System.Drawing.Point(653, 237)
+        Me.btnAutoresLista.Location = New System.Drawing.Point(690, 236)
         Me.btnAutoresLista.Name = "btnAutoresLista"
         Me.btnAutoresLista.RoundedCornersMask = CType(15, Byte)
         Me.btnAutoresLista.RoundedCornersRadius = 0
@@ -772,7 +778,7 @@ Partial Class frmProduto
         Me.btnFabricantes.BackColor = System.Drawing.Color.Transparent
         Me.btnFabricantes.FlatAppearance.BorderColor = System.Drawing.Color.Black
         Me.btnFabricantes.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnFabricantes.Location = New System.Drawing.Point(453, 270)
+        Me.btnFabricantes.Location = New System.Drawing.Point(490, 269)
         Me.btnFabricantes.Name = "btnFabricantes"
         Me.btnFabricantes.RoundedCornersMask = CType(15, Byte)
         Me.btnFabricantes.RoundedCornersRadius = 0
@@ -786,62 +792,55 @@ Partial Class frmProduto
         '
         'txtDescontoCompra
         '
-        Me.txtDescontoCompra.Location = New System.Drawing.Point(388, 475)
+        Me.txtDescontoCompra.Location = New System.Drawing.Point(425, 477)
         Me.txtDescontoCompra.Name = "txtDescontoCompra"
         Me.txtDescontoCompra.Size = New System.Drawing.Size(65, 27)
-        Me.txtDescontoCompra.TabIndex = 38
+        Me.txtDescontoCompra.TabIndex = 39
         Me.txtDescontoCompra.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label22
         '
         Me.Label22.AutoSize = True
-        Me.Label22.Location = New System.Drawing.Point(312, 478)
+        Me.Label22.Location = New System.Drawing.Point(349, 480)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(70, 19)
-        Me.Label22.TabIndex = 39
+        Me.Label22.TabIndex = 38
         Me.Label22.Text = "Desconto"
         '
         'txtProdutoTipo
         '
-        Me.txtProdutoTipo.Location = New System.Drawing.Point(176, 171)
+        Me.txtProdutoTipo.Location = New System.Drawing.Point(213, 170)
         Me.txtProdutoTipo.Name = "txtProdutoTipo"
         Me.txtProdutoTipo.Size = New System.Drawing.Size(199, 27)
-        Me.txtProdutoTipo.TabIndex = 45
+        Me.txtProdutoTipo.TabIndex = 10
         '
-        'VButton1
+        'txtProdutoSubTipo
         '
-        Me.VButton1.AllowAnimations = True
-        Me.VButton1.BackColor = System.Drawing.Color.Transparent
-        Me.VButton1.FlatAppearance.BorderColor = System.Drawing.Color.Black
-        Me.VButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.VButton1.Font = New System.Drawing.Font("Calibri", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.VButton1.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
-        Me.VButton1.ImageAbsolutePosition = New System.Drawing.Point(0, 0)
-        Me.VButton1.Location = New System.Drawing.Point(421, 171)
-        Me.VButton1.Name = "VButton1"
-        Me.VButton1.RoundedCornersMask = CType(15, Byte)
-        Me.VButton1.RoundedCornersRadius = 0
-        Me.VButton1.Size = New System.Drawing.Size(212, 27)
-        Me.VButton1.TabIndex = 11
-        Me.VButton1.TabStop = False
-        Me.VButton1.Text = "Tipo | SubTipo | Categoria"
-        Me.VButton1.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.VButton1.UseCompatibleTextRendering = True
-        Me.VButton1.UseVisualStyleBackColor = False
-        Me.VButton1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        Me.txtProdutoSubTipo.Location = New System.Drawing.Point(213, 203)
+        Me.txtProdutoSubTipo.Name = "txtProdutoSubTipo"
+        Me.txtProdutoSubTipo.Size = New System.Drawing.Size(199, 27)
+        Me.txtProdutoSubTipo.TabIndex = 13
+        '
+        'txtProdutoCategoria
+        '
+        Me.txtProdutoCategoria.Location = New System.Drawing.Point(525, 203)
+        Me.txtProdutoCategoria.Name = "txtProdutoCategoria"
+        Me.txtProdutoCategoria.Size = New System.Drawing.Size(199, 27)
+        Me.txtProdutoCategoria.TabIndex = 15
         '
         'frmProduto
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(754, 600)
-        Me.Controls.Add(Me.VButton1)
+        Me.ClientSize = New System.Drawing.Size(802, 600)
+        Me.Controls.Add(Me.txtProdutoCategoria)
+        Me.Controls.Add(Me.txtProdutoSubTipo)
         Me.Controls.Add(Me.tsMenu)
         Me.Controls.Add(Me.txtProdutoTipo)
         Me.Controls.Add(Me.Label22)
         Me.Controls.Add(Me.txtDescontoCompra)
         Me.Controls.Add(Me.btnFabricantes)
         Me.Controls.Add(Me.btnAutoresLista)
-        Me.Controls.Add(Me.btnNovoTipo)
+        Me.Controls.Add(Me.btnProcurarTipo)
         Me.Controls.Add(Me.pnlCalculo)
         Me.Controls.Add(Me.Label21)
         Me.Controls.Add(Me.Label8)
@@ -862,9 +861,6 @@ Partial Class frmProduto
         Me.Controls.Add(Me.txtPVenda)
         Me.Controls.Add(Me.txtPCompra)
         Me.Controls.Add(Me.cmbSitTributaria)
-        Me.Controls.Add(Me.cmbIDProdutoSubTipo)
-        Me.Controls.Add(Me.cmbIDCategoria)
-        Me.Controls.Add(Me.cmbIDProdutoTipo)
         Me.Controls.Add(Me.cmbIDFabricante)
         Me.Controls.Add(Me.txtUnidade)
         Me.Controls.Add(Me.txtAutor)
@@ -899,9 +895,6 @@ Partial Class frmProduto
         Me.Controls.SetChildIndex(Me.txtAutor, 0)
         Me.Controls.SetChildIndex(Me.txtUnidade, 0)
         Me.Controls.SetChildIndex(Me.cmbIDFabricante, 0)
-        Me.Controls.SetChildIndex(Me.cmbIDProdutoTipo, 0)
-        Me.Controls.SetChildIndex(Me.cmbIDCategoria, 0)
-        Me.Controls.SetChildIndex(Me.cmbIDProdutoSubTipo, 0)
         Me.Controls.SetChildIndex(Me.cmbSitTributaria, 0)
         Me.Controls.SetChildIndex(Me.txtPCompra, 0)
         Me.Controls.SetChildIndex(Me.txtPVenda, 0)
@@ -922,7 +915,7 @@ Partial Class frmProduto
         Me.Controls.SetChildIndex(Me.Label8, 0)
         Me.Controls.SetChildIndex(Me.Label21, 0)
         Me.Controls.SetChildIndex(Me.pnlCalculo, 0)
-        Me.Controls.SetChildIndex(Me.btnNovoTipo, 0)
+        Me.Controls.SetChildIndex(Me.btnProcurarTipo, 0)
         Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Controls.SetChildIndex(Me.btnAutoresLista, 0)
         Me.Controls.SetChildIndex(Me.btnFabricantes, 0)
@@ -930,7 +923,8 @@ Partial Class frmProduto
         Me.Controls.SetChildIndex(Me.Label22, 0)
         Me.Controls.SetChildIndex(Me.txtProdutoTipo, 0)
         Me.Controls.SetChildIndex(Me.tsMenu, 0)
-        Me.Controls.SetChildIndex(Me.VButton1, 0)
+        Me.Controls.SetChildIndex(Me.txtProdutoSubTipo, 0)
+        Me.Controls.SetChildIndex(Me.txtProdutoCategoria, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.tsMenu.ResumeLayout(False)
@@ -958,9 +952,6 @@ Partial Class frmProduto
     Friend WithEvents Label13 As Label
     Friend WithEvents txtProduto As TextBox
     Friend WithEvents cmbIDFabricante As Controles.ComboBox_OnlyValues
-    Friend WithEvents cmbIDProdutoTipo As Controles.ComboBox_OnlyValues
-    Friend WithEvents cmbIDCategoria As Controles.ComboBox_OnlyValues
-    Friend WithEvents cmbIDProdutoSubTipo As Controles.ComboBox_OnlyValues
     Friend WithEvents txtAutor As TextBox
     Friend WithEvents txtUnidade As TextBox
     Friend WithEvents txtPCompra As Controles.Text_Monetario
@@ -968,7 +959,6 @@ Partial Class frmProduto
     Friend WithEvents cmbSitTributaria As Controles.ComboBox_OnlyValues
     Friend WithEvents txtNCM As MaskedTextBox
     Friend WithEvents tsMenu As ToolStrip
-    Friend WithEvents btnNovo As ToolStripButton
     Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents btnSalvar As ToolStripButton
     Friend WithEvents btnCancelar As ToolStripButton
@@ -1000,7 +990,7 @@ Partial Class frmProduto
     Friend WithEvents txtEstoqueNivel As Controles.Text_SoNumeros
     Friend WithEvents txtEstoqueIdeal As Controles.Text_SoNumeros
     Friend WithEvents Label7 As Label
-    Friend WithEvents btnNovoTipo As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents btnProcurarTipo As VIBlend.WinForms.Controls.vButton
     Friend WithEvents ShapeContainer1 As PowerPacks.ShapeContainer
     Friend WithEvents LineShape4 As PowerPacks.LineShape
     Friend WithEvents LineShape3 As PowerPacks.LineShape
@@ -1012,5 +1002,12 @@ Partial Class frmProduto
     Friend WithEvents txtDescontoCompra As TextBox
     Friend WithEvents txtProdutoTipo As TextBox
     Friend WithEvents btnFechar As ToolStripButton
-    Friend WithEvents VButton1 As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents txtProdutoCategoria As TextBox
+    Friend WithEvents txtProdutoSubTipo As TextBox
+    Friend WithEvents btnNovoGroup As ToolStripDropDownButton
+    Friend WithEvents btnNovoProduto As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents btnNovoTipo As ToolStripMenuItem
+    Friend WithEvents btnNovoSubTipo As ToolStripMenuItem
+    Friend WithEvents btnNovaCategoria As ToolStripMenuItem
 End Class
