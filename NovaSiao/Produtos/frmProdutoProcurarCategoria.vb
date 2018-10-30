@@ -53,6 +53,22 @@ Public Class frmProdutoProcurarCategoria
         '
     End Sub
     '
+    Private Sub frmProdutoProcurarCategoria_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        '
+        ' Impede que o formulario seja usado quando não há categoria para o TIPO definido
+        If lstItens.Items.Count = 0 Then
+            '
+            MessageBox.Show("Não há nenhuma categoria cadastrada nesse TIPO de Produto...",
+                            "Nenhuma Categoria",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            ' fecha o form
+            DialogResult = DialogResult.Cancel
+            '
+        End If
+        '
+    End Sub
+    '
 #End Region
     '
 #Region "LISTAGEM"

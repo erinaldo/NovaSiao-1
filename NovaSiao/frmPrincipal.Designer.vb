@@ -39,7 +39,7 @@ Partial Class frmPrincipal
         Me.miProdutoNovo = New System.Windows.Forms.ToolStripMenuItem()
         Me.miEditarProduto = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator4 = New System.Windows.Forms.ToolStripSeparator()
-        Me.miProdutoProcurarAlterar = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miProdutoListagem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.miProdutoTipos = New System.Windows.Forms.ToolStripMenuItem()
         Me.miFabricantesMarcas = New System.Windows.Forms.ToolStripMenuItem()
@@ -228,7 +228,7 @@ Partial Class frmPrincipal
         'tsbProdutos
         '
         Me.tsbProdutos.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbProdutos.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miProdutoNovo, Me.miEditarProduto, Me.ToolStripSeparator4, Me.miProdutoProcurarAlterar, Me.ToolStripSeparator3, Me.miProdutoTipos, Me.miFabricantesMarcas, Me.ToolStripSeparator11, Me.miProdutoEtiquetaVenda})
+        Me.tsbProdutos.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miProdutoNovo, Me.miEditarProduto, Me.ToolStripSeparator4, Me.miProdutoListagem, Me.ToolStripSeparator3, Me.miProdutoTipos, Me.miFabricantesMarcas, Me.ToolStripSeparator11, Me.miProdutoEtiquetaVenda})
         Me.tsbProdutos.Image = Global.NovaSiao.My.Resources.Resources.livros_produtos
         Me.tsbProdutos.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbProdutos.Name = "tsbProdutos"
@@ -258,14 +258,14 @@ Partial Class frmPrincipal
         Me.ToolStripSeparator4.Name = "ToolStripSeparator4"
         Me.ToolStripSeparator4.Size = New System.Drawing.Size(267, 6)
         '
-        'miProdutoProcurarAlterar
+        'miProdutoListagem
         '
-        Me.miProdutoProcurarAlterar.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
-        Me.miProdutoProcurarAlterar.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.miProdutoProcurarAlterar.Name = "miProdutoProcurarAlterar"
-        Me.miProdutoProcurarAlterar.Size = New System.Drawing.Size(270, 30)
-        Me.miProdutoProcurarAlterar.Tag = "3"
-        Me.miProdutoProcurarAlterar.Text = "Procurar e Alterar Produto"
+        Me.miProdutoListagem.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
+        Me.miProdutoListagem.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miProdutoListagem.Name = "miProdutoListagem"
+        Me.miProdutoListagem.Size = New System.Drawing.Size(270, 30)
+        Me.miProdutoListagem.Tag = "3"
+        Me.miProdutoListagem.Text = "Procurar e Alterar Produto"
         '
         'ToolStripSeparator3
         '
@@ -864,7 +864,7 @@ Partial Class frmPrincipal
     Friend WithEvents tsPrincipal As ToolStrip
     Friend WithEvents miClienteNovo As ToolStripMenuItem
     Friend WithEvents miProdutoNovo As ToolStripMenuItem
-    Friend WithEvents miProdutoProcurarAlterar As ToolStripMenuItem
+    Friend WithEvents miProdutoListagem As ToolStripMenuItem
     Friend WithEvents miClienteProcurar As ToolStripMenuItem
     Friend WithEvents Label1 As Label
     Friend WithEvents tsbVendas As ToolStripSplitButton

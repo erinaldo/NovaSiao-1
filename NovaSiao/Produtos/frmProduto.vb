@@ -119,7 +119,7 @@ Public Class frmProduto
         '
     End Sub
     '
-#End Region
+#End Region '// EVENTO LOAD E PROPRIEDADE SIT
     '
 #Region "BINDINGS"
     Private Sub PreencheDataBindings()
@@ -232,7 +232,7 @@ Public Class frmProduto
         End With
     End Sub
     '
-#End Region
+#End Region '// BINDINGS
     '
 #Region "SALVAR REGISTRO"
     ' SALVAR O REGISTRO
@@ -387,7 +387,7 @@ Public Class frmProduto
 
     End Function
     '---------------------------------------------------------------------------------------------------
-#End Region
+#End Region '// SALVAR REGISTRO
     '
 #Region "OPERAÇÕES DE REGISTRO"
     '
@@ -474,7 +474,8 @@ Public Class frmProduto
         propProduto = New clProduto
         propAcao = FlagAcao.INSERIR
     End Sub
-#End Region
+    '
+#End Region '// OPERAÇÕES DE REGISTRO
     '
 #Region "OUTRAS FUNÇÕES"
     '
@@ -549,7 +550,6 @@ Public Class frmProduto
         '
     End Sub
     '
-    '
     '--- BLOQUEIA PRESS A TECLA (+)
     Private Sub me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
         '
@@ -567,13 +567,13 @@ Public Class frmProduto
                 "txtPVenda",
                 "txtMargem",
                 "txtMargemMin",
-                "txtDesconto",
-                "txtProdutoSubTipo",
-                "txtProdutoCategoria"
+                "txtDesconto"
             }
+            '
             If controlesBloqueados.Contains(ActiveControl.Name) Then
                 e.Handled = True
             End If
+            '
         End If
         '
     End Sub
@@ -699,7 +699,7 @@ Public Class frmProduto
         '
     End Sub
     '
-#End Region
+#End Region '// OUTRAS FUNÇÕES
     '
 #Region "CONTROLE PAINEL MARGEM"
     '
@@ -893,7 +893,7 @@ Public Class frmProduto
         CalcMargemDescontoLabel()
     End Sub
     '
-#End Region
+#End Region '// CONTROLE PAINEL MARGEM
     '
 #Region "BOTOES FUNCAO"
     '
@@ -1082,7 +1082,7 @@ Public Class frmProduto
         End If
     End Sub
     '
-#End Region
+#End Region '// BOTOES FUNCAO
     '
 #Region "EFEITO VISUAL"
     '
@@ -1132,7 +1132,7 @@ Public Class frmProduto
         '
     End Sub
     '
-#End Region
+#End Region '// EFEITO VISUAL
     '
 #Region "TOOLTIPS"
     '
@@ -1196,6 +1196,6 @@ Public Class frmProduto
         '
     End Sub
     '
-#End Region
-    '
+#End Region '// TOOLTIPS
+    ' 
 End Class

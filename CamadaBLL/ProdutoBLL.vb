@@ -40,13 +40,10 @@ Public Class ProdutoBLL
             prod.IDCategoria = IIf(IsDBNull(dr("IDCategoria")), Nothing, dr("IDCategoria"))
             prod.ProdutoCategoria = IIf(IsDBNull(dr("ProdutoCategoria")), String.Empty, dr("ProdutoCategoria"))
             prod.Autor = IIf(IsDBNull(dr("Autor")), String.Empty, dr("Autor"))
-            prod.EstoqueIdeal = IIf(IsDBNull(dr("EstoqueIdeal")), 0, dr("EstoqueIdeal"))
-            prod.EstoqueNivel = IIf(IsDBNull(dr("EstoqueNivel")), 0, dr("EstoqueNivel"))
             prod.Unidade = IIf(IsDBNull(dr("Unidade")), 1, dr("Unidade"))
             prod.PCompra = IIf(IsDBNull(dr("PCompra")), 0, dr("PCompra"))
             prod.DescontoCompra = IIf(IsDBNull(dr("DescontoCompra")), Nothing, dr("DescontoCompra"))
             prod.PVenda = IIf(IsDBNull(dr("PVenda")), 0, dr("PVenda"))
-            prod.Estoque = IIf(IsDBNull(dr("Estoque")), 0, dr("Estoque"))
             prod.ProdutoAtivo = IIf(IsDBNull(dr("ProdutoAtivo")), Nothing, dr("ProdutoAtivo"))
             prod.SitTributaria = IIf(IsDBNull(dr("SitTributaria")), Nothing, dr("SitTributaria"))
             prod.SituacaoTributaria = IIf(IsDBNull(dr("SituacaoTributaria")), String.Empty, dr("SituacaoTributaria"))
@@ -56,6 +53,61 @@ Public Class ProdutoBLL
             prod.CodBarrasA = IIf(IsDBNull(dr("CodBarrasA")), String.Empty, dr("CodBarrasA"))
             prod.Movimento = IIf(IsDBNull(dr("Movimento")), Nothing, dr("Movimento"))
             prod.MovimentoDescricao = IIf(IsDBNull(dr("MovimentoDescricao")), String.Empty, dr("MovimentoDescricao"))
+            '
+            lista.Add(prod)
+            '
+        End While
+        dr.Close()
+        Return lista
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------------------
+    ' GET (LIST OF) COM ESTOQUE + FILTRO WHERE PELA FILIAL
+    '---------------------------------------------------------------------------------------------------------
+    Public Function GetProdutosWithEstoque_Where(myFilial As Integer, Optional myWhere As String = "") As List(Of clProduto)
+        '
+        Dim objdb As New AcessoDados
+        Dim strSql As String = "SELECT * FROM qryProdutosEstoque WHERE IDFilial = " & myFilial
+        '
+        If Len(myWhere) > 0 Then
+            strSql = strSql & " AND " & myWhere
+        End If
+        '
+        Dim dr As SqlDataReader = objdb.ExecuteAndGetReader(strSql)
+        Dim lista As New List(Of clProduto)
+        '
+        While dr.Read
+            Dim prod As clProduto = New clProduto
+            '
+            prod.IDProduto = IIf(IsDBNull(dr("IDProduto")), 0, dr("IDProduto"))
+            prod.RGProduto = IIf(IsDBNull(dr("RGProduto")), Nothing, dr("RGProduto"))
+            prod.Produto = IIf(IsDBNull(dr("Produto")), String.Empty, dr("Produto"))
+            prod.IDFabricante = IIf(IsDBNull(dr("IDFabricante")), Nothing, dr("IDFabricante"))
+            prod.Fabricante = IIf(IsDBNull(dr("Fabricante")), String.Empty, dr("Fabricante"))
+            prod.IDProdutoTipo = IIf(IsDBNull(dr("IDProdutoTipo")), Nothing, dr("IDProdutoTipo"))
+            prod.ProdutoTipo = IIf(IsDBNull(dr("ProdutoTipo")), String.Empty, dr("ProdutoTipo"))
+            prod.IDProdutoSubTipo = IIf(IsDBNull(dr("IDProdutoSubTipo")), Nothing, dr("IDProdutoSubTipo"))
+            prod.ProdutoSubTipo = IIf(IsDBNull(dr("ProdutoSubTipo")), String.Empty, dr("ProdutoSubTipo"))
+            prod.IDCategoria = IIf(IsDBNull(dr("IDCategoria")), Nothing, dr("IDCategoria"))
+            prod.ProdutoCategoria = IIf(IsDBNull(dr("ProdutoCategoria")), String.Empty, dr("ProdutoCategoria"))
+            prod.Autor = IIf(IsDBNull(dr("Autor")), String.Empty, dr("Autor"))
+            prod.Unidade = IIf(IsDBNull(dr("Unidade")), 1, dr("Unidade"))
+            prod.PCompra = IIf(IsDBNull(dr("PCompra")), 0, dr("PCompra"))
+            prod.DescontoCompra = IIf(IsDBNull(dr("DescontoCompra")), Nothing, dr("DescontoCompra"))
+            prod.PVenda = IIf(IsDBNull(dr("PVenda")), 0, dr("PVenda"))
+            prod.ProdutoAtivo = IIf(IsDBNull(dr("ProdutoAtivo")), Nothing, dr("ProdutoAtivo"))
+            prod.SitTributaria = IIf(IsDBNull(dr("SitTributaria")), Nothing, dr("SitTributaria"))
+            prod.SituacaoTributaria = IIf(IsDBNull(dr("SituacaoTributaria")), String.Empty, dr("SituacaoTributaria"))
+            prod.NCM = IIf(IsDBNull(dr("NCM")), String.Empty, dr("NCM"))
+            prod.UltAltera = IIf(IsDBNull(dr("UltAltera")), Nothing, dr("UltAltera"))
+            prod.EntradaData = IIf(IsDBNull(dr("EntradaData")), Nothing, dr("EntradaData"))
+            prod.CodBarrasA = IIf(IsDBNull(dr("CodBarrasA")), String.Empty, dr("CodBarrasA"))
+            prod.Movimento = IIf(IsDBNull(dr("Movimento")), Nothing, dr("Movimento"))
+            prod.MovimentoDescricao = IIf(IsDBNull(dr("MovimentoDescricao")), String.Empty, dr("MovimentoDescricao"))
+            '
+            prod.Estoque = IIf(IsDBNull(dr("Estoque")), 0, dr("Estoque"))
+            prod.EstoqueNivel = IIf(IsDBNull(dr("EstoqueNivel")), 0, dr("EstoqueNivel"))
+            prod.EstoqueIdeal = IIf(IsDBNull(dr("EstoqueIdeal")), 0, dr("EstoqueIdeal"))
             '
             lista.Add(prod)
             '
@@ -130,13 +182,13 @@ Public Class ProdutoBLL
         Conn.Parameters.Add(New SqlParameter("@IDProduto", _prod.IDProduto))
         Conn.Parameters.Add(New SqlParameter("@RGProduto", _prod.RGProduto))
         Conn.Parameters.Add(New SqlParameter("@Produto", _prod.Produto))
+        Conn.Parameters.Add(New SqlParameter("@CodBarrasA", _prod.CodBarrasA))
         Conn.Parameters.Add(New SqlParameter("@IDFabricante", _prod.IDFabricante))
         Conn.Parameters.Add(New SqlParameter("@IDProdutoTipo", _prod.IDProdutoTipo))
         Conn.Parameters.Add(New SqlParameter("@IDProdutoSubTipo", _prod.IDProdutoSubTipo))
         Conn.Parameters.Add(New SqlParameter("@IDCategoria", _prod.IDCategoria))
         Conn.Parameters.Add(New SqlParameter("@Autor", _prod.Autor))
         Conn.Parameters.Add(New SqlParameter("@Unidade", _prod.Unidade))
-        Conn.Parameters.Add(New SqlParameter("@PCompra", _prod.PCompra))
         Conn.Parameters.Add(New SqlParameter("@PCompra", _prod.PCompra))
         Conn.Parameters.Add(New SqlParameter("@DescontoCompra", _prod.DescontoCompra))
         Conn.Parameters.Add(New SqlParameter("@PVenda", _prod.PVenda))
@@ -145,7 +197,6 @@ Public Class ProdutoBLL
         Conn.Parameters.Add(New SqlParameter("@NCM", _prod.NCM))
         Conn.Parameters.Add(New SqlParameter("@UltAltera", _prod.UltAltera))
         Conn.Parameters.Add(New SqlParameter("@EntradaData", _prod.EntradaData))
-        Conn.Parameters.Add(New SqlParameter("@CodBarrasA", _prod.CodBarrasA))
         Conn.Parameters.Add(New SqlParameter("@Movimento", _prod.Movimento))
         '
         ' PARAMETROS DA TBLESTOQUE
@@ -532,6 +583,164 @@ Public Class ProdutoBLL
                 End If
             Else '--- não encontrou a X_tblProdutos
                 Return Nothing
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------------------
+    ' ATIVA | DESATIVA O PRODUTO INFORMADO
+    '---------------------------------------------------------------------------------------------------------
+    Public Function ProdutoAtivarDesativar(IDProduto As Integer, Ativar As Boolean) As Object
+        '
+        Dim SQL As New SQLControl
+        Dim mySQL As String = ""
+        '
+        If Ativar = True Then
+            mySQL = "UPDATE tblProduto SET ProdutoAtivo = 'TRUE' WHERE IDProduto = " & IDProduto
+        Else
+            mySQL = "UPDATE tblProduto SET ProdutoAtivo = 'FALSE' WHERE IDProduto = " & IDProduto
+        End If
+        '
+        Try
+            SQL.ExecQuery(mySQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------------------
+    ' ALTERA O FABRICANTE DO PRODUTO INFORMADO
+    '---------------------------------------------------------------------------------------------------------
+    Public Function ProdutoAlterarFabricante(IDProduto As Integer, newIDFabricante As Integer) As Object
+        '
+        Dim SQL As New SQLControl
+        Dim mySQL As String = ""
+        '
+        mySQL = "UPDATE tblProduto SET IDFabricante = " & newIDFabricante & " WHERE IDProduto = " & IDProduto
+        '
+        Try
+            SQL.ExecQuery(mySQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------------------
+    ' ALTERA O TIPO | SUBTIPO | CATEGORIA DO PRODUTO INFORMADO
+    '---------------------------------------------------------------------------------------------------------
+    Public Function ProdutoAlterarTipoSubTipo(IDProduto As Integer,
+                                              newIDTipo As Integer,
+                                              newIDSubTipo As Integer,
+                                              LimparCategoria As Boolean) As Object
+        '
+        Dim SQL As New SQLControl
+        Dim mySQL As String = ""
+        '
+        mySQL = "UPDATE tblProduto SET IDProdutoTipo = " & newIDTipo & ", IDProdutoSubTipo = " & newIDSubTipo
+        '
+        If LimparCategoria = True Then
+            mySQL = mySQL & ", IDCategoria = NULL"
+        End If
+        '
+        mySQL = mySQL & " WHERE IDProduto = " & IDProduto
+
+        '
+        Try
+            SQL.ExecQuery(mySQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------------------
+    ' ALTERA A CATEGORIA DO PRODUTO INFORMADO
+    '---------------------------------------------------------------------------------------------------------
+    Public Function ProdutoAlterarCategoria(IDProduto As Integer, newIDCategoria As Integer) As Object
+        '
+        Dim SQL As New SQLControl
+        Dim mySQL As String = ""
+        '
+        mySQL = "UPDATE tblProduto SET IDCategoria = " & newIDCategoria & " WHERE IDProduto = " & IDProduto
+        '
+        Try
+            SQL.ExecQuery(mySQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------------------
+    ' ALTERA O ESTOQUE MINIMO E IDEAL DO PRODUTO E FILIAL INFORMADOS
+    '---------------------------------------------------------------------------------------------------------
+    Public Function ProdutoAlterarEstoqueMinimoIdeal(IDProduto As Integer,
+                                                     IDFilial As Integer,
+                                                     newEstMinimo As Integer?,
+                                                     newEstIdeal As Integer?) As Object
+        '
+        Dim SQL As New SQLControl
+        Dim mySQL As String = ""
+        '
+        If Not IsNothing(newEstIdeal) AndAlso Not IsNothing(newEstMinimo) Then
+            mySQL = "UPDATE tblEstoque SET" &
+                " EstoqueNivel = " & newEstMinimo &
+                ", EstoqueIdeal = " & newEstIdeal &
+                " WHERE IDProduto = " & IDProduto &
+                " AND IDFilial = " & IDFilial
+        ElseIf IsNothing(newEstIdeal) Then
+            mySQL = "UPDATE tblEstoque SET" &
+                " EstoqueNivel = " & newEstMinimo &
+                " WHERE IDProduto = " & IDProduto &
+                " AND IDFilial = " & IDFilial
+        ElseIf IsNothing(newEstMinimo) Then
+            mySQL = "UPDATE tblEstoque SET" &
+                " EstoqueIdeal = " & newEstIdeal &
+                " WHERE IDProduto = " & IDProduto &
+                " AND IDFilial = " & IDFilial
+        End If
+        '
+        Try
+            SQL.ExecQuery(mySQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
             End If
             '
         Catch ex As Exception

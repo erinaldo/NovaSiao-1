@@ -454,6 +454,13 @@ Public Class frmPrincipal
         f.Show()
     End Sub
     '
+    Private Sub miProdutoListagem_Click(sender As Object, e As EventArgs) Handles miProdutoListagem.Click
+        OcultaMenuPrincipal()
+        Dim f As New frmProdutoListagem
+        f.MdiParent = Me
+        f.Show()
+    End Sub
+    '
 #End Region
     '
     '========================================================================================================
@@ -762,7 +769,7 @@ Public Class frmPrincipal
         f.MdiParent = Me
         f.Show()
     End Sub
-
     '
 #End Region
+    '
 End Class

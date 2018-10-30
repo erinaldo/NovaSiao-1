@@ -522,6 +522,18 @@
     <Compile Include="Produtos\frmProduto.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Produtos\frmProdutoAlterarEstMinimoIdeal.Designer.vb">
+      <DependentUpon>frmProdutoAlterarEstMinimoIdeal.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Produtos\frmProdutoAlterarEstMinimoIdeal.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Produtos\frmProdutoAlterarTipoSubTipo.Designer.vb">
+      <DependentUpon>frmProdutoAlterarTipoSubTipo.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Produtos\frmProdutoAlterarTipoSubTipo.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Produtos\frmProdutoEtiquetaControle.Designer.vb">
       <DependentUpon>frmProdutoEtiquetaControle.vb</DependentUpon>
     </Compile>
@@ -844,6 +856,12 @@
     <EmbeddedResource Include="Produtos\frmProduto.resx">
       <DependentUpon>frmProduto.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Produtos\frmProdutoAlterarEstMinimoIdeal.resx">
+      <DependentUpon>frmProdutoAlterarEstMinimoIdeal.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Produtos\frmProdutoAlterarTipoSubTipo.resx">
+      <DependentUpon>frmProdutoAlterarTipoSubTipo.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Produtos\frmProdutoEtiquetaControle.resx">
       <DependentUpon>frmProdutoEtiquetaControle.vb</DependentUpon>
     </EmbeddedResource>
@@ -934,6 +952,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\limpar 24x24.png" />
     <None Include="packages.config" />
     <Content Include="ConfigFiles\Config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
