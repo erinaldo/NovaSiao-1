@@ -106,6 +106,7 @@
     <Compile Include="SQLControl.vb" />
     <Compile Include="TransacaoBLL.vb" />
     <Compile Include="TransportadoraBLL.vb" />
+    <Compile Include="TrocaBLL.vb" />
     <Compile Include="UsuarioBLL.vb" />
     <Compile Include="VendaBLL.vb" />
     <Compile Include="TransacaoItemBLL.vb" />

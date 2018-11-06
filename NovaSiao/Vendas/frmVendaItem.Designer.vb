@@ -51,9 +51,9 @@ Partial Class frmVendaItem
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(268, 0)
+        Me.lblTitulo.Location = New System.Drawing.Point(256, 0)
         Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblTitulo.Size = New System.Drawing.Size(270, 50)
+        Me.lblTitulo.Size = New System.Drawing.Size(282, 50)
         Me.lblTitulo.Text = "Saída de Produto - Item"
         '
         'lblProduto

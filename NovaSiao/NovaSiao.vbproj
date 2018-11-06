@@ -600,6 +600,18 @@
     <Compile Include="Reservas\frmReservaProcurar.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Trocas\frmTrocaProcurar.designer.vb">
+      <DependentUpon>frmTrocaProcurar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Trocas\frmTrocaProcurar.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Trocas\frmTrocaSimples.designer.vb">
+      <DependentUpon>frmTrocaSimples.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Trocas\frmTrocaSimples.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="ValidaXML.vb" />
     <Compile Include="Valida_CPF_CNPJ.vb" />
     <Compile Include="Vendas\frmAReceberItem.Designer.vb">
@@ -895,6 +907,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reservas\frmReservaProcurar.resx">
       <DependentUpon>frmReservaProcurar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Trocas\frmTrocaProcurar.resx">
+      <DependentUpon>frmTrocaProcurar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Trocas\frmTrocaSimples.resx">
+      <DependentUpon>frmTrocaSimples.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Vendas\frmAReceberItem.resx">
       <DependentUpon>frmAReceberItem.vb</DependentUpon>

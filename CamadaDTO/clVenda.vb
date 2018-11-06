@@ -501,4 +501,5 @@ Public Class clVenda : Implements IEditableObject
     End Property
     '
 #End Region
+    '
 End Class

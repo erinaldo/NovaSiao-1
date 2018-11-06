@@ -2,15 +2,17 @@
 Imports CamadaDTO
 Imports System.Drawing.Drawing2D
 '
-Public Class frmOperacaoSaidaProcurar
-    Private vndBLL As New VendaBLL
-    Private vndLista As List(Of clVenda)
-    Private ImgVndAtivo As Image = My.Resources.accept
-    Private ImgVndInativo As Image = My.Resources.block
-    Private ImgVndLock As Image = My.Resources.lock
+Public Class frmTrocaProcurar
+    '
+    Private tBLL As New TrocaBLL
+    Private trcLista As List(Of clTroca)
+    Private ImgAtivo As Image = My.Resources.accept
+    Private ImgInativo As Image = My.Resources.block
+    Private ImgBloq As Image = My.Resources.lock
     Private _myMes As Date
     '
     Private Property myMes() As DateTime
+        '
         Get
             Return _myMes
         End Get
@@ -24,59 +26,41 @@ Public Class frmOperacaoSaidaProcurar
             _myMes = value
             lblPeriodo.Text = Format(_myMes, "MMMM | yyyy")
         End Set
+        '
     End Property
     '
 #Region "EVENTO LOAD"
     '
-    Private Sub frmOperacaoSaidaProcurar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub frmTrocaProcurar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
-        PreencheComboOperacao()
         myMes = ObterDefault("DataPadrao")
         lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
-        GetVendaList()
+        GetTrocaList()
         PreencheListagem()
         '
-        AddHandler cmbOperacao.SelectedIndexChanged, AddressOf Handler_GetList
         AddHandler dtMes.DateChanged, AddressOf dtMes_DateChanged
         '
     End Sub
     '
-    Private Sub PreencheComboOperacao()
-        Dim db As New TransacaoBLL
-        Dim dtOp As New DataTable
-        '
-        Try
-            dtOp = db.Get_Operacao_DT(TransacaoBLL.MovimentoEstoque.SAIDA)
-        Catch ex As Exception
-            MessageBox.Show(ex.Message)
-        End Try
-        '
-        With cmbOperacao
-            .DataSource = dtOp
-            .ValueMember = "IdOperacao"
-            .DisplayMember = "Operacao"
-        End With
-    End Sub
-    '
-    Private Sub GetVendaList()
+    Private Sub GetTrocaList()
         '
         '--- consulta o banco de dados
         Try
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
-                vndLista = vndBLL.GetVendaLista_Procura(cmbOperacao.SelectedValue, txtProcura.Text)
+                trcLista = tBLL.GetTrocaLista_Procura()
             Else
                 Dim f As New FuncoesUtilitarias
                 Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
                 Dim dtFinal As Date = f.LastDayOfMonth(myMes)
                 '
-                vndLista = vndBLL.GetVendaLista_Procura(cmbOperacao.SelectedValue, dtInicial, dtFinal)
+                trcLista = tBLL.GetTrocaLista_Procura(dtInicial, dtFinal)
             End If
             '
-            dgvListagem.DataSource = vndLista
+            dgvListagem.DataSource = trcLista
             '
         Catch ex As Exception
-            MessageBox.Show("Em erro ao obter a lista de Operações de Saída..." & vbNewLine &
+            MessageBox.Show("Em erro ao obter a lista de Trocas..." & vbNewLine &
             ex.Message, "Falha no Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         '
@@ -85,6 +69,7 @@ Public Class frmOperacaoSaidaProcurar
 #End Region
     '
 #Region "LISTAGEM CONFIGURAÇÃO"
+    '
     Private Sub PreencheListagem()
         '
         '--- limpa as colunas do datagrid
@@ -103,20 +88,16 @@ Public Class frmOperacaoSaidaProcurar
         dgvListagem.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         dgvListagem.StandardTab = True
         '
-        If cmbOperacao.SelectedValue = 1 Then
-            PreencheListagem_Venda()
-        Else
-            MsgBox("Ainda não implementado")
-        End If
+        PreencheListagem_Venda()
         '
     End Sub
     '
     Private Sub PreencheListagem_Venda()
         '
         ' (1) COLUNA REG
-        dgvListagem.Columns.Add("IDVenda", "Reg.")
-        With dgvListagem.Columns("IDVenda")
-            .DataPropertyName = "IDVenda"
+        dgvListagem.Columns.Add("IDTroca", "Reg.")
+        With dgvListagem.Columns("IDTroca")
+            .DataPropertyName = "IDTroca"
             .Width = 50
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -127,9 +108,9 @@ Public Class frmOperacaoSaidaProcurar
         End With
         '
         ' (2) COLUNA DATAVENDA
-        dgvListagem.Columns.Add("VendaData", "Data")
-        With dgvListagem.Columns("VendaData")
-            .DataPropertyName = "TransacaoData"
+        dgvListagem.Columns.Add("TrocaData", "Data")
+        With dgvListagem.Columns("TrocaData")
+            .DataPropertyName = "TrocaData"
             .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -142,7 +123,7 @@ Public Class frmOperacaoSaidaProcurar
         ' (3) COLUNA NOME
         dgvListagem.Columns.Add("CadastroNome", "Nome / Razão Social")
         With dgvListagem.Columns("CadastroNome")
-            .DataPropertyName = "Cadastro"
+            .DataPropertyName = "PessoaTroca"
             .Width = 300
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -154,7 +135,7 @@ Public Class frmOperacaoSaidaProcurar
         ' (4) COLUNA VENDEDOR
         dgvListagem.Columns.Add("Apelido", "Vendedor")
         With dgvListagem.Columns("Apelido")
-            .DataPropertyName = "ApelidoFuncionario"
+            .DataPropertyName = "ApelidoVenda"
             .Width = 150
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -164,9 +145,9 @@ Public Class frmOperacaoSaidaProcurar
         End With
         '
         ' (5) COLUNA VALOR
-        dgvListagem.Columns.Add("TotalVenda", "Valor")
-        With dgvListagem.Columns("TotalVenda")
-            .DataPropertyName = "TotalVenda"
+        dgvListagem.Columns.Add("TotalTroca", "Valor")
+        With dgvListagem.Columns("TotalTroca")
+            .DataPropertyName = "TotalTroca"
             .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -213,20 +194,20 @@ Public Class frmOperacaoSaidaProcurar
     '
     Private Sub Handler_GetList(sender As Object, e As EventArgs)
         '
-        GetVendaList()
+        GetTrocaList()
         '
     End Sub
     '
     '--- FILTAR LISTAGEM PELO IDTIPO E _IDFilial, TXTPRODUTO, TXTNOME
     Private Sub FiltrarListagem()
         '
-        dgvListagem.DataSource = vndLista.FindAll(AddressOf FindProduto)
+        dgvListagem.DataSource = trcLista.FindAll(AddressOf FindTroca)
         '
     End Sub
     '
-    Private Function FindProduto(ByVal v As clVenda) As Boolean
+    Private Function FindTroca(ByVal t As clTroca) As Boolean
         '
-        If (v.Cadastro.ToLower Like "*" & txtProcura.Text.ToLower & "*") Then
+        If (t.PessoaTroca.ToLower Like "*" & txtProcura.Text.ToLower & "*") Then
             Return True
         Else
             Return False
@@ -254,24 +235,24 @@ Public Class frmOperacaoSaidaProcurar
             End Select
         End If
         '
-        If e.ColumnIndex = 2 Then '--- coluna Razão Social
+        If e.ColumnIndex = 2 Then
             If IsDBNull(e.Value) Then
-                e.Value = "VENDA À VISTA"
+                e.Value = "TROCA À VISTA"
                 'dgvListagem.Rows(e.RowIndex).Cells(2).Style.BackColor = Color.LightBlue
             End If
         End If
         '
         '--- altera a imagem da coluna 5
         If e.ColumnIndex = 6 Then '--- coluna Imagem Situação
-            Dim sit As Integer = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clVenda).IDSituacao
+            Dim sit As Integer = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clTroca).IDSituacao
             '
             Select Case sit
                 Case 1
-                    dgvListagem.Rows(e.RowIndex).Cells(6).Value = ImgVndInativo
+                    dgvListagem.Rows(e.RowIndex).Cells(6).Value = ImgInativo
                 Case 2
-                    dgvListagem.Rows(e.RowIndex).Cells(6).Value = ImgVndAtivo
+                    dgvListagem.Rows(e.RowIndex).Cells(6).Value = ImgAtivo
                 Case 3
-                    dgvListagem.Rows(e.RowIndex).Cells(6).Value = ImgVndLock
+                    dgvListagem.Rows(e.RowIndex).Cells(6).Value = ImgBloq
             End Select
         End If
         '
@@ -282,43 +263,24 @@ Public Class frmOperacaoSaidaProcurar
 #Region "ACAO DOS BOTOES"
     '
     Private Sub btnEscolher_Click(sender As Object, e As EventArgs) Handles btnEscolher.Click
+        '
         If dgvListagem.Rows.Count = 0 OrElse dgvListagem.SelectedRows.Count = 0 Then
-            MessageBox.Show("Selecione um Operação de Saída antes de pressionar ESCOLHER...",
+            MessageBox.Show("Selecione um Operação de TROCA antes de pressionar ESCOLHER...",
                             "Escolher Registro", MessageBoxButtons.OK, MessageBoxIcon.Information)
             dgvListagem.Focus()
             Exit Sub
         End If
         '
+        '--- ABRE A TROCA E FECHA O FORM
+        Dim tBLL As New TrocaBLL
+        Dim trc As clTroca = dgvListagem.SelectedRows(0).DataBoundItem
         '
-        Select Case cmbOperacao.SelectedValue
-            Case 1 ' VENDAS
-                Dim vndBLL As New VendaBLL
-                Dim _vnd As New clVenda
-                '
-                _vnd = vndBLL.GetVenda_PorID_OBJ(dgvListagem.SelectedRows(0).Cells(0).Value)
-                '_vnd = dgvListagem.SelectedRows(0).DataBoundItem
-                '
-                If _vnd.CobrancaTipo = 1 Then ' VENDA À VISTA
-                    Dim frm As New frmVendaVista(_vnd)
-                    frm.MdiParent = frmPrincipal
-                    frm.StartPosition = FormStartPosition.CenterScreen
-                    Close()
-                    frm.Show()
-                ElseIf _vnd.CobrancaTipo = 2 Then ' VENDA PARCELADA
-                    Dim frm As New frmVendaPrazo(_vnd)
-                    frm.MdiParent = frmPrincipal
-                    frm.StartPosition = FormStartPosition.CenterScreen
-                    Close()
-                    frm.Show()
-                End If
-            Case 2 'SIMPLES SAÍDA
-
-            Case 3 ' DEVOLUÇÃO DE COMPRA
-
-            Case 4 'DEVOLUÇÃO DE CONSIGNAÇÃO
-
-
-        End Select
+        Dim frm As New frmTrocaSimples(trc)
+        frm.MdiParent = frmPrincipal
+        frm.StartPosition = FormStartPosition.CenterScreen
+        Close()
+        frm.Show()
+        '
     End Sub
     '
     Private Sub dgvListagem_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvListagem.CellDoubleClick
@@ -380,7 +342,7 @@ Public Class frmOperacaoSaidaProcurar
         If CDate(e.Start.ToShortDateString) <= CDate(Today.ToShortDateString) Then
             myMes = e.Start
             lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
-            GetVendaList()
+            GetTrocaList()
         Else
             MessageBox.Show("Escolha um mês anterior ou igual ao mês atual...",
                 "Período", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -404,7 +366,7 @@ Public Class frmOperacaoSaidaProcurar
             lblPeriodo.Visible = False
         End If
         '
-        GetVendaList()
+        GetTrocaList()
         '
     End Sub
     '

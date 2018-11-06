@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class frmOperacaoSaidaProcurar
+Partial Class frmTrocaProcurar
     Inherits NovaSiao.frmModNBorder
 
     'Form overrides dispose to clean up the component list.
@@ -21,9 +21,7 @@ Partial Class frmOperacaoSaidaProcurar
     Private Sub InitializeComponent()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Me.cmbOperacao = New Controles.ComboBox_OnlyValues()
         Me.txtProcura = New System.Windows.Forms.TextBox()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.btnMesAtual = New VIBlend.WinForms.Controls.vButton()
@@ -70,39 +68,19 @@ Partial Class frmOperacaoSaidaProcurar
         Me.lblTitulo.Location = New System.Drawing.Point(515, 7)
         Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblTitulo.Size = New System.Drawing.Size(390, 34)
-        Me.lblTitulo.Text = "Operações de Saída - Procurar e Abrir"
-        '
-        'cmbOperacao
-        '
-        Me.cmbOperacao.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbOperacao.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbOperacao.FormattingEnabled = True
-        Me.cmbOperacao.Location = New System.Drawing.Point(141, 66)
-        Me.cmbOperacao.Name = "cmbOperacao"
-        Me.cmbOperacao.RestrictContentToListItems = True
-        Me.cmbOperacao.Size = New System.Drawing.Size(264, 27)
-        Me.cmbOperacao.TabIndex = 1
+        Me.lblTitulo.Text = "Operações de Troca - Procurar e Abrir"
         '
         'txtProcura
         '
-        Me.txtProcura.Location = New System.Drawing.Point(141, 105)
+        Me.txtProcura.Location = New System.Drawing.Point(148, 66)
         Me.txtProcura.Name = "txtProcura"
         Me.txtProcura.Size = New System.Drawing.Size(347, 27)
         Me.txtProcura.TabIndex = 3
         '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(12, 71)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(124, 19)
-        Me.Label1.TabIndex = 0
-        Me.Label1.Text = "Tipo de Operação"
-        '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(11, 108)
+        Me.Label2.Location = New System.Drawing.Point(18, 69)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(125, 19)
         Me.Label2.TabIndex = 2
@@ -384,7 +362,7 @@ Partial Class frmOperacaoSaidaProcurar
         Me.btnClose.UseVisualStyleBackColor = False
         Me.btnClose.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICE2003SILVER
         '
-        'frmOperacaoSaidaProcurar
+        'frmTrocaProcurar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(944, 601)
@@ -395,14 +373,10 @@ Partial Class frmOperacaoSaidaProcurar
         Me.Controls.Add(Me.dgvListagem)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtProcura)
-        Me.Controls.Add(Me.cmbOperacao)
-        Me.Name = "frmOperacaoSaidaProcurar"
+        Me.Name = "frmTrocaProcurar"
         Me.Text = "Procurar Saída de Produto"
-        Me.Controls.SetChildIndex(Me.cmbOperacao, 0)
         Me.Controls.SetChildIndex(Me.txtProcura, 0)
-        Me.Controls.SetChildIndex(Me.Label1, 0)
         Me.Controls.SetChildIndex(Me.Label2, 0)
         Me.Controls.SetChildIndex(Me.Panel2, 0)
         Me.Controls.SetChildIndex(Me.dgvListagem, 0)
@@ -422,10 +396,7 @@ Partial Class frmOperacaoSaidaProcurar
         Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents cmbOperacao As Controles.ComboBox_OnlyValues
     Friend WithEvents txtProcura As TextBox
-    Friend WithEvents Label1 As Label
     Friend WithEvents Label2 As Label
     Friend WithEvents Panel2 As Panel
     Friend WithEvents chkPeriodoTodos As CheckBox

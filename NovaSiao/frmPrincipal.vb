@@ -495,11 +495,36 @@ Public Class frmPrincipal
         '
     End Sub
     '
+    Private Sub miNovaTrocaSimples_Click(sender As Object, e As EventArgs) Handles miNovaTrocaSimples.Click
+        Dim v As New AcaoGlobal
+        Dim obj As Object = v.TrocaSimples_Nova
+        '
+        If IsNothing(obj) Then Exit Sub
+        '
+        OcultaMenuPrincipal()
+        Dim f As New frmTrocaSimples(obj)
+        f.MdiParent = Me
+        f.StartPosition = FormStartPosition.CenterScreen
+        f.Show()
+        '
+    End Sub
+    '
     Private Sub miProcurarOperacaoSaida_Click(sender As Object, e As EventArgs) Handles miProcurarOperacaoSaida.Click
+        '
         Dim frmP As New frmOperacaoSaidaProcurar
         OcultaMenuPrincipal()
         frmP.MdiParent = Me
         frmP.Show()
+        '
+    End Sub
+    '
+    Private Sub miProcurarTroca_Click(sender As Object, e As EventArgs) Handles miProcurarTroca.Click
+        '
+        Dim frmP As New frmTrocaProcurar
+        OcultaMenuPrincipal()
+        frmP.MdiParent = Me
+        frmP.Show()
+        '
     End Sub
     '
 #End Region

@@ -49,8 +49,10 @@ Partial Class frmPrincipal
         Me.tsbVendas = New System.Windows.Forms.ToolStripSplitButton()
         Me.miNovaVendaVista = New System.Windows.Forms.ToolStripMenuItem()
         Me.miNovaVendaPrazo = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.miProcurarOperacaoSaida = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.miNovaTrocaSimples = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miProcurarTroca = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsbCompras = New System.Windows.Forms.ToolStripSplitButton()
         Me.miNovaCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
@@ -311,7 +313,7 @@ Partial Class frmPrincipal
         'tsbVendas
         '
         Me.tsbVendas.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbVendas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaVendaVista, Me.miNovaVendaPrazo, Me.ToolStripSeparator5, Me.miProcurarOperacaoSaida})
+        Me.tsbVendas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaVendaVista, Me.miNovaVendaPrazo, Me.miProcurarOperacaoSaida, Me.ToolStripSeparator5, Me.miNovaTrocaSimples, Me.miProcurarTroca})
         Me.tsbVendas.Image = CType(resources.GetObject("tsbVendas.Image"), System.Drawing.Image)
         Me.tsbVendas.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbVendas.Name = "tsbVendas"
@@ -323,7 +325,7 @@ Partial Class frmPrincipal
         Me.miNovaVendaVista.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
         Me.miNovaVendaVista.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miNovaVendaVista.Name = "miNovaVendaVista"
-        Me.miNovaVendaVista.Size = New System.Drawing.Size(234, 30)
+        Me.miNovaVendaVista.Size = New System.Drawing.Size(239, 30)
         Me.miNovaVendaVista.Text = "Nova Venda à Vista"
         '
         'miNovaVendaPrazo
@@ -331,21 +333,37 @@ Partial Class frmPrincipal
         Me.miNovaVendaPrazo.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
         Me.miNovaVendaPrazo.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miNovaVendaPrazo.Name = "miNovaVendaPrazo"
-        Me.miNovaVendaPrazo.Size = New System.Drawing.Size(234, 30)
+        Me.miNovaVendaPrazo.Size = New System.Drawing.Size(239, 30)
         Me.miNovaVendaPrazo.Text = "Nova Venda à Prazo"
-        '
-        'ToolStripSeparator5
-        '
-        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(231, 6)
         '
         'miProcurarOperacaoSaida
         '
         Me.miProcurarOperacaoSaida.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
         Me.miProcurarOperacaoSaida.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miProcurarOperacaoSaida.Name = "miProcurarOperacaoSaida"
-        Me.miProcurarOperacaoSaida.Size = New System.Drawing.Size(234, 30)
+        Me.miProcurarOperacaoSaida.Size = New System.Drawing.Size(239, 30)
         Me.miProcurarOperacaoSaida.Text = "Procurar Venda | Saída"
+        '
+        'ToolStripSeparator5
+        '
+        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(236, 6)
+        '
+        'miNovaTrocaSimples
+        '
+        Me.miNovaTrocaSimples.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
+        Me.miNovaTrocaSimples.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miNovaTrocaSimples.Name = "miNovaTrocaSimples"
+        Me.miNovaTrocaSimples.Size = New System.Drawing.Size(239, 30)
+        Me.miNovaTrocaSimples.Text = "Nova Troca de Produtos"
+        '
+        'miProcurarTroca
+        '
+        Me.miProcurarTroca.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
+        Me.miProcurarTroca.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miProcurarTroca.Name = "miProcurarTroca"
+        Me.miProcurarTroca.Size = New System.Drawing.Size(239, 30)
+        Me.miProcurarTroca.Text = "Procurar Troca"
         '
         'tsbCompras
         '
@@ -941,4 +959,6 @@ Partial Class frmPrincipal
     Friend WithEvents miProcurarReserva As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator17 As ToolStripSeparator
     Friend WithEvents miControleDePedidos As ToolStripMenuItem
+    Friend WithEvents miNovaTrocaSimples As ToolStripMenuItem
+    Friend WithEvents miProcurarTroca As ToolStripMenuItem
 End Class

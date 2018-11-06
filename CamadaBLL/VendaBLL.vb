@@ -193,47 +193,43 @@ Public Class VendaBLL
         objDB.LimparParametros()
         '
         '-- PARAMETROS DA TBLTRANSACAO
-        '@IDPessoaDestino AS INT, 
+        '@IDPessoaDestino AS INT, x
         objDB.AdicionarParametros("@IDPessoaDestino", _vnd.IDPessoaDestino)
-        '@IDPessoaOrigem AS INT, 
+        '@IDPessoaOrigem AS INT, x
         objDB.AdicionarParametros("@IDPessoaOrigem", _vnd.IDPessoaOrigem)
-        '@IDOperacao AS BYTE, 
+        '@IDOperacao AS BYTE,  x
         objDB.AdicionarParametros("@IDOperacao", _vnd.IDOperacao)
-        '@IDSituacao AS TINYINT = 0, --0|INSERIDA ; 1|VERIFICADA ; 2|FECHADA 
+        '@IDSituacao AS TINYINT = 0, --0|INSERIDA ; 1|VERIFICADA ; 2|FECHADA  x
         objDB.AdicionarParametros("@IDSituacao", _vnd.IDSituacao)
-        '@IDUser AS INT,
+        '@IDUser AS INT, x
         objDB.AdicionarParametros("@IDUser", _vnd.IDUser)
-        '@CFOP AS INT(16), 
+        '@CFOP AS INT(16), x
         objDB.AdicionarParametros("@CFOP", _vnd.CFOP)
-        '@VendaData AS SMALLDATETIME, 
+        '@VendaData AS SMALLDATETIME, x
         objDB.AdicionarParametros("@TransacaoData", _vnd.TransacaoData)
         '
         '-- PARAMETROS DA TBLVENDA
-        '@IDDepartamento AS SMALLINT = 1,
+        '@IDDepartamento AS SMALLINT = 1, x
         objDB.AdicionarParametros("@IDDepartamento", _vnd.IDDepartamento)
-        '@IDVendedor AS INT,
+        '@IDVendedor AS INT, x
         objDB.AdicionarParametros("@IDVendedor", _vnd.IDVendedor)
-        '@CobrancaTipo AS TINYINT, 
+        '@CobrancaTipo AS TINYINT,  x
         objDB.AdicionarParametros("@CobrancaTipo", _vnd.CobrancaTipo)
-        '@IDCobrancaForma AS SMALLINT, 
-        objDB.AdicionarParametros("@IDCobrancaForma", _vnd.IDCobrancaForma)
-        '@IDPlano SMALLINT = NULL, 
+        '@IDPlano SMALLINT = NULL, x
         objDB.AdicionarParametros("@IDPlano", _vnd.IDPlano)
-        '@TotalVenda AS MONEY = 0, 
-        objDB.AdicionarParametros("@TotalVenda", _vnd.TotalVenda)
-        '@JurosMes AS DECIMAL(6,2), 
+        '@JurosMes AS DECIMAL(6,2), x
         objDB.AdicionarParametros("@JurosMes", _vnd.JurosMes)
-        '@Observacao AS VARCHAR(max) = null, 
+        '@Observacao AS VARCHAR(max) = null, x
         objDB.AdicionarParametros("@Observacao", _vnd.Observacao)
-        '@VendaTipo AS TINYINT = 0, --0|VAREJO ; 1|ATACADO
+        '@VendaTipo AS TINYINT = 0, --0|VAREJO ; 1|ATACADO x
         objDB.AdicionarParametros("@VendaTipo", _vnd.VendaTipo)
-        '@ValorProdutos AS MONEY
+        '@ValorProdutos AS MONEY x
         objDB.AdicionarParametros("@ValorProdutos", _vnd.ValorProdutos)
-        '@ValorFrete AS MONEY -- Valor do Frete a ser cobrado na Venda
+        '@ValorFrete AS MONEY -- Valor do Frete a ser cobrado na Venda x
         objDB.AdicionarParametros("@ValorFrete", _vnd.ValorFrete)
-        '@ValorImpostos AS MONEY -- Valor dos Impostos a ser cobrados
+        '@ValorImpostos AS MONEY -- Valor dos Impostos a ser cobrados x
         objDB.AdicionarParametros("@ValorImpostos", _vnd.ValorImpostos)
-        '@ValorAcrescimos AS MONEY -- Valor dos outros acrescimos
+        '@ValorAcrescimos AS MONEY -- Valor dos outros acrescimos x
         objDB.AdicionarParametros("@ValorAcrescimos", _vnd.ValorAcrescimos)
         '
         '-- PARAMETROS DA TBLVENDAFRETE
@@ -347,27 +343,50 @@ Public Class VendaBLL
     End Function
     '
     '--------------------------------------------------------------------------------------------
-    ' GET LISTA VENDAS PARA FRMPROCURA
+    ' GET LISTA VENDAS PARA FRMPROCURA RETORNA LIST OF CLVENDA
     '--------------------------------------------------------------------------------------------
-    Public Function GetVendaLista_Procura(myIDOperacao As Byte, myProcura As String,
+    Public Function GetVendaLista_Procura(myIDOperacao As Byte,
                                           Optional dtInicial As Date? = Nothing,
-                                          Optional dtFinal As Date? = Nothing) As DataTable
-        Dim db As New AcessoDados
+                                          Optional dtFinal As Date? = Nothing) As List(Of clVenda)
         '
-        db.LimparParametros()
+        Dim sql As New SQLControl
         '
-        db.AdicionarParametros("@IDOperacao", myIDOperacao)
-        db.AdicionarParametros("@PessoaDestinoNome", myProcura)
+        sql.AddParam("@IDOperacao", myIDOperacao)
+        '
+        Dim myQuery As String = "SELECT * FROM qryVenda WHERE IDOperacao = @IDOperacao"
+        '
         If Not IsNothing(dtInicial) Then
-            db.AdicionarParametros("@DataInicial", dtInicial)
+            sql.AddParam("@DataInicial", dtInicial)
+            myQuery = myQuery & " AND TransacaoData >= @DataInicial"
         End If
         '
         If Not IsNothing(dtFinal) Then
-            db.AdicionarParametros("@DataFinal", dtFinal)
+            sql.AddParam("@DataFinal", dtFinal)
+            myQuery = myQuery & " AND TransacaoData <= @DataFinal"
         End If
         '
         Try
-            Return db.ExecutarConsulta(CommandType.StoredProcedure, "uspVenda_ProcurarLista")
+            Dim vndList As New List(Of clVenda)
+            '
+            sql.ExecQuery(myQuery)
+            '
+            If sql.HasException Then
+                Throw New Exception(sql.Exception)
+            End If
+            '
+            If sql.DBDT.Rows.Count = 0 Then Return vndList
+            '
+            For Each r As DataRow In sql.DBDT.Rows
+                Dim vnd As New clVenda
+                '
+                vnd = ConvertDtRow_clVenda(r)
+                '
+                vndList.Add(vnd)
+                '
+            Next
+            '
+            Return vndList
+            '
         Catch ex As Exception
             Throw ex
         End Try

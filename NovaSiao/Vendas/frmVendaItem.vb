@@ -19,15 +19,29 @@ Public Class frmVendaItem
         InitializeComponent()
         ' 
         ' Add any initialization after the InitializeComponent() call.
-        _movimento = Movimento '--- DEFINE SE É ENTRADA OU SAÍDA PARA OBTER O PREÇO CORRETO
+        '
+        '--- Define se é entrada ou saida no caso de TROCA de produtos
+        _movimento = Movimento '--- DEFINE SE É ENTRADA OU SAÍDA
+        '
+        If Movimento = TransacaoItemBLL.EnumMovimento.SAIDA Then
+            lblTitulo.Text = "Saída de Produto - Item"
+            BackColor = Color.Beige
+            Panel1.BackColor = Color.Brown
+        ElseIf Movimento = TransacaoItemBLL.EnumMovimento.ENTRADA Then
+            lblTitulo.Text = "Entrada de Produto - Item"
+            BackColor = Color.Azure
+            Panel1.BackColor = Color.SlateGray
+        End If
+        '
         _formOrigem = fOrigem '--- DEFINE O FORMULARIO DE ORIGEM PARA RETORNAR
         _filial = Filial
-        propItem = Item '--- DEFINE E PREECHE A CLASSE
         '
         If IsNothing(Item) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
+            propItem = New clTransacaoItem '--- DEFINE E PREECHE A CLASSE
             propItem.IDFilial = Filial
             propAcao = FlagAcao.INSERIR
         Else
+            propItem = Item '--- DEFINE E PREECHE A CLASSE
             propItem.IDFilial = Filial
             propAcao = FlagAcao.EDITAR
         End If
@@ -165,18 +179,22 @@ Public Class frmVendaItem
                 .RGProduto = ItemProduto.RGProduto
                 '
                 '--- define o preco de VENDA OU DE COMPRA
-                If _movimento = TransacaoItemBLL.EnumMovimento.SAIDA Then
-                    .Preco = ItemProduto.PVenda
-                ElseIf _movimento = TransacaoItemBLL.EnumMovimento.ENTRADA Then
-                    .Substituicao = 0
-                    .IPI = 0
-                    .ICMS = 0
-                    .MVA = 0
-                    .Preco = ItemProduto.PCompra
-                End If
+                .Preco = ItemProduto.PVenda
+                '
+                'If _movimento = TransacaoItemBLL.EnumMovimento.SAIDA Then
+                '    .Preco = ItemProduto.PVenda
+                'ElseIf _movimento = TransacaoItemBLL.EnumMovimento.ENTRADA Then
+                '    .Substituicao = 0
+                '    .IPI = 0
+                '    .ICMS = 0
+                '    .MVA = 0
+                '    .Preco = ItemProduto.PCompra
+                'End If
                 '
             End With
+            '
             BindItem.ResetBindings(True)
+            '
         Catch ex As Exception
             MessageBox.Show("Um erro inesperado ocorreu..." & vbNewLine &
                             ex.Message, "Obter Produto",

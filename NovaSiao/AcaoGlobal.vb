@@ -213,4 +213,87 @@ Public Class AcaoGlobal
         '
     End Function
     '
+    '================================================================================
+    ' EFETUA NOVA TROCA SIMPLES
+    '================================================================================
+    Public Function TrocaSimples_Nova() As clTroca
+        '
+        '--- Questiona o VENDEDOR
+        Dim fFunc As New frmFuncionarioProcurar(True)
+        fFunc.ShowDialog()
+        If fFunc.DialogResult = DialogResult.Cancel Then Return Nothing
+        '
+        Dim IDFunc As Integer = fFunc.IDEscolhido
+        Dim IDCli As Integer
+        '
+        '--- Questiona CLIENTE DEFINIDO
+        Dim respCliente As DialogResult
+        respCliente = MessageBox.Show("Você deseja uma troca no nome de um Cliente Cadastrado?",
+                      "Inserir Nova Troca", MessageBoxButtons.YesNoCancel,
+                      MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        '
+        If respCliente = DialogResult.Cancel Then
+            Return Nothing
+        ElseIf respCliente = DialogResult.yes Then
+            '
+            '--- Questiona o CLIENTE
+            Dim fCli As New frmClienteProcurar()
+            fCli.ShowDialog()
+            If fCli.DialogResult = DialogResult.Cancel Then Return Nothing
+            '
+            IDCli = fCli.propClienteID
+            '
+        Else
+            '
+            IDCli = 0 '=> Cliente Varejo
+            '
+        End If
+        '
+        '--- Pergunta ao Usuário se Deseja inserir nova TROCA
+        If MessageBox.Show("Você deseja realmente inserir uma nova Troca Simples?",
+                           "Inserir Nova Troca", MessageBoxButtons.OKCancel,
+                           MessageBoxIcon.Question) = DialogResult.Cancel Then
+            Return Nothing
+        End If
+        '
+        '--- Insere um novo Registro de Venda à Prazo
+        '---------------------------------------------------------------------------------------
+        Dim tBLL As New TrocaBLL
+        Dim newTroca As New clTroca
+        Dim tranBLL As New TransacaoBLL
+        '
+        Try
+            '--- Define os valores iniciais
+            With newTroca
+                .IDPessoaTroca = IDCli
+                .IDFilial = Obter_FilialPadrao()
+                .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA
+                .TrocaData = ObterDefault("DataPadrao")
+                .IDVendedor = IDFunc
+                .CobrancaTipo = 2 '--- venda à prazo
+                .ValorEntrada = 0
+                .ValorSaida = 0
+                .ValorAcrescimos = 0
+                .JurosMes = 0
+                '.TotalTroca = 0
+            End With
+            '
+            newTroca = tBLL.InsereNovaTroca_Procedure(newTroca, UsuarioAcesso(0))
+            '
+            If IsNothing(newTroca) Then
+                MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Nova Troca",
+                                "Inserir Nova Troca", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return Nothing
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Nova Troca" & vbNewLine &
+                            vbNewLine & ex.Message,
+                            "Inserir Nova Troca", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Return Nothing
+        End Try
+        '
+        Return newTroca
+        '
+    End Function
+    '
 End Class

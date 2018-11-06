@@ -337,13 +337,14 @@ Public Class frmVendaVista
         If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
         '
         '--- Abre o frmItem
-        Dim newItem As New clTransacaoItem
         '
-        Dim fItem As New frmVendaItem(Me, TransacaoItemBLL.EnumMovimento.SAIDA, _Filial, newItem)
+        Dim fItem As New frmVendaItem(Me, TransacaoItemBLL.EnumMovimento.SAIDA, _Filial, Nothing)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
         If Not fItem.DialogResult = DialogResult.OK Then Exit Sub
+        '
+        Dim newItem As clTransacaoItem = fItem.propItem
         '
         '--- Insere o novo Item
         Dim ItemBLL As New TransacaoItemBLL
