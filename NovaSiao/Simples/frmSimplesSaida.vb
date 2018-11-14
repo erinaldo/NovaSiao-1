@@ -1052,6 +1052,7 @@ Public Class frmSimplesSaida
         '
         '--- Verifica se a SITUACAO do registro permite salvar
         If Not (Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro) Then
+            CriarXML.RecebeObjProperty_InsereXML(_Simples)
             Close()
             MostraMenuPrincipal()
             Return

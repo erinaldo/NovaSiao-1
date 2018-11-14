@@ -606,6 +606,7 @@
     <Compile Include="Reservas\frmReservaProcurar.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Simples\CriarXML.vb" />
     <Compile Include="Simples\frmSimplesSaida.Designer.vb">
       <DependentUpon>frmSimplesSaida.vb</DependentUpon>
     </Compile>
