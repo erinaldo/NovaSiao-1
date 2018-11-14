@@ -84,6 +84,7 @@
     <Compile Include="clProduto.vb" />
     <Compile Include="clReserva.vb" />
     <Compile Include="clSaidas.vb" />
+    <Compile Include="clTransacao.vb" />
     <Compile Include="clTransportadora.vb" />
     <Compile Include="clTroca.vb" />
     <Compile Include="clUsuario.vb" />

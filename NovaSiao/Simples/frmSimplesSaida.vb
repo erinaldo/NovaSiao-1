@@ -1,13 +1,12 @@
 ﻿Imports CamadaBLL
 Imports CamadaDTO
 '
-Public Class frmVendaPrazo
-    Private _Venda As clVenda
-    Private _Troca As clTroca
-    Private vndBLL As New VendaBLL
+Public Class frmSimplesSaida
+    Private _Simples As clSimplesSaida
+    Private simplesBLL As New SimplesMovimentacaoBLL
     Private _ItensList As New List(Of clTransacaoItem)
     Private _ParcelaList As New List(Of clAReceberParcela)
-    Private bindVenda As New BindingSource
+    Private bindSimples As New BindingSource
     Private bindItem As New BindingSource
     Private bindParc As New BindingSource
     Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
@@ -15,7 +14,7 @@ Public Class frmVendaPrazo
     Private VerificaAlteracao As Boolean
     Private Taxa As Double?
     '
-#Region "LOAD"
+#Region "LOAD | PROPERTYS"
     '
     Private Property Sit As FlagEstado
         Get
@@ -28,116 +27,78 @@ Public Class frmVendaPrazo
                     lblSituacao.Text = "Finalizada"
                     btnFinalizar.Text = "&Fechar"
                     '
-                    btnTroca.Enabled = True
-                    btnVendedorAlterar.Enabled = True
                     btnData.Enabled = True
-                    txtFreteValor.ReadOnly = False
                     txtObservacao.ReadOnly = False
-                    txtVolumes.ReadOnly = False
-                    '
-                    txtValorFrete.ReadOnly = False
-                    txtValorImpostos.ReadOnly = False
-                    txtValorAcrescimos.ReadOnly = False
                     '
                 Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     lblSituacao.Text = "Alterada"
                     btnFinalizar.Text = "&Finalizar"
                     '
-                    btnTroca.Enabled = True
-                    btnVendedorAlterar.Enabled = True
                     btnData.Enabled = True
-                    txtFreteValor.ReadOnly = False
                     txtObservacao.ReadOnly = False
-                    txtVolumes.ReadOnly = False
-                    '
-                    txtValorFrete.ReadOnly = False
-                    txtValorImpostos.ReadOnly = False
-                    txtValorAcrescimos.ReadOnly = False
                     '
                 Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     lblSituacao.Text = "Em Aberto"
                     btnFinalizar.Text = "&Finalizar"
                     '
-                    btnTroca.Enabled = True
-                    btnVendedorAlterar.Enabled = True
                     btnData.Enabled = True
-                    txtFreteValor.ReadOnly = False
                     txtObservacao.ReadOnly = False
-                    txtVolumes.ReadOnly = False
-                    '
-                    txtValorFrete.ReadOnly = False
-                    txtValorImpostos.ReadOnly = False
-                    txtValorAcrescimos.ReadOnly = False
                     '
                 Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     lblSituacao.Text = "Bloqueada"
                     btnFinalizar.Text = "&Fechar"
                     '
-                    btnTroca.Enabled = False
-                    btnVendedorAlterar.Enabled = False
                     btnData.Enabled = False
-                    txtFreteValor.ReadOnly = True
                     txtObservacao.ReadOnly = True
-                    txtVolumes.ReadOnly = True
-                    '
-                    txtValorFrete.ReadOnly = True
-                    txtValorImpostos.ReadOnly = True
-                    txtValorAcrescimos.ReadOnly = True
                     '
             End Select
         End Set
     End Property
     '
-    Property propVenda As clVenda
+    Property propSimples As clSimplesSaida
         '
         Get
-            Return _Venda
+            Return _Simples
         End Get
         '
-        Set(value As clVenda)
+        Set(value As clSimplesSaida)
             '
             VerificaAlteracao = False '--- Inibe a verificacao dos campos IDPlano
-            _Venda = value
-            _Filial = _Venda.IDPessoaOrigem
+            _Simples = value
+            _Filial = _Simples.IDPessoaOrigem
             obterItens()
             obterParcelas()
             bindItem.DataSource = _ItensList
             bindParc.DataSource = _ParcelaList
             dgvItens.DataSource = bindItem
             '
-            '--- Verifica se existe TROCA anexada a venda e preenche o _troca (clTroca)
-            VerificaTroca()
             '
-            If IsNothing(bindVenda.DataSource) Then
-                bindVenda.DataSource = _Venda
+            If IsNothing(bindSimples.DataSource) Then
+                bindSimples.DataSource = _Simples
                 PreencheDataBinding()
             Else
-                bindVenda.Clear()
-                bindVenda.DataSource = _Venda
-                bindVenda.ResetBindings(True)
+                bindSimples.Clear()
+                bindSimples.DataSource = _Simples
+                bindSimples.ResetBindings(True)
             End If
             '
-            '--- Preenche os Itens da Venda
+            '--- Preenche os Itens da Simples
             PreencheItens()
             '
             '--- Preenche Itens do A Receber (parcelas)
             Preenche_AReceber()
-            cmbIDPlano.SelectedValue = IIf(IsNothing(_Venda.IDPlano), -1, _Venda.IDPlano)
-            cmbIDCobrancaForma.SelectedValue = IIf(IsNothing(_Venda.IDCobrancaForma), -1, _Venda.IDCobrancaForma)
+            cmbIDPlano.SelectedValue = IIf(IsNothing(_Simples.IDPlano), -1, _Simples.IDPlano)
             '
             '--- Atualiza o estado da Situacao: FLAGESTADO
-            Select Case _Venda.IDSituacao
-                Case 1 ' VENDA INICIADA
+            Select Case _Simples.IDSituacao
+                Case 1 ' SIMPLES INICIADA
                     Sit = FlagEstado.NovoRegistro
-                Case 2 ' VENDA FINALIZADA
+                Case 2 ' SIMPLES FINALIZADA
                     Sit = FlagEstado.RegistroSalvo
-                Case 3 ' VENDA BLOQUEADA
+                Case 3 ' SIMPLES BLOQUEADA
                     Sit = FlagEstado.RegistroBloqueado
                 Case Else
             End Select
-            '
-            '--- Habilita ou Desabilita os campos do Frete da Venda
-            Controla_cmbFrete()
             '
             '--- Permite a verificacao dos campos IDPlano
             VerificaAlteracao = True
@@ -149,12 +110,12 @@ Public Class frmVendaPrazo
         '
     End Property
     '
-    Public Sub New(myVenda As clVenda)
+    Public Sub New(mySimples As clSimplesSaida)
         ' This call is required by the designer.
         InitializeComponent()
         '
         ' Add any initialization after the InitializeComponent() call.
-        propVenda = myVenda
+        propSimples = mySimples
         '
         '--- Define a TAXA PERMANENCIA padrao
         Try
@@ -165,67 +126,47 @@ Public Class frmVendaPrazo
         '
     End Sub
     '
-    Private Sub frmVendaPrazo_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub frmSimplesSaida_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
         '--- desabilita a verificacao de bloqueio
         VerificaAlteracao = False
         '
         '--- faz a leitura dos combobox para nao emitir mensagem na alteracao do TAB
-        cmbVendaTipo.SelectedValue = _Venda.IDVendaTipo
-        cmbIDCobrancaForma.SelectedValue = If(_Venda.IDCobrancaForma, -1)
-        cmbFreteTipo.SelectedValue = _Venda.FreteTipo
-        cmbIDTransportadora.SelectedValue = If(_Venda.IDTransportadora, -1)
+        cmbIDPlano.SelectedValue = If(_Simples.IDPlano, -1)
         '
         '--- habilita a verificacao de bloqueio
         VerificaAlteracao = True
         '
     End Sub
     '
-#End Region
+#End Region '/ LOAD | PROPERTYS
     '
 #Region "DATABINDING"
     '
     Private Sub PreencheDataBinding()
         '
-        lblCliente.DataBindings.Add("Text", bindVenda, "Cadastro", True, DataSourceUpdateMode.OnPropertyChanged)
-        lblIDVenda.DataBindings.Add("Text", bindVenda, "IDVenda", True, DataSourceUpdateMode.OnPropertyChanged)
-        lblFilial.DataBindings.Add("Text", bindVenda, "ApelidoFilial", True, DataSourceUpdateMode.OnPropertyChanged)
-        lblVendaData.DataBindings.Add("Text", bindVenda, "TransacaoData", True, DataSourceUpdateMode.OnPropertyChanged)
-        lblVendedor.DataBindings.Add("Text", bindVenda, "ApelidoFuncionario", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtVolumes.DataBindings.Add("Text", bindVenda, "Volumes", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtFreteValor.DataBindings.Add("Text", bindVenda, "FreteValor", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtObservacao.DataBindings.Add("Text", bindVenda, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
-        lblValorProdutos.DataBindings.Add("Text", bindVenda, "ValorProdutos", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtValorFrete.DataBindings.Add("Text", bindVenda, "ValorFrete", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtValorImpostos.DataBindings.Add("Text", bindVenda, "ValorImpostos", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtValorAcrescimos.DataBindings.Add("Text", bindVenda, "ValorAcrescimos", True, DataSourceUpdateMode.OnPropertyChanged)
-        lblTotalGeral.DataBindings.Add("Text", bindVenda, "TotalVenda", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblPessoaDestino.DataBindings.Add("Text", bindSimples, "PessoaDestino", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblIDTransacao.DataBindings.Add("Text", bindSimples, "IDTransacao", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblFilial.DataBindings.Add("Text", bindSimples, "PessoaOrigem", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblTransacaoData.DataBindings.Add("Text", bindSimples, "TransacaoData", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtObservacao.DataBindings.Add("Text", bindSimples, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblTotalGeral.DataBindings.Add("Text", bindSimples, "ValorTotal", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' FORMATA OS VALORES DO DATABINDING
-        AddHandler lblIDVenda.DataBindings("Text").Format, AddressOf FormatRG
-        AddHandler txtFreteValor.DataBindings("text").Format, AddressOf FormatCUR
-        AddHandler lblValorProdutos.DataBindings("text").Format, AddressOf FormatCUR
-        AddHandler txtValorAcrescimos.DataBindings("text").Format, AddressOf FormatCUR
-        AddHandler txtValorFrete.DataBindings("text").Format, AddressOf FormatCUR
-        AddHandler txtValorImpostos.DataBindings("text").Format, AddressOf FormatCUR
+        AddHandler lblIDTransacao.DataBindings("Text").Format, AddressOf FormatRG
         AddHandler lblTotalGeral.DataBindings("text").Format, AddressOf FormatCUR
-        AddHandler txtVolumes.DataBindings("text").Format, AddressOf Format00
-        AddHandler lblVendaData.DataBindings("text").Format, AddressOf FormatDT
+        AddHandler lblTransacaoData.DataBindings("text").Format, AddressOf FormatDT
         '
         ' CARREGA OS COMBOBOX
-        CarregaCmbVendaCobranca()
         CarregaCmbPlano()
-        CarregaCmbFreteTipo()
-        CarregaCmbTransportadora()
-        CarregaCmbVendaTipo()
         '
         ' ADD HANDLER PARA DATABINGS
-        AddHandler _Venda.AoAlterar, AddressOf HandlerAoAlterar
+        AddHandler _Simples.AoAlterar, AddressOf HandlerAoAlterar
         '
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _Venda.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
+        If _Simples.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
             Sit = FlagEstado.Alterado
         End If
     End Sub
@@ -246,28 +187,9 @@ Public Class frmVendaPrazo
         End If
     End Sub
     '
-#End Region
+#End Region '/ DATABINDING
     '
 #Region "CARREGA OS COMBOBOX"
-    '
-    ' CARREGA OS COMBOBOX
-    '--------------------------------------------------------------------------------------------------------
-    Private Sub CarregaCmbVendaCobranca()
-        Dim sql As New SQLControl
-        sql.ExecQuery("SELECT * FROM tblCobrancaForma WHERE Ativo = 'TRUE' AND Entradas = 'TRUE'")
-        '
-        If sql.HasException(True) Then
-            Exit Sub
-        End If
-        '
-        With cmbIDCobrancaForma
-            .DataSource = sql.DBDT
-            .ValueMember = "IDCobrancaForma"
-            .DisplayMember = "CobrancaForma"
-            .DataBindings.Add("SelectedValue", bindVenda, "IDCobrancaForma", True, DataSourceUpdateMode.OnPropertyChanged)
-        End With
-        '
-    End Sub
     '
     Private Sub CarregaCmbPlano()
         Dim sql As New SQLControl
@@ -281,73 +203,13 @@ Public Class frmVendaPrazo
             .DataSource = sql.DBDT
             .ValueMember = "IDPlano"
             .DisplayMember = "Plano"
-            .DataBindings.Add("SelectedValue", bindVenda, "IDPlano", True, DataSourceUpdateMode.OnPropertyChanged)
+            .DataBindings.Add("SelectedValue", bindSimples, "IDPlano", True, DataSourceUpdateMode.OnPropertyChanged)
         End With
         '
     End Sub
     '
-    Private Sub CarregaCmbFreteTipo()
-        '
-        Dim dtFTipo As New DataTable
-        '--- Adiciona as Colunas
-        dtFTipo.Columns.Add("idFTipo")
-        dtFTipo.Columns.Add("FTipo")
-        '--- Adiciona todas as possibilidades de Frete
-        dtFTipo.Rows.Add(New Object() {0, "Sem Frete"})
-        dtFTipo.Rows.Add(New Object() {1, "Emitente"})
-        dtFTipo.Rows.Add(New Object() {2, "Destinatário"})
-        'dtFTipo.Rows.Add(New Object() {3, "Reembolso Postal"})
-        'dtFTipo.Rows.Add(New Object() {4, "A Cobrar"})
-        '
-        With cmbFreteTipo
-            .DataSource = dtFTipo
-            .ValueMember = "idFTipo"
-            .DisplayMember = "FTipo"
-            .DataBindings.Add("SelectedValue", bindVenda, "FreteTipo", True, DataSourceUpdateMode.OnPropertyChanged)
-        End With
-        '
-    End Sub
-    '
-    Private Sub CarregaCmbVendaTipo()
-        '
-        '
-        Try
-            Dim dtVendaTipo As DataTable = vndBLL.GetVendaTipo_DT '--- Datatable do combo VendaTipo (Altera se há troca)
-            '
-            With cmbVendaTipo
-                .DataSource = dtVendaTipo '--- a lista depende se ha troca/devolucao ou nao
-                .ValueMember = "IDVendaTipo"
-                .DisplayMember = "VendaTipo"
-                .DataBindings.Add("SelectedValue", bindVenda, "IDVendaTipo", True, DataSourceUpdateMode.OnPropertyChanged)
-            End With
-            '
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao Obter os tipos de Venda..." & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        '
-    End Sub
-    '
-    Private Sub CarregaCmbTransportadora()
-        Dim tBLL As New TransportadoraBLL
-        '
-        Try
-            Dim dt As DataTable = tBLL.Transportadora_GET_ListaSimples(True)
-            '
-            With cmbIDTransportadora
-                .DataSource = dt
-                .ValueMember = "IDTransportadora"
-                .DisplayMember = "Cadastro"
-                .DataBindings.Add("SelectedValue", bindVenda, "IDTransportadora", True, DataSourceUpdateMode.OnPropertyChanged)
-            End With
-        Catch ex As Exception
-            MessageBox.Show("Um erro aconteceu obter lista de Transportadoras" & vbNewLine &
-            ex.Message, "Exceção Inesperada", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        '
-    End Sub
     '--------------------------------------------------------------------------------------------------------
-#End Region
+#End Region '/ CARREGA OS COMBOBOX
     '
 #Region "CARREGA/INSERE ITENS"
     Private Sub PreencheItens()
@@ -488,13 +350,13 @@ Public Class frmVendaPrazo
         '
     End Sub
     '
-    '--- RETORNA TODOS OS ITENS DA VENDA
+    '--- RETORNA TODOS OS ITENS DA SIMPLES
     Private Sub obterItens()
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Venda.IDVenda, _Filial)
+            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Simples.IDTransacao, _Filial)
         Catch ex As Exception
-            MessageBox.Show("Um execeção ocorreu ao obter Itens da Venda:" & vbNewLine &
+            MessageBox.Show("Um execeção ocorreu ao obter Itens da Simples Saída:" & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         '
@@ -509,13 +371,14 @@ Public Class frmVendaPrazo
         If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
         '
         '--- Abre o frmItem
-        Dim newItem As New clTransacaoItem
-        '
-        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _Filial, newItem)
+        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_COMPRA, _Filial, Nothing)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
         If Not fItem.DialogResult = DialogResult.OK Then Exit Sub
+        '
+        '--- captura o valor do Item editado
+        Dim newItem As clTransacaoItem = fItem.propItem
         '
         '--- Insere o novo Item
         Dim ItemBLL As New TransacaoItemBLL
@@ -524,8 +387,8 @@ Public Class frmVendaPrazo
         '----------------------------------------------------------------------------------------------
         '--- Insere o novo ITEM no BD
         Try
-            newItem.IDTransacao = _Venda.IDVenda
-            myID = ItemBLL.InserirNovoItem(newItem, TransacaoItemBLL.EnumMovimento.SAIDA, _Venda.TransacaoData)
+            newItem.IDTransacao = _Simples.IDTransacao
+            myID = ItemBLL.InserirNovoItem(newItem, TransacaoItemBLL.EnumMovimento.SAIDA, _Simples.TransacaoData)
             newItem.IDTransacaoItem = myID
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao INSERIR o item no BD..." & vbNewLine & ex.Message, "Exceção Inesperada",
@@ -561,7 +424,7 @@ Public Class frmVendaPrazo
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
         '
         '--- Abre o frmItem
-        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _Filial, itmAtual)
+        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_COMPRA, _Filial, itmAtual)
         fitem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -575,8 +438,8 @@ Public Class frmVendaPrazo
         '
         '--- Altera o ITEM no BD e reforma o ESTOQUE
         Try
-            itmAtual.IDTransacao = _Venda.IDVenda
-            myID = ItemBLL.EditarItem(itmAtual, TransacaoItemBLL.EnumMovimento.SAIDA, _Venda.TransacaoData)
+            itmAtual.IDTransacao = _Simples.IDTransacao
+            myID = ItemBLL.EditarItem(itmAtual, TransacaoItemBLL.EnumMovimento.SAIDA, _Simples.TransacaoData)
             itmAtual.IDTransacaoItem = myID
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao ALTERAR o item no BD..." & vbNewLine & ex.Message,
@@ -613,7 +476,7 @@ Public Class frmVendaPrazo
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
         '
         '--- pergunta ao usuário se deseja excluir o item
-        If MessageBox.Show("Deseja realmente REMOVER esse item da Venda?" & vbNewLine & vbNewLine &
+        If MessageBox.Show("Deseja realmente REMOVER esse item da Simples Saída?" & vbNewLine & vbNewLine &
                            itmAtual.Produto.ToUpper, "Excluir Item",
                            MessageBoxButtons.YesNo,
                            MessageBoxIcon.Question,
@@ -697,38 +560,24 @@ Public Class frmVendaPrazo
         Excluir_Item()
     End Sub
     '
-#End Region
+#End Region ' /CARREGA/INSERE ITENS
     '
 #Region "BOTOES DE ACAO"
     '
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
         If Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado Then
-            If MessageBox.Show("ALTERAÇÕES DA VENDA NÃO SERÃO SALVAS!" & vbNewLine & vbNewLine &
-                               "Se você fechar agora essa Venda," & vbNewLine &
+            If MessageBox.Show("ALTERAÇÕES DA Simples Saída NÃO SERÃO SALVAS!" & vbNewLine & vbNewLine &
+                               "Se você fechar agora essa Simples Saída," & vbNewLine &
                                "todas alterações serão perdidas," & vbNewLine &
                                "inclusive as alterações no Parcelamento..." & vbNewLine & vbNewLine &
-                               "Deseja Fechar assim mesmo?", "Venda não Finalizada",
+                               "Deseja Fechar assim mesmo?", "Simples não Finalizada",
                                MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
                 tabPrincipal.SelectedTab = vtab2
                 '
-                txtValorFrete.Focus()
+                cmbIDPlano.Focus()
                 Exit Sub
             End If
             '
-            'Dim vlReceber As Double = AtualizaTotalAReceber()
-            ''
-            'If vlReceber > 0 Then
-            '    '--- Verifica se o valor da venda é igual à soma das parcelas
-            '    If Math.Abs(AtualizaTotalGeral() - AtualizaTotalAReceber()) > 1 Then
-            '        If MessageBox.Show("Se você fechar agora o parcelamento não será salvo..." & vbNewLine &
-            '                           "Deseja Fechar a Venda assim mesmo?", "Fechar a Venda",
-            '                           MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
-            '            tabPrincipal.SelectedTab = vtab2
-            '            dgvAReceber.Focus()
-            '            Exit Sub
-            '        End If
-            '    End If
-            'End If
         End If
         '
         Close()
@@ -736,33 +585,11 @@ Public Class frmVendaPrazo
         '
     End Sub
     '
-    '--- ALTERA O VENDEDOR E SALVA NO BD
-    Private Sub btnVendedorAlterar_Click(sender As Object, e As EventArgs) Handles btnVendedorAlterar.Click
+    '--- ALTERAR A DATA DA SIMPLES
+    Private Sub lblTransacaoData_DoubleClick(sender As Object, e As EventArgs) _
+        Handles lblTransacaoData.DoubleClick, btnData.Click
         '
-        Dim fFunc As New frmFuncionarioProcurar(True, Me)
-        fFunc.ShowDialog()
-        If fFunc.DialogResult = DialogResult.Cancel Then Exit Sub
-        '
-        Try
-            Dim newID As Integer = fFunc.IDEscolhido
-            '
-            If vndBLL.AtualizaVendaVendedor(_Venda.IDVenda, newID) Then
-                _Venda.IDVendedor = newID
-                _Venda.ApelidoFuncionario = fFunc.NomeEscolhido
-                lblVendedor.DataBindings("Text").ReadValue()
-            End If
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao atualizar o Vendedor..." & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        '
-    End Sub
-    '
-    '--- ALTERAR A DATA DA VENDA
-    Private Sub lblVendaData_DoubleClick(sender As Object, e As EventArgs) _
-        Handles lblVendaData.DoubleClick, btnData.Click
-        '
-        Dim frmDt As New frmDataInformar("Informe a data da Venda", DataTipo.PassadoPresente, _Venda.TransacaoData, Me)
+        Dim frmDt As New frmDataInformar("Informe a data da Simples Saída", DataTipo.PassadoPresente, _Simples.TransacaoData, Me)
         frmDt.ShowDialog()
         '
         If frmDt.DialogResult <> DialogResult.OK Then Exit Sub
@@ -772,32 +599,25 @@ Public Class frmVendaPrazo
         '--- verifica a data bloqueada
         If DataBloqueada(newDt, Obter_ContaPadrao) Then Exit Sub
         '
-        '--- altera a data da venda e salva no BD
+        '--- altera a data da simples e salva no BD
         Try
             '
             Dim tranBLL As New TransacaoBLL
-            If tranBLL.AtualizaTransacaoData(_Venda.IDVenda, newDt) Then
+            If tranBLL.AtualizaTransacaoData(_Simples.IDTransacao, newDt) Then
                 '
-                _Venda.TransacaoData = frmDt.propDataInfo
-                lblVendaData.DataBindings("Text").ReadValue()
-                '
-                '--- verifica se existe troca e altera a data da troca
-                If Not IsNothing(_Troca) Then
-                    Dim tBLL As New TrocaBLL
-                    _Troca.TrocaData = newDt
-                    tBLL.AtualizaTroca_Procedure_ID(_Troca)
-                End If
+                _Simples.TransacaoData = frmDt.propDataInfo
+                lblTransacaoData.DataBindings("Text").ReadValue()
                 '
             End If
             '
         Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao alterar a Data da Venda..." & vbNewLine &
+            MessageBox.Show("Uma exceção ocorreu ao alterar a Data da Simples Saída..." & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         '
     End Sub
     '
-#End Region
+#End Region ' /BOTOES DE ACAO
     '
 #Region "FORMATACAO E FLUXO"
     '
@@ -821,53 +641,16 @@ Public Class frmVendaPrazo
         If tabPrincipal.SelectedIndex = 0 Then
             dgvItens.Focus()
         ElseIf tabPrincipal.SelectedIndex = 1 Then
-            txtValorFrete.Focus()
+            cmbIDPlano.Focus()
         ElseIf tabPrincipal.SelectedIndex = 2 Then
             dgvVendaNotas.Focus()
         End If
         '
     End Sub
     '
-    ' HABILITA OU DESABILITA OS CONTROLES DO FRETE
-    '---------------------------------------------------------------------------------------------------
-    Private Sub cmbFreteTipo_SelectedIndexChanged(sender As Object, e As EventArgs)
-        Controla_cmbFrete()
-    End Sub
-    '
-    Public Sub Controla_cmbFrete()
-        If Not IsNumeric(cmbFreteTipo.SelectedValue) Then Exit Sub
-        '
-        'If cmbFreteTipo.SelectedValue = 0 Then
-        If _Venda.FreteTipo = 0 Then
-            '--- Nulifica os valores das propriedades do Frete
-            _Venda.IDTransportadora = Nothing
-            _Venda.FreteValor = Nothing
-            _Venda.Volumes = Nothing
-            '--- Atualiza os novos valores dos controles
-            If cmbIDTransportadora.DataBindings.Count > 0 Then
-                cmbIDTransportadora.DataBindings.Item("SelectedValue").ReadValue()
-                cmbIDTransportadora.Text = String.Empty
-                txtFreteValor.DataBindings.Item("Text").ReadValue()
-                txtVolumes.DataBindings.Item("Text").ReadValue()
-            End If
-            '--- Desabilita os controles
-            cmbIDTransportadora.Enabled = False
-            txtFreteValor.Enabled = False
-            txtVolumes.Enabled = False
-        Else
-            '--- Habilita os controles
-            cmbIDTransportadora.Enabled = True
-            txtFreteValor.Enabled = True
-            txtVolumes.Enabled = True
-        End If
-        '
-    End Sub
-    '
     ' CONVERTE ENTER EM TAB DE ALGUNS CONTROLES
     '---------------------------------------------------------------------------------------------------
-    Private Sub Text_KeyDown(sender As Object, e As KeyEventArgs) Handles txtValorFrete.KeyDown,
-        txtValorImpostos.KeyDown, txtValorAcrescimos.KeyDown, txtFreteValor.KeyDown,
-        txtVolumes.KeyDown, txtObservacao.KeyDown
+    Private Sub Text_KeyDown(sender As Object, e As KeyEventArgs) Handles txtObservacao.KeyDown
         '
         '--- Se for o campo observacao, verifica se esta preenchido com algum texto
         '--- Se esta preenchido entao permite que o ENTER funcione como nova linha
@@ -893,11 +676,11 @@ Public Class frmVendaPrazo
     Private Sub obterParcelas()
         Dim rBLL As New ParcelaBLL
         Try
-            _ParcelaList = rBLL.Parcela_GET_PorIDOrigem(1, _Venda.IDVenda)
+            _ParcelaList = rBLL.Parcela_GET_PorIDOrigem(3, _Simples.IDTransacao)
             '--- Atualiza o label TOTAL
             AtualizaTotalAReceber()
         Catch ex As Exception
-            MessageBox.Show("Um execeção ocorreu ao obter o A Receber da Venda:" & vbNewLine &
+            MessageBox.Show("Um execeção ocorreu ao obter o A Receber da Simples Saída:" & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         '
@@ -1038,7 +821,7 @@ Public Class frmVendaPrazo
         '--- Verifica se o valor dos itens é maior que zero
         If vl = 0 Then
             MessageBox.Show("Não é possivel adicionar Parcelas de A Receber" & vbNewLine &
-                            "Quando o valor da Venda ainda é igual a Zero..." & vbNewLine &
+                            "Quando o valor da Simples Saída ainda é igual a Zero..." & vbNewLine &
                             "Adicione produtos primeiro e depois tente novamente.", "Nova Parcela",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -1054,14 +837,14 @@ Public Class frmVendaPrazo
         Dim myLetra As Char = Chr(ParcelaCount + 65)
         '
         clPar.PermanenciaTaxa = Taxa
-        clPar.IDAReceber = _Venda.IDAReceber
-        clPar.IDPessoa = _Venda.IDPessoaDestino
+        clPar.IDAReceber = _Simples.IDAReceber
+        clPar.IDPessoa = _Simples.IDPessoaDestino
         clPar.ParcelaValor = vl - _ParcelaList.Sum(Function(x) x.ParcelaValor)
-        clPar.Vencimento = _Venda.TransacaoData
+        clPar.Vencimento = _Simples.TransacaoData
         clPar.Letra = myLetra.ToString
         '
         '--- abre o form frmAReceber
-        Dim fRec As New frmAReceberItem(Me, vl, _Venda.TransacaoData, clPar, FlagAcao.INSERIR, pos)
+        Dim fRec As New frmAReceberItem(Me, vl, _Simples.TransacaoData, clPar, FlagAcao.INSERIR, pos)
         fRec.ShowDialog()
         '
         If fRec.DialogResult = DialogResult.OK Then
@@ -1094,7 +877,7 @@ Public Class frmVendaPrazo
         If dgvAReceber.SelectedRows.Count = 0 Then Exit Sub
         '
         Dim ParcAtual As clAReceberParcela = dgvAReceber.SelectedRows(0).DataBoundItem
-        Dim fRec As New frmAReceberItem(Me, AtualizaTotalGeral(), _Venda.TransacaoData, ParcAtual, FlagAcao.EDITAR, pos)
+        Dim fRec As New frmAReceberItem(Me, AtualizaTotalGeral(), _Simples.TransacaoData, ParcAtual, FlagAcao.EDITAR, pos)
         fRec.ShowDialog()
         '
         '--- AtualizaTotalAReceber
@@ -1138,36 +921,36 @@ Public Class frmVendaPrazo
         '--- Se não houver SelectedVaue então exit
         If Not IsNumeric(cmbIDPlano.SelectedValue) OrElse VerificaAlteracao = False Then Exit Sub
         '
-        '--- Se o registro da venda esta bloqueado não permite alteracao
+        '--- Se o registro da simples saida esta bloqueado não permite alteracao
         If Sit = FlagEstado.RegistroBloqueado Then
             VerificaAlteracao = False
-            cmbIDPlano.SelectedValue = IIf(IsNothing(_Venda.IDPlano), -1, _Venda.IDPlano)
+            cmbIDPlano.SelectedValue = If(_Simples.IDPlano, -1)
             VerificaAlteracao = True
             RegistroBloqueado() '--- mensagem padrao
             Exit Sub
         End If
         '
-        '--- Se Valor Total da Venda for igual a Zero então Avisa e Exit
+        '--- Se Valor Total da Simples for igual a Zero então Avisa e Exit
         Dim vlTotal As Double = AtualizaTotalGeral()
         If vlTotal = 0 Then
             MessageBox.Show("Não é possivel adicionar Parcelas de A Receber" & vbNewLine &
-                            "Quando o valor da Venda ainda é igual a Zero..." & vbNewLine &
+                            "Quando o valor da Simples Saída ainda é igual a Zero..." & vbNewLine &
                             "Adicione produtos primeiro e depois tente novamente.", "Nova Parcela",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             VerificaAlteracao = False
-            cmbIDPlano.SelectedValue = IIf(IsNothing(_Venda.IDPlano), -1, _Venda.IDPlano)
+            cmbIDPlano.SelectedValue = IIf(IsNothing(_Simples.IDPlano), -1, _Simples.IDPlano)
             VerificaAlteracao = True
             Exit Sub
         End If
         '
         '--- Pergunta ao usuario
-        If Not IsNothing(_Venda.IDPlano) Then 'AndAlso cmbIDPlano.SelectedValue <> _Venda.IDPlano Then
+        If Not IsNothing(_Simples.IDPlano) Then 'AndAlso cmbIDPlano.SelectedValue <> _Simples.IDPlano Then
             Dim a As DialogResult
-            a = MessageBox.Show("Você deseja realmente alterar a forma de parcelamento dessa venda?",
-                            "Alterar Parcelamento", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+            a = MessageBox.Show("Você deseja realmente alterar a forma de parcelamento dessa Simples Saída?",
+                                "Alterar Parcelamento", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             If a = DialogResult.No Then
                 VerificaAlteracao = False
-                cmbIDPlano.SelectedValue = IIf(IsNothing(_Venda.IDPlano), -1, _Venda.IDPlano)
+                cmbIDPlano.SelectedValue = If(_Simples.IDPlano, -1)
                 VerificaAlteracao = True
                 Exit Sub
             End If
@@ -1201,9 +984,9 @@ Public Class frmVendaPrazo
             If Entrada = False And i = 0 Then i += 1
             Dim _parc As New clAReceberParcela
             _parc.ParcelaValor = vlParcela
-            _parc.Vencimento = _Venda.TransacaoData.AddMonths(i)
-            _parc.IDAReceber = _Venda.IDAReceber
-            _parc.IDPessoa = _Venda.IDPessoaDestino
+            _parc.Vencimento = _Simples.TransacaoData.AddMonths(i)
+            _parc.IDAReceber = _Simples.IDAReceber
+            _parc.IDPessoa = _Simples.IDPessoaDestino
             _parc.SituacaoParcela = 0
             _parc.PermanenciaTaxa = Taxa
             If Entrada = True Then
@@ -1261,59 +1044,54 @@ Public Class frmVendaPrazo
     End Sub
     '
     '============================================================================================================
-#End Region
+#End Region ' /CONTROLE DO A RECEBER 
     '
-#Region "FINALIZAR VENDA"
+#Region "FINALIZAR SIMPLES"
     '
     Private Sub btnFinalizar_Click(sender As Object, e As EventArgs) Handles btnFinalizar.Click
         '
         '--- Verifica se a SITUACAO do registro permite salvar
-        If Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro Then
+        If Not (Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro) Then
+            Close()
+            MostraMenuPrincipal()
+            Return
+        End If
+        '
+        '--- Faz as VERIFICACOES DOS CAMPOS E VALORES
+        If Verificar() = False Then Exit Sub
+        '
+        '--- PERGUNTA AO USUÁRIO
+        If MessageBox.Show("Deseja realmente Finalizar essa Transação de Simples Saída?", "Finalizar Simples Saída",
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
+        '
+        '--- SALVA O ARECEBER PARCELAS NO BD
+        If Salvar_Parcelas() = False Then Exit Sub
+        '
+        '--- SALVA A TRANSACAO/Simples Saída NO BD
+        Try
+            '--- altera a situacao da transacao atual
+            _Simples.IDSituacao = 2 'CONCLUÍDA
             '
-            '--- Faz as VERIFICACOES DOS CAMPOS E VALORES
-            If Verificar() = False Then Exit Sub
-            '
-            '--- PERGUNTA AO USUÁRIO
-            If MessageBox.Show("Deseja realmente Finalizar essa Transação de Venda?", "Finalizar Venda",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
-                Exit Sub
-            End If
-            '
-            '--- SALVA O ARECEBER PARCELAS NO BD
-            If Salvar_Parcelas() = False Then Exit Sub
-            '
-            '--- SALVA A TRANSACAO/VENDA NO BD
-            Try
-                '--- altera a situacao da transacao atual
-                _Venda.IDSituacao = 2 'CONCLUÍDA
-                '
-                Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
-                '
-                If Not IsNumeric(obj) Then
-                    Throw New Exception(obj.ToString)
-                End If
-                '
-            Catch ex As Exception
-                MessageBox.Show(ex.Message)
-            End Try
-            '
-            '--- RECEBE/QUITA A PARCELA QUE ESTA VENCIDA (ENTRADA OU A VISTA)
-
+            simplesBLL.AtualizaSimplesSaida_Procedure_DT(_Simples)
             '
             '--- ALTERA A SITUACAO DO REGISTRO ATUAL
             Sit = FlagEstado.RegistroSalvo
             '
-        End If
-        '
-        '--- PERGUNTA O QUE O USUARIO DESEJA FAZER
-        Dim fAcao As New frmAcaoDialog(Me, "Venda")
-        '
-        fAcao.ShowDialog()
-        '
-        If fAcao.DialogResult = DialogResult.Cancel Then
+            '--- PERGUNTA AO USUÁRIO SE DESEJA FECHAR
+            If MessageBox.Show("Registro SALVO com sucesso!!! " &
+                               vbNewLine & vbNewLine &
+                               "Deseja SAIR dessa Simples Saída e fechar o formulário?",
+                               "Fechar",
+                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
+            '--- FECHA
             Close()
             MostraMenuPrincipal()
-        End If
+            '
+        Catch ex As Exception
+            _Simples.IDSituacao = 1 'INICIADA
+            MessageBox.Show("Uma exceção ocorreu ao Finalizar e Salvar a Simples Saída..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
         '
     End Sub
     '
@@ -1321,20 +1099,20 @@ Public Class frmVendaPrazo
         '--- Verifica se a Data não está BLOQUEADA pelo sistema
         '
         '----------------------------------------------------------------------------------------------
-        ' VERIFICA OS VALORES DA VENDA, DAS PARCELAS E DO FRETE
+        ' VERIFICA OS VALORES DA SIMPLES SAIDA, DAS PARCELAS E DO FRETE
         '----------------------------------------------------------------------------------------------
         '
-        '--- Verifica o valor da venda
+        '--- Verifica o valor da SIMPLES SAIDA
         If AtualizaTotalGeral() = 0 Then
-            MessageBox.Show("Não é possível finalizar uma venda cujo valor final é igual a Zero..." & vbNewLine &
-                            "Favor incluir alguns produtos nessa venda.",
-                            "Venda Nula", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            MessageBox.Show("Não é possível finalizar uma Simples Saída cujo valor final é igual a Zero..." & vbNewLine &
+                            "Favor incluir alguns produtos nessa Simples Saída.",
+                            "Simples Saída Nula", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             tabPrincipal.SelectedTab = vtab1
             dgvItens.Focus()
             Return False
         End If
         '
-        '--- Verifica se o valor da venda é igual à soma das parcelas
+        '--- Verifica se o valor da Simples Saída é igual à soma das parcelas
         If Math.Abs(AtualizaTotalGeral() - AtualizaTotalAReceber()) > 1 Then
             MessageBox.Show("A soma das parcelas é diferente da soma dos produtos" & vbNewLine &
                             "Favor corrigir esse erro alterando o parcelamento.",
@@ -1346,42 +1124,14 @@ Public Class frmVendaPrazo
         '
         '
         '----------------------------------------------------------------------------------------------
-        ' VERIFICA OS CAMPOS NECESSÁRIOS DA VENDA
+        ' VERIFICA OS CAMPOS NECESSÁRIOS DA SIMPLES SAÍDA
         '----------------------------------------------------------------------------------------------
-        '
-        '--- Verifica se há TIPO DE VENDA
-        If IsNothing(_Venda.IDVendaTipo) Then
-            MessageBox.Show("O campo TIPO DE VENDA não pode ficar vazio...", "Campo Necessário",
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            tabPrincipal.SelectedTab = vtab2
-            cmbVendaTipo.Focus()
-            Return False
-        End If
-        '
-        '--- Verifica se há FORMA DE COBRANCA
-        If IsNothing(_Venda.IDCobrancaForma) Then
-            MessageBox.Show("O campo FORMA DE COBRANÇA não pode ficar vazio...", "Campo Necessário",
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            tabPrincipal.SelectedTab = vtab2
-            cmbIDCobrancaForma.Focus()
-            Return False
-        End If
-        '
         '--- Verifica se há PLANO DE PAGAMENTO
-        If IsNothing(_Venda.IDPlano) Then
+        If IsNothing(_Simples.IDPlano) Then
             MessageBox.Show("O campo PLANO DE PAGAMENTO não pode ficar vazio...", "Campo Necessário",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             tabPrincipal.SelectedTab = vtab2
             cmbIDPlano.Focus()
-            Return False
-        End If
-        '
-        '--- Verifica se há TIPO DE FRETE
-        If IsNothing(_Venda.FreteTipo) Then
-            MessageBox.Show("O campo TIPO DE FRETE não pode ficar vazio...", "Campo Necessário",
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-            tabPrincipal.SelectedTab = vtab2
-            cmbFreteTipo.Focus()
             Return False
         End If
         '
@@ -1390,17 +1140,19 @@ Public Class frmVendaPrazo
     End Function
     '
     Private Function Salvar_Parcelas() As Boolean
+        '
         If _ParcelaList.Count = 0 Then Return False
         '
         Dim parcBLL As New ParcelaBLL
         '
-        '--- Exclui todos os registros de Parcela da Venda atual
         Try
-            parcBLL.Excluir_Parcelas_AReceber(_Venda.IDAReceber)
+            '--- Exclui todos os registros de Parcela da Simples Saída atual
+            parcBLL.Excluir_Parcelas_AReceber(_Simples.IDAReceber)
             '
             '--- Insere cada um AReceber no BD
             For Each parc As clAReceberParcela In _ParcelaList
-                parcBLL.InserirNova_Parcela(parc)
+                parc.IDAReceber = _Simples.IDAReceber
+                parc.IDAReceberParcela = parcBLL.InserirNova_Parcela(parc)
             Next
             '
             Return True
@@ -1412,29 +1164,14 @@ Public Class frmVendaPrazo
         '
     End Function
     '
-#End Region
+#End Region ' /FINALIZAR SIMPLES
     '
 #Region "FUNCOES NECESSARIAS"
     '
     ' ATUALIZA O TOTAL DO GERAL
     '-----------------------------------------------------------------------------------------------------
     Private Function AtualizaTotalGeral() As Double
-        If _ItensList.Count > 0 Then
-            Dim T As Double = 0
-            '
-            T = AtualizaTotalProdutos() + _Venda.ValorFrete + _Venda.ValorImpostos + _Venda.ValorAcrescimos - _Venda.ValorDevolucao
-            '
-            'lblTotalGeral.Text = Format(T, "c")
-            Return T
-        Else
-            'lblTotalGeral.Text = Format(0, "c")
-            Return 0
-        End If
-    End Function
-    '
-    ' ATUALIZA O TOTAL DOS PRODUTOS VENDIDOS
-    '-----------------------------------------------------------------------------------------------------
-    Private Function AtualizaTotalProdutos() As Double
+        '
         If _ItensList.Count > 0 Then
             Dim T As Double = 0
             '
@@ -1442,11 +1179,13 @@ Public Class frmVendaPrazo
                 T = T + i.Total
             Next
             '
-            _Venda.ValorProdutos = T
+            _Simples.ValorTotal = T
+            lblTotalGeral.DataBindings.Item("text").ReadValue()
             Return T
         Else
             Return 0
         End If
+        '
     End Function
     '
     ' ATUALIZA O TOTAL DO ARECEBER
@@ -1467,19 +1206,7 @@ Public Class frmVendaPrazo
         End If
     End Function
     '
-    ' CRIA UMA NOVA VENDA
-    '-----------------------------------------------------------------------------------------------------
-    Public Sub NovaVenda()
-        Dim v As New AcaoGlobal
-        Dim newVenda As Object = v.VendaPrazo_Nova
-        '
-        If IsNothing(newVenda) Then Exit Sub
-        '
-        _Venda = newVenda
-        '
-    End Sub
-    '
-    ' PROCURA VENDA
+    ' PROCURA SIMPLES SAÍDA
     '-----------------------------------------------------------------------------------------------------
     Public Sub ProcuraVenda()
         Me.Close()
@@ -1490,61 +1217,15 @@ Public Class frmVendaPrazo
         frmP.Show()
     End Sub
     '
-    ' RECALCULA VALORES QUANDO ALTERA CONTROLES VALOR
-    '-----------------------------------------------------------------------------------------------------
-    Private Sub ValorText_Validated(sender As Object, e As EventArgs) Handles txtValorFrete.Validated,
-            txtValorAcrescimos.Validated, txtValorImpostos.Validated
-        '
-        AtualizaTotalGeral()
-        '
-    End Sub
-    '
 #End Region '/FUNCOES NECESSARIAS
     '
 #Region "BLOQUEIO DE REGISTROS"
-    '
-    ' PROIBE EDICAO NOS COMBOBOX QUANDO VENDA BLOQUEADA
-    '-----------------------------------------------------------------------------------------------------
-    Private Sub ComboBox_SelectedValueChanged(sender As Object, e As EventArgs) _
-        Handles cmbVendaTipo.SelectedValueChanged,
-                cmbIDCobrancaForma.SelectedValueChanged,
-                cmbFreteTipo.SelectedValueChanged,
-                cmbIDTransportadora.SelectedValueChanged
-        '
-        If Sit = FlagEstado.RegistroBloqueado AndAlso VerificaAlteracao = True Then
-            Dim cmb As ComboBox = DirectCast(sender, ComboBox)
-            '
-            Select Case cmb.Name
-                Case "cmbVendaTipo"
-                    VerificaAlteracao = False
-                    cmbVendaTipo.SelectedValue = _Venda.IDVendaTipo
-                    VerificaAlteracao = True
-                Case "cmbIDCobrancaForma"
-                    VerificaAlteracao = False
-                    cmbIDCobrancaForma.SelectedValue = IIf(IsNothing(_Venda.IDCobrancaForma), -1, _Venda.IDCobrancaForma)
-                    VerificaAlteracao = True
-                Case "cmbFreteTipo"
-                    VerificaAlteracao = False
-                    cmbFreteTipo.SelectedValue = IIf(IsNothing(_Venda.FreteTipo), -1, _Venda.FreteTipo)
-                    VerificaAlteracao = True
-                Case "cmbIDTransportadora"
-                    VerificaAlteracao = False
-                    cmbIDTransportadora.SelectedValue = IIf(IsNothing(_Venda.IDTransportadora), -1, _Venda.IDTransportadora)
-                    VerificaAlteracao = True
-            End Select
-            '
-            '--- emite mensagem padrao
-            RegistroBloqueado()
-            '
-        End If
-        '
-    End Sub
     '
     ' FUNCAO QUE CONFERE REGISTRO BLOQUEADO E EMITE MENSAGEM PADRAO
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroBloqueado() As Boolean
         If Sit = FlagEstado.RegistroBloqueado Then
-            MessageBox.Show("Esse registro de Venda está BLOQUEADO para alterações..." & vbNewLine &
+            MessageBox.Show("Esse registro de Simples Saída está BLOQUEADO para alterações..." & vbNewLine &
                             "Não é possível adicionar produtos ou alterar algum dado!",
                             "Registro Bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Information)
             RegistroBloqueado = True
@@ -1557,20 +1238,17 @@ Public Class frmVendaPrazo
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroFinalizado() As Boolean
         If Sit = FlagEstado.RegistroSalvo Then
-            If MessageBox.Show("Esse registro de Venda já se encontra FINALIZADO..." & vbNewLine &
+            If MessageBox.Show("Esse registro de Simples Saída já se encontra FINALIZADO..." & vbNewLine &
                                "Deseja realmente fazer alterações nesse registro?",
                                "Registro Finalizado", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                                MessageBoxDefaultButton.Button2) = DialogResult.Yes Then
                 '--- Edita o registro e altera a situação
-                _Venda.IDSituacao = 1
+                _Simples.IDSituacao = 1
                 '
-                '--- SALVA A TRANSACAO/VENDA NO BD
+                '--- SALVA A TRANSACAO/SIMPLES SAÍDA NO BD
                 Try
-                    Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
                     '
-                    If Not IsNumeric(obj) Then
-                        Throw New Exception(obj.ToString)
-                    End If
+                    simplesBLL.AtualizaSimplesSaida_Procedure_DT(_Simples)
                     '
                 Catch ex As Exception
                     MessageBox.Show(ex.Message)
@@ -1585,135 +1263,6 @@ Public Class frmVendaPrazo
         End If
     End Function
     '
-#End Region
-    '
-#Region "TROCA"
-    '
-    '--- INSERE DEVOLUCAO DE TROCA E ABRE O FORMULARIO DE TROCA
-    Private Sub btnTroca_Click(sender As Object, e As EventArgs) Handles btnTroca.Click
-        '
-        If IsNothing(_Troca) Then
-            '--- Pergunta ao Usuário se Deseja inserir nova TROCA
-            If MessageBox.Show("Você deseja realmente anexar uma Troca Simples nessa venda?",
-                               "Inserir Troca", MessageBoxButtons.YesNo,
-                               MessageBoxIcon.Question) = DialogResult.No Then Return
-            '
-        End If
-        '
-        '--- Verifica ou Cria uma nova TROCA
-        Try
-            If IsNothing(_Troca) Then '--- se a TROCA for nothing entao CRIA nova TROCA
-                Dim tBLL As New TrocaBLL
-                '
-                _Troca = tBLL.TrocaSimples_Nova(_Venda.IDVenda,
-                                                _Venda.TransacaoData,
-                                                _Venda.IDPessoaOrigem,
-                                                _Venda.ApelidoFilial,
-                                                _Venda.IDPessoaDestino,
-                                                _Venda.Cadastro,
-                                                _Venda.IDUser)
-                '
-            End If
-            '
-            '--- abre o frmTROCA
-            Dim old_vlTroca = If(IsNothing(_Troca), 0, _Troca.ValorTotal)
-            Dim fTroca As New frmTrocaSimples(_Troca, _Venda, Me)
-            fTroca.ShowDialog()
-            '
-            '--- verifica se houve alteracao da troca pelo valor
-            VerificaTroca()
-            '
-            '--- se houve alteracao
-            If old_vlTroca <> If(IsNothing(_Troca), 0, _Troca.ValorTotal) Then
-                AtualizaTotalGeral()
-                Sit = FlagEstado.Alterado
-            End If
-            '
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao Verificar ou Inserir Troca..." & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        '
-    End Sub
-    '
-    '--- VERIFICA SE EXISTE TROCA E ALTERA O BTNTROCA
-    Private Sub VerificaTroca()
-        '
-        Dim tBLL As New TrocaBLL
-        Dim vBLL As New VendaBLL
-        '
-        Try
-            _Troca = tBLL.GetTroca_PorIDVenda_clTroca(_Venda.IDVenda)
-            '
-            If Not IsNothing(_Troca) Then
-                '--- atualializa a propriedade VALORDEVOLUCAO da Venda
-                If _Venda.ValorDevolucao <> _Troca.ValorTotal Then _Venda.ValorDevolucao = _Troca.ValorTotal
-                '
-                '--- Se houver Troca atualiza o marca o AgregaTroca
-                If Not _Venda.AgregaDevolucao Then _Venda.AgregaDevolucao = True
-                '
-                '--- Verifica se o IDSitucao da Troca é igual ao da Venda
-                If _Venda.IDSituacao <> _Troca.IDSituacao Then
-                    '
-                    '--- iguala o IDSituacao
-                    _Troca.IDSituacao = _Venda.IDSituacao
-                    '
-                    Try '--- atualiza a Troca
-                        tBLL.AtualizaTroca_Procedure_ID(_Troca)
-                    Catch ex As Exception
-                        MessageBox.Show("Uma exceção ocorreu ao Atualizar a Situacao da Troca..." & vbNewLine &
-                                        ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                    End Try
-                    '
-                End If
-                '
-            Else
-                '--- atualializa a propriedade VALORDEVOLUCAO da Venda
-                _Venda.ValorDevolucao = 0
-                '
-                '--- Se nao houver Troca desmarca o AgregaTroca
-                If _Venda.AgregaDevolucao Then _Venda.AgregaDevolucao = False
-                '
-            End If
-            '
-            Troca_EditaLabel()
-            '
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao verificar se existe TROCA anexada à Venda..." & vbNewLine &
-                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        '
-    End Sub
-    '
-    '
-    '--- VERIFICA E ADICIONA OU ALTERA A TROCA NA LISTA DE ENTRADA
-    Private Sub Troca_EditaLabel()
-        '
-        If Not IsNothing(_Troca) Then
-            '
-            '-- atualiza o btnTroca e o lblTroca
-            btnTroca.Text = "Altera &Troca"
-            lblTroca.Visible = True
-            lblTroca.Text = "Devolução de " & vbNewLine & Format(_Troca.ValorTotal, "C")
-            '
-            '-- atualiza o lbltitulo
-            lblTitulo.Text = "Venda Prazo com Troca"
-            lblTitulo.Update()
-            '
-        Else
-            '
-            '-- atualiza o btnTroca e o lblTroca
-            btnTroca.Text = "Insere &Troca"
-            lblTroca.Visible = False
-            lblTroca.Text = ""
-            '
-            '-- atualiza o lbltitulo
-            lblTitulo.Text = "Venda Prazo"
-            '
-        End If
-        '
-    End Sub
-    '
-#End Region '/ TROCA
+#End Region '/ BLOQUEIO DE REGISTROS
     '
 End Class

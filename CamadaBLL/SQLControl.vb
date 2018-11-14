@@ -72,9 +72,11 @@ Public Class SQLControl
     '
     ' ERROR CHECKING
     Public Function HasException(Optional Report As Boolean = False) As Boolean
+        '
         If String.IsNullOrEmpty(Exception) Then Return False
         If Report = True Then MsgBox(Exception, MsgBoxStyle.Critical, "Exception:")
         Return True
+        '
     End Function
     '
 End Class

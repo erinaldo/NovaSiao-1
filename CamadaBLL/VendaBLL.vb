@@ -119,6 +119,8 @@ Public Class VendaBLL
         objDB.AdicionarParametros("@IDVendedor", _vnd.IDVendedor)
         '@CobrancaTipo AS TINYINT, 
         objDB.AdicionarParametros("@CobrancaTipo", _vnd.CobrancaTipo)
+        '@AgregaDevolucao AS BIT, 
+        objDB.AdicionarParametros("@AgregaDevolucao", _vnd.AgregaDevolucao)
         '@ValorProdutos AS MONEY
         objDB.AdicionarParametros("@ValorProdutos", _vnd.ValorProdutos)
         '@ValorFrete AS MONEY -- Valor do Frete a ser cobrado na Venda
@@ -127,12 +129,16 @@ Public Class VendaBLL
         objDB.AdicionarParametros("@ValorImpostos", _vnd.ValorImpostos)
         '@ValorAcrescimos AS MONEY -- Valor dos outros acrescimos
         objDB.AdicionarParametros("@ValorAcrescimos", _vnd.ValorAcrescimos)
+        '@ValorDevoucao AS MONEY -- Valor das devolucao a ser abatida
+        objDB.AdicionarParametros("@ValorDevolucao", _vnd.ValorDevolucao)
+        '@TotalVenda AS MONEY -- Valor total da Venda
+        objDB.AdicionarParametros("@TotalVenda", _vnd.TotalVenda)
         '@JurosMes AS DECIMAL(6,2), 
         objDB.AdicionarParametros("@JurosMes", _vnd.JurosMes)
         '@Observacao AS VARCHAR(max) = null, 
         objDB.AdicionarParametros("@Observacao", _vnd.Observacao)
         '@VendaTipo AS TINYINT = 0, --0|VAREJO ; 1|ATACADO
-        objDB.AdicionarParametros("@VendaTipo", _vnd.VendaTipo)
+        objDB.AdicionarParametros("@IDVendaTipo", _vnd.IDVendaTipo)
         '
         '-- PARAMETROS DA TBLARECEBER
         '@IDCobrancaForma AS SMALLINT, 
@@ -222,7 +228,7 @@ Public Class VendaBLL
         '@Observacao AS VARCHAR(max) = null, x
         objDB.AdicionarParametros("@Observacao", _vnd.Observacao)
         '@VendaTipo AS TINYINT = 0, --0|VAREJO ; 1|ATACADO x
-        objDB.AdicionarParametros("@VendaTipo", _vnd.VendaTipo)
+        objDB.AdicionarParametros("@IDVendaTipo", _vnd.IDVendaTipo)
         '@ValorProdutos AS MONEY x
         objDB.AdicionarParametros("@ValorProdutos", _vnd.ValorProdutos)
         '@ValorFrete AS MONEY -- Valor do Frete a ser cobrado na Venda x
@@ -231,6 +237,8 @@ Public Class VendaBLL
         objDB.AdicionarParametros("@ValorImpostos", _vnd.ValorImpostos)
         '@ValorAcrescimos AS MONEY -- Valor dos outros acrescimos x
         objDB.AdicionarParametros("@ValorAcrescimos", _vnd.ValorAcrescimos)
+        '@ValorDevolucao AS MONEY -- Valor da Troca|Devolucao x
+        objDB.AdicionarParametros("@ValorDevolucao", _vnd.ValorDevolucao)
         '
         '-- PARAMETROS DA TBLVENDAFRETE
         '@IDTransportadora AS INT = NULL,
@@ -315,13 +323,15 @@ Public Class VendaBLL
         vnd.IDDepartamento = IIf(IsDBNull(r("IDDepartamento")), Nothing, r("IDDepartamento"))
         vnd.IDVendedor = IIf(IsDBNull(r("IDVendedor")), Nothing, r("IDVendedor"))
         vnd.CobrancaTipo = IIf(IsDBNull(r("CobrancaTipo")), Nothing, r("CobrancaTipo"))
-        vnd.ValorProdutos = IIf(IsDBNull(r("ValorProdutos")), Nothing, r("ValorProdutos"))
-        vnd.ValorFrete = IIf(IsDBNull(r("ValorFrete")), Nothing, r("ValorFrete"))
-        vnd.ValorImpostos = IIf(IsDBNull(r("ValorImpostos")), Nothing, r("ValorImpostos"))
-        vnd.ValorAcrescimos = IIf(IsDBNull(r("ValorAcrescimos")), Nothing, r("ValorAcrescimos"))
+        vnd.AgregaDevolucao = IIf(IsDBNull(r("AgregaDevolucao")), False, r("AgregaDevolucao"))
+        vnd.ValorProdutos = IIf(IsDBNull(r("ValorProdutos")), 0, r("ValorProdutos"))
+        vnd.ValorFrete = IIf(IsDBNull(r("ValorFrete")), 0, r("ValorFrete"))
+        vnd.ValorImpostos = IIf(IsDBNull(r("ValorImpostos")), 0, r("ValorImpostos"))
+        vnd.ValorAcrescimos = IIf(IsDBNull(r("ValorAcrescimos")), 0, r("ValorAcrescimos"))
+        vnd.ValorDevolucao = IIf(IsDBNull(r("ValorDevolucao")), 0, r("ValorDevolucao"))
         vnd.JurosMes = IIf(IsDBNull(r("JurosMes")), Nothing, r("JurosMes"))
         vnd.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
-        vnd.VendaTipo = IIf(IsDBNull(r("VendaTipo")), Nothing, r("VendaTipo"))
+        vnd.IDVendaTipo = IIf(IsDBNull(r("IDVendaTipo")), Nothing, r("IDVendaTipo"))
         '--- Dados do tblAReceber
         vnd.IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
         vnd.SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
@@ -386,6 +396,57 @@ Public Class VendaBLL
             Next
             '
             Return vndList
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
+    ' GET VENDA TIPOS DATATABLE COM OPTIONAL IDVENDATIPO
+    '--------------------------------------------------------------------------------------------
+    Public Function GetVendaTipo_DT(Optional IDVendaTipo As Byte? = Nothing) As DataTable
+        '
+        Dim objdb As New AcessoDados
+        Dim dt As New DataTable
+        Dim strSql As String
+        '
+        strSql = "SELECT * FROM tblVendaTipo"
+        '
+        If Not IsNothing(IDVendaTipo) Then
+            strSql = strSql & " WHERE IDVendaTipo = " & IDVendaTipo
+        End If
+        '
+        Try
+            dt = objdb.ExecuteConsultaSQL_DataTable(strSql)
+            Return dt
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
+    ' UPDATE A FUNCIONARIO / VENDEDOR DA VENDA
+    '--------------------------------------------------------------------------------------------
+    Public Function AtualizaVendaVendedor(myIDVenda As Integer, NewIDVendedor As Integer) As Boolean
+        '
+        Dim SQL As New SQLControl
+        SQL.AddParam("@IDVenda", myIDVenda)
+        SQL.AddParam("@IDVendedor", NewIDVendedor)
+        '
+        Dim myQuery As String = "UPDATE tblVenda SET IDVendedor = @IDVendedor WHERE IDVenda = @IDVenda"
+        '
+        Try
+            SQL.ExecQuery(myQuery)
+            '
+            '--- verifica erro
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
             '
         Catch ex As Exception
             Throw ex

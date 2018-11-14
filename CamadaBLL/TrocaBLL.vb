@@ -42,11 +42,12 @@ Public Class TrocaBLL
     '--------------------------------------------------------------------------------------------
     ' GET REGISTRO POR ID/RG
     '--------------------------------------------------------------------------------------------
-    Public Function GetTroca_PorID_OBJ(ByVal myIDTroca As Integer) As clTroca
+    Public Function GetTroca_PorIDVenda_clTroca(ByVal myIDVenda As Integer) As clTroca
+        '
         Dim objdb As New AcessoDados
         Dim strSql As String = ""
         '
-        strSql = "SELECT * FROM qryTroca WHERE IDTroca = " & myIDTroca
+        strSql = "SELECT * FROM qryTroca WHERE IDVenda = " & myIDVenda
         '
         Try
             Dim dt As DataTable = objdb.ExecuteConsultaSQL_DataTable(strSql)
@@ -67,77 +68,27 @@ Public Class TrocaBLL
     '--------------------------------------------------------------------------------------------
     ' UPDATE
     '--------------------------------------------------------------------------------------------
-    Public Function AtualizaTroca_Procedure_ID(ByVal _troca As clTroca) As String
+    Public Function AtualizaTroca_Procedure_ID(ByVal _troca As clTroca) As Object
+        '
         Dim objDB As New AcessoDados
         Dim Conn As New SqlCommand
         '
         'Limpa os Parâmetros
         objDB.LimparParametros()
         '
-        '-- PARAMETROS DA TBLTRANSACAO
-        ''@IDVenda AS INT
-        'objDB.AdicionarParametros("@IDVenda", _troca.IDVenda)
-        ''@IDPessoaDestino AS INT, 
-        'objDB.AdicionarParametros("@IDPessoaDestino", _troca.IDPessoaDestino)
-        ''@IDPessoaOrigem AS INT, 
-        'objDB.AdicionarParametros("@IDPessoaOrigem", _troca.IDPessoaOrigem)
-        ''@IDOperacao AS BYTE, 
-        'objDB.AdicionarParametros("@IDOperacao", _troca.IDOperacao)
-        ''@IDSituacao AS TINYINT = 0, --0|INSERIDA ; 1|VERIFICADA ; 2|FECHADA 
-        'objDB.AdicionarParametros("@IDSituacao", _troca.IDSituacao)
-        ''@IDUser AS INT,
-        'objDB.AdicionarParametros("@IDUser", _troca.IDUser)
-        ''@CFOP AS INT(16), 
-        'objDB.AdicionarParametros("@CFOP", _troca.CFOP)
-        ''@VendaData AS SMALLDATETIME, 
-        'objDB.AdicionarParametros("@TransacaoData", _troca.TransacaoData)
-        ''
-        ''-- PARAMETROS DA TBLVENDA
-        ''@IDDepartamento AS SMALLINT = 1,
-        'objDB.AdicionarParametros("@IDDepartamento", _troca.IDDepartamento)
-        ''@IDVendedor AS INT,
-        'objDB.AdicionarParametros("@IDVendedor", _troca.IDVendedor)
-        ''@CobrancaTipo AS TINYINT, 
-        'objDB.AdicionarParametros("@CobrancaTipo", _troca.CobrancaTipo)
-        ''@ValorProdutos AS MONEY
-        'objDB.AdicionarParametros("@ValorProdutos", _troca.ValorProdutos)
-        ''@ValorFrete AS MONEY -- Valor do Frete a ser cobrado na Venda
-        'objDB.AdicionarParametros("@ValorFrete", _troca.ValorFrete)
-        ''@ValorImpostos AS MONEY -- Valor dos Impostos a ser cobrados
-        'objDB.AdicionarParametros("@ValorImpostos", _troca.ValorImpostos)
-        ''@ValorAcrescimos AS MONEY -- Valor dos outros acrescimos
-        'objDB.AdicionarParametros("@ValorAcrescimos", _troca.ValorAcrescimos)
-        ''@JurosMes AS DECIMAL(6,2), 
-        'objDB.AdicionarParametros("@JurosMes", _troca.JurosMes)
-        ''@Observacao AS VARCHAR(max) = null, 
-        'objDB.AdicionarParametros("@Observacao", _troca.Observacao)
-        ''@VendaTipo AS TINYINT = 0, --0|VAREJO ; 1|ATACADO
-        'objDB.AdicionarParametros("@VendaTipo", _troca.VendaTipo)
-        ''
-        ''-- PARAMETROS DA TBLARECEBER
-        ''@IDCobrancaForma AS SMALLINT, 
-        'objDB.AdicionarParametros("@IDCobrancaForma", _troca.IDCobrancaForma)
-        ''@IDPlano SMALLINT = NULL, 
-        'objDB.AdicionarParametros("@IDPlano", _troca.IDPlano)
-        ''
-        ''-- PARAMETROS DA TBLVENDAFRETE
-        ''@IDTransportadora AS INT = NULL,
-        'objDB.AdicionarParametros("@IDTransportadora", _troca.IDTransportadora)
-        ''@FreteTipo AS TINYINT = 0, -- 1|EMITENTE; 2|DESTINATARIO
-        'objDB.AdicionarParametros("@FreteTipo", _troca.FreteTipo)
-        ''@FreteValor AS MONEY = 0,
-        'objDB.AdicionarParametros("@FreteValor", _troca.FreteValor)
-        ''@Volumes AS SMALLINT = 1,
-        'objDB.AdicionarParametros("@Volumes", _troca.Volumes)
-        ''@IDAPagar AS INT = NULL
-        'objDB.AdicionarParametros("@IDAPagar", _troca.IDApagar)
-        '
+        '--- Inserir Parametros
+        objDB.AdicionarParametros("@IDTroca", _troca.IDTroca)
+        objDB.AdicionarParametros("@IDTransacaoEntrada", _troca.IDTransacaoEntrada)
+        objDB.AdicionarParametros("@TrocaData", _troca.TrocaData)
+        objDB.AdicionarParametros("@IDPessoaOrigem", _troca.IDPessoaTroca)
+        objDB.AdicionarParametros("@ValorTotal", _troca.ValorTotal)
+        objDB.AdicionarParametros("@IDSituacao", _troca.IDSituacao)
+        objDB.AdicionarParametros("@Observacao", _troca.Observacao)
         '
         Try
-            Return objDB.ExecutarManipulacao(CommandType.StoredProcedure, "")
+            Return objDB.ExecutarManipulacao(CommandType.StoredProcedure, "uspTroca_Alterar")
         Catch ex As Exception
             Throw ex
-            Return Nothing
         End Try
         '
     End Function
@@ -164,6 +115,39 @@ Public Class TrocaBLL
         '
     End Function
     '
+    '================================================================================
+    ' EFETUA NOVA TROCA SIMPLES
+    '================================================================================
+    Public Function TrocaSimples_Nova(
+                                      IDVenda As Integer,
+                                      TrocaData As Date,
+                                      IDFilial As Integer,
+                                      ApelidoFilial As String,
+                                      IDPessoaTroca As Integer,
+                                      PessoaTroca As String,
+                                      Usuario As Integer
+                                     ) As clTroca
+        '
+        '--- Insere um novo Registro de TROCA
+        '---------------------------------------------------------------------------------------
+        '
+        Try
+            Dim newTroca As New clTroca(IDVenda, TrocaData, IDFilial, ApelidoFilial, IDPessoaTroca, PessoaTroca)
+            '
+            newTroca = InsereNovaTroca_Procedure(newTroca, Usuario)
+            '
+            If IsNothing(newTroca) Then
+                Throw New Exception("Um erro ocorreu ao salvar ao Inserir Nova Troca")
+            End If
+            '
+            Return newTroca
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
     '--------------------------------------------------------------------------------------------
     ' INSERT NOVA TROCA E RETORNA UM DATATABLE
     '--------------------------------------------------------------------------------------------
@@ -180,14 +164,17 @@ Public Class TrocaBLL
         '@TrocaData AS DATE
         objDB.AdicionarParametros("@TrocaData", _troca.TrocaData)
         '
-        '@IDPessoaTroca AS INT
-        objDB.AdicionarParametros("@IDPessoaTroca", _troca.IDPessoaTroca)
+        '@IDVenda AS INT
+        objDB.AdicionarParametros("@IDVenda", _troca.IDVenda)
         '
         '@IDFilial AS INT
         objDB.AdicionarParametros("@IDFilial", _troca.IDFilial)
         '
-        '@IDVendedor AS INT
-        objDB.AdicionarParametros("@IDVendedor", _troca.IDVendedor)
+        '@IDPessoaOrigem AS INT
+        objDB.AdicionarParametros("@IDPessoaOrigem", _troca.IDPessoaTroca)
+        '
+        '@Observacao AS STRING
+        objDB.AdicionarParametros("@Observacao", _troca.Observacao)
         '
         '
         Try
@@ -212,30 +199,26 @@ Public Class TrocaBLL
     '--------------------------------------------------------------------------------------------
     ' DELETE TROCA POR IDTROCA
     '--------------------------------------------------------------------------------------------
-    Public Function DeletaTrocaPorID(ByVal IDTroca As Integer)
-
-        Dim strSql As String
-        Dim objDB As AcessoDados
-        '--- Verificar se a venda já foi incluída no Caixa Geral
-
-        '--- Apagar todos os itens da Venda
-
-        '--- Apagar todos os AReceber relacionadas à Venda
-
-        '--- Apagar o tblVendaFrete associado
-
-        '--- Apagar a Venda em si
-        strSql = "" '"DELETE FROM tblVenda where IDVenda=" & _IDVenda
+    Public Function DeletaTrocaPorID(ByVal IDTroca As Integer) As Object
         '
-        objDB = New AcessoDados
+        Dim db As New AcessoDados
+        '
+        db.LimparParametros()
+        db.AdicionarParametros("@IDTroca", IDTroca)
+        '
         Try
-            objDB.ExecuteQuery(strSql)
+            Dim ret As Object = db.ExecutarManipulacao(CommandType.StoredProcedure, "uspTroca_Excluir")
+            '
+            If ret.GetType().Equals(GetType(String)) AndAlso ret <> "TRUE" Then
+                Throw New Exception(ret)
+            End If
+            '
         Catch ex As Exception
             Throw ex
-            Return Nothing
         End Try
-
+        '
         Return True
+        '
     End Function
     '
     '--------------------------------------------------------------------------------------------
@@ -243,36 +226,24 @@ Public Class TrocaBLL
     '--------------------------------------------------------------------------------------------
     Private Function ConvertDtRow_clTroca(r As DataRow) As clTroca
         '
-        Dim t As clTroca = New clTroca
-        '
-        t.IDTroca = IIf(IsDBNull(r("IDTroca")), Nothing, r("IDTroca"))
-        t.TrocaData = IIf(IsDBNull(r("TrocaData")), Nothing, r("TrocaData"))
-        t.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
-        t.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
-        t.IDPessoaTroca = IIf(IsDBNull(r("IDPessoaTroca")), Nothing, r("IDPessoaTroca"))
-        t.PessoaTroca = IIf(IsDBNull(r("PessoaTroca")), String.Empty, r("PessoaTroca"))
-        t.IDVendedor = IIf(IsDBNull(r("IDVendedor")), Nothing, r("IDVendedor"))
-        t.ApelidoVenda = IIf(IsDBNull(r("ApelidoVenda")), String.Empty, r("ApelidoVenda"))
-        t.IDTransacaoEntrada = IIf(IsDBNull(r("IDTransacaoEntrada")), Nothing, r("IDTransacaoEntrada"))
-        t.IDTransacaoSaida = IIf(IsDBNull(r("IDTransacaoSaida")), Nothing, r("IDTransacaoSaida"))
-        t.CobrancaTipo = IIf(IsDBNull(r("CobrancaTipo")), Nothing, r("CobrancaTipo"))
-        t.CobrancaTipoTexto = IIf(IsDBNull(r("CobrancaTipoTexto")), String.Empty, r("CobrancaTipoTexto"))
-        t.ValorEntrada = IIf(IsDBNull(r("ValorEntrada")), Nothing, r("ValorEntrada"))
-        t.ValorSaida = IIf(IsDBNull(r("ValorSaida")), Nothing, r("ValorSaida"))
-        t.ValorAcrescimos = IIf(IsDBNull(r("ValorAcrescimos")), Nothing, r("ValorAcrescimos"))
-        't.TotalTroca = IIf(IsDBNull(r("TotalTroca")), Nothing, r("TotalTroca"))
-        t.JurosMes = IIf(IsDBNull(r("JurosMes")), Nothing, r("JurosMes"))
-        t.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
-        t.IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao"))
-        t.Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
-        '
+        '--- origem DATAROW: qryTroca
         '--- Dados do tblAReceber
-        t.IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
-        t.SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
-        t.IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
-        t.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-        t.CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), String.Empty, r("CobrancaForma"))
-        t.ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), Nothing, r("ValorPagoTotal"))
+        Dim t As clTroca = New clTroca With {
+            .IDTroca = IIf(IsDBNull(r("IDTroca")), Nothing, r("IDTroca")),
+            .TrocaData = IIf(IsDBNull(r("TrocaData")), Nothing, r("TrocaData")),
+            .IDTransacaoEntrada = IIf(IsDBNull(r("IDTransacaoEntrada")), Nothing, r("IDTransacaoEntrada")),
+            .IDVenda = IIf(IsDBNull(r("IDVenda")), Nothing, r("IDVenda")),
+            .IDPessoaTroca = IIf(IsDBNull(r("IDPessoaTroca")), Nothing, r("IDPessoaTroca")),
+            .PessoaTroca = IIf(IsDBNull(r("PessoaTroca")), String.Empty, r("PessoaTroca")),
+            .IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial")),
+            .ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial")),
+            .IDVendedor = IIf(IsDBNull(r("IDVendedor")), Nothing, r("IDVendedor")),
+            .ApelidoVenda = IIf(IsDBNull(r("ApelidoVenda")), String.Empty, r("ApelidoVenda")),
+            .ValorTotal = IIf(IsDBNull(r("ValorTotal")), Nothing, r("ValorTotal")),
+            .Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao")),
+            .IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao")),
+            .Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
+        }
         '
         Return t
         '

@@ -55,6 +55,7 @@ Public Class AcessoDados
     'CONCETAR ABRIR A CONEXÃO
     '-------------------------------------------------------------------------------------------------------
     Private Function Connect() As Boolean
+        '
         Dim connstr As String
         Dim bln As Boolean
         '
@@ -84,11 +85,13 @@ Public Class AcessoDados
     ' FECHAR A CONEXÃO
     '-------------------------------------------------------------------------------------------------------
     Public Sub CloseConn()
+        '
         If Not conn Is Nothing Then
             If Not conn.State = ConnectionState.Closed Then
                 conn.Close()
             End If
         End If
+        '
     End Sub
     '
     '-------------------------------------------------------------------------------------------------------
@@ -109,6 +112,7 @@ Public Class AcessoDados
     '--- EXECUTAR INSERT, UPDATE, DELETE
     '-------------------------------------------------------------------------------------------------------
     Public Function ExecutarManipulacao(comandType As CommandType, nomeStoredProcedureOuTextoSQL As String) As Object
+        '
         Try
             '
             If conn.State = ConnectionState.Closed Then Connect()
@@ -128,6 +132,7 @@ Public Class AcessoDados
             Throw ex
             '
         End Try
+        '
     End Function
     '
     '-------------------------------------------------------------------------------------------------------
@@ -327,6 +332,7 @@ Public Class AcessoDados
     ' EXECUTA UM DATAREADER E RETORNA UM DATASET
     '----------------------------------------------------------------------------
     Public Sub PreencheDataSetDeDataReader(ByVal ds As DataSet, ByVal table As String, ByVal dr As IDataReader)
+        '
         ' Cria um  xxxDataAdapter do mesmo tipo de um DataReader
         Dim tipoDataReader As Type = CObj(dr).GetType
         Dim nomeTipo As String = tipoDataReader.FullName.Replace("DataReader", "DataAdapter")
@@ -339,6 +345,7 @@ Public Class AcessoDados
 
         ' fecha o DataReader
         dr.Close()
+        '
     End Sub
     '
 End Class

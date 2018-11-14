@@ -8,34 +8,20 @@ Public Class clTroca : Implements IEditableObject
         'tblTroca =====================================================
         Dim _IDTroca As Integer
         Dim _TrocaData As Date
-        Dim _IDFilial As Integer
-        Dim _IDPessoaTroca As Integer
-        Dim _IDVendedor As Integer
         Dim _IDTransacaoEntrada As Integer
-        Dim _IDTransacaoSaida As Integer
-        Dim _CobrancaTipo As Byte 'tinyint
-        Dim _ValorEntrada As Decimal '--- Valor dos PRODUTOS que entraram
-        Dim _ValorSaida As Decimal '--- Valor dos PRODUTOS a que sairam
-        Dim _ValorAcrescimos As Decimal '--- Valor dos acrescimos caso houver
-        Dim _TotalTroca As Decimal '--- Valor final da TROCA (Saídas - Entradas)
-        Dim _JurosMes As Decimal '--- VAlor do Juros aplicado caso parcelado
+        Dim _IDVenda As Integer
         Dim _Observacao As String
         Dim _IDSituacao As Byte 'tinyint
+        Dim _ValorTotal As Decimal '--- Valor final da TROCA
         '
-        'tblAReceber =====================================================
-        Dim _IDAReceber As Integer?
-        Dim _ValorPagoTotal As Decimal
-        Dim _SituacaoAReceber As Byte '--- 0:EmAberto | 1:Pago | 2:Cancelada
-        Dim _IDCobrancaForma As Int16? 'smallint
-        Dim _IDPlano As Int16?
-        '
-        '--- PROPRIEDADES PARA LEITURA
-        ' PessoaTroca As String
-        ' ApelidoFilial As String
-        ' ApelidoVenda As String
-        ' CobrancaTipoTexto As String
-        ' Situacao As String
-        ' CobrancaForma As String
+        'tblVenda =====================================================
+        ' PROP IDFilial As Integer
+        ' PROP ApelidoFilial As String
+        ' PROP IDPessoaTroca As Integer
+        ' PROP PessoaTroca As String
+        ' PROP Situacao As String
+        ' PROP IDVendedor as Integer
+        ' PROP ApelidoVenda as String
         '
     End Structure
 #End Region
@@ -47,20 +33,40 @@ Public Class clTroca : Implements IEditableObject
 #End Region
     '
 #Region "IMPLEMENTS EVENTS"
+    '
     Public Sub New()
         TData = New TrocaDados()
         With TData
             ._IDTroca = Nothing
-            ._IDVendedor = Nothing
-            ._TrocaData = DateTime.Today
-            ._CobrancaTipo = 0 'tinyint
-            ._IDSituacao = 0
-            ._ValorEntrada = 0
-            ._ValorSaida = 0
-            ._ValorAcrescimos = 0
-            ._TotalTroca = 0
-            ._JurosMes = 0
+            ._IDSituacao = 1 '--- INICIADA
+            ._ValorTotal = 0
         End With
+    End Sub
+    '
+    Public Sub New(
+                  myIDVenda As Integer,
+                  myTrocaData As Date,
+                  myIDFilial As Integer,
+                  myApelidoFilial As String,
+                  myIDPessoaTroca As Integer,
+                  myPessoaTroca As String
+                  )
+        '
+        TData = New TrocaDados With
+            {
+            ._IDTroca = Nothing,
+            ._IDVenda = myIDVenda,
+            ._TrocaData = myTrocaData,
+            ._IDSituacao = 1,'--- INICIADA
+            ._ValorTotal = 0
+            }
+        '
+        IDFilial = myIDFilial
+        ApelidoFilial = myApelidoFilial
+        IDPessoaTroca = myIDPessoaTroca
+        PessoaTroca = myPessoaTroca
+        Situacao = "INICIADA"
+        '
     End Sub
     '
     '-- IMPLEMENTS IEditableObject
@@ -129,48 +135,6 @@ Public Class clTroca : Implements IEditableObject
         End Set
     End Property
     '
-    '--- Propriedade IDFilial
-    '------------------------------------------------------
-    Public Property IDFilial() As Integer
-        Get
-            Return TData._IDFilial
-        End Get
-        Set(ByVal value As Integer)
-            If value <> TData._IDFilial Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._IDFilial = value
-        End Set
-    End Property
-    '
-    '--- Propriedade IDPessoaTroca
-    '------------------------------------------------------
-    Public Property IDPessoaTroca() As Integer
-        Get
-            Return TData._IDPessoaTroca
-        End Get
-        Set(ByVal value As Integer)
-            If value <> TData._IDPessoaTroca Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._IDPessoaTroca = value
-        End Set
-    End Property
-    '
-    '--- Propriedade IDVendedor
-    '------------------------------------------------------
-    Public Property IDVendedor() As Integer
-        Get
-            Return TData._IDVendedor
-        End Get
-        Set(ByVal value As Integer)
-            If value <> TData._IDVendedor Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._IDVendedor = value
-        End Set
-    End Property
-    '
     '--- Propriedade IDTransacaoEntrada
     '------------------------------------------------------
     Public Property IDTransacaoEntrada() As Integer
@@ -185,98 +149,31 @@ Public Class clTroca : Implements IEditableObject
         End Set
     End Property
     '
-    '--- Propriedade IDTransacaoSaida
+    '--- Propriedade IDVenda
     '------------------------------------------------------
-    Public Property IDTransacaoSaida() As Integer
+    Public Property IDVenda() As Integer
         Get
-            Return TData._IDTransacaoSaida
+            Return TData._IDVenda
         End Get
         Set(ByVal value As Integer)
-            If value <> TData._IDTransacaoSaida Then
+            If value <> TData._IDVenda Then
                 RaiseEvent AoAlterar()
             End If
-            TData._IDTransacaoSaida = value
+            TData._IDVenda = value
         End Set
     End Property
     '
-    '--- Propriedade CobrancaTipo
+    '--- Propriedade ValorTotal
     '------------------------------------------------------
-    Public Property CobrancaTipo() As Byte
+    Public Property ValorTotal() As Decimal
         Get
-            Return TData._CobrancaTipo
-        End Get
-        Set(ByVal value As Byte)
-            If value <> TData._CobrancaTipo Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._CobrancaTipo = value
-        End Set
-    End Property
-    '
-    '--- Propriedade ValorEntrada
-    '------------------------------------------------------
-    Public Property ValorEntrada() As Decimal
-        Get
-            Return TData._ValorEntrada
+            Return TData._ValorTotal
         End Get
         Set(ByVal value As Decimal)
-            If value <> TData._ValorEntrada Then
+            If value <> TData._ValorTotal Then
                 RaiseEvent AoAlterar()
             End If
-            TData._ValorEntrada = value
-        End Set
-    End Property
-    '
-    '--- Propriedade ValorSaida
-    '------------------------------------------------------
-    Public Property ValorSaida() As Decimal
-        Get
-            Return TData._ValorSaida
-        End Get
-        Set(ByVal value As Decimal)
-            If value <> TData._ValorSaida Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._ValorSaida = value
-        End Set
-    End Property
-    '
-    '--- Propriedade ValorAcrescimos
-    '------------------------------------------------------
-    Public Property ValorAcrescimos() As Decimal
-        Get
-            Return TData._ValorAcrescimos
-        End Get
-        Set(ByVal value As Decimal)
-            If value <> TData._ValorAcrescimos Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._ValorAcrescimos = value
-        End Set
-    End Property
-    '
-    '--- Propriedade TotalTroca
-    '------------------------------------------------------
-    Public ReadOnly Property TotalTroca() As Decimal
-        Get
-            Return (ValorSaida + ValorAcrescimos - ValorEntrada)
-        End Get
-        'Set(ByVal value As Decimal)
-        '    TData._TotalTroca = value
-        'End Set
-    End Property
-    '
-    '--- Propriedade JurosMes
-    '------------------------------------------------------
-    Public Property JurosMes() As Decimal
-        Get
-            Return TData._JurosMes
-        End Get
-        Set(ByVal value As Decimal)
-            If value <> TData._JurosMes Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._JurosMes = value
+            TData._ValorTotal = value
         End Set
     End Property
     '
@@ -309,84 +206,16 @@ Public Class clTroca : Implements IEditableObject
     End Property
     '
     '===========================================================================================
-    '--- TBLARECEBER
-    '===========================================================================================
-    '
-    '--- Propriedade IDAReceber
-    Public Property IDAReceber() As Integer?
-        Get
-            Return TData._IDAReceber
-        End Get
-        Set(ByVal value As Integer?)
-            If value <> TData._IDAReceber Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._IDAReceber = value
-        End Set
-    End Property
-    '
-    '--- Propriedade SituacaoAReceber
-    Public Property SituacaoAReceber() As Byte
-        Get
-            Return TData._SituacaoAReceber
-        End Get
-        Set(ByVal value As Byte)
-            If value <> TData._SituacaoAReceber Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._SituacaoAReceber = value
-        End Set
-    End Property
-    '
-    '--- Propriedade ValorPagoTotal
-    Public Property ValorPagoTotal() As Decimal
-        Get
-            Return TData._ValorPagoTotal
-        End Get
-        Set(ByVal value As Decimal)
-            If value <> TData._ValorPagoTotal Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._ValorPagoTotal = value
-        End Set
-    End Property
-    '
-    '--- Propriedade IDCobrancaForma
-    Public Property IDCobrancaForma() As Int16?
-        Get
-            Return TData._IDCobrancaForma
-        End Get
-        Set(ByVal value As Int16?)
-            If value <> TData._IDCobrancaForma Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._IDCobrancaForma = value
-        End Set
-    End Property
-    '
-    '--- Propriedade IDPlano
-    Public Property IDPlano() As Int16?
-        Get
-            Return TData._IDPlano
-        End Get
-        Set(ByVal value As Int16?)
-            If value <> TData._IDPlano Then
-                RaiseEvent AoAlterar()
-            End If
-            TData._IDPlano = value
-        End Set
-    End Property
-    '
-    '===========================================================================================
     '--- PROPRIEDADES PARA LEITURA
     '===========================================================================================
     '
-    Public Property PessoaTroca As String
-    Public Property ApelidoFilial As String
-    Public Property ApelidoVenda As String
-    Public Property CobrancaTipoTexto As String
-    Public Property Situacao As String
-    Public Property CobrancaForma As String
+    Property IDFilial As Integer
+    Property ApelidoFilial As String
+    Property IDPessoaTroca As Integer
+    Property PessoaTroca As String
+    Property Situacao As String
+    Property IDVendedor As Integer
+    Property ApelidoVenda As String
     '
 #End Region
     '

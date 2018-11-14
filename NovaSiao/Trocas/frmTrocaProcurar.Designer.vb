@@ -276,9 +276,9 @@ Partial Class frmTrocaProcurar
         Me.Label9.BackColor = System.Drawing.Color.Transparent
         Me.Label9.Location = New System.Drawing.Point(740, 4)
         Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(70, 19)
+        Me.Label9.Size = New System.Drawing.Size(68, 19)
         Me.Label9.TabIndex = 7
-        Me.Label9.Text = "Cobrança"
+        Me.Label9.Text = "Venda nº"
         '
         'Label6
         '

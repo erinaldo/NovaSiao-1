@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
-Partial Class frmVendaVista
+Partial Class frmSimplesSaida
     Inherits NovaSiao.frmModNBorder
 
     'Form overrides dispose to clean up the component list.
@@ -23,6 +23,8 @@ Partial Class frmVendaVista
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.tabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
         Me.vtab1 = New VIBlend.WinForms.Controls.vTabPage()
@@ -36,36 +38,35 @@ Partial Class frmVendaVista
         Me.clnDesconto = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.vtab2 = New VIBlend.WinForms.Controls.vTabPage()
-        Me.VPanel3 = New VIBlend.WinForms.Controls.vPanel()
-        Me.lblValorProdutos = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.pnlTroca = New VIBlend.WinForms.Controls.vPanel()
-        Me.lblValorDevolucao = New System.Windows.Forms.Label()
-        Me.lblTroca = New System.Windows.Forms.Label()
-        Me.VPanel2 = New VIBlend.WinForms.Controls.vPanel()
-        Me.lblTotalPago = New System.Windows.Forms.Label()
-        Me.Label17 = New System.Windows.Forms.Label()
-        Me.btnLimparPagamentos = New System.Windows.Forms.Button()
-        Me.btnTroca = New System.Windows.Forms.Button()
+        Me.dgvAReceber = New System.Windows.Forms.DataGridView()
+        Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnReg = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnVencimento = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnPermanencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.txtObservacao = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
-        Me.dgvPagamentos = New System.Windows.Forms.DataGridView()
-        Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnMovForma = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.lblTotalCobrado = New System.Windows.Forms.Label()
+        Me.Label17 = New System.Windows.Forms.Label()
+        Me.Label14 = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
+        Me.cmbIDPlano = New Controles.ComboBox_OnlyValues()
         Me.ShapeContainer2 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
         Me.LineShape3 = New Microsoft.VisualBasic.PowerPacks.LineShape()
-        Me.btnVendedorAlterar = New System.Windows.Forms.Button()
-        Me.lblVendedor = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
-        Me.RectangleShape1 = New Microsoft.VisualBasic.PowerPacks.RectangleShape()
-        Me.ShapeContainer1 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
+        Me.LineShape1 = New Microsoft.VisualBasic.PowerPacks.LineShape()
+        Me.vtab3 = New VIBlend.WinForms.Controls.vTabPage()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.dgvVendaNotas = New System.Windows.Forms.DataGridView()
+        Me.ShapeContainer3 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
+        Me.LineShape5 = New Microsoft.VisualBasic.PowerPacks.LineShape()
+        Me.lblCli = New System.Windows.Forms.Label()
+        Me.lblPessoaDestino = New System.Windows.Forms.Label()
         Me.btnData = New VIBlend.WinForms.Controls.vArrowButton()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.lbl_IdTexto = New System.Windows.Forms.Label()
-        Me.lblVendaData = New System.Windows.Forms.Label()
-        Me.lblIDVenda = New System.Windows.Forms.Label()
+        Me.lblTransacaoData = New System.Windows.Forms.Label()
+        Me.lblIDTransacao = New System.Windows.Forms.Label()
         Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
         Me.lblTotalGeral = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
@@ -80,59 +81,58 @@ Partial Class frmVendaVista
         Me.VApplicationMenuItem3 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
         Me.VApplicationMenuItem4 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
         Me.btnFinalizar = New VIBlend.WinForms.Controls.vButton()
+        Me.Label18 = New System.Windows.Forms.Label()
         Me.lblFilial = New System.Windows.Forms.Label()
-        Me.Label4 = New System.Windows.Forms.Label()
         Me.VPanel1 = New VIBlend.WinForms.Controls.vPanel()
+        Me.VPanel2 = New VIBlend.WinForms.Controls.vPanel()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
         CType(Me.dgvItens, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.vtab2.SuspendLayout()
-        Me.VPanel3.Content.SuspendLayout()
-        Me.VPanel3.SuspendLayout()
-        Me.pnlTroca.Content.SuspendLayout()
-        Me.pnlTroca.SuspendLayout()
-        Me.VPanel2.Content.SuspendLayout()
-        Me.VPanel2.SuspendLayout()
-        CType(Me.dgvPagamentos, System.ComponentModel.ISupportInitialize).BeginInit()
+        CType(Me.dgvAReceber, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.vtab3.SuspendLayout()
+        CType(Me.dgvVendaNotas, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.VPanel1.Content.SuspendLayout()
         Me.VPanel1.SuspendLayout()
+        Me.VPanel2.Content.SuspendLayout()
+        Me.VPanel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.Label18)
+        Me.Panel1.Controls.Add(Me.lblFilial)
         Me.Panel1.Controls.Add(Me.Label3)
-        Me.Panel1.Controls.Add(Me.Label4)
         Me.Panel1.Controls.Add(Me.Label15)
         Me.Panel1.Controls.Add(Me.lbl_IdTexto)
         Me.Panel1.Controls.Add(Me.btnClose)
         Me.Panel1.Controls.Add(Me.btnData)
-        Me.Panel1.Controls.Add(Me.lblFilial)
         Me.Panel1.Controls.Add(Me.lblSituacao)
-        Me.Panel1.Controls.Add(Me.lblIDVenda)
-        Me.Panel1.Controls.Add(Me.lblVendaData)
+        Me.Panel1.Controls.Add(Me.lblIDTransacao)
+        Me.Panel1.Controls.Add(Me.lblTransacaoData)
         Me.Panel1.Size = New System.Drawing.Size(1049, 50)
         Me.Panel1.TabIndex = 0
-        Me.Panel1.Controls.SetChildIndex(Me.lblVendaData, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.lblIDVenda, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblTransacaoData, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblIDTransacao, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblSituacao, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.lblFilial, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnData, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lbl_IdTexto, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label15, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.Label4, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label3, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblFilial, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.Label18, 0)
         '
         'lblTitulo
         '
         Me.lblTitulo.Dock = System.Windows.Forms.DockStyle.None
         Me.lblTitulo.Font = New System.Drawing.Font("Calibri", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTitulo.Location = New System.Drawing.Point(684, 4)
-        Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblTitulo.Size = New System.Drawing.Size(331, 38)
-        Me.lblTitulo.Text = "Venda A Vista"
+        Me.lblTitulo.Location = New System.Drawing.Point(807, 4)
+        Me.lblTitulo.Size = New System.Drawing.Size(201, 42)
+        Me.lblTitulo.Text = "Simples Saida"
+        Me.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tabPrincipal
         '
@@ -140,15 +140,17 @@ Partial Class frmVendaVista
         Me.tabPrincipal.AllPagesHeight = 28
         Me.tabPrincipal.Controls.Add(Me.vtab1)
         Me.tabPrincipal.Controls.Add(Me.vtab2)
+        Me.tabPrincipal.Controls.Add(Me.vtab3)
         Me.tabPrincipal.ForeColor = System.Drawing.Color.Black
         Me.tabPrincipal.Location = New System.Drawing.Point(9, 106)
         Me.tabPrincipal.Name = "tabPrincipal"
         Me.tabPrincipal.Padding = New System.Windows.Forms.Padding(0, 38, 0, 0)
         Me.tabPrincipal.Size = New System.Drawing.Size(1030, 500)
         Me.tabPrincipal.TabAlignment = VIBlend.WinForms.Controls.vTabPageAlignment.Top
-        Me.tabPrincipal.TabIndex = 4
+        Me.tabPrincipal.TabIndex = 6
         Me.tabPrincipal.TabPages.Add(Me.vtab1)
         Me.tabPrincipal.TabPages.Add(Me.vtab2)
+        Me.tabPrincipal.TabPages.Add(Me.vtab3)
         Me.tabPrincipal.TabsAreaBackColor = System.Drawing.Color.OldLace
         Me.tabPrincipal.TabsInitialOffset = 40
         Me.tabPrincipal.TabsShape = VIBlend.WinForms.Controls.TabsShape.Chrome
@@ -283,15 +285,15 @@ Partial Class frmVendaVista
         '
         'vtab2
         '
-        Me.vtab2.Controls.Add(Me.VPanel3)
-        Me.vtab2.Controls.Add(Me.pnlTroca)
-        Me.vtab2.Controls.Add(Me.VPanel2)
-        Me.vtab2.Controls.Add(Me.btnLimparPagamentos)
-        Me.vtab2.Controls.Add(Me.btnTroca)
+        Me.vtab2.Controls.Add(Me.dgvAReceber)
         Me.vtab2.Controls.Add(Me.txtObservacao)
         Me.vtab2.Controls.Add(Me.Label12)
-        Me.vtab2.Controls.Add(Me.dgvPagamentos)
+        Me.vtab2.Controls.Add(Me.lblTotalCobrado)
+        Me.vtab2.Controls.Add(Me.Label17)
+        Me.vtab2.Controls.Add(Me.Label14)
+        Me.vtab2.Controls.Add(Me.Label5)
         Me.vtab2.Controls.Add(Me.Label6)
+        Me.vtab2.Controls.Add(Me.cmbIDPlano)
         Me.vtab2.Controls.Add(Me.ShapeContainer2)
         Me.vtab2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.vtab2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -301,242 +303,75 @@ Partial Class frmVendaVista
         Me.vtab2.SelectedTextFont = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.vtab2.Size = New System.Drawing.Size(1030, 462)
         Me.vtab2.TabIndex = 0
-        Me.vtab2.Text = "Pagamentos"
+        Me.vtab2.Text = "Forma de Cobrança"
         Me.vtab2.TextFont = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.vtab2.TooltipText = "TabPage"
         Me.vtab2.UseDefaultTextFont = False
         Me.vtab2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.RETROBLUE
         Me.vtab2.Visible = False
         '
-        'VPanel3
+        'dgvAReceber
         '
-        Me.VPanel3.AllowAnimations = True
-        Me.VPanel3.BorderRadius = 0
-        '
-        'VPanel3.Content
-        '
-        Me.VPanel3.Content.AutoScroll = True
-        Me.VPanel3.Content.BackColor = System.Drawing.SystemColors.Control
-        Me.VPanel3.Content.Controls.Add(Me.lblValorProdutos)
-        Me.VPanel3.Content.Controls.Add(Me.Label5)
-        Me.VPanel3.Content.Location = New System.Drawing.Point(1, 1)
-        Me.VPanel3.Content.Name = "Content"
-        Me.VPanel3.Content.Size = New System.Drawing.Size(212, 39)
-        Me.VPanel3.Content.TabIndex = 3
-        Me.VPanel3.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
-        Me.VPanel3.Location = New System.Drawing.Point(809, 363)
-        Me.VPanel3.Name = "VPanel3"
-        Me.VPanel3.Opacity = 1.0!
-        Me.VPanel3.PanelBorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.VPanel3.Size = New System.Drawing.Size(214, 41)
-        Me.VPanel3.TabIndex = 18
-        Me.VPanel3.Text = "VPanel3"
-        Me.VPanel3.UsePanelBorderColor = True
-        Me.VPanel3.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
-        '
-        'lblValorProdutos
-        '
-        Me.lblValorProdutos.Dock = System.Windows.Forms.DockStyle.Right
-        Me.lblValorProdutos.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblValorProdutos.Location = New System.Drawing.Point(88, 0)
-        Me.lblValorProdutos.Name = "lblValorProdutos"
-        Me.lblValorProdutos.Size = New System.Drawing.Size(124, 39)
-        Me.lblValorProdutos.TabIndex = 12
-        Me.lblValorProdutos.Text = "R$ 0,00"
-        Me.lblValorProdutos.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.BackColor = System.Drawing.Color.Transparent
-        Me.Label5.Location = New System.Drawing.Point(12, 9)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(70, 19)
-        Me.Label5.TabIndex = 17
-        Me.Label5.Text = "Produtos:"
-        '
-        'pnlTroca
-        '
-        Me.pnlTroca.AllowAnimations = True
-        Me.pnlTroca.BorderRadius = 0
-        '
-        'pnlTroca.Content
-        '
-        Me.pnlTroca.Content.AutoScroll = True
-        Me.pnlTroca.Content.BackColor = System.Drawing.SystemColors.Control
-        Me.pnlTroca.Content.Controls.Add(Me.lblValorDevolucao)
-        Me.pnlTroca.Content.Controls.Add(Me.lblTroca)
-        Me.pnlTroca.Content.Location = New System.Drawing.Point(1, 1)
-        Me.pnlTroca.Content.Name = "Content"
-        Me.pnlTroca.Content.Size = New System.Drawing.Size(212, 39)
-        Me.pnlTroca.Content.TabIndex = 3
-        Me.pnlTroca.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
-        Me.pnlTroca.Location = New System.Drawing.Point(809, 412)
-        Me.pnlTroca.Name = "pnlTroca"
-        Me.pnlTroca.Opacity = 1.0!
-        Me.pnlTroca.PanelBorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.pnlTroca.Size = New System.Drawing.Size(214, 41)
-        Me.pnlTroca.TabIndex = 18
-        Me.pnlTroca.Text = "VPanel3"
-        Me.pnlTroca.UsePanelBorderColor = True
-        Me.pnlTroca.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
-        '
-        'lblValorDevolucao
-        '
-        Me.lblValorDevolucao.Dock = System.Windows.Forms.DockStyle.Right
-        Me.lblValorDevolucao.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblValorDevolucao.Location = New System.Drawing.Point(67, 0)
-        Me.lblValorDevolucao.Name = "lblValorDevolucao"
-        Me.lblValorDevolucao.Size = New System.Drawing.Size(145, 39)
-        Me.lblValorDevolucao.TabIndex = 12
-        Me.lblValorDevolucao.Text = "R$ 0,00"
-        Me.lblValorDevolucao.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'lblTroca
-        '
-        Me.lblTroca.AutoSize = True
-        Me.lblTroca.BackColor = System.Drawing.Color.Transparent
-        Me.lblTroca.Location = New System.Drawing.Point(12, 9)
-        Me.lblTroca.Name = "lblTroca"
-        Me.lblTroca.Size = New System.Drawing.Size(48, 19)
-        Me.lblTroca.TabIndex = 17
-        Me.lblTroca.Text = "Troca:"
-        '
-        'VPanel2
-        '
-        Me.VPanel2.AllowAnimations = True
-        Me.VPanel2.BackColor = System.Drawing.SystemColors.Control
-        Me.VPanel2.BorderRadius = 0
-        '
-        'VPanel2.Content
-        '
-        Me.VPanel2.Content.AutoScroll = True
-        Me.VPanel2.Content.BackColor = System.Drawing.SystemColors.Control
-        Me.VPanel2.Content.Controls.Add(Me.lblTotalPago)
-        Me.VPanel2.Content.Controls.Add(Me.Label17)
-        Me.VPanel2.Content.Location = New System.Drawing.Point(1, 1)
-        Me.VPanel2.Content.Name = "Content"
-        Me.VPanel2.Content.Size = New System.Drawing.Size(454, 39)
-        Me.VPanel2.Content.TabIndex = 3
-        Me.VPanel2.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
-        Me.VPanel2.Location = New System.Drawing.Point(23, 364)
-        Me.VPanel2.Name = "VPanel2"
-        Me.VPanel2.Opacity = 1.0!
-        Me.VPanel2.PanelBorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.VPanel2.Size = New System.Drawing.Size(456, 41)
-        Me.VPanel2.TabIndex = 10
-        Me.VPanel2.Text = "VPanel2"
-        Me.VPanel2.UsePanelBorderColor = True
-        Me.VPanel2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
-        '
-        'lblTotalPago
-        '
-        Me.lblTotalPago.BackColor = System.Drawing.Color.Transparent
-        Me.lblTotalPago.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTotalPago.Location = New System.Drawing.Point(270, 0)
-        Me.lblTotalPago.Name = "lblTotalPago"
-        Me.lblTotalPago.Size = New System.Drawing.Size(151, 39)
-        Me.lblTotalPago.TabIndex = 4
-        Me.lblTotalPago.Text = "R$ 0,00"
-        Me.lblTotalPago.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
-        'Label17
-        '
-        Me.Label17.AutoSize = True
-        Me.Label17.BackColor = System.Drawing.Color.Transparent
-        Me.Label17.Location = New System.Drawing.Point(147, 9)
-        Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(109, 19)
-        Me.Label17.TabIndex = 3
-        Me.Label17.Text = "Total Recebido:"
-        '
-        'btnLimparPagamentos
-        '
-        Me.btnLimparPagamentos.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.btnLimparPagamentos.FlatAppearance.BorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.btnLimparPagamentos.FlatAppearance.MouseOverBackColor = System.Drawing.Color.PeachPuff
-        Me.btnLimparPagamentos.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnLimparPagamentos.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnLimparPagamentos.Image = Global.NovaSiao.My.Resources.Resources.delete
-        Me.btnLimparPagamentos.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnLimparPagamentos.Location = New System.Drawing.Point(304, 412)
-        Me.btnLimparPagamentos.Name = "btnLimparPagamentos"
-        Me.btnLimparPagamentos.Size = New System.Drawing.Size(175, 39)
-        Me.btnLimparPagamentos.TabIndex = 5
-        Me.btnLimparPagamentos.TabStop = False
-        Me.btnLimparPagamentos.Text = "Limpar Pagamentos"
-        Me.btnLimparPagamentos.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.btnLimparPagamentos.UseVisualStyleBackColor = True
-        '
-        'btnTroca
-        '
-        Me.btnTroca.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.btnTroca.FlatAppearance.BorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.btnTroca.FlatAppearance.MouseOverBackColor = System.Drawing.Color.PeachPuff
-        Me.btnTroca.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnTroca.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnTroca.Image = Global.NovaSiao.My.Resources.Resources.refresh
-        Me.btnTroca.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnTroca.Location = New System.Drawing.Point(635, 412)
-        Me.btnTroca.Name = "btnTroca"
-        Me.btnTroca.Size = New System.Drawing.Size(168, 39)
-        Me.btnTroca.TabIndex = 6
-        Me.btnTroca.TabStop = False
-        Me.btnTroca.Text = "Inserir &Troca"
-        Me.btnTroca.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.btnTroca.UseVisualStyleBackColor = True
-        '
-        'txtObservacao
-        '
-        Me.txtObservacao.Location = New System.Drawing.Point(529, 52)
-        Me.txtObservacao.Multiline = True
-        Me.txtObservacao.Name = "txtObservacao"
-        Me.txtObservacao.Size = New System.Drawing.Size(476, 132)
-        Me.txtObservacao.TabIndex = 8
-        '
-        'Label12
-        '
-        Me.Label12.AutoSize = True
-        Me.Label12.BackColor = System.Drawing.Color.Transparent
-        Me.Label12.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.Location = New System.Drawing.Point(529, 19)
-        Me.Label12.Name = "Label12"
-        Me.Label12.Size = New System.Drawing.Size(234, 26)
-        Me.Label12.TabIndex = 7
-        Me.Label12.Text = "Observações Importantes:"
-        '
-        'dgvPagamentos
-        '
-        Me.dgvPagamentos.AllowUserToAddRows = False
-        Me.dgvPagamentos.AllowUserToDeleteRows = False
-        Me.dgvPagamentos.BackgroundColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(243, Byte), Integer))
-        Me.dgvPagamentos.BorderStyle = System.Windows.Forms.BorderStyle.None
-        Me.dgvPagamentos.ColumnHeadersHeight = 30
-        Me.dgvPagamentos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnID, Me.clnMovForma, Me.clnValor})
-        Me.dgvPagamentos.EnableHeadersVisualStyles = False
-        Me.dgvPagamentos.Location = New System.Drawing.Point(23, 52)
-        Me.dgvPagamentos.MultiSelect = False
-        Me.dgvPagamentos.Name = "dgvPagamentos"
-        Me.dgvPagamentos.ReadOnly = True
-        Me.dgvPagamentos.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
-        Me.dgvPagamentos.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.dgvPagamentos.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.dgvPagamentos.Size = New System.Drawing.Size(456, 308)
-        Me.dgvPagamentos.TabIndex = 2
+        Me.dgvAReceber.AllowUserToAddRows = False
+        Me.dgvAReceber.AllowUserToDeleteRows = False
+        Me.dgvAReceber.BackgroundColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(243, Byte), Integer))
+        Me.dgvAReceber.BorderStyle = System.Windows.Forms.BorderStyle.None
+        Me.dgvAReceber.ColumnHeadersHeight = 30
+        Me.dgvAReceber.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnID, Me.clnReg, Me.clnVencimento, Me.clnPermanencia, Me.clnValor})
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvAReceber.DefaultCellStyle = DataGridViewCellStyle6
+        Me.dgvAReceber.EnableHeadersVisualStyles = False
+        Me.dgvAReceber.Location = New System.Drawing.Point(30, 141)
+        Me.dgvAReceber.MultiSelect = False
+        Me.dgvAReceber.Name = "dgvAReceber"
+        Me.dgvAReceber.ReadOnly = True
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle7.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvAReceber.RowHeadersDefaultCellStyle = DataGridViewCellStyle7
+        Me.dgvAReceber.RowHeadersWidth = 30
+        Me.dgvAReceber.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
+        Me.dgvAReceber.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
+        Me.dgvAReceber.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.dgvAReceber.Size = New System.Drawing.Size(447, 210)
+        Me.dgvAReceber.TabIndex = 9
         '
         'clnID
         '
-        Me.clnID.HeaderText = "Reg."
+        Me.clnID.HeaderText = "IDAReceber"
         Me.clnID.Name = "clnID"
         Me.clnID.ReadOnly = True
-        Me.clnID.Width = 90
+        Me.clnID.Visible = False
         '
-        'clnMovForma
+        'clnReg
         '
-        Me.clnMovForma.HeaderText = "Forma"
-        Me.clnMovForma.Name = "clnMovForma"
-        Me.clnMovForma.ReadOnly = True
-        Me.clnMovForma.Width = 200
+        Me.clnReg.HeaderText = "Reg."
+        Me.clnReg.Name = "clnReg"
+        Me.clnReg.ReadOnly = True
+        Me.clnReg.Width = 70
+        '
+        'clnVencimento
+        '
+        Me.clnVencimento.HeaderText = "Vencimento"
+        Me.clnVencimento.Name = "clnVencimento"
+        Me.clnVencimento.ReadOnly = True
+        '
+        'clnPermanencia
+        '
+        Me.clnPermanencia.HeaderText = "Perm."
+        Me.clnPermanencia.Name = "clnPermanencia"
+        Me.clnPermanencia.ReadOnly = True
+        Me.clnPermanencia.Width = 90
         '
         'clnValor
         '
@@ -546,23 +381,97 @@ Partial Class frmVendaVista
         Me.clnValor.HeaderText = "Valor"
         Me.clnValor.Name = "clnValor"
         Me.clnValor.ReadOnly = True
+        Me.clnValor.Width = 120
+        '
+        'txtObservacao
+        '
+        Me.txtObservacao.Location = New System.Drawing.Point(558, 63)
+        Me.txtObservacao.Multiline = True
+        Me.txtObservacao.Name = "txtObservacao"
+        Me.txtObservacao.Size = New System.Drawing.Size(380, 64)
+        Me.txtObservacao.TabIndex = 13
+        '
+        'Label12
+        '
+        Me.Label12.AutoSize = True
+        Me.Label12.BackColor = System.Drawing.Color.Transparent
+        Me.Label12.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label12.Location = New System.Drawing.Point(528, 27)
+        Me.Label12.Name = "Label12"
+        Me.Label12.Size = New System.Drawing.Size(234, 26)
+        Me.Label12.TabIndex = 12
+        Me.Label12.Text = "Observações Importantes:"
+        '
+        'lblTotalCobrado
+        '
+        Me.lblTotalCobrado.BackColor = System.Drawing.Color.Transparent
+        Me.lblTotalCobrado.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.lblTotalCobrado.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTotalCobrado.Location = New System.Drawing.Point(292, 363)
+        Me.lblTotalCobrado.Name = "lblTotalCobrado"
+        Me.lblTotalCobrado.Size = New System.Drawing.Size(151, 32)
+        Me.lblTotalCobrado.TabIndex = 11
+        Me.lblTotalCobrado.Text = "R$ 0,00"
+        Me.lblTotalCobrado.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'Label17
+        '
+        Me.Label17.AutoSize = True
+        Me.Label17.BackColor = System.Drawing.Color.Transparent
+        Me.Label17.Location = New System.Drawing.Point(185, 368)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(103, 19)
+        Me.Label17.TabIndex = 10
+        Me.Label17.Text = "Total Cobrado:"
+        '
+        'Label14
+        '
+        Me.Label14.AutoSize = True
+        Me.Label14.BackColor = System.Drawing.Color.Transparent
+        Me.Label14.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label14.Location = New System.Drawing.Point(25, 27)
+        Me.Label14.Name = "Label14"
+        Me.Label14.Size = New System.Drawing.Size(98, 26)
+        Me.Label14.TabIndex = 1
+        Me.Label14.Text = "Cobrança:"
+        '
+        'Label5
+        '
+        Me.Label5.AutoSize = True
+        Me.Label5.BackColor = System.Drawing.Color.Transparent
+        Me.Label5.Location = New System.Drawing.Point(49, 66)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(102, 19)
+        Me.Label5.TabIndex = 6
+        Me.Label5.Text = "Plano de Pgto."
         '
         'Label6
         '
         Me.Label6.AutoSize = True
         Me.Label6.BackColor = System.Drawing.Color.Transparent
-        Me.Label6.Location = New System.Drawing.Point(19, 25)
+        Me.Label6.Location = New System.Drawing.Point(29, 114)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(157, 19)
-        Me.Label6.TabIndex = 1
-        Me.Label6.Text = "Pagamentos da Venda:"
+        Me.Label6.Size = New System.Drawing.Size(202, 19)
+        Me.Label6.TabIndex = 8
+        Me.Label6.Text = "Desbobramento das Parcelas:"
+        '
+        'cmbIDPlano
+        '
+        Me.cmbIDPlano.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbIDPlano.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbIDPlano.FormattingEnabled = True
+        Me.cmbIDPlano.Location = New System.Drawing.Point(160, 63)
+        Me.cmbIDPlano.Name = "cmbIDPlano"
+        Me.cmbIDPlano.RestrictContentToListItems = True
+        Me.cmbIDPlano.Size = New System.Drawing.Size(234, 27)
+        Me.cmbIDPlano.TabIndex = 7
         '
         'ShapeContainer2
         '
         Me.ShapeContainer2.Location = New System.Drawing.Point(4, 4)
         Me.ShapeContainer2.Margin = New System.Windows.Forms.Padding(0)
         Me.ShapeContainer2.Name = "ShapeContainer2"
-        Me.ShapeContainer2.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.LineShape3})
+        Me.ShapeContainer2.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.LineShape3, Me.LineShape1})
         Me.ShapeContainer2.Size = New System.Drawing.Size(1022, 454)
         Me.ShapeContainer2.TabIndex = 0
         Me.ShapeContainer2.TabStop = False
@@ -572,74 +481,110 @@ Partial Class frmVendaVista
         Me.LineShape3.BorderColor = System.Drawing.Color.SlateGray
         Me.LineShape3.BorderWidth = 3
         Me.LineShape3.Name = "LineShape3"
-        Me.LineShape3.X1 = 760
-        Me.LineShape3.X2 = 1000
-        Me.LineShape3.Y1 = 30
-        Me.LineShape3.Y2 = 30
+        Me.LineShape3.X1 = 757
+        Me.LineShape3.X2 = 947
+        Me.LineShape3.Y1 = 38
+        Me.LineShape3.Y2 = 38
         '
-        'btnVendedorAlterar
+        'LineShape1
         '
-        Me.btnVendedorAlterar.BackgroundImage = Global.NovaSiao.My.Resources.Resources.refresh
-        Me.btnVendedorAlterar.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
-        Me.btnVendedorAlterar.FlatAppearance.BorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.btnVendedorAlterar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnVendedorAlterar.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.btnVendedorAlterar.Location = New System.Drawing.Point(301, 64)
-        Me.btnVendedorAlterar.Name = "btnVendedorAlterar"
-        Me.btnVendedorAlterar.Size = New System.Drawing.Size(23, 23)
-        Me.btnVendedorAlterar.TabIndex = 3
-        Me.btnVendedorAlterar.TabStop = False
-        Me.btnVendedorAlterar.UseVisualStyleBackColor = True
+        Me.LineShape1.BorderColor = System.Drawing.Color.SlateGray
+        Me.LineShape1.BorderWidth = 3
+        Me.LineShape1.Name = "LineShape1"
+        Me.LineShape1.X1 = 121
+        Me.LineShape1.X2 = 446
+        Me.LineShape1.Y1 = 39
+        Me.LineShape1.Y2 = 39
         '
-        'lblVendedor
+        'vtab3
         '
-        Me.lblVendedor.BackColor = System.Drawing.Color.White
-        Me.lblVendedor.Location = New System.Drawing.Point(97, 63)
-        Me.lblVendedor.Name = "lblVendedor"
-        Me.lblVendedor.Size = New System.Drawing.Size(192, 25)
-        Me.lblVendedor.TabIndex = 2
-        Me.lblVendedor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        Me.vtab3.Controls.Add(Me.Label11)
+        Me.vtab3.Controls.Add(Me.dgvVendaNotas)
+        Me.vtab3.Controls.Add(Me.ShapeContainer3)
+        Me.vtab3.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.vtab3.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.vtab3.Location = New System.Drawing.Point(0, 38)
+        Me.vtab3.Name = "vtab3"
+        Me.vtab3.Padding = New System.Windows.Forms.Padding(0)
+        Me.vtab3.SelectedTextFont = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.vtab3.Size = New System.Drawing.Size(1030, 462)
+        Me.vtab3.TabIndex = 5
+        Me.vtab3.Text = "Notas Fiscais"
+        Me.vtab3.TextFont = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.vtab3.TooltipText = "TabPage"
+        Me.vtab3.UseDefaultTextFont = False
+        Me.vtab3.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.RETROBLUE
+        Me.vtab3.Visible = False
         '
-        'Label1
+        'Label11
         '
-        Me.Label1.AutoSize = True
-        Me.Label1.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label1.Location = New System.Drawing.Point(12, 64)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(79, 19)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Vendedor:"
+        Me.Label11.AutoSize = True
+        Me.Label11.BackColor = System.Drawing.Color.Transparent
+        Me.Label11.Font = New System.Drawing.Font("Calibri", 15.75!)
+        Me.Label11.Location = New System.Drawing.Point(20, 15)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(241, 26)
+        Me.Label11.TabIndex = 4
+        Me.Label11.Text = "Notas e/ou Cupons Fiscais:"
         '
-        'RectangleShape1
+        'dgvVendaNotas
         '
-        Me.RectangleShape1.BackColor = System.Drawing.Color.White
-        Me.RectangleShape1.BackStyle = Microsoft.VisualBasic.PowerPacks.BackStyle.Opaque
-        Me.RectangleShape1.BorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.RectangleShape1.FillGradientStyle = Microsoft.VisualBasic.PowerPacks.FillGradientStyle.Horizontal
-        Me.RectangleShape1.Location = New System.Drawing.Point(93, 60)
-        Me.RectangleShape1.Name = "RectangleShape1"
-        Me.RectangleShape1.Size = New System.Drawing.Size(235, 30)
+        Me.dgvVendaNotas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.dgvVendaNotas.Location = New System.Drawing.Point(37, 62)
+        Me.dgvVendaNotas.Name = "dgvVendaNotas"
+        Me.dgvVendaNotas.Size = New System.Drawing.Size(484, 277)
+        Me.dgvVendaNotas.TabIndex = 4
         '
-        'ShapeContainer1
+        'ShapeContainer3
         '
-        Me.ShapeContainer1.Location = New System.Drawing.Point(0, 0)
-        Me.ShapeContainer1.Margin = New System.Windows.Forms.Padding(0)
-        Me.ShapeContainer1.Name = "ShapeContainer1"
-        Me.ShapeContainer1.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.RectangleShape1})
-        Me.ShapeContainer1.Size = New System.Drawing.Size(1049, 667)
-        Me.ShapeContainer1.TabIndex = 11
-        Me.ShapeContainer1.TabStop = False
+        Me.ShapeContainer3.Location = New System.Drawing.Point(4, 4)
+        Me.ShapeContainer3.Margin = New System.Windows.Forms.Padding(0)
+        Me.ShapeContainer3.Name = "ShapeContainer3"
+        Me.ShapeContainer3.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.LineShape5})
+        Me.ShapeContainer3.Size = New System.Drawing.Size(1022, 454)
+        Me.ShapeContainer3.TabIndex = 5
+        Me.ShapeContainer3.TabStop = False
+        '
+        'LineShape5
+        '
+        Me.LineShape5.BorderColor = System.Drawing.Color.SlateGray
+        Me.LineShape5.BorderWidth = 3
+        Me.LineShape5.Name = "LineShape5"
+        Me.LineShape5.X1 = 258
+        Me.LineShape5.X2 = 538
+        Me.LineShape5.Y1 = 26
+        Me.LineShape5.Y2 = 26
+        '
+        'lblCli
+        '
+        Me.lblCli.AutoSize = True
+        Me.lblCli.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblCli.Location = New System.Drawing.Point(12, 65)
+        Me.lblCli.Name = "lblCli"
+        Me.lblCli.Size = New System.Drawing.Size(99, 19)
+        Me.lblCli.TabIndex = 4
+        Me.lblCli.Text = "Filial Destino:"
+        '
+        'lblPessoaDestino
+        '
+        Me.lblPessoaDestino.BackColor = System.Drawing.Color.White
+        Me.lblPessoaDestino.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblPessoaDestino.Location = New System.Drawing.Point(0, 0)
+        Me.lblPessoaDestino.Name = "lblPessoaDestino"
+        Me.lblPessoaDestino.Size = New System.Drawing.Size(346, 29)
+        Me.lblPessoaDestino.TabIndex = 5
+        Me.lblPessoaDestino.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'btnData
         '
         Me.btnData.AllowAnimations = True
         Me.btnData.ArrowDirection = System.Windows.Forms.ArrowDirection.Left
-        Me.btnData.Location = New System.Drawing.Point(266, 24)
+        Me.btnData.Location = New System.Drawing.Point(269, 24)
         Me.btnData.Maximum = 100
         Me.btnData.Minimum = 0
         Me.btnData.Name = "btnData"
         Me.btnData.Size = New System.Drawing.Size(16, 16)
-        Me.btnData.TabIndex = 52
+        Me.btnData.TabIndex = 53
         Me.btnData.TabStop = False
         Me.btnData.Value = 0
         Me.btnData.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
@@ -672,31 +617,31 @@ Partial Class frmVendaVista
         Me.lbl_IdTexto.Text = "Reg."
         Me.lbl_IdTexto.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
-        'lblVendaData
+        'lblTransacaoData
         '
-        Me.lblVendaData.BackColor = System.Drawing.Color.Transparent
-        Me.lblVendaData.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblVendaData.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblVendaData.Location = New System.Drawing.Point(112, 16)
-        Me.lblVendaData.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lblVendaData.Name = "lblVendaData"
-        Me.lblVendaData.Size = New System.Drawing.Size(155, 30)
-        Me.lblVendaData.TabIndex = 48
-        Me.lblVendaData.Text = "01/01/2017"
-        Me.lblVendaData.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblTransacaoData.BackColor = System.Drawing.Color.Transparent
+        Me.lblTransacaoData.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTransacaoData.ForeColor = System.Drawing.Color.AliceBlue
+        Me.lblTransacaoData.Location = New System.Drawing.Point(112, 16)
+        Me.lblTransacaoData.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblTransacaoData.Name = "lblTransacaoData"
+        Me.lblTransacaoData.Size = New System.Drawing.Size(155, 30)
+        Me.lblTransacaoData.TabIndex = 48
+        Me.lblTransacaoData.Text = "01/01/2017"
+        Me.lblTransacaoData.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'lblIDVenda
+        'lblIDTransacao
         '
-        Me.lblIDVenda.BackColor = System.Drawing.Color.Transparent
-        Me.lblIDVenda.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblIDVenda.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblIDVenda.Location = New System.Drawing.Point(5, 16)
-        Me.lblIDVenda.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lblIDVenda.Name = "lblIDVenda"
-        Me.lblIDVenda.Size = New System.Drawing.Size(85, 30)
-        Me.lblIDVenda.TabIndex = 49
-        Me.lblIDVenda.Text = "0001"
-        Me.lblIDVenda.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblIDTransacao.BackColor = System.Drawing.Color.Transparent
+        Me.lblIDTransacao.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblIDTransacao.ForeColor = System.Drawing.Color.AliceBlue
+        Me.lblIDTransacao.Location = New System.Drawing.Point(5, 16)
+        Me.lblIDTransacao.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblIDTransacao.Name = "lblIDTransacao"
+        Me.lblIDTransacao.Size = New System.Drawing.Size(85, 30)
+        Me.lblIDTransacao.TabIndex = 49
+        Me.lblIDTransacao.Text = "0001"
+        Me.lblIDTransacao.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'btnClose
         '
@@ -717,21 +662,22 @@ Partial Class frmVendaVista
         '
         'lblTotalGeral
         '
-        Me.lblTotalGeral.Dock = System.Windows.Forms.DockStyle.Right
-        Me.lblTotalGeral.Font = New System.Drawing.Font("Calibri", 18.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTotalGeral.Location = New System.Drawing.Point(67, 0)
+        Me.lblTotalGeral.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblTotalGeral.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold)
+        Me.lblTotalGeral.Location = New System.Drawing.Point(0, 0)
         Me.lblTotalGeral.Name = "lblTotalGeral"
-        Me.lblTotalGeral.Size = New System.Drawing.Size(145, 37)
-        Me.lblTotalGeral.TabIndex = 12
+        Me.lblTotalGeral.Size = New System.Drawing.Size(200, 37)
+        Me.lblTotalGeral.TabIndex = 9
         Me.lblTotalGeral.Text = "R$ 0,00"
         Me.lblTotalGeral.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'Label13
         '
-        Me.Label13.Location = New System.Drawing.Point(11, 8)
+        Me.Label13.AutoSize = True
+        Me.Label13.Location = New System.Drawing.Point(747, 627)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(49, 19)
-        Me.Label13.TabIndex = 13
+        Me.Label13.Size = New System.Drawing.Size(45, 19)
+        Me.Label13.TabIndex = 8
         Me.Label13.Text = "Total:"
         '
         'lblSituacao
@@ -839,7 +785,7 @@ Partial Class frmVendaVista
         Me.btnFinalizar.RoundedCornersMask = CType(15, Byte)
         Me.btnFinalizar.RoundedCornersRadius = 0
         Me.btnFinalizar.Size = New System.Drawing.Size(140, 42)
-        Me.btnFinalizar.TabIndex = 15
+        Me.btnFinalizar.TabIndex = 10
         Me.btnFinalizar.Text = "&Finalizar"
         Me.btnFinalizar.TextAbsolutePosition = New System.Drawing.Point(20, 1)
         Me.btnFinalizar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -848,32 +794,32 @@ Partial Class frmVendaVista
         Me.btnFinalizar.UseVisualStyleBackColor = False
         Me.btnFinalizar.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICEBLACK
         '
+        'Label18
+        '
+        Me.Label18.AutoSize = True
+        Me.Label18.BackColor = System.Drawing.Color.Transparent
+        Me.Label18.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label18.Location = New System.Drawing.Point(522, 4)
+        Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(43, 13)
+        Me.Label18.TabIndex = 56
+        Me.Label18.Text = "Filial:"
+        Me.Label18.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
         'lblFilial
         '
         Me.lblFilial.BackColor = System.Drawing.Color.Transparent
         Me.lblFilial.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblFilial.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblFilial.Location = New System.Drawing.Point(486, 16)
+        Me.lblFilial.Location = New System.Drawing.Point(473, 16)
         Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblFilial.Name = "lblFilial"
         Me.lblFilial.Size = New System.Drawing.Size(145, 30)
-        Me.lblFilial.TabIndex = 49
+        Me.lblFilial.TabIndex = 55
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.BackColor = System.Drawing.Color.Transparent
-        Me.Label4.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(535, 4)
-        Me.Label4.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(43, 13)
-        Me.Label4.TabIndex = 51
-        Me.Label4.Text = "Filial:"
-        Me.Label4.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'VPanel1
         '
@@ -884,44 +830,66 @@ Partial Class frmVendaVista
         '
         Me.VPanel1.Content.AutoScroll = True
         Me.VPanel1.Content.BackColor = System.Drawing.SystemColors.Control
-        Me.VPanel1.Content.Controls.Add(Me.Label13)
         Me.VPanel1.Content.Controls.Add(Me.lblTotalGeral)
         Me.VPanel1.Content.Location = New System.Drawing.Point(1, 1)
         Me.VPanel1.Content.Name = "Content"
-        Me.VPanel1.Content.Size = New System.Drawing.Size(212, 37)
+        Me.VPanel1.Content.Size = New System.Drawing.Size(200, 37)
         Me.VPanel1.Content.TabIndex = 3
         Me.VPanel1.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
-        Me.VPanel1.Location = New System.Drawing.Point(818, 616)
+        Me.VPanel1.Location = New System.Drawing.Point(837, 616)
         Me.VPanel1.Name = "VPanel1"
         Me.VPanel1.Opacity = 1.0!
         Me.VPanel1.PanelBorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.VPanel1.Size = New System.Drawing.Size(214, 39)
-        Me.VPanel1.TabIndex = 16
+        Me.VPanel1.Size = New System.Drawing.Size(202, 39)
+        Me.VPanel1.TabIndex = 12
         Me.VPanel1.Text = "VPanel1"
         Me.VPanel1.UsePanelBorderColor = True
         Me.VPanel1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
-        'frmVendaVista
+        'VPanel2
+        '
+        Me.VPanel2.AllowAnimations = True
+        Me.VPanel2.BorderRadius = 0
+        '
+        'VPanel2.Content
+        '
+        Me.VPanel2.Content.AutoScroll = True
+        Me.VPanel2.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.VPanel2.Content.Controls.Add(Me.lblPessoaDestino)
+        Me.VPanel2.Content.Location = New System.Drawing.Point(1, 1)
+        Me.VPanel2.Content.Name = "Content"
+        Me.VPanel2.Content.Size = New System.Drawing.Size(346, 29)
+        Me.VPanel2.Content.TabIndex = 3
+        Me.VPanel2.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
+        Me.VPanel2.Location = New System.Drawing.Point(117, 61)
+        Me.VPanel2.Name = "VPanel2"
+        Me.VPanel2.Opacity = 1.0!
+        Me.VPanel2.PanelBorderColor = System.Drawing.SystemColors.ActiveCaption
+        Me.VPanel2.Size = New System.Drawing.Size(348, 31)
+        Me.VPanel2.TabIndex = 13
+        Me.VPanel2.Text = "VPanel2"
+        Me.VPanel2.UsePanelBorderColor = True
+        Me.VPanel2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        '
+        'frmSimplesSaida
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(1049, 667)
+        Me.Controls.Add(Me.VPanel2)
         Me.Controls.Add(Me.VPanel1)
         Me.Controls.Add(Me.btnFinalizar)
-        Me.Controls.Add(Me.btnVendedorAlterar)
-        Me.Controls.Add(Me.lblVendedor)
-        Me.Controls.Add(Me.Label1)
+        Me.Controls.Add(Me.Label13)
+        Me.Controls.Add(Me.lblCli)
         Me.Controls.Add(Me.tabPrincipal)
-        Me.Controls.Add(Me.ShapeContainer1)
         Me.KeyPreview = True
-        Me.Name = "frmVendaVista"
-        Me.Controls.SetChildIndex(Me.ShapeContainer1, 0)
+        Me.Name = "frmSimplesSaida"
         Me.Controls.SetChildIndex(Me.tabPrincipal, 0)
-        Me.Controls.SetChildIndex(Me.Label1, 0)
-        Me.Controls.SetChildIndex(Me.lblVendedor, 0)
-        Me.Controls.SetChildIndex(Me.btnVendedorAlterar, 0)
+        Me.Controls.SetChildIndex(Me.lblCli, 0)
+        Me.Controls.SetChildIndex(Me.Label13, 0)
         Me.Controls.SetChildIndex(Me.btnFinalizar, 0)
         Me.Controls.SetChildIndex(Me.VPanel1, 0)
         Me.Controls.SetChildIndex(Me.Panel1, 0)
+        Me.Controls.SetChildIndex(Me.VPanel2, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.tabPrincipal.ResumeLayout(False)
@@ -929,18 +897,14 @@ Partial Class frmVendaVista
         CType(Me.dgvItens, System.ComponentModel.ISupportInitialize).EndInit()
         Me.vtab2.ResumeLayout(False)
         Me.vtab2.PerformLayout()
-        Me.VPanel3.Content.ResumeLayout(False)
-        Me.VPanel3.Content.PerformLayout()
-        Me.VPanel3.ResumeLayout(False)
-        Me.pnlTroca.Content.ResumeLayout(False)
-        Me.pnlTroca.Content.PerformLayout()
-        Me.pnlTroca.ResumeLayout(False)
-        Me.VPanel2.Content.ResumeLayout(False)
-        Me.VPanel2.Content.PerformLayout()
-        Me.VPanel2.ResumeLayout(False)
-        CType(Me.dgvPagamentos, System.ComponentModel.ISupportInitialize).EndInit()
+        CType(Me.dgvAReceber, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.vtab3.ResumeLayout(False)
+        Me.vtab3.PerformLayout()
+        CType(Me.dgvVendaNotas, System.ComponentModel.ISupportInitialize).EndInit()
         Me.VPanel1.Content.ResumeLayout(False)
         Me.VPanel1.ResumeLayout(False)
+        Me.VPanel2.Content.ResumeLayout(False)
+        Me.VPanel2.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -950,18 +914,20 @@ Partial Class frmVendaVista
     Friend WithEvents vtab1 As VIBlend.WinForms.Controls.vTabPage
     Friend WithEvents dgvItens As DataGridView
     Friend WithEvents vtab2 As VIBlend.WinForms.Controls.vTabPage
-    Friend WithEvents dgvPagamentos As DataGridView
+    Friend WithEvents dgvAReceber As DataGridView
+    Friend WithEvents Label5 As Label
     Friend WithEvents Label6 As Label
-    Friend WithEvents btnVendedorAlterar As Button
-    Friend WithEvents lblVendedor As Label
-    Friend WithEvents Label1 As Label
-    Friend WithEvents RectangleShape1 As PowerPacks.RectangleShape
-    Friend WithEvents ShapeContainer1 As PowerPacks.ShapeContainer
+    Friend WithEvents cmbIDPlano As Controles.ComboBox_OnlyValues
+    Friend WithEvents vtab3 As VIBlend.WinForms.Controls.vTabPage
+    Friend WithEvents Label11 As Label
+    Friend WithEvents dgvVendaNotas As DataGridView
+    Friend WithEvents lblCli As Label
+    Friend WithEvents lblPessoaDestino As Label
     Friend WithEvents btnData As VIBlend.WinForms.Controls.vArrowButton
     Friend WithEvents Label3 As Label
-    Friend WithEvents lblIDVenda As Label
+    Friend WithEvents lblIDTransacao As Label
     Friend WithEvents lbl_IdTexto As Label
-    Friend WithEvents lblVendaData As Label
+    Friend WithEvents lblTransacaoData As Label
     Friend WithEvents btnClose As VIBlend.WinForms.Controls.vFormButton
     Friend WithEvents lblTotalGeral As Label
     Friend WithEvents Label13 As Label
@@ -983,26 +949,24 @@ Partial Class frmVendaVista
     Friend WithEvents VApplicationMenuItem2 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem3 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem4 As VIBlend.WinForms.Controls.vApplicationMenuItem
+    Friend WithEvents Label14 As Label
     Friend WithEvents ShapeContainer2 As PowerPacks.ShapeContainer
-    Friend WithEvents lblTotalPago As Label
+    Friend WithEvents LineShape1 As PowerPacks.LineShape
+    Friend WithEvents lblTotalCobrado As Label
     Friend WithEvents Label17 As Label
     Friend WithEvents txtObservacao As TextBox
     Friend WithEvents Label12 As Label
     Friend WithEvents LineShape3 As PowerPacks.LineShape
     Friend WithEvents btnFinalizar As VIBlend.WinForms.Controls.vButton
-    Friend WithEvents Label4 As Label
+    Friend WithEvents Label18 As Label
     Friend WithEvents lblFilial As Label
+    Friend WithEvents ShapeContainer3 As PowerPacks.ShapeContainer
+    Friend WithEvents LineShape5 As PowerPacks.LineShape
     Friend WithEvents clnID As DataGridViewTextBoxColumn
-    Friend WithEvents clnMovForma As DataGridViewTextBoxColumn
+    Friend WithEvents clnReg As DataGridViewTextBoxColumn
+    Friend WithEvents clnVencimento As DataGridViewTextBoxColumn
+    Friend WithEvents clnPermanencia As DataGridViewTextBoxColumn
     Friend WithEvents clnValor As DataGridViewTextBoxColumn
-    Friend WithEvents btnTroca As Button
-    Friend WithEvents btnLimparPagamentos As Button
     Friend WithEvents VPanel1 As VIBlend.WinForms.Controls.vPanel
     Friend WithEvents VPanel2 As VIBlend.WinForms.Controls.vPanel
-    Friend WithEvents pnlTroca As VIBlend.WinForms.Controls.vPanel
-    Friend WithEvents lblValorDevolucao As Label
-    Friend WithEvents lblTroca As Label
-    Friend WithEvents VPanel3 As VIBlend.WinForms.Controls.vPanel
-    Friend WithEvents lblValorProdutos As Label
-    Friend WithEvents Label5 As Label
 End Class

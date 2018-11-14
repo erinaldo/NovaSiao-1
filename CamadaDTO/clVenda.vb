@@ -19,11 +19,13 @@ Public Class clVenda : Implements IEditableObject
         Dim _CobrancaTipo As Byte 'tinyint
         Dim _JurosMes As Decimal
         Dim _Observacao As String
-        Dim _VendaTipo As Byte
+        Dim _IDVendaTipo As Byte
+        Dim _AgregaDevolucao As Boolean
         Dim _ValorProdutos As Decimal '--- Valor dos PRODUTOS vendidos
         Dim _ValorFrete As Decimal '--- Valor do FRETE a ser cobrado na Venda
         Dim _ValorImpostos As Decimal '--- Valor dos IMPOSTOS a ser cobrado na Venda
         Dim _ValorAcrescimos As Decimal '--- Valor dos ACRECIMOS a ser cobrados
+        Dim _ValorDevolucao As Decimal '--- Valor da DEVOLUCAO a ser ABATIDA
         'tblAReceber =====================================================
         Dim _IDAReceber As Integer?
         Dim _ValorPagoTotal As Decimal
@@ -55,10 +57,13 @@ Public Class clVenda : Implements IEditableObject
             ._TransacaoData = DateTime.Today
             ._CobrancaTipo = 0 'tinyint
             ._IDSituacao = 0
+            ._IDVendaTipo = 1
+            ._AgregaDevolucao = False
             ._ValorProdutos = 0
             ._ValorFrete = 0
             ._ValorImpostos = 0
             ._ValorAcrescimos = 0
+            ._ValorDevolucao = 0
             ._JurosMes = 0
             ._SituacaoAReceber = 0
             ._ValorPagoTotal = 0
@@ -246,6 +251,21 @@ Public Class clVenda : Implements IEditableObject
     '
     Public Property ApelidoFuncionario() As String
     '
+    '
+    '--- Propriedade AgregaDevolucao
+    '------------------------------------------------------
+    Public Property AgregaDevolucao() As Boolean
+        Get
+            Return VData._AgregaDevolucao
+        End Get
+        Set(ByVal value As Boolean)
+            If value <> VData._AgregaDevolucao Then
+                RaiseEvent AoAlterar()
+            End If
+            VData._AgregaDevolucao = value
+        End Set
+    End Property
+    '
     Property CobrancaTipo() As Byte
         Get
             Return VData._CobrancaTipo
@@ -282,15 +302,15 @@ Public Class clVenda : Implements IEditableObject
         End Set
     End Property
     '
-    Property VendaTipo() As Byte
+    Property IDVendaTipo() As Byte
         Get
-            Return VData._VendaTipo
+            Return VData._IDVendaTipo
         End Get
         Set(value As Byte)
-            If Not IsNothing(VData._VendaTipo) AndAlso value <> VData._VendaTipo Then
+            If Not IsNothing(VData._IDVendaTipo) AndAlso value <> VData._IDVendaTipo Then
                 RaiseEvent AoAlterar()
             End If
-            VData._VendaTipo = value
+            VData._IDVendaTipo = value
         End Set
     End Property
     '
@@ -300,7 +320,7 @@ Public Class clVenda : Implements IEditableObject
             Return VData._ValorProdutos
         End Get
         Set(ByVal value As Decimal)
-            If value <> VData._ValorProdutos Then
+            If CInt(value * 100) <> CInt(VData._ValorProdutos * 100) Then
                 RaiseEvent AoAlterar()
             End If
             VData._ValorProdutos = value
@@ -346,10 +366,24 @@ Public Class clVenda : Implements IEditableObject
         End Set
     End Property
     '
+    '--- Propriedade ValorDevolucao
+    '------------------------------------------------------
+    Public Property ValorDevolucao() As Decimal
+        Get
+            Return VData._ValorDevolucao
+        End Get
+        Set(ByVal value As Decimal)
+            If value <> VData._ValorDevolucao Then
+                RaiseEvent AoAlterar()
+            End If
+            VData._ValorDevolucao = value
+        End Set
+    End Property
+    '
     '--- Propriedade TotalVenda
     ReadOnly Property TotalVenda() As Decimal
         Get
-            Return ValorProdutos + ValorFrete + ValorImpostos + ValorAcrescimos
+            Return ValorProdutos + ValorFrete + ValorImpostos + ValorAcrescimos - ValorDevolucao
         End Get
     End Property
     '

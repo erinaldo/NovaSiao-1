@@ -83,6 +83,11 @@ Public Class frmContaDataPadrao
             Return False
         End If
         '
+        '--- verifica se a data padraoe esta bloqueada pelo sistema
+        If DataBloqueada(calDataPadrao.SelectionStart, _IDConta) Then
+            Return False
+        End If
+        '
         Return True
         '
     End Function
@@ -149,7 +154,7 @@ Public Class frmContaDataPadrao
             Dim blData As Date? = mBLL.Conta_GetDataBloqueio(_IDConta)
             '
             If Not IsNothing(blData) Then
-                blData = CDate(blData).AddDays(1)
+                'blData = CDate(blData).AddDays(1)
                 '
                 '-- verifica se a data adicionada é DOMINGO, sendo adiciona um dia
                 If CDate(blData).DayOfWeek = DayOfWeek.Sunday Then CDate(blData).AddDays(1)

@@ -543,7 +543,7 @@ Public Class frmCompra
         '--- Abre o frmItem
         Dim newItem As New clTransacaoItem
         '
-        Dim fItem As New frmCompraItem(Me, TransacaoItemBLL.EnumMovimento.ENTRADA, _Filial, newItem)
+        Dim fItem As New frmCompraItem(Me, precoOrigem.PRECO_COMPRA, _Filial, newItem)
         fItem.ShowDialog()
         '
         '--- Verifica a resposa do Dialog
@@ -588,7 +588,7 @@ Public Class frmCompra
         '--- Abre o frmItem
         Dim itmAtual As clTransacaoItem
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
-        Dim fitem As New frmCompraItem(Me, TransacaoItemBLL.EnumMovimento.ENTRADA, _Filial, itmAtual)
+        Dim fitem As New frmCompraItem(Me, precoOrigem.PRECO_COMPRA, _Filial, itmAtual)
         '
         fitem.ShowDialog()
         '

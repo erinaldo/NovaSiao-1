@@ -5,7 +5,7 @@ Imports System.ComponentModel
 Public Class frmVendaItem
     Private _clItem As clTransacaoItem
     Private _acao As FlagAcao
-    Private _movimento As TransacaoItemBLL.EnumMovimento
+    Private _precoOrigem As precoOrigem
     Private _formOrigem As Form
     Private _filial As Integer?
     Private _IDAlterado As Boolean = False
@@ -13,7 +13,7 @@ Public Class frmVendaItem
     '
 #Region "NEW | PROPERTYS"
     '
-    Sub New(fOrigem As Form, Movimento As TransacaoItemBLL.EnumMovimento, Filial As Integer, Item As clTransacaoItem)
+    Sub New(fOrigem As Form, pOrigem As precoOrigem, Filial As Integer, Item As clTransacaoItem)
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -21,16 +21,14 @@ Public Class frmVendaItem
         ' Add any initialization after the InitializeComponent() call.
         '
         '--- Define se é entrada ou saida no caso de TROCA de produtos
-        _movimento = Movimento '--- DEFINE SE É ENTRADA OU SAÍDA
+        _precoOrigem = pOrigem '--- DEFINE SE É ENTRADA OU SAÍDA
+        BackColor = Color.Azure
+        Panel1.BackColor = Color.SlateGray
+        'BackColor = Color.Beige
+        'Panel1.BackColor = Color.Brown
         '
-        If Movimento = TransacaoItemBLL.EnumMovimento.SAIDA Then
-            lblTitulo.Text = "Saída de Produto - Item"
-            BackColor = Color.Beige
-            Panel1.BackColor = Color.Brown
-        ElseIf Movimento = TransacaoItemBLL.EnumMovimento.ENTRADA Then
+        If fOrigem.Name = "frmTrocaSimples" Then
             lblTitulo.Text = "Entrada de Produto - Item"
-            BackColor = Color.Azure
-            Panel1.BackColor = Color.SlateGray
         End If
         '
         _formOrigem = fOrigem '--- DEFINE O FORMULARIO DE ORIGEM PARA RETORNAR
@@ -94,7 +92,7 @@ Public Class frmVendaItem
         '
         '--- PREENCHE OS DATABINDGS DOS CONTROLES
         '
-        txtRGProduto.DataBindings.Add("Text", BindItem, "RGProduto", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtRGProduto.DataBindings.Add("Text", BindItem, "RGProduto", True, DataSourceUpdateMode.OnValidation)
         txtDesconto.DataBindings.Add("Text", BindItem, "Desconto", True, DataSourceUpdateMode.OnPropertyChanged)
         txtQuantidade.DataBindings.Add("Text", BindItem, "Quantidade", True, DataSourceUpdateMode.OnPropertyChanged)
         lblProduto.DataBindings.Add("Text", BindItem, "Produto", True, DataSourceUpdateMode.OnPropertyChanged)
@@ -144,15 +142,16 @@ Public Class frmVendaItem
     Private Sub txtRGProduto_Validating(sender As Object, e As CancelEventArgs) Handles txtRGProduto.Validating
         '
         '-- Verifica se o controle RGProduto sofreu alguma alteracao
-        If _IDAlterado = False Then Exit Sub
+        Dim txtVal As Integer = If(txtRGProduto.Text.Length > 0, CInt(txtRGProduto.Text), 0)
+        If txtVal = If(_clItem.RGProduto, 0) Then Exit Sub
         '
         Dim itemBLL As New TransacaoItemBLL
         '
-        If String.IsNullOrEmpty(txtRGProduto.Text) Then
-            propItem = New clTransacaoItem
-            e.Cancel = False
-            Exit Sub
-        End If
+        'If String.IsNullOrEmpty(txtRGProduto.Text) Then
+        '    propItem = New clTransacaoItem
+        '    e.Cancel = False
+        '    Exit Sub
+        'End If
         '
         '--- obter as informacoes do produto digitado
         Try
@@ -162,8 +161,10 @@ Public Class frmVendaItem
                 MessageBox.Show("Registro de Produto não encontrado..." & vbNewLine &
                                 "Favor digite um Registro válido.", "Reg. Inválido",
                                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                txtRGProduto.Text = String.Empty
+                If _acao = FlagAcao.INSERIR Then txtRGProduto.Text = String.Empty
+                txtRGProduto.Text = _clItem.RGProduto
                 e.Cancel = True
+                Return
             End If
             '
             With _clItem
@@ -179,17 +180,12 @@ Public Class frmVendaItem
                 .RGProduto = ItemProduto.RGProduto
                 '
                 '--- define o preco de VENDA OU DE COMPRA
-                .Preco = ItemProduto.PVenda
-                '
-                'If _movimento = TransacaoItemBLL.EnumMovimento.SAIDA Then
-                '    .Preco = ItemProduto.PVenda
-                'ElseIf _movimento = TransacaoItemBLL.EnumMovimento.ENTRADA Then
-                '    .Substituicao = 0
-                '    .IPI = 0
-                '    .ICMS = 0
-                '    .MVA = 0
-                '    .Preco = ItemProduto.PCompra
-                'End If
+                If _precoOrigem = precoOrigem.PRECO_VENDA Then
+                    .Preco = ItemProduto.PVenda
+                ElseIf _precoOrigem = precoOrigem.PRECO_COMPRA Then
+                    .Preco = ItemProduto.PCompra
+                    .Desconto = ItemProduto.DescontoCompra
+                End If
                 '
             End With
             '

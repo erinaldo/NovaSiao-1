@@ -82,6 +82,7 @@ Public Class clAReceber : Implements IEditableObject
     Public Enum AReceberOrigem
         Transacao = 1 ' IDOrigem: tblTransacao
         Refinanciamento = 2 ' IDOrigem : tblRefinanciamento
+        SimplesSaida = 3 ' IDOrigem : tblSimples
     End Enum
     '
 #End Region

@@ -103,6 +103,7 @@
     <Compile Include="ProdutoBLL.vb" />
     <Compile Include="ReservaBLL.vb" />
     <Compile Include="SaidaBLL.vb" />
+    <Compile Include="SimplesMovimentacaoBLL.vb" />
     <Compile Include="SQLControl.vb" />
     <Compile Include="TransacaoBLL.vb" />
     <Compile Include="TransportadoraBLL.vb" />

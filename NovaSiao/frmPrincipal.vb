@@ -153,6 +153,10 @@ Public Class frmPrincipal
         ' INICIALIZA O TIMER DA HORA
         '----------------------------------------------------------------
         'lblHora.Text = DateTime.Now.ToShortTimeString
+        '
+        ' HABILITA O HANDLER DE ABERTURA DO MENU
+        '----------------------------------------------------------------
+        MenuOpen_AdHandler()
 
     End Sub
     '
@@ -325,11 +329,20 @@ Public Class frmPrincipal
     '    lblHora.Text = DateTime.Now.ToShortTimeString
     'End Sub
     '
-    Private Sub tsbButtonClick(sender As Object, e As EventArgs) Handles tsbVendas.ButtonClick, tsbAPagar.ButtonClick,
-            tsbAReceber.ButtonClick, tsbClientes.ButtonClick, tsbCompras.ButtonClick, tsbConfig.ButtonClick,
-            tsbProdutos.ButtonClick, tsbCadastros.ButtonClick, tsbCaixa.ButtonClick
+    Private Sub tsbButtonClick(sender As Object, e As EventArgs)
         '
         DirectCast(sender, ToolStripSplitButton).ShowDropDown()
+        '
+    End Sub
+    '
+    Private Sub MenuOpen_AdHandler()
+        '
+        For Each c In tsPrincipal.Items
+            If (c.GetType Is GetType(ToolStripSplitButton)) Then
+                AddHandler DirectCast(c, ToolStripSplitButton).ButtonClick, AddressOf tsbButtonClick
+                AddHandler DirectCast(c, ToolStripSplitButton).MouseHover, AddressOf tsbButtonClick
+            End If
+        Next
         '
     End Sub
     '
@@ -495,20 +508,6 @@ Public Class frmPrincipal
         '
     End Sub
     '
-    Private Sub miNovaTrocaSimples_Click(sender As Object, e As EventArgs) Handles miNovaTrocaSimples.Click
-        Dim v As New AcaoGlobal
-        Dim obj As Object = v.TrocaSimples_Nova
-        '
-        If IsNothing(obj) Then Exit Sub
-        '
-        OcultaMenuPrincipal()
-        Dim f As New frmTrocaSimples(obj)
-        f.MdiParent = Me
-        f.StartPosition = FormStartPosition.CenterScreen
-        f.Show()
-        '
-    End Sub
-    '
     Private Sub miProcurarOperacaoSaida_Click(sender As Object, e As EventArgs) Handles miProcurarOperacaoSaida.Click
         '
         Dim frmP As New frmOperacaoSaidaProcurar
@@ -524,6 +523,21 @@ Public Class frmPrincipal
         OcultaMenuPrincipal()
         frmP.MdiParent = Me
         frmP.Show()
+        '
+    End Sub
+    '
+    Private Sub miNovaSimplesSaida_Click(sender As Object, e As EventArgs) Handles miNovaSimplesSaida.Click
+        '
+        Dim a As New AcaoGlobal
+        Dim obj As Object = a.SimplesSaida_Nova
+        '
+        If IsNothing(obj) Then Exit Sub
+        '
+        OcultaMenuPrincipal()
+        Dim f As New frmSimplesSaida(obj)
+        f.MdiParent = Me
+        f.StartPosition = FormStartPosition.CenterScreen
+        f.Show()
         '
     End Sub
     '
@@ -787,7 +801,7 @@ Public Class frmPrincipal
         f.MdiParent = Me
         f.Show()
     End Sub
-
+    '
     Private Sub miControleDePedidos_Click(sender As Object, e As EventArgs) Handles miControleDePedidos.Click
         OcultaMenuPrincipal()
         Dim f As New frmPedidoProcurar

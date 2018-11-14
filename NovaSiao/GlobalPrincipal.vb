@@ -1,7 +1,11 @@
 ﻿Imports System.Xml
 Imports System.IO
+Imports CamadaBLL
 
 Public Module GlobalPrincipal
+    '
+#Region "PUBLIC VARIANTS"
+    '
     ' VARIANT PUBLICA PARA PASSAGEM DE DADOS
     Public UsuarioAcesso(1) As Integer ' (0)IdUser; (1)UsuarioAcesso
 
@@ -36,6 +40,16 @@ Public Module GlobalPrincipal
         FuturoPresente = 4
     End Enum
     '
+    ' ENUM PARA Origem do Preco
+    Public Enum precoOrigem
+        PRECO_VENDA = 1
+        PRECO_COMPRA = 2
+    End Enum
+    '
+#End Region '/ PUBLIC VAR
+    '
+#Region "PUBLIC FUNCTIONS"
+    '
     ' OCULTAR E REVELAR O MENU PRINCIPAL
     Public Sub OcultaMenuPrincipal()
         frmPrincipal.SContainerPrincipal.Visible = False
@@ -48,25 +62,57 @@ Public Module GlobalPrincipal
         frmPrincipal.Panel1.BackColor = Color.SlateGray
     End Sub
     '
-    '--- VERIFICAR SE EXISTE O ARQUIVO CONFIG XML
-    Private Function MyConfig() As XmlDocument
+    '--- VERIFICA SE A DATA ESTA BLOQUEADA PELO SISTEMA
+    '--- PARECE COM mBLL.Conta_GetDataBloqueio (retorna a data de bloqueio)
+    Public Function DataBloqueada(myData As Date, IDConta As Byte) As Boolean
         '
-        If File.Exists(Application.StartupPath & "\ConfigFiles\Config.xml") = True Then
-            ' ler o arquivo config xml
-            Dim myXML As New XmlDocument
+        Dim mBLL As New MovimentacaoBLL
+        Dim dtBloq As Date? = Nothing
+        '
+        Try
+            dtBloq = mBLL.Conta_GetDataBloqueio(IDConta)
             '
-            Try
-                myXML.Load(Application.StartupPath & "\ConfigFiles\Config.xml")
-                Return myXML
-            Catch ex As Exception
-                Throw ex
-            End Try
+            If IsNothing(dtBloq) Then
+                Return False
+            Else
+                If myData < dtBloq Then
+                    MessageBox.Show("Essa data já está bloqueada pelo sistema..." & vbNewLine &
+                                    "Já existe caixa efetuado posterior a essa data." & vbNewLine &
+                                    "Favor utilizar outra data.", "Data Bloqueada",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information)
+                    Return True
+                Else
+                    Return False
+                End If
+            End If
             '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '--- OBTER DATA DO USUARIO MULTIPLAS FUNCOES
+    Public Function DataInformar(subTitulo As String,
+                                 DataTipo As DataTipo,
+                                 dataPadrao As Date,
+                                 formOrigem As Form) As Date?
+        '
+        Dim frmD As New frmDataInformar(subTitulo, DataTipo, dataPadrao, formOrigem)
+        '
+        frmD.ShowDialog()
+        '
+        If frmD.DialogResult = DialogResult.OK Then
+            Return frmD.propDataInfo
         Else
             Return Nothing
         End If
         '
     End Function
+    '
+#End Region '/PUBLIC FUNCTIONS
+    '
+#Region "CONFIG XML - OBTER SETAR DADOS"
     '
     ' OBTER O VALORES DEFAULT DE CONTROLE
     Public Function ObterDefault(CampoDefault As String) As String
@@ -147,18 +193,26 @@ Public Module GlobalPrincipal
         '
     End Function
     '
-    '--- VERIFICA SE A DATA ESTA BLOQUEADA PELO SISTEMA
-    Public Function DataPermitida(myData As Date, IDFilial As Integer, IDConta As Byte) As Boolean
+#End Region ' /CONFIG XML - OBTER DADOS
+    '
+#Region "CONFIG XML - CONTROLE"
+    '
+    '--- VERIFICAR SE EXISTE O ARQUIVO CONFIG XML
+    Private Function MyConfig() As XmlDocument
         '
-        If 1 = 0 Then
-            MessageBox.Show("Essa data já está bloqueada pelo sistema..." & vbNewLine &
-                "Já existe caixa efetuado posterior a essa data." & vbNewLine &
-                "Favor utilizar outra data.", "Data Bloqueada",
-                MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Return False
+        If File.Exists(Application.StartupPath & "\ConfigFiles\Config.xml") = True Then
+            ' ler o arquivo config xml
+            Dim myXML As New XmlDocument
+            '
+            Try
+                myXML.Load(Application.StartupPath & "\ConfigFiles\Config.xml")
+                Return myXML
+            Catch ex As Exception
+                Throw ex
+            End Try
+            '
         Else
-            MsgBox("Verificação de Data ainda não implementada")
-            Return True
+            Return Nothing
         End If
         '
     End Function
@@ -202,22 +256,6 @@ Public Module GlobalPrincipal
         '
     End Function
     '
-    '--- OBTER DATA DO USUARIO MULTIPLAS FUNCOES
-    Public Function DataInformar(subTitulo As String,
-                                 dataTipo As DataTipo,
-                                 dataPadrao As Date,
-                                 formOrigem As Form) As Date?
-        '
-        Dim frmD As New frmDataInformar(subTitulo, dataTipo, dataPadrao, formOrigem)
-        '
-        frmD.ShowDialog()
-        '
-        If frmD.DialogResult = DialogResult.OK Then
-            Return frmD.propDataInfo
-        Else
-            Return Nothing
-        End If
-        '
-    End Function
+#End Region '/CONFIG XML - CONTROLE
     '
 End Module

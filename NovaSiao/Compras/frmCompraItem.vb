@@ -5,7 +5,7 @@ Imports System.ComponentModel
 Public Class frmCompraItem
     Private _clItem As clTransacaoItem
     Private _acao As FlagAcao
-    Private _movimento As TransacaoItemBLL.EnumMovimento
+    Private _pOrigem As precoOrigem
     Private _formOrigem As Form
     Private _filial As Integer?
     Private BindItem As New BindingSource
@@ -13,13 +13,13 @@ Public Class frmCompraItem
     '
 #Region "NEW | PROPERTYS"
     '
-    Sub New(fOrigem As Form, Movimento As TransacaoItemBLL.EnumMovimento, Filial As Integer, Item As clTransacaoItem)
+    Sub New(fOrigem As Form, pOrigem As precoOrigem, Filial As Integer, Item As clTransacaoItem)
         '
         ' This call is required by the designer.
         InitializeComponent()
         ' 
         ' Add any initialization after the InitializeComponent() call.
-        _movimento = Movimento '--- DEFINE SE É ENTRADA OU SAÍDA PARA OBTER O PREÇO CORRETO
+        _pOrigem = pOrigem '--- DEFINE SE É ENTRADA OU SAÍDA PARA OBTER O PREÇO CORRETO
         _formOrigem = fOrigem '--- DEFINE O FORMULARIO DE ORIGEM PARA RETORNAR
         _filial = Filial
         propItem = Item
@@ -185,10 +185,11 @@ Public Class frmCompraItem
                 .RGProduto = ItemProduto.RGProduto
                 '
                 '--- define o preco de VENDA OU DE COMPRA
-                If _movimento = TransacaoItemBLL.EnumMovimento.SAIDA Then
+                If _pOrigem = precoOrigem.PRECO_VENDA Then
                     .Preco = ItemProduto.PVenda
-                ElseIf _movimento = TransacaoItemBLL.EnumMovimento.ENTRADA Then
+                ElseIf _pOrigem = precoOrigem.PRECO_COMPRA Then
                     .Preco = ItemProduto.PCompra
+                    .Desconto = ItemProduto.DescontoCompra
                     .Substituicao = 0
                     .IPI = 0
                     .ICMS = 0

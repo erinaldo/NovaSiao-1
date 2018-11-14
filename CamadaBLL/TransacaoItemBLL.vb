@@ -43,6 +43,7 @@ Public Class TransacaoItemBLL
                 itn.RGProduto = IIf(IsDBNull(r("RGProduto")), Nothing, r("RGProduto"))
                 itn.CodBarrasA = IIf(IsDBNull(r("CodBarrasA")), Nothing, r("CodBarrasA"))
                 itn.PVenda = IIf(IsDBNull(r("PVenda")), Nothing, r("PVenda"))
+                itn.DescontoCompra = IIf(IsDBNull(r("DescontoCompra")), 0, r("DescontoCompra"))
                 itn.PCompra = IIf(IsDBNull(r("PCompra")), Nothing, r("PCompra"))
                 itn.ProdutoAtivo = IIf(IsDBNull(r("ProdutoAtivo")), Nothing, r("ProdutoAtivo"))
                 itn.Produto = IIf(IsDBNull(r("Produto")), String.Empty, r("Produto"))
@@ -94,6 +95,7 @@ Public Class TransacaoItemBLL
             clItem.Produto = r("Produto")
             clItem.CodBarrasA = r("CodBarrasA")
             clItem.PVenda = r("PVenda")
+            clItem.DescontoCompra = r("DescontoCompra")
             clItem.PCompra = r("PCompra")
             clItem.ProdutoAtivo = r("ProdutoAtivo")
             clItem.Estoque = r("Estoque")
@@ -225,7 +227,7 @@ Public Class TransacaoItemBLL
     End Function
     '
     '==========================================================================================
-    ' RETORNA UMA LISTA DE ITENS TRANSACAO FILTRADO PELO IDCOMPRA
+    ' RETORNA UMA LISTA DE ITENS TRANSACAO FILTRADO PELO IDTRANSACAO
     '==========================================================================================
     Public Function GetCompraItens_IDCompra_List(myIDTransacao As Integer, myFilial As Integer) As List(Of clTransacaoItem)
         Dim objdb As New AcessoDados
@@ -255,6 +257,7 @@ Public Class TransacaoItemBLL
                 itn.RGProduto = IIf(IsDBNull(r("RGProduto")), Nothing, r("RGProduto"))
                 itn.CodBarrasA = IIf(IsDBNull(r("CodBarrasA")), Nothing, r("CodBarrasA"))
                 itn.PVenda = IIf(IsDBNull(r("PVenda")), Nothing, r("PVenda"))
+                itn.DescontoCompra = IIf(IsDBNull(r("DescontoCompra")), Nothing, r("DescontoCompra"))
                 itn.PCompra = IIf(IsDBNull(r("PCompra")), Nothing, r("PCompra"))
                 itn.ProdutoAtivo = IIf(IsDBNull(r("ProdutoAtivo")), Nothing, r("ProdutoAtivo"))
                 itn.Produto = IIf(IsDBNull(r("Produto")), String.Empty, r("Produto"))

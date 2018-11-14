@@ -163,9 +163,9 @@ Public Class frmFuncionario
         'Adiciona todas as possibilidades de instrucao
         dtTipo.Columns.Add("VendaTipo")
         dtTipo.Columns.Add("Tipo")
-        dtTipo.Rows.Add(New Object() {0, "Varejo"})
-        dtTipo.Rows.Add(New Object() {1, "Atacado"})
-        dtTipo.Rows.Add(New Object() {2, "Todas"})
+        dtTipo.Rows.Add(New Object() {1, "Varejo"})
+        dtTipo.Rows.Add(New Object() {2, "Atacado"})
+        dtTipo.Rows.Add(New Object() {0, "Todas"})
         With cmbVendaTipo
             .DataSource = dtTipo
             .ValueMember = "VendaTipo"

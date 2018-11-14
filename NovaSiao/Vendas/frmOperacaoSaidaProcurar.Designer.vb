@@ -21,7 +21,6 @@ Partial Class frmOperacaoSaidaProcurar
     Private Sub InitializeComponent()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Me.cmbOperacao = New Controles.ComboBox_OnlyValues()
         Me.txtProcura = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
@@ -33,23 +32,28 @@ Partial Class frmOperacaoSaidaProcurar
         Me.chkPeriodoTodos = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.dgvListagem = New System.Windows.Forms.DataGridView()
+        Me.btnCancelar = New System.Windows.Forms.Button()
+        Me.btnEscolher = New System.Windows.Forms.Button()
+        Me.pnlVenda = New System.Windows.Forms.Panel()
+        Me.lbl7 = New System.Windows.Forms.Label()
+        Me.lbl6 = New System.Windows.Forms.Label()
+        Me.lbl5 = New System.Windows.Forms.Label()
+        Me.lbl1 = New System.Windows.Forms.Label()
+        Me.lbl3 = New System.Windows.Forms.Label()
+        Me.lbl4 = New System.Windows.Forms.Label()
+        Me.lbl2 = New System.Windows.Forms.Label()
+        Me.pnlMes = New System.Windows.Forms.Panel()
+        Me.dtMes = New System.Windows.Forms.MonthCalendar()
+        Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
+        Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.VendaData = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.CadastroNome = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.ApelidoFuncionario = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.btnCancelar = New System.Windows.Forms.Button()
-        Me.btnEscolher = New System.Windows.Forms.Button()
-        Me.pnlVenda = New System.Windows.Forms.Panel()
-        Me.Label10 = New System.Windows.Forms.Label()
-        Me.Label9 = New System.Windows.Forms.Label()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.pnlMes = New System.Windows.Forms.Panel()
-        Me.dtMes = New System.Windows.Forms.MonthCalendar()
-        Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
+        Me.cmbOperacao = New Controles.ComboBox_OnlyValues()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.dgvListagem, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -71,17 +75,6 @@ Partial Class frmOperacaoSaidaProcurar
         Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblTitulo.Size = New System.Drawing.Size(390, 34)
         Me.lblTitulo.Text = "Operações de Saída - Procurar e Abrir"
-        '
-        'cmbOperacao
-        '
-        Me.cmbOperacao.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbOperacao.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbOperacao.FormattingEnabled = True
-        Me.cmbOperacao.Location = New System.Drawing.Point(141, 66)
-        Me.cmbOperacao.Name = "cmbOperacao"
-        Me.cmbOperacao.RestrictContentToListItems = True
-        Me.cmbOperacao.Size = New System.Drawing.Size(264, 27)
-        Me.cmbOperacao.TabIndex = 1
         '
         'txtProcura
         '
@@ -218,6 +211,168 @@ Partial Class frmOperacaoSaidaProcurar
         Me.dgvListagem.Size = New System.Drawing.Size(920, 368)
         Me.dgvListagem.TabIndex = 5
         '
+        'btnCancelar
+        '
+        Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.btnCancelar.ForeColor = System.Drawing.Color.DarkRed
+        Me.btnCancelar.Location = New System.Drawing.Point(812, 552)
+        Me.btnCancelar.Name = "btnCancelar"
+        Me.btnCancelar.Size = New System.Drawing.Size(120, 41)
+        Me.btnCancelar.TabIndex = 8
+        Me.btnCancelar.Text = "&Cancelar"
+        Me.btnCancelar.UseVisualStyleBackColor = True
+        '
+        'btnEscolher
+        '
+        Me.btnEscolher.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.btnEscolher.ForeColor = System.Drawing.Color.DarkBlue
+        Me.btnEscolher.Location = New System.Drawing.Point(686, 552)
+        Me.btnEscolher.Name = "btnEscolher"
+        Me.btnEscolher.Size = New System.Drawing.Size(120, 41)
+        Me.btnEscolher.TabIndex = 7
+        Me.btnEscolher.Text = "&Escolher"
+        Me.btnEscolher.UseVisualStyleBackColor = True
+        '
+        'pnlVenda
+        '
+        Me.pnlVenda.BackColor = System.Drawing.Color.LightSteelBlue
+        Me.pnlVenda.Controls.Add(Me.lbl7)
+        Me.pnlVenda.Controls.Add(Me.lbl6)
+        Me.pnlVenda.Controls.Add(Me.lbl5)
+        Me.pnlVenda.Controls.Add(Me.lbl1)
+        Me.pnlVenda.Controls.Add(Me.lbl3)
+        Me.pnlVenda.Controls.Add(Me.lbl4)
+        Me.pnlVenda.Controls.Add(Me.lbl2)
+        Me.pnlVenda.Location = New System.Drawing.Point(12, 149)
+        Me.pnlVenda.Name = "pnlVenda"
+        Me.pnlVenda.Size = New System.Drawing.Size(920, 28)
+        Me.pnlVenda.TabIndex = 5
+        '
+        'lbl7
+        '
+        Me.lbl7.AutoSize = True
+        Me.lbl7.BackColor = System.Drawing.Color.Transparent
+        Me.lbl7.Location = New System.Drawing.Point(833, 4)
+        Me.lbl7.Name = "lbl7"
+        Me.lbl7.Size = New System.Drawing.Size(25, 19)
+        Me.lbl7.TabIndex = 7
+        Me.lbl7.Text = "Sit"
+        '
+        'lbl6
+        '
+        Me.lbl6.AutoSize = True
+        Me.lbl6.BackColor = System.Drawing.Color.Transparent
+        Me.lbl6.Location = New System.Drawing.Point(740, 4)
+        Me.lbl6.Name = "lbl6"
+        Me.lbl6.Size = New System.Drawing.Size(70, 19)
+        Me.lbl6.TabIndex = 7
+        Me.lbl6.Text = "Cobrança"
+        '
+        'lbl5
+        '
+        Me.lbl5.AutoSize = True
+        Me.lbl5.BackColor = System.Drawing.Color.Transparent
+        Me.lbl5.Location = New System.Drawing.Point(647, 4)
+        Me.lbl5.Name = "lbl5"
+        Me.lbl5.Size = New System.Drawing.Size(78, 19)
+        Me.lbl5.TabIndex = 7
+        Me.lbl5.Text = "Valor Total"
+        '
+        'lbl1
+        '
+        Me.lbl1.AutoSize = True
+        Me.lbl1.BackColor = System.Drawing.Color.Transparent
+        Me.lbl1.Location = New System.Drawing.Point(33, 4)
+        Me.lbl1.Name = "lbl1"
+        Me.lbl1.Size = New System.Drawing.Size(38, 19)
+        Me.lbl1.TabIndex = 7
+        Me.lbl1.Text = "Reg."
+        '
+        'lbl3
+        '
+        Me.lbl3.AutoSize = True
+        Me.lbl3.BackColor = System.Drawing.Color.Transparent
+        Me.lbl3.Location = New System.Drawing.Point(183, 4)
+        Me.lbl3.Name = "lbl3"
+        Me.lbl3.Size = New System.Drawing.Size(142, 19)
+        Me.lbl3.TabIndex = 7
+        Me.lbl3.Text = "Nome / Razão Social"
+        '
+        'lbl4
+        '
+        Me.lbl4.AutoSize = True
+        Me.lbl4.BackColor = System.Drawing.Color.Transparent
+        Me.lbl4.Location = New System.Drawing.Point(481, 4)
+        Me.lbl4.Name = "lbl4"
+        Me.lbl4.Size = New System.Drawing.Size(70, 19)
+        Me.lbl4.TabIndex = 7
+        Me.lbl4.Text = "Vendedor"
+        '
+        'lbl2
+        '
+        Me.lbl2.AutoSize = True
+        Me.lbl2.BackColor = System.Drawing.Color.Transparent
+        Me.lbl2.Location = New System.Drawing.Point(110, 4)
+        Me.lbl2.Name = "lbl2"
+        Me.lbl2.Size = New System.Drawing.Size(40, 19)
+        Me.lbl2.TabIndex = 7
+        Me.lbl2.Text = "Data"
+        '
+        'pnlMes
+        '
+        Me.pnlMes.Controls.Add(Me.dtMes)
+        Me.pnlMes.Location = New System.Drawing.Point(636, 130)
+        Me.pnlMes.Name = "pnlMes"
+        Me.pnlMes.Size = New System.Drawing.Size(234, 166)
+        Me.pnlMes.TabIndex = 10
+        Me.pnlMes.Visible = False
+        '
+        'dtMes
+        '
+        Me.dtMes.Location = New System.Drawing.Point(4, 4)
+        Me.dtMes.Name = "dtMes"
+        Me.dtMes.TabIndex = 0
+        '
+        'btnClose
+        '
+        Me.btnClose.AllowAnimations = True
+        Me.btnClose.BackColor = System.Drawing.Color.Transparent
+        Me.btnClose.ButtonType = VIBlend.WinForms.Controls.vFormButtonType.CloseButton
+        Me.btnClose.ForeColor = System.Drawing.Color.Firebrick
+        Me.btnClose.Location = New System.Drawing.Point(912, 12)
+        Me.btnClose.Name = "btnClose"
+        Me.btnClose.RibbonStyle = False
+        Me.btnClose.RoundedCornersMask = CType(15, Byte)
+        Me.btnClose.ShowFocusRectangle = False
+        Me.btnClose.Size = New System.Drawing.Size(20, 20)
+        Me.btnClose.TabIndex = 47
+        Me.btnClose.TabStop = False
+        Me.btnClose.UseVisualStyleBackColor = False
+        Me.btnClose.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICE2003SILVER
+        '
+        'DataGridViewTextBoxColumn1
+        '
+        Me.DataGridViewTextBoxColumn1.HeaderText = "Reg."
+        Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
+        Me.DataGridViewTextBoxColumn1.Width = 50
+        '
+        'DataGridViewTextBoxColumn2
+        '
+        Me.DataGridViewTextBoxColumn2.HeaderText = "Data"
+        Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
+        '
+        'DataGridViewTextBoxColumn3
+        '
+        Me.DataGridViewTextBoxColumn3.HeaderText = "Nome / Razão Social"
+        Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
+        Me.DataGridViewTextBoxColumn3.Width = 300
+        '
+        'DataGridViewTextBoxColumn4
+        '
+        Me.DataGridViewTextBoxColumn4.HeaderText = "Vendedor"
+        Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
+        Me.DataGridViewTextBoxColumn4.Width = 150
+        '
         'ID
         '
         Me.ID.HeaderText = "Reg."
@@ -245,144 +400,16 @@ Partial Class frmOperacaoSaidaProcurar
         Me.ApelidoFuncionario.ReadOnly = True
         Me.ApelidoFuncionario.Width = 150
         '
-        'btnCancelar
+        'cmbOperacao
         '
-        Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCancelar.ForeColor = System.Drawing.Color.DarkRed
-        Me.btnCancelar.Location = New System.Drawing.Point(812, 552)
-        Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(120, 41)
-        Me.btnCancelar.TabIndex = 8
-        Me.btnCancelar.Text = "&Cancelar"
-        Me.btnCancelar.UseVisualStyleBackColor = True
-        '
-        'btnEscolher
-        '
-        Me.btnEscolher.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnEscolher.ForeColor = System.Drawing.Color.DarkBlue
-        Me.btnEscolher.Location = New System.Drawing.Point(686, 552)
-        Me.btnEscolher.Name = "btnEscolher"
-        Me.btnEscolher.Size = New System.Drawing.Size(120, 41)
-        Me.btnEscolher.TabIndex = 7
-        Me.btnEscolher.Text = "&Escolher"
-        Me.btnEscolher.UseVisualStyleBackColor = True
-        '
-        'pnlVenda
-        '
-        Me.pnlVenda.BackColor = System.Drawing.Color.LightSteelBlue
-        Me.pnlVenda.Controls.Add(Me.Label10)
-        Me.pnlVenda.Controls.Add(Me.Label9)
-        Me.pnlVenda.Controls.Add(Me.Label6)
-        Me.pnlVenda.Controls.Add(Me.Label4)
-        Me.pnlVenda.Controls.Add(Me.Label7)
-        Me.pnlVenda.Controls.Add(Me.Label5)
-        Me.pnlVenda.Controls.Add(Me.Label8)
-        Me.pnlVenda.Location = New System.Drawing.Point(12, 149)
-        Me.pnlVenda.Name = "pnlVenda"
-        Me.pnlVenda.Size = New System.Drawing.Size(920, 28)
-        Me.pnlVenda.TabIndex = 5
-        '
-        'Label10
-        '
-        Me.Label10.AutoSize = True
-        Me.Label10.BackColor = System.Drawing.Color.Transparent
-        Me.Label10.Location = New System.Drawing.Point(833, 4)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(25, 19)
-        Me.Label10.TabIndex = 7
-        Me.Label10.Text = "Sit"
-        '
-        'Label9
-        '
-        Me.Label9.AutoSize = True
-        Me.Label9.BackColor = System.Drawing.Color.Transparent
-        Me.Label9.Location = New System.Drawing.Point(740, 4)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(70, 19)
-        Me.Label9.TabIndex = 7
-        Me.Label9.Text = "Cobrança"
-        '
-        'Label6
-        '
-        Me.Label6.AutoSize = True
-        Me.Label6.BackColor = System.Drawing.Color.Transparent
-        Me.Label6.Location = New System.Drawing.Point(647, 4)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(78, 19)
-        Me.Label6.TabIndex = 7
-        Me.Label6.Text = "Valor Total"
-        '
-        'Label4
-        '
-        Me.Label4.AutoSize = True
-        Me.Label4.BackColor = System.Drawing.Color.Transparent
-        Me.Label4.Location = New System.Drawing.Point(33, 4)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(38, 19)
-        Me.Label4.TabIndex = 7
-        Me.Label4.Text = "Reg."
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.BackColor = System.Drawing.Color.Transparent
-        Me.Label7.Location = New System.Drawing.Point(183, 4)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(142, 19)
-        Me.Label7.TabIndex = 7
-        Me.Label7.Text = "Nome / Razão Social"
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.BackColor = System.Drawing.Color.Transparent
-        Me.Label5.Location = New System.Drawing.Point(481, 4)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(70, 19)
-        Me.Label5.TabIndex = 7
-        Me.Label5.Text = "Vendedor"
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.BackColor = System.Drawing.Color.Transparent
-        Me.Label8.Location = New System.Drawing.Point(110, 4)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(40, 19)
-        Me.Label8.TabIndex = 7
-        Me.Label8.Text = "Data"
-        '
-        'pnlMes
-        '
-        Me.pnlMes.Controls.Add(Me.dtMes)
-        Me.pnlMes.Location = New System.Drawing.Point(636, 130)
-        Me.pnlMes.Name = "pnlMes"
-        Me.pnlMes.Size = New System.Drawing.Size(234, 166)
-        Me.pnlMes.TabIndex = 10
-        Me.pnlMes.Visible = False
-        '
-        'dtMes
-        '
-        Me.dtMes.Location = New System.Drawing.Point(3, 0)
-        Me.dtMes.Name = "dtMes"
-        Me.dtMes.TabIndex = 0
-        '
-        'btnClose
-        '
-        Me.btnClose.AllowAnimations = True
-        Me.btnClose.BackColor = System.Drawing.Color.Transparent
-        Me.btnClose.ButtonType = VIBlend.WinForms.Controls.vFormButtonType.CloseButton
-        Me.btnClose.ForeColor = System.Drawing.Color.Firebrick
-        Me.btnClose.Location = New System.Drawing.Point(912, 12)
-        Me.btnClose.Name = "btnClose"
-        Me.btnClose.RibbonStyle = False
-        Me.btnClose.RoundedCornersMask = CType(15, Byte)
-        Me.btnClose.ShowFocusRectangle = False
-        Me.btnClose.Size = New System.Drawing.Size(20, 20)
-        Me.btnClose.TabIndex = 47
-        Me.btnClose.TabStop = False
-        Me.btnClose.UseVisualStyleBackColor = False
-        Me.btnClose.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICE2003SILVER
+        Me.cmbOperacao.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbOperacao.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbOperacao.FormattingEnabled = True
+        Me.cmbOperacao.Location = New System.Drawing.Point(141, 66)
+        Me.cmbOperacao.Name = "cmbOperacao"
+        Me.cmbOperacao.RestrictContentToListItems = True
+        Me.cmbOperacao.Size = New System.Drawing.Size(264, 27)
+        Me.cmbOperacao.TabIndex = 1
         '
         'frmOperacaoSaidaProcurar
         '
@@ -437,19 +464,23 @@ Partial Class frmOperacaoSaidaProcurar
     Friend WithEvents btnCancelar As Button
     Friend WithEvents btnEscolher As Button
     Friend WithEvents pnlVenda As Panel
-    Friend WithEvents Label6 As Label
-    Friend WithEvents Label4 As Label
-    Friend WithEvents Label7 As Label
-    Friend WithEvents Label5 As Label
-    Friend WithEvents Label8 As Label
+    Friend WithEvents lbl5 As Label
+    Friend WithEvents lbl1 As Label
+    Friend WithEvents lbl3 As Label
+    Friend WithEvents lbl4 As Label
+    Friend WithEvents lbl2 As Label
     Friend WithEvents ID As DataGridViewTextBoxColumn
     Friend WithEvents VendaData As DataGridViewTextBoxColumn
     Friend WithEvents CadastroNome As DataGridViewTextBoxColumn
     Friend WithEvents ApelidoFuncionario As DataGridViewTextBoxColumn
-    Friend WithEvents Label9 As Label
-    Friend WithEvents Label10 As Label
+    Friend WithEvents lbl6 As Label
+    Friend WithEvents lbl7 As Label
     Friend WithEvents btnMesAtual As VIBlend.WinForms.Controls.vButton
     Friend WithEvents pnlMes As Panel
     Friend WithEvents dtMes As MonthCalendar
     Friend WithEvents btnClose As VIBlend.WinForms.Controls.vFormButton
+    Friend WithEvents DataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn2 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn3 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn4 As DataGridViewTextBoxColumn
 End Class

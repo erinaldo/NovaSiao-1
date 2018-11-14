@@ -19,13 +19,13 @@ Partial Class frmVendaPrazo
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.tabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
         Me.vtab1 = New VIBlend.WinForms.Controls.vTabPage()
         Me.dgvItens = New System.Windows.Forms.DataGridView()
@@ -38,6 +38,8 @@ Partial Class frmVendaPrazo
         Me.clnDesconto = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.vtab2 = New VIBlend.WinForms.Controls.vTabPage()
+        Me.lblTroca = New System.Windows.Forms.Label()
+        Me.btnTroca = New System.Windows.Forms.Button()
         Me.Label19 = New System.Windows.Forms.Label()
         Me.txtVolumes = New Controles.Text_SoNumeros()
         Me.Label10 = New System.Windows.Forms.Label()
@@ -92,8 +94,7 @@ Partial Class frmVendaPrazo
         Me.RectangleShape1 = New Microsoft.VisualBasic.PowerPacks.RectangleShape()
         Me.ShapeContainer1 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
         Me.RectangleShape2 = New Microsoft.VisualBasic.PowerPacks.RectangleShape()
-        Me.btnDataSuperior = New VIBlend.WinForms.Controls.vArrowButton()
-        Me.btnDataAnterior = New VIBlend.WinForms.Controls.vArrowButton()
+        Me.btnData = New VIBlend.WinForms.Controls.vArrowButton()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.lbl_IdTexto = New System.Windows.Forms.Label()
         Me.lblVendaData = New System.Windows.Forms.Label()
@@ -114,6 +115,7 @@ Partial Class frmVendaPrazo
         Me.btnFinalizar = New VIBlend.WinForms.Controls.vButton()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.lblFilial = New System.Windows.Forms.Label()
+        Me.VPanel1 = New VIBlend.WinForms.Controls.vPanel()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -122,6 +124,8 @@ Partial Class frmVendaPrazo
         CType(Me.dgvAReceber, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.vtab3.SuspendLayout()
         CType(Me.dgvVendaNotas, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.VPanel1.Content.SuspendLayout()
+        Me.VPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -132,8 +136,7 @@ Partial Class frmVendaPrazo
         Me.Panel1.Controls.Add(Me.Label15)
         Me.Panel1.Controls.Add(Me.lbl_IdTexto)
         Me.Panel1.Controls.Add(Me.btnClose)
-        Me.Panel1.Controls.Add(Me.btnDataSuperior)
-        Me.Panel1.Controls.Add(Me.btnDataAnterior)
+        Me.Panel1.Controls.Add(Me.btnData)
         Me.Panel1.Controls.Add(Me.lblSituacao)
         Me.Panel1.Controls.Add(Me.lblIDVenda)
         Me.Panel1.Controls.Add(Me.lblVendaData)
@@ -142,9 +145,8 @@ Partial Class frmVendaPrazo
         Me.Panel1.Controls.SetChildIndex(Me.lblVendaData, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblIDVenda, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblSituacao, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.btnDataAnterior, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.btnData, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.btnDataSuperior, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lbl_IdTexto, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label15, 0)
@@ -154,10 +156,12 @@ Partial Class frmVendaPrazo
         '
         'lblTitulo
         '
+        Me.lblTitulo.Dock = System.Windows.Forms.DockStyle.None
         Me.lblTitulo.Font = New System.Drawing.Font("Calibri", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTitulo.Location = New System.Drawing.Point(842, 0)
-        Me.lblTitulo.Size = New System.Drawing.Size(207, 50)
+        Me.lblTitulo.Location = New System.Drawing.Point(686, 4)
+        Me.lblTitulo.Size = New System.Drawing.Size(322, 42)
         Me.lblTitulo.Text = "Venda Prazo"
+        Me.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'tabPrincipal
         '
@@ -207,43 +211,43 @@ Partial Class frmVendaPrazo
         '
         Me.dgvItens.AllowUserToAddRows = False
         Me.dgvItens.AllowUserToDeleteRows = False
-        DataGridViewCellStyle8.BackColor = System.Drawing.Color.Azure
-        Me.dgvItens.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.Azure
+        Me.dgvItens.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvItens.BackgroundColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(243, Byte), Integer))
         Me.dgvItens.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvItens.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal
         Me.dgvItens.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle9.BackColor = System.Drawing.Color.LightSteelBlue
-        DataGridViewCellStyle9.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle9.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvItens.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.Color.LightSteelBlue
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvItens.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvItens.ColumnHeadersHeight = 30
         Me.dgvItens.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnIDTransacaoItem, Me.clnRGProduto, Me.clnProduto, Me.clnQuantidade, Me.clnPreco, Me.clnSubTotal, Me.clnDesconto, Me.clnTotal})
-        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle10.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle10.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle10.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.ControlLightLight
-        DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvItens.DefaultCellStyle = DataGridViewCellStyle10
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle3.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlLightLight
+        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvItens.DefaultCellStyle = DataGridViewCellStyle3
         Me.dgvItens.EnableHeadersVisualStyles = False
         Me.dgvItens.GridColor = System.Drawing.SystemColors.ActiveCaption
         Me.dgvItens.Location = New System.Drawing.Point(9, 9)
         Me.dgvItens.Name = "dgvItens"
         Me.dgvItens.ReadOnly = True
-        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle11.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
-        DataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvItens.RowHeadersDefaultCellStyle = DataGridViewCellStyle11
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle4.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvItens.RowHeadersDefaultCellStyle = DataGridViewCellStyle4
         Me.dgvItens.RowHeadersWidth = 35
         Me.dgvItens.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvItens.Size = New System.Drawing.Size(1012, 444)
@@ -310,6 +314,8 @@ Partial Class frmVendaPrazo
         '
         'vtab2
         '
+        Me.vtab2.Controls.Add(Me.lblTroca)
+        Me.vtab2.Controls.Add(Me.btnTroca)
         Me.vtab2.Controls.Add(Me.Label19)
         Me.vtab2.Controls.Add(Me.txtVolumes)
         Me.vtab2.Controls.Add(Me.Label10)
@@ -356,6 +362,34 @@ Partial Class frmVendaPrazo
         Me.vtab2.UseDefaultTextFont = False
         Me.vtab2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.RETROBLUE
         Me.vtab2.Visible = False
+        '
+        'lblTroca
+        '
+        Me.lblTroca.BackColor = System.Drawing.Color.Transparent
+        Me.lblTroca.Location = New System.Drawing.Point(295, 82)
+        Me.lblTroca.Name = "lblTroca"
+        Me.lblTroca.Size = New System.Drawing.Size(140, 60)
+        Me.lblTroca.TabIndex = 30
+        Me.lblTroca.Text = "Devolução de " & Global.Microsoft.VisualBasic.ChrW(13) & Global.Microsoft.VisualBasic.ChrW(10) & "R$ 0,00"
+        Me.lblTroca.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        Me.lblTroca.Visible = False
+        '
+        'btnTroca
+        '
+        Me.btnTroca.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.btnTroca.FlatAppearance.BorderColor = System.Drawing.SystemColors.ActiveCaption
+        Me.btnTroca.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnTroca.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnTroca.Image = Global.NovaSiao.My.Resources.Resources.refresh
+        Me.btnTroca.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnTroca.Location = New System.Drawing.Point(295, 47)
+        Me.btnTroca.Name = "btnTroca"
+        Me.btnTroca.Size = New System.Drawing.Size(140, 28)
+        Me.btnTroca.TabIndex = 29
+        Me.btnTroca.TabStop = False
+        Me.btnTroca.Text = "Insere &Troca"
+        Me.btnTroca.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.btnTroca.UseVisualStyleBackColor = True
         '
         'Label19
         '
@@ -530,27 +564,27 @@ Partial Class frmVendaPrazo
         Me.dgvAReceber.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvAReceber.ColumnHeadersHeight = 30
         Me.dgvAReceber.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnID, Me.clnReg, Me.clnVencimento, Me.clnPermanencia, Me.clnValor})
-        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle13.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle13.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle13.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
-        DataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvAReceber.DefaultCellStyle = DataGridViewCellStyle13
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvAReceber.DefaultCellStyle = DataGridViewCellStyle6
         Me.dgvAReceber.EnableHeadersVisualStyles = False
         Me.dgvAReceber.Location = New System.Drawing.Point(566, 193)
         Me.dgvAReceber.MultiSelect = False
         Me.dgvAReceber.Name = "dgvAReceber"
         Me.dgvAReceber.ReadOnly = True
-        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle14.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
-        DataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvAReceber.RowHeadersDefaultCellStyle = DataGridViewCellStyle14
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle7.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvAReceber.RowHeadersDefaultCellStyle = DataGridViewCellStyle7
         Me.dgvAReceber.RowHeadersWidth = 30
         Me.dgvAReceber.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.dgvAReceber.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
@@ -587,9 +621,9 @@ Partial Class frmVendaPrazo
         '
         'clnValor
         '
-        DataGridViewCellStyle12.Format = "C2"
-        DataGridViewCellStyle12.NullValue = "0"
-        Me.clnValor.DefaultCellStyle = DataGridViewCellStyle12
+        DataGridViewCellStyle5.Format = "C2"
+        DataGridViewCellStyle5.NullValue = "0"
+        Me.clnValor.DefaultCellStyle = DataGridViewCellStyle5
         Me.clnValor.HeaderText = "Valor"
         Me.clnValor.Name = "clnValor"
         Me.clnValor.ReadOnly = True
@@ -924,33 +958,19 @@ Partial Class frmVendaPrazo
         Me.RectangleShape2.Name = "RectangleShape2"
         Me.RectangleShape2.Size = New System.Drawing.Size(626, 30)
         '
-        'btnDataSuperior
+        'btnData
         '
-        Me.btnDataSuperior.AllowAnimations = True
-        Me.btnDataSuperior.ArrowDirection = System.Windows.Forms.ArrowDirection.Up
-        Me.btnDataSuperior.Location = New System.Drawing.Point(271, 10)
-        Me.btnDataSuperior.Maximum = 100
-        Me.btnDataSuperior.Minimum = 0
-        Me.btnDataSuperior.Name = "btnDataSuperior"
-        Me.btnDataSuperior.Size = New System.Drawing.Size(16, 16)
-        Me.btnDataSuperior.TabIndex = 52
-        Me.btnDataSuperior.TabStop = False
-        Me.btnDataSuperior.Value = 0
-        Me.btnDataSuperior.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
-        '
-        'btnDataAnterior
-        '
-        Me.btnDataAnterior.AllowAnimations = True
-        Me.btnDataAnterior.ArrowDirection = System.Windows.Forms.ArrowDirection.Down
-        Me.btnDataAnterior.Location = New System.Drawing.Point(271, 26)
-        Me.btnDataAnterior.Maximum = 100
-        Me.btnDataAnterior.Minimum = 0
-        Me.btnDataAnterior.Name = "btnDataAnterior"
-        Me.btnDataAnterior.Size = New System.Drawing.Size(16, 16)
-        Me.btnDataAnterior.TabIndex = 53
-        Me.btnDataAnterior.TabStop = False
-        Me.btnDataAnterior.Value = 0
-        Me.btnDataAnterior.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        Me.btnData.AllowAnimations = True
+        Me.btnData.ArrowDirection = System.Windows.Forms.ArrowDirection.Left
+        Me.btnData.Location = New System.Drawing.Point(269, 24)
+        Me.btnData.Maximum = 100
+        Me.btnData.Minimum = 0
+        Me.btnData.Name = "btnData"
+        Me.btnData.Size = New System.Drawing.Size(16, 16)
+        Me.btnData.TabIndex = 53
+        Me.btnData.TabStop = False
+        Me.btnData.Value = 0
+        Me.btnData.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
         'Label3
         '
@@ -1025,11 +1045,11 @@ Partial Class frmVendaPrazo
         '
         'lblTotalGeral
         '
-        Me.lblTotalGeral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
+        Me.lblTotalGeral.Dock = System.Windows.Forms.DockStyle.Fill
         Me.lblTotalGeral.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold)
-        Me.lblTotalGeral.Location = New System.Drawing.Point(837, 613)
+        Me.lblTotalGeral.Location = New System.Drawing.Point(0, 0)
         Me.lblTotalGeral.Name = "lblTotalGeral"
-        Me.lblTotalGeral.Size = New System.Drawing.Size(202, 41)
+        Me.lblTotalGeral.Size = New System.Drawing.Size(200, 37)
         Me.lblTotalGeral.TabIndex = 9
         Me.lblTotalGeral.Text = "R$ 0,00"
         Me.lblTotalGeral.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -1037,11 +1057,11 @@ Partial Class frmVendaPrazo
         'Label13
         '
         Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(749, 622)
+        Me.Label13.Location = New System.Drawing.Point(747, 627)
         Me.Label13.Name = "Label13"
-        Me.Label13.Size = New System.Drawing.Size(84, 19)
+        Me.Label13.Size = New System.Drawing.Size(45, 19)
         Me.Label13.TabIndex = 8
-        Me.Label13.Text = "Total Geral:"
+        Me.Label13.Text = "Total:"
         '
         'lblSituacao
         '
@@ -1184,13 +1204,38 @@ Partial Class frmVendaPrazo
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'VPanel1
+        '
+        Me.VPanel1.AllowAnimations = True
+        Me.VPanel1.BorderRadius = 0
+        '
+        'VPanel1.Content
+        '
+        Me.VPanel1.Content.AutoScroll = True
+        Me.VPanel1.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.VPanel1.Content.Controls.Add(Me.lblTotalGeral)
+        Me.VPanel1.Content.Location = New System.Drawing.Point(1, 1)
+        Me.VPanel1.Content.Name = "Content"
+        Me.VPanel1.Content.Size = New System.Drawing.Size(200, 37)
+        Me.VPanel1.Content.TabIndex = 3
+        Me.VPanel1.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
+        Me.VPanel1.Location = New System.Drawing.Point(837, 616)
+        Me.VPanel1.Name = "VPanel1"
+        Me.VPanel1.Opacity = 1.0!
+        Me.VPanel1.PanelBorderColor = System.Drawing.SystemColors.ActiveCaption
+        Me.VPanel1.Size = New System.Drawing.Size(202, 39)
+        Me.VPanel1.TabIndex = 12
+        Me.VPanel1.Text = "VPanel1"
+        Me.VPanel1.UsePanelBorderColor = True
+        Me.VPanel1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        '
         'frmVendaPrazo
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(1049, 667)
+        Me.Controls.Add(Me.VPanel1)
         Me.Controls.Add(Me.btnFinalizar)
         Me.Controls.Add(Me.Label13)
-        Me.Controls.Add(Me.lblTotalGeral)
         Me.Controls.Add(Me.btnVendedorAlterar)
         Me.Controls.Add(Me.lblCli)
         Me.Controls.Add(Me.lblCliente)
@@ -1207,10 +1252,10 @@ Partial Class frmVendaPrazo
         Me.Controls.SetChildIndex(Me.lblCliente, 0)
         Me.Controls.SetChildIndex(Me.lblCli, 0)
         Me.Controls.SetChildIndex(Me.btnVendedorAlterar, 0)
-        Me.Controls.SetChildIndex(Me.lblTotalGeral, 0)
         Me.Controls.SetChildIndex(Me.Label13, 0)
         Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Controls.SetChildIndex(Me.btnFinalizar, 0)
+        Me.Controls.SetChildIndex(Me.VPanel1, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.tabPrincipal.ResumeLayout(False)
@@ -1222,6 +1267,8 @@ Partial Class frmVendaPrazo
         Me.vtab3.ResumeLayout(False)
         Me.vtab3.PerformLayout()
         CType(Me.dgvVendaNotas, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.VPanel1.Content.ResumeLayout(False)
+        Me.VPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1250,8 +1297,7 @@ Partial Class frmVendaPrazo
     Friend WithEvents RectangleShape1 As PowerPacks.RectangleShape
     Friend WithEvents ShapeContainer1 As PowerPacks.ShapeContainer
     Friend WithEvents RectangleShape2 As PowerPacks.RectangleShape
-    Friend WithEvents btnDataSuperior As VIBlend.WinForms.Controls.vArrowButton
-    Friend WithEvents btnDataAnterior As VIBlend.WinForms.Controls.vArrowButton
+    Friend WithEvents btnData As VIBlend.WinForms.Controls.vArrowButton
     Friend WithEvents Label3 As Label
     Friend WithEvents lblIDVenda As Label
     Friend WithEvents lbl_IdTexto As Label
@@ -1315,4 +1361,7 @@ Partial Class frmVendaPrazo
     Friend WithEvents clnVencimento As DataGridViewTextBoxColumn
     Friend WithEvents clnPermanencia As DataGridViewTextBoxColumn
     Friend WithEvents clnValor As DataGridViewTextBoxColumn
+    Friend WithEvents btnTroca As Button
+    Friend WithEvents lblTroca As Label
+    Friend WithEvents VPanel1 As VIBlend.WinForms.Controls.vPanel
 End Class

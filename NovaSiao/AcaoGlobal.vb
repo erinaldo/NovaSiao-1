@@ -59,7 +59,7 @@ Public Class AcaoGlobal
                 .ValorImpostos = 0
                 .ValorAcrescimos = 0
                 .JurosMes = 0
-                .VendaTipo = 0 '--- varejo
+                .IDVendaTipo = 1 '--- varejo
             End With
             '
             newVenda = vndBLL.SalvaNovaVenda_Procedure_Venda(newVenda)
@@ -126,7 +126,7 @@ Public Class AcaoGlobal
                 .ValorImpostos = 0
                 .ValorAcrescimos = 0
                 .JurosMes = 0
-                .VendaTipo = 0 '--- varejo
+                .IDVendaTipo = 1 '--- varejo
             End With
             '
             newVenda = vndBLL.SalvaNovaVenda_Procedure_Venda(newVenda)
@@ -214,85 +214,71 @@ Public Class AcaoGlobal
     End Function
     '
     '================================================================================
-    ' EFETUA NOVA TROCA SIMPLES
+    ' EFETUA NOVA SIMPLES SAIDA
     '================================================================================
-    Public Function TrocaSimples_Nova() As clTroca
+    Public Function SimplesSaida_Nova() As clSimplesSaida
         '
-        '--- Questiona o VENDEDOR
-        Dim fFunc As New frmFuncionarioProcurar(True)
-        fFunc.ShowDialog()
-        If fFunc.DialogResult = DialogResult.Cancel Then Return Nothing
+        '--- Questiona o CLIENTE
+        Dim frmF As New frmFilialEscolher()
+        frmF.ShowDialog()
+        If frmF.DialogResult = DialogResult.Cancel Then Return Nothing
         '
-        Dim IDFunc As Integer = fFunc.IDEscolhido
-        Dim IDCli As Integer
+        Dim IDFil As Integer = frmF.propIdFilial_Escolha
+        Dim Filial As String = frmF.propFilial_Escolha
         '
-        '--- Questiona CLIENTE DEFINIDO
-        Dim respCliente As DialogResult
-        respCliente = MessageBox.Show("Você deseja uma troca no nome de um Cliente Cadastrado?",
-                      "Inserir Nova Troca", MessageBoxButtons.YesNoCancel,
-                      MessageBoxIcon.Question, MessageBoxDefaultButton.Button2)
+        '--- Verifica se a Filial escolhida é a mesma filialPadrao
+        Dim IDFilialPadrao As Integer = Obter_FilialPadrao()
         '
-        If respCliente = DialogResult.Cancel Then
+        If IDFil = IDFilialPadrao Then
+            '--- Informa ao Usuário sobre Filial diferente
+            MessageBox.Show("Não é possível efetuar uma Simples Saída para a Filial Padrão..." &
+                            vbNewLine &
+                            "A Filial escolhida precisa ser diferente da Filial Atual:" &
+                            vbNewLine & vbNewLine &
+                            ObterConfigValorNode("FilialDescricao").ToUpper,
+                            "Inserir Nova Simples Saída", MessageBoxButtons.OKCancel,
+                            MessageBoxIcon.Information)
             Return Nothing
-        ElseIf respCliente = DialogResult.yes Then
-            '
-            '--- Questiona o CLIENTE
-            Dim fCli As New frmClienteProcurar()
-            fCli.ShowDialog()
-            If fCli.DialogResult = DialogResult.Cancel Then Return Nothing
-            '
-            IDCli = fCli.propClienteID
-            '
-        Else
-            '
-            IDCli = 0 '=> Cliente Varejo
-            '
         End If
         '
-        '--- Pergunta ao Usuário se Deseja inserir nova TROCA
-        If MessageBox.Show("Você deseja realmente inserir uma nova Troca Simples?",
-                           "Inserir Nova Troca", MessageBoxButtons.OKCancel,
+        '--- Pergunta ao Usuário se Deseja inserir nova simples Saída
+        If MessageBox.Show("Você deseja realmente inserir uma nova Simples Saída para a Filial" &
+                           vbNewLine & vbNewLine & Filial.ToUpper,
+                           "Inserir Nova Simples Saída", MessageBoxButtons.OKCancel,
                            MessageBoxIcon.Question) = DialogResult.Cancel Then
             Return Nothing
         End If
         '
-        '--- Insere um novo Registro de Venda à Prazo
+        '--- Insere um novo Registro de Simples Saída
         '---------------------------------------------------------------------------------------
-        Dim tBLL As New TrocaBLL
-        Dim newTroca As New clTroca
-        Dim tranBLL As New TransacaoBLL
+        Dim sBLL As New SimplesMovimentacaoBLL
+        Dim newSimples As New clSimplesSaida With {
+            .IDPessoaDestino = IDFil,
+            .IDPessoaOrigem = IDFilialPadrao,
+            .IDOperacao = 4, '--- SIMPLES SAIDA
+            .CFOP = 1152,
+            .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA,
+            .IDUser = UsuarioAcesso(0),
+            .TransacaoData = ObterDefault("DataPadrao")}
         '
         Try
-            '--- Define os valores iniciais
-            With newTroca
-                .IDPessoaTroca = IDCli
-                .IDFilial = Obter_FilialPadrao()
-                .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA
-                .TrocaData = ObterDefault("DataPadrao")
-                .IDVendedor = IDFunc
-                .CobrancaTipo = 2 '--- venda à prazo
-                .ValorEntrada = 0
-                .ValorSaida = 0
-                .ValorAcrescimos = 0
-                .JurosMes = 0
-                '.TotalTroca = 0
-            End With
+            'Salva no BD
+            newSimples = sBLL.InsertSimplesSaida_Procedure_Classe(newSimples)
             '
-            newTroca = tBLL.InsereNovaTroca_Procedure(newTroca, UsuarioAcesso(0))
-            '
-            If IsNothing(newTroca) Then
-                MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Nova Troca",
-                                "Inserir Nova Troca", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            If IsNothing(newSimples) Then
+                MessageBox.Show("Um erro ocorreu ao inserir Nova Simples Saída",
+                                "Inserir Nova Simples Saída", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Return Nothing
             End If
+            '
         Catch ex As Exception
-            MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Nova Troca" & vbNewLine &
+            MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Nova Simples Saída" & vbNewLine &
                             vbNewLine & ex.Message,
-                            "Inserir Nova Troca", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                            "Inserir Nova Simples Saída", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             Return Nothing
         End Try
         '
-        Return newTroca
+        Return newSimples
         '
     End Function
     '

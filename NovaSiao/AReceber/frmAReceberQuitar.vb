@@ -135,7 +135,7 @@ Public Class frmAReceberQuitar
         End If
         '
         '--- Verifica se a DATA DA ENTRADA é permitida pelo sistema
-        If DataPermitida(propEntrada.EntradaData, Obter_FilialPadrao, propEntrada.IDConta) = False Then
+        If DataBloqueada(propEntrada.EntradaData, propEntrada.IDConta) Then
             Exit Sub
         End If
         '

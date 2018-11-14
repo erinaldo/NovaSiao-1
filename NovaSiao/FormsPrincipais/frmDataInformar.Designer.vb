@@ -28,13 +28,14 @@ Partial Class frmDataInformar
         '
         'Panel1
         '
-        Me.Panel1.Size = New System.Drawing.Size(405, 50)
+        Me.Panel1.Size = New System.Drawing.Size(405, 40)
         Me.Panel1.TabIndex = 0
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(218, 0)
-        Me.lblTitulo.Size = New System.Drawing.Size(187, 50)
+        Me.lblTitulo.Dock = System.Windows.Forms.DockStyle.None
+        Me.lblTitulo.Location = New System.Drawing.Point(216, 3)
+        Me.lblTitulo.Size = New System.Drawing.Size(187, 32)
         Me.lblTitulo.TabIndex = 0
         Me.lblTitulo.Text = "Informe a Data"
         '
@@ -49,9 +50,10 @@ Partial Class frmDataInformar
         '
         'lblSubTitulo
         '
-        Me.lblSubTitulo.Location = New System.Drawing.Point(12, 63)
+        Me.lblSubTitulo.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblSubTitulo.Location = New System.Drawing.Point(12, 56)
         Me.lblSubTitulo.Name = "lblSubTitulo"
-        Me.lblSubTitulo.Size = New System.Drawing.Size(381, 36)
+        Me.lblSubTitulo.Size = New System.Drawing.Size(381, 43)
         Me.lblSubTitulo.TabIndex = 1
         Me.lblSubTitulo.Text = "Informe a Data"
         Me.lblSubTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter

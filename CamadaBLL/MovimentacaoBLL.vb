@@ -28,20 +28,31 @@ Public Class MovimentacaoBLL
     ' GET DATA DE BLOQUEIO DA CONTA INFORMADA 
     '============================================================================================
     Public Function Conta_GetDataBloqueio(IDConta As Int16) As Date?
+        '
         Dim SQL As New SQLControl
-        Dim strSQL As String = "SELECT BloqueioData FROM tblContas WHERE IDConta = " & IDConta
+        SQL.AddParam("@IDConta", IDConta)
+        '
+        Dim strSQL As String = "SELECT BloqueioData FROM tblContas WHERE IDConta = @IDConta"
         '
         Try
             SQL.ExecQuery(strSQL)
             '
+            '--- verifica erro
             If SQL.HasException Then
                 Throw New Exception(SQL.Exception)
             End If
             '
-            Dim dt As DataTable = SQL.DBDT
-            Dim myData As Date? = IIf(IsDBNull(dt.Rows(0)("BloqueioData")), Nothing, dt.Rows(0)("BloqueioData"))
-            '
-            Return myData
+            '--- verifica retorno
+            If SQL.DBDT.Rows.Count > 0 Then
+                '
+                Dim r As DataRow = SQL.DBDT.Rows(0)
+                Dim dtBloq As Date? = If(IsDBNull(r.Item("BloqueioData")), Nothing, r.Item("BloqueioData"))
+                '
+                Return dtBloq
+                '
+            Else
+                Throw New Exception("Não foi encontrada nenhuma conta com esse ID...")
+            End If
             '
         Catch ex As Exception
             Throw ex

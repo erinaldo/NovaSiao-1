@@ -116,7 +116,7 @@ Public Class frmAPagarQuitar
         End If
         '
         '--- Verifica se a DATA DA ENTRADA é permitida pelo sistema
-        If DataPermitida(propSaida.SaidaData, Obter_FilialPadrao, propSaida.IDConta) = False Then
+        If DataBloqueada(propSaida.SaidaData, propSaida.IDConta) Then
             Exit Sub
         End If
         '

@@ -2,7 +2,10 @@
 Imports CamadaDTO
 '
 Public Class frmVendaVista
+    '
+    Private vBLL As New VendaBLL
     Private _Venda As clVenda
+    Private _Troca As clTroca
     Private _ItensList As New List(Of clTransacaoItem)
     Private _EntradaList As New List(Of clEntradas)
     Private bindVenda As New BindingSource
@@ -13,58 +16,71 @@ Public Class frmVendaVista
     Private VerificaAlteracao As Boolean
     '
 #Region "LOAD"
+    '
     Private Property Sit As FlagEstado
+        '
         Get
             Return _Sit
         End Get
+        '
         Set(value As FlagEstado)
+            '
             _Sit = value
             Select Case _Sit
                 Case FlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
                     lblSituacao.Text = "Finalizada"
                     btnFinalizar.Text = "&Fechar"
+                    btnTroca.Enabled = True
+                    btnLimparPagamentos.Enabled = False
                     '
                     btnVendedorAlterar.Enabled = True
-                    btnDataAnterior.Enabled = True
-                    btnDataSuperior.Enabled = True
+                    btnData.Enabled = True
                     txtObservacao.ReadOnly = False
                                         '
                 Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     lblSituacao.Text = "Alterada"
                     btnFinalizar.Text = "&Finalizar"
+                    btnTroca.Enabled = True
+                    btnLimparPagamentos.Enabled = True
                     '
                     btnVendedorAlterar.Enabled = True
-                    btnDataAnterior.Enabled = True
-                    btnDataSuperior.Enabled = True
+                    btnData.Enabled = True
                     txtObservacao.ReadOnly = False
                     '
                 Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     lblSituacao.Text = "Em Aberto"
                     btnFinalizar.Text = "&Finalizar"
+                    btnTroca.Enabled = True
+                    btnLimparPagamentos.Enabled = True
                     '
                     btnVendedorAlterar.Enabled = True
-                    btnDataAnterior.Enabled = True
-                    btnDataSuperior.Enabled = True
+                    btnData.Enabled = True
                     txtObservacao.ReadOnly = False
                     '
                 Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     lblSituacao.Text = "Bloqueada"
                     btnFinalizar.Text = "&Fechar"
+                    btnTroca.Enabled = False
+                    btnLimparPagamentos.Enabled = False
                     '
                     btnVendedorAlterar.Enabled = False
-                    btnDataAnterior.Enabled = False
-                    btnDataSuperior.Enabled = False
+                    btnData.Enabled = False
                     txtObservacao.ReadOnly = True
                     '
             End Select
+            '
         End Set
+        '
     End Property
     '
     Property propVenda As clVenda
+        '
         Get
             Return _Venda
         End Get
+        '
         Set(value As clVenda)
+            '
             VerificaAlteracao = False '--- Inibe a verificacao dos campos IDPlano
             _Venda = value
             _Filial = _Venda.IDPessoaOrigem
@@ -73,6 +89,9 @@ Public Class frmVendaVista
             bindItem.DataSource = _ItensList
             bindEnt.DataSource = _EntradaList
             dgvItens.DataSource = bindItem
+            '
+            '--- Verifica se existe TROCA anexada a venda e preenche o _troca (clTroca)
+            VerificaTroca()
             '
             If IsNothing(bindVenda.DataSource) Then
                 bindVenda.DataSource = _Venda
@@ -110,10 +129,14 @@ Public Class frmVendaVista
                 End Select
             End If
             '
+            '--- Verifica o TotalGeral
+            AtualizaTotalGeral()
+            '
             '--- Permite a verificacao dos campos IDPlano
             VerificaAlteracao = True
             '
         End Set
+        '
     End Property
     '
     Public Sub New(myVenda As clVenda)
@@ -125,7 +148,7 @@ Public Class frmVendaVista
         '
     End Sub
     '
-#End Region
+#End Region ' / LOAD
     '
 #Region "DATABINDING"
     '
@@ -137,13 +160,15 @@ Public Class frmVendaVista
         lblFilial.DataBindings.Add("Text", bindVenda, "ApelidoFilial", True, DataSourceUpdateMode.OnPropertyChanged)
         txtObservacao.DataBindings.Add("Text", bindVenda, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
         lblTotalGeral.DataBindings.Add("Text", bindVenda, "TotalVenda", True, DataSourceUpdateMode.OnPropertyChanged)
-        '
-        'dgvItens.DataBindings.Add("Tag", bindItem, "IDProduto", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblValorDevolucao.DataBindings.Add("Text", bindVenda, "ValorDevolucao", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblValorProdutos.DataBindings.Add("Text", bindVenda, "ValorProdutos", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblIDVenda.DataBindings("Text").Format, AddressOf FormatRG
         AddHandler lblVendaData.DataBindings("text").Format, AddressOf FormatDT
         AddHandler lblTotalGeral.DataBindings("Text").Format, AddressOf FormatCUR
+        AddHandler lblValorDevolucao.DataBindings("Text").Format, AddressOf FormatCUR
+        AddHandler lblValorProdutos.DataBindings("Text").Format, AddressOf FormatCUR
         '
         ' ADD HANDLER PARA DATABINGS
         AddHandler _Venda.AoAlterar, AddressOf HandlerAoAlterar
@@ -172,7 +197,7 @@ Public Class frmVendaVista
         End If
     End Sub
     '
-#End Region
+#End Region ' / DATABINDINGS
     '
 #Region "CARREGA/INSERE ITENS"
     Private Sub PreencheItens()
@@ -315,11 +340,10 @@ Public Class frmVendaVista
     '
     '--- RETORNA TODOS OS ITENS DA VENDA
     Private Sub obterItens()
+        '
         Dim tBLL As New TransacaoItemBLL
         Try
             _ItensList = tBLL.GetVendaItens_IDVenda_List(_Venda.IDVenda, _Filial)
-            '--- Atualiza o label TOTAL
-            AtualizaTotalGeral()
         Catch ex As Exception
             MessageBox.Show("Um execeção ocorreu ao obter Itens da Venda:" & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -338,7 +362,7 @@ Public Class frmVendaVista
         '
         '--- Abre o frmItem
         '
-        Dim fItem As New frmVendaItem(Me, TransacaoItemBLL.EnumMovimento.SAIDA, _Filial, Nothing)
+        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _Filial, Nothing)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -390,7 +414,7 @@ Public Class frmVendaVista
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
         '
         '--- Abre o frmItem
-        Dim fitem As New frmVendaItem(Me, TransacaoItemBLL.EnumMovimento.SAIDA, _Filial, itmAtual)
+        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _Filial, itmAtual)
         fitem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -526,9 +550,10 @@ Public Class frmVendaVista
         Excluir_Item()
     End Sub
     '
-#End Region
+#End Region '/ CARREGA/INSERE ITENS
     '
 #Region "BOTOES DE ACAO"
+    '
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
         If Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado Then
             Dim vlReceber As Double = AtualizaTotalPago()
@@ -551,28 +576,86 @@ Public Class frmVendaVista
         MostraMenuPrincipal()
     End Sub
     '
+    '--- ALTERA O VENDEDOR E SALVA NO BD
     Private Sub btnVendedorAlterar_Click(sender As Object, e As EventArgs) Handles btnVendedorAlterar.Click
+        '
         Dim fFunc As New frmFuncionarioProcurar(True, Me)
         fFunc.ShowDialog()
         If fFunc.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        _Venda.IDVendedor = fFunc.IDEscolhido
-        _Venda.ApelidoFuncionario = fFunc.NomeEscolhido
-        lblVendedor.DataBindings("Text").ReadValue()
+        Try
+            Dim newID As Integer = fFunc.IDEscolhido
+            '
+            If vBLL.AtualizaVendaVendedor(_Venda.IDVenda, newID) Then
+                _Venda.IDVendedor = newID
+                _Venda.ApelidoFuncionario = fFunc.NomeEscolhido
+                lblVendedor.DataBindings("Text").ReadValue()
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao atualizar o Vendedor..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
         '
     End Sub
     '
-    Private Sub btnDataSuperior_Click(sender As Object, e As EventArgs) Handles btnDataSuperior.Click
-        _Venda.TransacaoData = _Venda.TransacaoData.AddDays(1)
-        lblVendaData.DataBindings("Text").ReadValue()
+    '--- ALTERAR A DATA DA VENDA
+    Private Sub lblVendaData_DoubleClick(sender As Object, e As EventArgs) _
+        Handles lblVendaData.DoubleClick, btnData.Click
+        '
+        Dim frmDt As New frmDataInformar("Informe a data da Venda", DataTipo.PassadoPresente, _Venda.TransacaoData, Me)
+        frmDt.ShowDialog()
+        '
+        If frmDt.DialogResult <> DialogResult.OK Then Exit Sub
+        '
+        Dim newDt As Date = frmDt.propDataInfo
+        '
+        '--- verifica a data bloqueada
+        If DataBloqueada(newDt, Obter_ContaPadrao) Then Exit Sub
+        '
+        '--- altera a data da venda e salva no BD
+        Dim tranBLL As New TransacaoBLL
+        If tranBLL.AtualizaTransacaoData(_Venda.IDVenda, newDt) Then
+            '
+            _Venda.TransacaoData = frmDt.propDataInfo
+            lblVendaData.DataBindings("Text").ReadValue()
+            '
+            '--- verifica se existe troca e altera a data da troca
+            If Not IsNothing(_Troca) Then
+                Dim tBLL As New TrocaBLL
+                _Troca.TrocaData = newDt
+                tBLL.AtualizaTroca_Procedure_ID(_Troca)
+            End If
+            '
+        End If
+        '
     End Sub
     '
-    Private Sub btnDataAnterior_Click(sender As Object, e As EventArgs) Handles btnDataAnterior.Click
-        _Venda.TransacaoData = _Venda.TransacaoData.AddDays(-1)
-        lblVendaData.DataBindings("Text").ReadValue()
+    '--- LIMPAR TODOS OS PAGAMENTOS DA VENDA
+    Private Sub btnLimparPagamentos_Click(sender As Object, e As EventArgs) Handles btnLimparPagamentos.Click
+        '
+        '--- Verifica se o registro esta bloqueado
+        If RegistroBloqueado() Then Exit Sub
+        '
+        '--- Verifica se ha entrada para limpar
+        If _EntradaList.Count = 0 Then
+            MessageBox.Show("Não existem pagamentos de Entrada nessa Venda para serem removidos...",
+                            "Limpar Pagamentos", MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            dgvPagamentos.Focus()
+            Return
+        End If
+        '
+        '--- Pergunta ao Usuário se Deseja inserir LIMPAR PAGAMENTOS
+        If MessageBox.Show("Você deseja realmente LIMPAR todos os Pagamentos/Entradas dessa venda?",
+                           "Limpar Pagamentos", MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question) = DialogResult.No Then Return
+        '
+        '--- Faz a limpeza
+        Limpa_Pagamentos()
+        '
     End Sub
     '
-#End Region
+#End Region '/ BOTOES ACAO
     '
 #Region "FORMATACAO E FLUXO"
     ' CRIA TECLA DE ATALHO PARA O TAB
@@ -598,6 +681,7 @@ Public Class frmVendaVista
 #End Region
     '
 #Region "CONTROLE DO GRID PAGAMENTOS"
+    '
     '============================================================================================================
     ' PAGAMENTOS CONTROLES
     '============================================================================================================
@@ -698,33 +782,37 @@ Public Class frmVendaVista
     Private Sub dgvPagamentos_KeyDown(sender As Object, e As KeyEventArgs) Handles dgvPagamentos.KeyDown
         '
         If e.KeyCode = Keys.Add Then
+            '
             e.Handled = True
             '
-            If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            '
-            If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
+            'If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+            'If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
             '
             Pagamentos_Adicionar()
+            '
         ElseIf e.KeyCode = Keys.Enter Then
+            '
             e.Handled = True
             '
-            If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            '
-            If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
+            'If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+            'If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
             '
             Pagamentos_Editar()
+            '
         ElseIf e.KeyCode = Keys.Delete Then
+            '
             e.Handled = True
             '
             If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            '
             If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
             '
             Pagamentos_Excluir()
+            '
         End If
     End Sub
     '
     Public Sub Pagamentos_Manipulacao(clPag As clEntradas, Acao As FlagAcao)
+        '
         If Acao = FlagAcao.INSERIR Then
             ' SE ACAO FOR INSERIR
             '----------------------------------------------------------------------------------------------
@@ -736,11 +824,16 @@ Public Class frmVendaVista
             bindEnt.MoveLast()
             '
         End If
+        '
     End Sub
     '
     Private Sub Pagamentos_Adicionar()
+        '
+        If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+        '
         '--- Atualiza o Valor do Total Geral
         Dim vl As Double = AtualizaTotalGeral()
+        '
         '--- Verifica se o valor dos itens é maior que zero
         If vl = 0 Then
             MessageBox.Show("Não é possivel realizar pagamentos" & vbNewLine &
@@ -779,12 +872,12 @@ Public Class frmVendaVista
         '
         '--- AtualizaTotalPago
         AtualizaTotalPago()
+        '
     End Sub
     '
     Private Sub Pagamentos_Editar()
         '
         If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-        '
         If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
         '
         '--- posiciona o form
@@ -795,6 +888,7 @@ Public Class frmVendaVista
         If dgvPagamentos.SelectedRows.Count = 0 Then Exit Sub
         '
         Dim PagAtual As clEntradas = dgvPagamentos.SelectedRows(0).DataBoundItem
+        '
         Dim fPag As New frmVendaEntrada(Me, AtualizaTotalGeral(), PagAtual, FlagAcao.EDITAR, pos)
         fPag.ShowDialog()
         '
@@ -803,6 +897,7 @@ Public Class frmVendaVista
     End Sub
     '
     Private Sub Pagamentos_Excluir()
+        '
         '--- verifica se existe alguma parcela selecionada
         If dgvPagamentos.SelectedRows.Count = 0 Then Exit Sub
         '
@@ -838,16 +933,25 @@ Public Class frmVendaVista
         dgvPagamentos.DataSource = bindEnt
         '--- AtualizaTotalPago
         AtualizaTotalPago()
+        '
     End Sub
     '
-    ' ALTERA A COR DO DATAGRIDVIEW ARECEBER QUANDO GANHA OU PERDE O FOCO
+    ' ALTERA A COR DO DATAGRIDVIEW QUANDO GANHA OU PERDE O FOCO
     '-----------------------------------------------------------------------------------------------------
-    Private Sub dgvPagamentos_GotFocus(sender As Object, e As EventArgs) Handles dgvPagamentos.GotFocus
-        dgvPagamentos.BackgroundColor = Color.LightSteelBlue
+    Private Sub dgv_GotFocus(sender As Object, e As EventArgs) Handles dgvPagamentos.GotFocus
+        '
+        Dim c As Color = Color.FromArgb(209, 215, 220)
+        sender.BackgroundColor = c
+        DirectCast(sender, DataGridView).BorderStyle = BorderStyle.Fixed3D
+        '
     End Sub
-    Private Sub dgvPagamentos_LostFocus(sender As Object, e As EventArgs) Handles dgvPagamentos.LostFocus
+    '
+    Private Sub dgv_LostFocus(sender As Object, e As EventArgs) Handles dgvPagamentos.LostFocus
+        '
         Dim c As Color = Color.FromArgb(224, 232, 243)
-        dgvPagamentos.BackgroundColor = c
+        sender.BackgroundColor = c
+        DirectCast(sender, DataGridView).BorderStyle = BorderStyle.None
+        '
     End Sub
     '
     ' CONTROLA O MENU NO DATAGRID PAGAMENTOS
@@ -897,12 +1001,11 @@ Public Class frmVendaVista
             If Salvar_Pagamentos() = False Then Exit Sub
             '
             '--- SALVA A TRANSACAO/VENDA NO BD
-            Dim vndBLL As New VendaBLL
             Try
                 '--- altera a situacao da transacao atual
                 _Venda.IDSituacao = 2 'CONCLUÍDA
                 '
-                Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
+                Dim obj As Object = vBLL.AtualizaVenda_Procedure_ID(_Venda)
                 '
                 If Not IsNumeric(obj) Then
                     Throw New Exception(obj.ToString)
@@ -953,13 +1056,14 @@ Public Class frmVendaVista
             If MessageBox.Show("A soma dos pagamentos é diferente da soma dos produtos" & vbNewLine &
                                "Deseja Inserir os pagamentos agora?",
                                "Inserir Pagamentos", MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbYes Then
+                '
                 Efetuar_Pagamentos()
                 '
                 '--- Verifica novamente se o valor da venda é igual à soma dos pagamentos
                 If Math.Abs(AtualizaTotalGeral() - AtualizaTotalPago()) >= 1 Then
-                    Return True
-                Else
                     Return False
+                Else
+                    Return True
                 End If
                 '
             Else
@@ -972,12 +1076,15 @@ Public Class frmVendaVista
     End Function
     '
     Private Function Salvar_Pagamentos() As Boolean
+        '
+        '--- verifica se existem pagamentos
         If _EntradaList.Count = 0 Then Return False
         '
         Dim recBLL As New AReceberBLL
         '
-        '--- Exclui todos os registros de AREceber da Venda atual
+        '--- Exclui todos os registros de AReceber da Venda atual
         Try
+            '
             recBLL.Excluir_AReceber_Transacao(_Venda.IDVenda)
             '
             '--- Insere um AReceber no BD
@@ -1116,12 +1223,47 @@ Public Class frmVendaVista
         Loop
     End Sub
     '
+    '--- LIMPA TODOS OS PAGAMENTOS DA VENDA
+    Private Function Limpa_Pagamentos() As Boolean
+        '
+        '--- LIMPA TODOS OS PAGAMENTOS DA VENDA
+        '----------------------------------------------------------------
+        Dim eBLL As New EntradaBLL
+        '
+        Try
+            eBLL.Entrada_ExcluirTodas_PorTransacao(_Venda.IDVenda)
+            '
+            For i = 0 To _EntradaList.Count - 1
+                If _EntradaList.Item(i).IDEntrada <> 0 Then _EntradaList.RemoveAt(i)
+            Next
+            '
+            '--- Atualiza a listagem
+            bindEnt.ResetBindings(False)
+            '
+            '--- Atualiza o DataGrid
+            dgvPagamentos.DataSource = bindEnt
+            '
+            '---Atualiza o valor pago
+            AtualizaTotalPago()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Ocorreu uma nova exceção ao excluir os pagamentos da venda..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return True
+        End Try
+        '
+        Return True
+        '
+    End Function
+    '
 #End Region
     '
 #Region "FUNCOES NECESSARIAS"
+    '
     ' ATUALIZA O TOTAL DO GERAL
     '-----------------------------------------------------------------------------------------------------
     Private Function AtualizaTotalGeral() As Double
+        '
         If _ItensList.Count > 0 Then
             Dim T As Double = 0
             '
@@ -1129,12 +1271,15 @@ Public Class frmVendaVista
                 T = T + i.Total
             Next
             '
-            lblTotalGeral.Text = Format(T, "c")
+            _Venda.ValorProdutos = T
+            T = T - _Venda.ValorDevolucao
+            If T < 0 Then T = 0
             Return T
         Else
             lblTotalGeral.Text = Format(0, "c")
             Return 0
         End If
+        '
     End Function
     '
     ' ATUALIZA O TOTAL DOS PAGAMENTOS
@@ -1185,6 +1330,7 @@ Public Class frmVendaVista
     ' FUNCAO QUE CONFERE REGISTRO BLOQUEADO E EMITE MENSAGEM PADRAO
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroBloqueado() As Boolean
+        '
         If Sit = FlagEstado.RegistroBloqueado Then
             MessageBox.Show("Esse registro de Venda está BLOQUEADO para alterações..." & vbNewLine &
                             "Não é possível adicionar produtos ou alterar algum dado!",
@@ -1193,6 +1339,7 @@ Public Class frmVendaVista
         Else
             RegistroBloqueado = False
         End If
+        '
     End Function
     '
     ' FUNCAO QUE CONFERE REGISTRO FINALIZADO E PERGUNTA SE DESEJA ALTERAR
@@ -1205,32 +1352,12 @@ Public Class frmVendaVista
                            "Registro Finalizado", MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                            MessageBoxDefaultButton.Button2) = DialogResult.No Then Return True
         '
-        '--- LIMPA TODOS OS PAGAMENTOS DA VENDA
-        '----------------------------------------------------------------
-        Dim eBLL As New EntradaBLL
-        '
-        Try
-            eBLL.Entrada_ExcluirTodas_PorTransacao(_Venda.IDVenda)
-            _EntradaList.Clear()
-            '--- Atualiza a listagem
-            bindEnt.ResetBindings(False)
-            '--- Atualiza o DataGrid
-            dgvPagamentos.DataSource = bindEnt
-            '---Atualiza o valor pago
-            AtualizaTotalPago()
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma nova exceção ao excluir os pagamentos da venda..." & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return True
-        End Try
-        '
         '--- SALVA A TRANSACAO/VENDA NO BD
         '-------------------------------------------------------------------
         _Venda.IDSituacao = 1 '--- Edita o registro e altera a situação
         '
-        Dim vndBLL As New VendaBLL
         Try
-            Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
+            Dim obj As Object = vBLL.AtualizaVenda_Procedure_ID(_Venda)
             '
             If Not IsNumeric(obj) Then
                 Throw New Exception(obj.ToString)
@@ -1245,5 +1372,132 @@ Public Class frmVendaVista
     End Function
     '
 #End Region
+    '
+#Region "TROCA FUNCOES"
+    '
+    '--- VERIFICA SE EXISTE TROCA E ALTERA O BTNTROCA
+    Private Sub VerificaTroca()
+        '
+        Dim tBLL As New TrocaBLL
+        '
+        Try
+            _Troca = tBLL.GetTroca_PorIDVenda_clTroca(_Venda.IDVenda)
+            '
+            If Not IsNothing(_Troca) Then
+                '
+                '--- atualiza a propriedade VALORDEVOLUCAO da Venda
+                If _Venda.ValorDevolucao <> _Troca.ValorTotal Then _Venda.ValorDevolucao = _Troca.ValorTotal
+                '
+                '--- Se houver Troca atualiza o marca o AGREGA DEVOLUCAO
+                If Not _Venda.AgregaDevolucao Then _Venda.AgregaDevolucao = True '--- varejo COM troca
+                '
+                '--- Verifica se o IDSitucao da Troca é igual ao da Venda
+                If _Venda.IDSituacao <> _Troca.IDSituacao Then
+                    '
+                    '--- iguala o IDSituacao
+                    _Troca.IDSituacao = _Venda.IDSituacao
+                    '
+                    Try '--- atualiza a Troca
+                        tBLL.AtualizaTroca_Procedure_ID(_Troca)
+                    Catch ex As Exception
+                        MessageBox.Show("Uma exceção ocorreu ao Atualizar a Situacao da Troca..." & vbNewLine &
+                                        ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    End Try
+                    '
+                End If
+                '
+            Else
+                '--- atualializa a propriedade VALORDEVOLUCAO da Venda
+                _Venda.ValorDevolucao = 0
+                '
+                '--- Se houver Troca atualiza o VendaTipo
+                If _Venda.AgregaDevolucao Then _Venda.AgregaDevolucao = False '--- varejo SEM troca
+                '
+            End If
+            '
+            '--- Exibe ou esconde o Label do valor da troca
+            Troca_EditaLabel()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao verificar se existe TROCA anexada à Venda..." & vbNewLine &
+                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+        '
+    End Sub
+    '
+    '--- INSERE DEVOLUCAO DE TROCA E ABRE O FORMULARIO DE TROCA
+    Private Sub btnTroca_Click(sender As Object, e As EventArgs) Handles btnTroca.Click
+        '
+        If IsNothing(_Troca) Then
+            '--- Pergunta ao Usuário se Deseja inserir nova TROCA
+            If MessageBox.Show("Você deseja realmente anexar uma Troca Simples nessa venda?",
+                               "Inserir Troca", MessageBoxButtons.YesNo,
+                               MessageBoxIcon.Question) = DialogResult.No Then Return
+            '
+        End If
+        '
+        '--- Verifica ou Cria uma nova TROCA
+        Try
+            If IsNothing(_Troca) Then '--- se a TROCA for nothing entao CRIA nova TROCA
+                Dim tBLL As New TrocaBLL
+                '
+                '--- cria nova troca
+                _Troca = tBLL.TrocaSimples_Nova(_Venda.IDVenda,
+                                                _Venda.TransacaoData,
+                                                _Venda.IDPessoaOrigem,
+                                                _Venda.ApelidoFilial,
+                                                _Venda.IDPessoaDestino,
+                                                _Venda.Cadastro,
+                                                _Venda.IDUser)
+                '
+            End If
+            '
+            '--- abre o frmTROCA
+            Dim old_vlTroca = If(IsNothing(_Troca), 0, _Troca.ValorTotal)
+            Dim fTroca As New frmTrocaSimples(_Troca, _Venda, Me)
+            fTroca.ShowDialog()
+            '
+            '--- verifica se houve alteracao da troca pelo valor
+            VerificaTroca()
+            '
+            '--- se houve alteracao
+            If old_vlTroca <> If(IsNothing(_Troca), 0, _Troca.ValorTotal) Then
+                AtualizaTotalGeral()
+                Sit = FlagEstado.Alterado
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Verificar ou Inserir Troca..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+        '
+    End Sub
+    '
+    '--- VERIFICA E ADICIONA OU ALTERA A TROCA NA LISTA DE ENTRADA
+    Private Sub Troca_EditaLabel()
+        '
+        If Not IsNothing(_Troca) Then
+            pnlTroca.Visible = True
+            '
+            '-- atualiza o btnTroca e o lblTroca
+            btnTroca.Text = "Altera &Troca"
+            '
+            '-- atualiza o lbltitulo
+            lblTitulo.Text = "Venda A Vista com Troca"
+        Else
+            '
+            pnlTroca.Visible = True
+            '
+            '-- atualiza o btnTroca e o lblTroca
+            btnTroca.Text = "Insere &Troca"
+            '
+            '-- atualiza o lbltitulo
+            lblTitulo.Text = "Venda Vista"
+            '
+        End If
+        '
+    End Sub
+    '
+#End Region '/ TROCA FUNCOES
     '
 End Class

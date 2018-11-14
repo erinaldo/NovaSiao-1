@@ -145,9 +145,9 @@ Public Class frmTrocaProcurar
         End With
         '
         ' (5) COLUNA VALOR
-        dgvListagem.Columns.Add("TotalTroca", "Valor")
-        With dgvListagem.Columns("TotalTroca")
-            .DataPropertyName = "TotalTroca"
+        dgvListagem.Columns.Add("ValorTotal", "Valor")
+        With dgvListagem.Columns("ValorTotal")
+            .DataPropertyName = "ValorTotal"
             .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -157,10 +157,10 @@ Public Class frmTrocaProcurar
             .DefaultCellStyle.Format = "C"
         End With
         '
-        ' (6) COLUNA COBRANCA TIPO
-        dgvListagem.Columns.Add("CobrancaTipo", "Pagamento")
-        With dgvListagem.Columns("CobrancaTipo")
-            .DataPropertyName = "CobrancaTipo"
+        ' (6) COLUNA IDVENDA
+        dgvListagem.Columns.Add("Venda", "Venda")
+        With dgvListagem.Columns("Venda")
+            .DataPropertyName = "IDVenda"
             .Width = 90
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -224,22 +224,8 @@ Public Class frmTrocaProcurar
     '--- FORMATA O DATAGRID COM TEXTO E IMAGENS
     Private Sub dgvListagem_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvListagem.CellFormatting
         '
-        If e.ColumnIndex = 5 Then '--- coluna Cobrança tipo
-            Select Case e.Value
-                Case 0
-                    e.Value = "Sem Cobrança"
-                Case 1
-                    e.Value = "À Vista"
-                Case 2
-                    e.Value = "À Prazo"
-            End Select
-        End If
-        '
-        If e.ColumnIndex = 2 Then
-            If IsDBNull(e.Value) Then
-                e.Value = "TROCA À VISTA"
-                'dgvListagem.Rows(e.RowIndex).Cells(2).Style.BackColor = Color.LightBlue
-            End If
+        If e.ColumnIndex = 5 Then
+            e.Value = Format(e.Value, "0000")
         End If
         '
         '--- altera a imagem da coluna 5
@@ -272,14 +258,24 @@ Public Class frmTrocaProcurar
         End If
         '
         '--- ABRE A TROCA E FECHA O FORM
-        Dim tBLL As New TrocaBLL
         Dim trc As clTroca = dgvListagem.SelectedRows(0).DataBoundItem
         '
-        Dim frm As New frmTrocaSimples(trc)
-        frm.MdiParent = frmPrincipal
-        frm.StartPosition = FormStartPosition.CenterScreen
-        Close()
-        frm.Show()
+        Dim vndBLL As New VendaBLL
+        Dim _vnd As clVenda = vndBLL.GetVenda_PorID_OBJ(trc.IDVenda)
+        '
+        If _vnd.CobrancaTipo = 1 Then ' VENDA À VISTA
+            Dim frm As New frmVendaVista(_vnd) With {
+                .MdiParent = frmPrincipal,
+                .StartPosition = FormStartPosition.CenterScreen}
+            Close()
+            frm.Show()
+        ElseIf _vnd.CobrancaTipo = 2 Then ' VENDA PARCELADA
+            Dim frm As New frmVendaPrazo(_vnd) With {
+                .MdiParent = frmPrincipal,
+                .StartPosition = FormStartPosition.CenterScreen}
+            Close()
+            frm.Show()
+        End If
         '
     End Sub
     '

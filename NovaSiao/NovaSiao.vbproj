@@ -234,6 +234,12 @@
     <Compile Include="AReceber\frmCobrancaForma.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Cadastros\frmFilialEscolher.designer.vb">
+      <DependentUpon>frmFilialEscolher.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Cadastros\frmFilialEscolher.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Caixa\frmCaixaProcurar.Designer.vb">
       <DependentUpon>frmCaixaProcurar.vb</DependentUpon>
     </Compile>
@@ -600,6 +606,12 @@
     <Compile Include="Reservas\frmReservaProcurar.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Simples\frmSimplesSaida.Designer.vb">
+      <DependentUpon>frmSimplesSaida.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Simples\frmSimplesSaida.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Trocas\frmTrocaProcurar.designer.vb">
       <DependentUpon>frmTrocaProcurar.vb</DependentUpon>
     </Compile>
@@ -724,6 +736,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AReceber\frmCobrancaForma.resx">
       <DependentUpon>frmCobrancaForma.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Cadastros\frmFilialEscolher.resx">
+      <DependentUpon>frmFilialEscolher.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Caixa\frmCaixaProcurar.resx">
       <DependentUpon>frmCaixaProcurar.vb</DependentUpon>
@@ -907,6 +922,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reservas\frmReservaProcurar.resx">
       <DependentUpon>frmReservaProcurar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Simples\frmSimplesSaida.resx">
+      <DependentUpon>frmSimplesSaida.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Trocas\frmTrocaProcurar.resx">
       <DependentUpon>frmTrocaProcurar.vb</DependentUpon>

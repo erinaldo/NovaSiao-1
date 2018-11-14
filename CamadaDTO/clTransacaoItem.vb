@@ -16,6 +16,7 @@ Public Class clTransacaoItem : Implements IEditableObject
         Dim _CodBarrasA As String
         Dim _PVenda As Double
         Dim _PCompra As Double
+        Dim _DescontoCompra As Double
         Dim _ProdutoAtivo As Boolean?
         '--- Itens Importados tblEstoque
         Dim _Estoque As Integer
@@ -49,6 +50,7 @@ Public Class clTransacaoItem : Implements IEditableObject
             ._Preco = 0
             ._Quantidade = 1
             ._Desconto = 0
+            ._DescontoCompra = 0
             ._PCompra = 0
             ._PVenda = 0
             ._Produto = String.Empty
@@ -234,6 +236,20 @@ Public Class clTransacaoItem : Implements IEditableObject
                 RaiseEvent AoAlterar()
             End If
             itemData._PCompra = value
+        End Set
+    End Property
+    '
+    '--- Propriedade DescontoCompra
+    '------------------------------------------------------
+    Public Property DescontoCompra() As Double
+        Get
+            Return itemData._DescontoCompra
+        End Get
+        Set(ByVal value As Double)
+            If value <> itemData._DescontoCompra Then
+                RaiseEvent AoAlterar()
+            End If
+            itemData._DescontoCompra = value
         End Set
     End Property
     '

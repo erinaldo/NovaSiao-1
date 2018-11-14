@@ -56,7 +56,7 @@ Public Class frmClienteAtividades
             lblRG.Text = Format(r("RGAtividade"), "0000")
             txtAtividade.Text = r("Atividade")
             cmbClienteTipo.SelectedValue = r("ClienteTipo")
-            cmbVendaTipo.SelectedValue = r("VendasTipo")
+            cmbVendaTipo.SelectedValue = r("IDVendaTipo")
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try
@@ -82,19 +82,23 @@ Public Class frmClienteAtividades
         End With
     End Sub
     Private Sub PreencheComboVendaTipo()
-        Dim dtTipo As New DataTable
-
-        'Adiciona todas as possibilidades de instrucao
-        dtTipo.Columns.Add("id")
-        dtTipo.Columns.Add("Tipo")
-        dtTipo.Rows.Add(New Object() {False, "Varejo"})
-        dtTipo.Rows.Add(New Object() {True, "Atacado"})
-
-        With cmbVendaTipo
-            .DataSource = dtTipo
-            .ValueMember = "id"
-            .DisplayMember = "Tipo"
-        End With
+        '
+        Try
+            '
+            Dim vBLL As New VendaBLL
+            Dim dtTipo As DataTable = vBLL.GetVendaTipo_DT(Nothing)
+            '
+            With cmbVendaTipo
+                .DataSource = dtTipo
+                .ValueMember = "IDVendaTipo"
+                .DisplayMember = "VendaTipo"
+            End With
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao obter os Tipos de Venda..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+        '
     End Sub
 
     ' EVENTOS
@@ -146,7 +150,7 @@ Public Class frmClienteAtividades
         If Reg.Length > 0 Then
             If txtAtividade.Text <> Reg(0)("Atividade") OrElse
                 cmbClienteTipo.SelectedValue <> Reg(0)("ClienteTipo") OrElse
-                cmbVendaTipo.SelectedValue <> Reg(0)("VendasTipo") Then
+                cmbVendaTipo.SelectedValue <> Reg(0)("IDVendaTipo") Then
                 AlteraSit(FlagEstado.Alterado)
             End If
         End If
@@ -180,17 +184,17 @@ Public Class frmClienteAtividades
         sql.AddParam("@RGAtividade", lblRG.Text)
         SQL.AddParam("@Atividade", txtAtividade.Text)
         SQL.AddParam("@ClienteTipo", cmbClienteTipo.SelectedValue)
-        SQL.AddParam("@VendasTipo", cmbVendaTipo.SelectedValue)
+        sql.AddParam("@IDVendaTipo", cmbVendaTipo.SelectedValue)
 
         If Sit = FlagEstado.NovoRegistro Then
             'PARA UM REGISTRO NOVO - INSERT
-            SQL.ExecQuery("INSERT INTO tblClienteAtividade " &
-              "(RGAtividade, Atividade, ClienteTipo, VendasTipo) " &
-              "VALUES (@RGAtividade, @Atividade, @ClienteTipo, @VendasTipo);")
+            sql.ExecQuery("INSERT INTO tblClienteAtividade " &
+              "(RGAtividade, Atividade, ClienteTipo, IDVendaTipo) " &
+              "VALUES (@RGAtividade, @Atividade, @ClienteTipo, @IDVendaTipo);")
         ElseIf Sit = FlagEstado.Alterado Then
             'PARA UM REGISTRO ALTERADO - UPDATE
-            SQL.ExecQuery("UPDATE tblClienteAtividade " &
-                          "SET Atividade=@Atividade, ClienteTipo=@ClienteTipo, VendasTipo=@VendasTipo " &
+            sql.ExecQuery("UPDATE tblClienteAtividade " &
+                          "SET Atividade=@Atividade, ClienteTipo=@ClienteTipo, IDVendaTipo=@IDVendaTipo " &
                           "WHERE RGAtividade=@RGAtividade;")
         End If
 
