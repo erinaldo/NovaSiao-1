@@ -15,7 +15,7 @@ Option Explicit On
 Namespace My
     
     <Global.System.Runtime.CompilerServices.CompilerGeneratedAttribute(),  _
-     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.8.0.0"),  _
+     Global.System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.VisualStudio.Editors.SettingsDesigner.SettingsSingleFileGenerator", "15.9.0.0"),  _
      Global.System.ComponentModel.EditorBrowsableAttribute(Global.System.ComponentModel.EditorBrowsableState.Advanced)>  _
     Partial Friend NotInheritable Class MySettings
         Inherits Global.System.Configuration.ApplicationSettingsBase
@@ -57,8 +57,8 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;User ID=sa;Password=12345"& _ 
-            "6")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=T"& _ 
+            "rue;User ID=sa;Password=123456")>  _
         Public ReadOnly Property NovaSiaoConnectionString() As String
             Get
                 Return CType(Me("NovaSiaoConnectionString"),String)
@@ -67,8 +67,9 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;User ID=sa;Password=12345"& _ 
-            "6")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Server=tcp:novasiaoserver.database.windows.net,1433;Initial Catalog=ProgramaLoja;"& _ 
+            "Persist Security Info=False;User ID=Daniel;Password=f8ip7Ofr;MultipleActiveResul"& _ 
+            "tSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;")>  _
         Public Property ConexaoString() As String
             Get
                 Return CType(Me("ConexaoString"),String)
@@ -80,14 +81,14 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Password=123456;Persist Security Info=True;User ID=sa;Initial Catalog=NovaSiao;Da"& _ 
-            "ta Source=VTSERVER\SQLPADRAO")>  _
-        Public Property StringTemp() As String
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=T"& _ 
+            "rue;User ID=sa;Password=123456")>  _
+        Public Property StringNote() As String
             Get
-                Return CType(Me("StringTemp"),String)
+                Return CType(Me("StringNote"),String)
             End Get
             Set
-                Me("StringTemp") = value
+                Me("StringNote") = value
             End Set
         End Property
         
@@ -101,6 +102,20 @@ Namespace My
             End Get
             Set
                 Me("StringLocal") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Server=tcp:novasiaoserver.database.windows.net,1433;Initial Catalog=ProgramaLoja;"& _ 
+            "Persist Security Info=False;User ID=Daniel;Password=f8ip7Ofr;MultipleActiveResul"& _ 
+            "tSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;")>  _
+        Public Property StringAzure() As String
+            Get
+                Return CType(Me("StringAzure"),String)
+            End Get
+            Set
+                Me("StringAzure") = value
             End Set
         End Property
     End Class

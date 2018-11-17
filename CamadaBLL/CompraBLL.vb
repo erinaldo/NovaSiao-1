@@ -314,6 +314,11 @@ Public Class CompraBLL
     Public Function GetCompraLista_Procura(myIDOperacao As Byte, myProcura As String,
                                           Optional dtInicial As Date? = Nothing,
                                           Optional dtFinal As Date? = Nothing) As DataTable
+
+
+
+
+
         Dim db As New AcessoDados
         '
         db.LimparParametros()
@@ -321,11 +326,15 @@ Public Class CompraBLL
         db.AdicionarParametros("@IDOperacao", myIDOperacao)
         db.AdicionarParametros("@PessoaOrigemNome", myProcura)
         If Not IsNothing(dtInicial) Then
-            db.AdicionarParametros("@DataInicial", dtInicial)
+            Dim dtI As String = Format(dtInicial, "MM/dd/yyyy")
+
+            db.AdicionarParametros("@DataInicial", dtI)
         End If
         '
         If Not IsNothing(dtFinal) Then
-            db.AdicionarParametros("@DataFinal", dtFinal)
+            Dim dtF As String = Format(dtFinal, "MM/dd/yyyy")
+
+            db.AdicionarParametros("@DataFinal", dtF)
         End If
         '
         Try

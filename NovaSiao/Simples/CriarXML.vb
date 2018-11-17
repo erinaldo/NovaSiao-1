@@ -4,23 +4,69 @@ Imports System.Reflection
 Public Class CriarXML
     Private Const filename As String = "sampledata.xml"
     '
-    Shared Sub RecebeObjProperty_InsereXML(minhaClasse As Object) '  , writer As XmlTextWriter)
-        'writer As XmlTextWriter, minhaClasse As Object
-
-        Dim myProps As New List(Of PropertyInfo)
+    Public Shared Sub WriteObjProperty_XML(o As Object, writer As XmlTextWriter)
         '
-        Dim str As String = ""
+        '--- verify if object is list(of) or class
+        If IsList(o) Then '--- if list then pass to all ite
+            Dim iCount As Integer = DirectCast(o, IList).Count
+            '
+            If iCount = 0 Then Return
+            '
+            '--- write header of class
+            ' Write the root element.
+            Dim ClasseTipo As String = DirectCast(o, IList).Item(0).GetType().Name
+            writer.WriteStartElement(ClasseTipo)
 
-        For Each p As PropertyInfo In minhaClasse.GetType().GetProperties()
-            myProps.Add(p)
-            str = str + p.Name + ":" + If(p.GetValue(minhaClasse), "").ToString + vbNewLine
-        Next
-        '
-        MsgBox(minhaClasse.GetType().Name & vbNewLine & str)
-        'Main()
+            '
+            For i = 0 To iCount - 1
+                Dim c As Object = DirectCast(o, IList).Item(i)
+                '
+                ' Write the root item
+                writer.WriteStartElement(ClasseTipo & "-ITEM")
+                writer.WriteAttributeString("Item", i + 1)
+                '
+                WritePropValuesXML(c, writer)
+                '
+                writer.WriteEndElement()
+            Next
+            '
+        Else
+            '
+            ' Write the root element.
+            Dim ClasseTipo As String = o.GetType().Name
+            writer.WriteStartElement(ClasseTipo)
+            '
+            WritePropValuesXML(o, writer)
+            '
+            writer.WriteEndElement()
+        End If
         '
     End Sub
-
+    '
+    Public Shared Sub WritePropValuesXML(minhaclasse As Object, writer As XmlTextWriter)
+        '
+        'Dim myProps As New List(Of PropertyInfo)
+        'Dim str As String = ""
+        '
+        For Each p As PropertyInfo In minhaclasse.GetType().GetProperties()
+            'myProps.Add(p)
+            writer.WriteElementString(p.Name, If(p.GetValue(minhaclasse), "").ToString)
+            'str = str + p.Name + ":" + If(p.GetValue(minhaclasse), "").ToString + vbNewLine
+        Next
+        '
+        'MsgBox(minhaclasse.GetType().Name & vbNewLine & str)
+        '
+    End Sub
+    '
+    Public Shared Function IsList(o As Object) As Boolean
+        '
+        If o Is Nothing Then Return False
+        Return TypeOf o Is IList AndAlso
+                o.[GetType]().IsGenericType AndAlso
+                o.[GetType]().GetGenericTypeDefinition().IsAssignableFrom(GetType(List(Of)))
+        '
+    End Function
+    '
     Public Shared Sub Main()
 
         Dim settings As XmlWriterSettings = New XmlWriterSettings()

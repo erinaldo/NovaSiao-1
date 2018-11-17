@@ -5,19 +5,22 @@
     <Setting Name="NovaSiaoConnectionString" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
-  &lt;ConnectionString&gt;Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;User ID=sa;Password=123456&lt;/ConnectionString&gt;
+  &lt;ConnectionString&gt;Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456&lt;/ConnectionString&gt;
   &lt;ProviderName&gt;System.Data.SqlClient&lt;/ProviderName&gt;
 &lt;/SerializableConnectionString&gt;</DesignTimeValue>
-      <Value Profile="(Default)">Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;User ID=sa;Password=123456</Value>
+      <Value Profile="(Default)">Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>
     </Setting>
     <Setting Name="ConexaoString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;User ID=sa;Password=123456</Value>
+      <Value Profile="(Default)">Server=tcp:novasiaoserver.database.windows.net,1433;Initial Catalog=ProgramaLoja;Persist Security Info=False;User ID=Daniel;Password=f8ip7Ofr;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</Value>
     </Setting>
-    <Setting Name="StringTemp" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Password=123456;Persist Security Info=True;User ID=sa;Initial Catalog=NovaSiao;Data Source=VTSERVER\SQLPADRAO</Value>
+    <Setting Name="StringNote" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>
     </Setting>
     <Setting Name="StringLocal" Type="System.String" Scope="User">
       <Value Profile="(Default)">Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\Dados\NovaSiao.mdf;Integrated Security=True;Connect Timeout=30</Value>
+    </Setting>
+    <Setting Name="StringAzure" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Server=tcp:novasiaoserver.database.windows.net,1433;Initial Catalog=ProgramaLoja;Persist Security Info=False;User ID=Daniel;Password=f8ip7Ofr;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

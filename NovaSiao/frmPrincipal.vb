@@ -468,10 +468,17 @@ Public Class frmPrincipal
     End Sub
     '
     Private Sub miProdutoListagem_Click(sender As Object, e As EventArgs) Handles miProdutoListagem.Click
+        '
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
         OcultaMenuPrincipal()
         Dim f As New frmProdutoListagem
         f.MdiParent = Me
         f.Show()
+        '
+        '--- Ampulheta OFF
+        Cursor = Cursors.Default
     End Sub
     '
 #End Region

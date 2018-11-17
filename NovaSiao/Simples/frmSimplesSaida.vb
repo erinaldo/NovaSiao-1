@@ -1,4 +1,5 @@
-﻿Imports CamadaBLL
+﻿Imports System.Xml
+Imports CamadaBLL
 Imports CamadaDTO
 '
 Public Class frmSimplesSaida
@@ -1052,7 +1053,7 @@ Public Class frmSimplesSaida
         '
         '--- Verifica se a SITUACAO do registro permite salvar
         If Not (Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro) Then
-            CriarXML.RecebeObjProperty_InsereXML(_Simples)
+
             Close()
             MostraMenuPrincipal()
             Return
@@ -1265,5 +1266,30 @@ Public Class frmSimplesSaida
     End Function
     '
 #End Region '/ BLOQUEIO DE REGISTROS
+    '
+#Region "XML"
+    '
+    Private Sub CriarArquivoXML()
+        Try
+            '--- get the path
+
+            Dim writer As New XmlTextWriter("ConfigFiles\Simples.xml", Nothing)
+
+            writer.WriteDocType("SimplesSaida", Nothing, Nothing, Nothing)
+            writer.WriteStartDocument()
+            '
+            'define a indentação do arquivo
+            writer.Formatting = Formatting.Indented
+            writer.WriteStartElement("Configuracao")
+
+            CriarXML.WriteObjProperty_XML(_Simples, writer)
+
+        Catch ex As Exception
+
+        End Try
+
+    End Sub
+    '
+#End Region
     '
 End Class

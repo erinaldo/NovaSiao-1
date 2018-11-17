@@ -234,6 +234,9 @@ Public Class frmOperacaoEntradaProcurar
                 Dim cmpBLL As New CompraBLL
                 Dim _cmp As New clCompra
                 '
+                '--- ampulheta ON
+                Cursor = Cursors.WaitCursor
+                '
                 _cmp = cmpBLL.GetCompra_PorID_OBJ(dgvListagem.SelectedRows(0).Cells(0).Value)
                 '
                 Dim frm As New frmCompra(_cmp)
@@ -241,6 +244,9 @@ Public Class frmOperacaoEntradaProcurar
                 frm.StartPosition = FormStartPosition.CenterScreen
                 Close()
                 frm.Show()
+                '
+                '--- ampulheta OFF
+                Cursor = Cursors.Default
                 '
             Case 3 ' SIMPLES ENTRADA
                 MsgBox("Operação de Entrada: SIMPLES ENTRADA, ainda não foi implementada")
