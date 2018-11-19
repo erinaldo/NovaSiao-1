@@ -499,7 +499,7 @@ Public Class clProduto
     Private _PrecoMedio As Decimal?
     Public ReadOnly Property PrecoMedio() As Decimal
         Get
-            Return _PrecoMedio
+            Return If(_PrecoMedio, 0)
         End Get
     End Property
     '
@@ -507,7 +507,7 @@ Public Class clProduto
     Private _FretePercentual As Decimal?
     Public ReadOnly Property FretePercentual() As Decimal
         Get
-            Return _FretePercentual
+            Return If(_FretePercentual, 0)
         End Get
     End Property
     '
@@ -515,7 +515,7 @@ Public Class clProduto
     Private _ImpostoFederalPerc As Decimal?
     Public ReadOnly Property ImpostoFederalPerc() As Decimal
         Get
-            Return _ImpostoFederalPerc
+            Return If(_ImpostoFederalPerc, 0)
         End Get
     End Property
     '
@@ -523,7 +523,7 @@ Public Class clProduto
     Private _ImpostoEstadualPerc As Decimal?
     Public ReadOnly Property ImpostoEstadualPerc() As Decimal
         Get
-            Return _ImpostoEstadualPerc
+            Return If(_ImpostoEstadualPerc, 0)
         End Get
     End Property
     '

@@ -4,6 +4,9 @@ Imports CamadaDTO
 '
 Public Class frmPrincipal
     '
+    '========================================================================================================
+    ' CONFIGURACAO INICIAL
+    '========================================================================================================
 #Region "FORM PRINCIPAL"
     Private _DataPadrao As Date
     Private _ContaPadrao As String
@@ -361,12 +364,24 @@ Public Class frmPrincipal
     '
     Private Sub miClienteProcurar_Click(sender As Object, e As EventArgs) Handles miClienteProcurar.Click
         '
+        '
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
         Dim frm As New frmClienteProcurar
         frm.ShowDialog()
         '
-        If frm.DialogResult = DialogResult.Cancel Then Exit Sub
+        If frm.DialogResult = DialogResult.Cancel Then
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            Exit Sub
+        End If
         '
         Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             If frm.propClienteTipo = 1 Then ' PESSOA FÍSICA
                 ' ABRIR FORMULÁRIO CLIENTEPF
                 OcultaMenuPrincipal()
@@ -391,15 +406,125 @@ Public Class frmPrincipal
         Catch ex As Exception
             MessageBox.Show(ex.Message)
             MostraMenuPrincipal()
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
         End Try
 
     End Sub
     '
     Private Sub miClienteAtividades_Click(sender As Object, e As EventArgs) Handles miClienteAtividades.Click
-        Dim frmCA As New frmClienteAtividades
-        frmCA.MdiParent = Me
-        frmCA.Show()
-        OcultaMenuPrincipal()
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmCA As New frmClienteAtividades
+            frmCA.MdiParent = Me
+            frmCA.Show()
+            OcultaMenuPrincipal()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+#End Region
+    '
+    '========================================================================================================
+    ' MENU CADASTROS
+    '========================================================================================================
+#Region "MENU CADASTROS"
+    '
+    Private Sub miFuncionarios_Click(sender As Object, e As EventArgs) Handles miFuncionarios.Click
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmF As New frmFuncionario
+            OcultaMenuPrincipal()
+            frmF.MdiParent = Me
+            frmF.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    Private Sub miTransportadoras_Click(sender As Object, e As EventArgs) Handles miTransportadoras.Click
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmT As New frmTransportadoraProcurar
+            OcultaMenuPrincipal()
+            frmT.MdiParent = Me
+            frmT.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    Private Sub miFornecedores_Click(sender As Object, e As EventArgs) Handles miFornecedores.Click
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmF As New frmFornecedorProcurar
+            OcultaMenuPrincipal()
+            frmF.MdiParent = Me
+            frmF.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    Private Sub miCredores_Click(sender As Object, e As EventArgs) Handles miCredores.Click
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmC As New frmCredorProcurar
+            OcultaMenuPrincipal()
+            frmC.MdiParent = Me
+            frmC.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
     End Sub
     '
 #End Region
@@ -410,10 +535,24 @@ Public Class frmPrincipal
 #Region "MENU PRODUTOS"
     '
     Private Sub miProdutoTipos_Click(sender As Object, e As EventArgs) Handles miProdutoTipos.Click
-        OcultaMenuPrincipal()
-        Dim f As New frmProdutoTipo(frmProdutoTipo.ProcurarPor.None)
-        f.MdiParent = Me
-        f.Show()
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            OcultaMenuPrincipal()
+            Dim f As New frmProdutoTipo(frmProdutoTipo.ProcurarPor.None)
+            f.MdiParent = Me
+            f.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao ABRIR formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
     End Sub
     '
     Private Sub miProdutoNovo_Click(sender As Object, e As EventArgs) Handles miProdutoNovo.Click
@@ -461,10 +600,24 @@ Public Class frmPrincipal
     End Sub
     '
     Private Sub miFabricantesMarcas_Click(sender As Object, e As EventArgs) Handles miFabricantesMarcas.Click
-        OcultaMenuPrincipal()
-        Dim f As New frmFabricante(False, Nothing)
-        f.MdiParent = Me
-        f.Show()
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            OcultaMenuPrincipal()
+            Dim f As New frmFabricante(False, Nothing)
+            f.MdiParent = Me
+            f.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
     End Sub
     '
     Private Sub miProdutoListagem_Click(sender As Object, e As EventArgs) Handles miProdutoListagem.Click
@@ -481,12 +634,34 @@ Public Class frmPrincipal
         Cursor = Cursors.Default
     End Sub
     '
+    Private Sub miProdutoEtiquetaVenda_Click(sender As Object, e As EventArgs) Handles miProdutoEtiquetaVenda.Click
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmP As New frmProdutoEtiquetaControle
+            OcultaMenuPrincipal()
+            frmP.MdiParent = Me
+            frmP.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
 #End Region
     '
     '========================================================================================================
     ' MENU SAIDA DE PRODUTOS
     '========================================================================================================
 #Region "MENU SAIDA DE PRODUTOS"
+    '
     Private Sub miNovaVendaVista_Click(sender As Object, e As EventArgs) Handles miNovaVendaVista.Click
         Dim v As New AcaoGlobal
         Dim obj As Object = v.VendaAVista_Nova
@@ -517,19 +692,50 @@ Public Class frmPrincipal
     '
     Private Sub miProcurarOperacaoSaida_Click(sender As Object, e As EventArgs) Handles miProcurarOperacaoSaida.Click
         '
-        Dim frmP As New frmOperacaoSaidaProcurar
-        OcultaMenuPrincipal()
-        frmP.MdiParent = Me
-        frmP.Show()
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmP As New frmOperacaoSaidaProcurar
+            OcultaMenuPrincipal()
+            frmP.MdiParent = Me
+            frmP.Show()
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir o formulário de Operação de Saída..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
         '
     End Sub
     '
     Private Sub miProcurarTroca_Click(sender As Object, e As EventArgs) Handles miProcurarTroca.Click
         '
-        Dim frmP As New frmTrocaProcurar
-        OcultaMenuPrincipal()
-        frmP.MdiParent = Me
-        frmP.Show()
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmP As New frmTrocaProcurar
+            OcultaMenuPrincipal()
+            frmP.MdiParent = Me
+            frmP.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir o formulário de procurar TROCA..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
         '
     End Sub
     '
@@ -546,41 +752,6 @@ Public Class frmPrincipal
         f.StartPosition = FormStartPosition.CenterScreen
         f.Show()
         '
-    End Sub
-    '
-#End Region
-    '
-    '========================================================================================================
-    ' MENU CADASTROS
-    '========================================================================================================
-#Region "MENU CADASTROS"
-    '
-    Private Sub miFuncionarios_Click(sender As Object, e As EventArgs) Handles miFuncionarios.Click
-        Dim frmF As New frmFuncionario
-        OcultaMenuPrincipal()
-        frmF.MdiParent = Me
-        frmF.Show()
-    End Sub
-    '
-    Private Sub miTransportadoras_Click(sender As Object, e As EventArgs) Handles miTransportadoras.Click
-        Dim frmT As New frmTransportadoraProcurar
-        OcultaMenuPrincipal()
-        frmT.MdiParent = Me
-        frmT.Show()
-    End Sub
-    '
-    Private Sub miFornecedores_Click(sender As Object, e As EventArgs) Handles miFornecedores.Click
-        Dim frmF As New frmFornecedorProcurar
-        OcultaMenuPrincipal()
-        frmF.MdiParent = Me
-        frmF.Show()
-    End Sub
-    '
-    Private Sub miCredores_Click(sender As Object, e As EventArgs) Handles miCredores.Click
-        Dim frmC As New frmCredorProcurar
-        OcultaMenuPrincipal()
-        frmC.MdiParent = Me
-        frmC.Show()
     End Sub
     '
 #End Region
@@ -610,24 +781,54 @@ Public Class frmPrincipal
     End Sub
     '
     Private Sub miProcurarOperacaoEntrada_Click(sender As Object, e As EventArgs) Handles miProcurarOperacaoEntrada.Click
-        Dim frmP As New frmOperacaoEntradaProcurar
-        OcultaMenuPrincipal()
-        frmP.MdiParent = Me
-        frmP.Show()
-    End Sub
-    '
-    Private Sub miProdutoEtiquetaVenda_Click(sender As Object, e As EventArgs) Handles miProdutoEtiquetaVenda.Click
-        Dim frmP As New frmProdutoEtiquetaControle
-        OcultaMenuPrincipal()
-        frmP.MdiParent = Me
-        frmP.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmP As New frmOperacaoEntradaProcurar
+            OcultaMenuPrincipal()
+            frmP.MdiParent = Me
+            frmP.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário de procurar operação de Entrada..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub miProcurarReserva_Click(sender As Object, e As EventArgs) Handles miProcurarReserva.Click
-        Dim frmR As New frmReservaProcurar
-        OcultaMenuPrincipal()
-        frmR.MdiParent = Me
-        frmR.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmR As New frmReservaProcurar
+            OcultaMenuPrincipal()
+            frmR.MdiParent = Me
+            frmR.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário de procurar Reserva..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub miNovaReserva_Click(sender As Object, e As EventArgs) Handles miNovaReserva.Click
@@ -638,6 +839,27 @@ Public Class frmPrincipal
         frmR.Show()
     End Sub
     '
+    Private Sub miControleDePedidos_Click(sender As Object, e As EventArgs) Handles miControleDePedidos.Click
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            OcultaMenuPrincipal()
+            Dim f As New frmPedidoProcurar
+            f.MdiParent = Me
+            f.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
 #End Region
     '
     '========================================================================================================
@@ -645,14 +867,39 @@ Public Class frmPrincipal
     '========================================================================================================
 #Region "A RECEBER"
     Private Sub miAReceberCliente_Click(sender As Object, e As EventArgs) Handles miAReceberCliente.Click
+        '
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
         Dim frmP As New frmClienteProcurar()
         frmP.ShowDialog()
-        If frmP.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        Dim frmR As New frmAReceberListCliente(frmP.propClienteID)
-        OcultaMenuPrincipal()
-        frmR.MdiParent = Me
-        frmR.Show()
+        If frmP.DialogResult = DialogResult.Cancel Then
+            Cursor = Cursors.Default
+            Exit Sub
+        End If
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmR As New frmAReceberListCliente(frmP.propClienteID)
+            OcultaMenuPrincipal()
+            frmR.MdiParent = Me
+            frmR.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário de A Receber..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
 #End Region
@@ -663,10 +910,28 @@ Public Class frmPrincipal
 #Region "A PAGAR"
     '
     Private Sub miTipoDeDespesa_Click(sender As Object, e As EventArgs) Handles miTipoDeDespesa.Click
-        Dim frmTd As New frmDespesaTipoProcurar
-        OcultaMenuPrincipal()
-        frmTd.MdiParent = Me
-        frmTd.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmTd As New frmDespesaTipoProcurar
+            OcultaMenuPrincipal()
+            frmTd.MdiParent = Me
+            frmTd.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub miNovaDespesa_Click(sender As Object, e As EventArgs) Handles miNovaDespesa.Click
@@ -679,24 +944,79 @@ Public Class frmPrincipal
     End Sub
     '
     Private Sub miProcurarDespesa_Click(sender As Object, e As EventArgs) Handles miProcurarDespesa.Click
-        Dim frmD As New frmDespesaProcurar
-        OcultaMenuPrincipal()
-        frmD.MdiParent = Me
-        frmD.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmD As New frmDespesaProcurar
+            OcultaMenuPrincipal()
+            frmD.MdiParent = Me
+            frmD.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub miAPagarProcurar_Click(sender As Object, e As EventArgs) Handles miAPagarProcurar.Click
-        Dim frmP As New frmAPagarProcurar
-        OcultaMenuPrincipal()
-        frmP.MdiParent = Me
-        frmP.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmP As New frmAPagarProcurar
+            OcultaMenuPrincipal()
+            frmP.MdiParent = Me
+            frmP.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub miDespesasPeriodicas_Click(sender As Object, e As EventArgs) Handles miDespesasPeriodicas.Click
-        Dim frmP As New frmDespesaPeriodicaProcurar
-        OcultaMenuPrincipal()
-        frmP.MdiParent = Me
-        frmP.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmP As New frmDespesaPeriodicaProcurar
+            OcultaMenuPrincipal()
+            frmP.MdiParent = Me
+            frmP.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir fomulário..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub miNovaDespesaQuitada_Click(sender As Object, e As EventArgs) Handles miNovaDespesaQuitada.Click
@@ -714,38 +1034,124 @@ Public Class frmPrincipal
 #Region "CAIXA"
     '
     Private Sub miContas_Click(sender As Object, e As EventArgs) Handles miContas.Click
-        Dim frmC As New frmContas
-        OcultaMenuPrincipal()
-        frmC.MdiParent = Me
-        frmC.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmC As New frmContas
+            OcultaMenuPrincipal()
+            frmC.MdiParent = Me
+            frmC.Show()
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub miFormasDeMovimentacao_Click(sender As Object, e As EventArgs) Handles miFormasDeMovimentacao.Click
-        Dim frmC As New frmMovFormas
-        OcultaMenuPrincipal()
-        frmC.MdiParent = Me
-        frmC.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmC As New frmMovFormas
+            OcultaMenuPrincipal()
+            frmC.MdiParent = Me
+            frmC.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir fomulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub miTiposDeMovimentacao_Click(sender As Object, e As EventArgs) Handles miTiposDeMovimentacao.Click
-        Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.MovTipo)
-        OcultaMenuPrincipal()
-        frmC.MdiParent = Me
-        frmC.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.MovTipo)
+            OcultaMenuPrincipal()
+            frmC.MdiParent = Me
+            frmC.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
 
     Private Sub miTipoDeOperadoras_Click(sender As Object, e As EventArgs) Handles miTiposDeOperadora.Click
-        Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.Operadora)
-        OcultaMenuPrincipal()
-        frmC.MdiParent = Me
-        frmC.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.Operadora)
+            OcultaMenuPrincipal()
+            frmC.MdiParent = Me
+            frmC.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
 
     Private Sub miTiposDeCartao_Click(sender As Object, e As EventArgs) Handles miTiposDeCartao.Click
-        Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.Cartao)
-        OcultaMenuPrincipal()
-        frmC.MdiParent = Me
-        frmC.Show()
+        '
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.Cartao)
+            OcultaMenuPrincipal()
+            frmC.MdiParent = Me
+            frmC.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
 
     Private Sub miFinalizarCaixa_Click(sender As Object, e As EventArgs) Handles miFinalizarCaixa.Click
@@ -760,15 +1166,28 @@ Public Class frmPrincipal
             f.Dispose()
             MostraMenuPrincipal()
         End Try
-
         '
     End Sub
     '
     Private Sub miProcurarCaixa_Click(sender As Object, e As EventArgs) Handles miProcurarCaixa.Click
-        Dim frmC As New frmCaixaProcurar()
-        OcultaMenuPrincipal()
-        frmC.MdiParent = Me
-        frmC.Show()
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmC As New frmCaixaProcurar()
+            OcultaMenuPrincipal()
+            frmC.MdiParent = Me
+            frmC.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
     End Sub
     '
 #End Region
@@ -789,10 +1208,24 @@ Public Class frmPrincipal
     End Sub
     '
     Private Sub miConfiguracaoUsuarios_Click(sender As Object, e As EventArgs) Handles miConfiguracaoUsuarios.Click
-        OcultaMenuPrincipal()
-        Dim f As New frmUsuarios
-        f.MdiParent = Me
-        f.Show()
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            OcultaMenuPrincipal()
+            Dim f As New frmUsuarios
+            f.MdiParent = Me
+            f.Show()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
     End Sub
     '
     Private Sub miConfiguracaoDataPadrao_Click(sender As Object, e As EventArgs) Handles miConfiguracaoDataPadrao.Click
@@ -805,13 +1238,6 @@ Public Class frmPrincipal
     Private Sub miFazerBackup_Click(sender As Object, e As EventArgs) Handles miFazerBackup.Click
         OcultaMenuPrincipal()
         Dim f As New frmBackup
-        f.MdiParent = Me
-        f.Show()
-    End Sub
-    '
-    Private Sub miControleDePedidos_Click(sender As Object, e As EventArgs) Handles miControleDePedidos.Click
-        OcultaMenuPrincipal()
-        Dim f As New frmPedidoProcurar
         f.MdiParent = Me
         f.Show()
     End Sub

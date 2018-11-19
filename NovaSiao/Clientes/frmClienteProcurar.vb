@@ -60,6 +60,10 @@ Public Class frmClienteProcurar
         FormataListagem()
     End Sub
     '
+    Private Sub frmClienteProcurar_Shown(sender As Object, e As EventArgs) Handles Me.Shown
+        If Cursor = Cursors.WaitCursor Then Cursor = Cursors.Default
+    End Sub
+    '
 #End Region
     '
 #Region "PREENCHER COMBOS"

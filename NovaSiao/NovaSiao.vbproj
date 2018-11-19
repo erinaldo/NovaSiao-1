@@ -606,7 +606,13 @@
     <Compile Include="Reservas\frmReservaProcurar.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Simples\CriarXML.vb" />
+    <Compile Include="Simples\frmSimplesEntrada.designer.vb">
+      <DependentUpon>frmSimplesEntrada.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Simples\frmSimplesEntrada.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Simples\SimplesXML.vb" />
     <Compile Include="Simples\frmSimplesSaida.Designer.vb">
       <DependentUpon>frmSimplesSaida.vb</DependentUpon>
     </Compile>
@@ -923,6 +929,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Reservas\frmReservaProcurar.resx">
       <DependentUpon>frmReservaProcurar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Simples\frmSimplesEntrada.resx">
+      <DependentUpon>frmSimplesEntrada.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Simples\frmSimplesSaida.resx">
       <DependentUpon>frmSimplesSaida.vb</DependentUpon>

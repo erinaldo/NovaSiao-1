@@ -52,6 +52,8 @@ Partial Class frmPrincipal
         Me.miProcurarOperacaoSaida = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
         Me.miProcurarTroca = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator18 = New System.Windows.Forms.ToolStripSeparator()
+        Me.miNovaSimplesSaida = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsbCompras = New System.Windows.Forms.ToolStripSplitButton()
         Me.miNovaCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
@@ -106,8 +108,7 @@ Partial Class frmPrincipal
         Me.Label2 = New System.Windows.Forms.Label()
         Me.lblHora = New System.Windows.Forms.Label()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.ToolStripSeparator18 = New System.Windows.Forms.ToolStripSeparator()
-        Me.miNovaSimplesSaida = New System.Windows.Forms.ToolStripMenuItem()
+        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.tsPrincipal.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SContainerPrincipal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -115,6 +116,7 @@ Partial Class frmPrincipal
         Me.SContainerPrincipal.Panel2.SuspendLayout()
         Me.SContainerPrincipal.SuspendLayout()
         Me.PainelInferior.SuspendLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'tsPrincipal
@@ -357,6 +359,19 @@ Partial Class frmPrincipal
         Me.miProcurarTroca.Name = "miProcurarTroca"
         Me.miProcurarTroca.Size = New System.Drawing.Size(234, 30)
         Me.miProcurarTroca.Text = "Procurar Troca"
+        '
+        'ToolStripSeparator18
+        '
+        Me.ToolStripSeparator18.Name = "ToolStripSeparator18"
+        Me.ToolStripSeparator18.Size = New System.Drawing.Size(231, 6)
+        '
+        'miNovaSimplesSaida
+        '
+        Me.miNovaSimplesSaida.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
+        Me.miNovaSimplesSaida.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miNovaSimplesSaida.Name = "miNovaSimplesSaida"
+        Me.miNovaSimplesSaida.Size = New System.Drawing.Size(234, 30)
+        Me.miNovaSimplesSaida.Text = "Nova Simples Saída"
         '
         'tsbCompras
         '
@@ -668,6 +683,7 @@ Partial Class frmPrincipal
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.Color.SlateGray
+        Me.Panel1.Controls.Add(Me.PictureBox1)
         Me.Panel1.Controls.Add(Me.btnMinimizer)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
@@ -839,18 +855,13 @@ Partial Class frmPrincipal
         Me.Timer1.Enabled = True
         Me.Timer1.Interval = 600
         '
-        'ToolStripSeparator18
+        'PictureBox1
         '
-        Me.ToolStripSeparator18.Name = "ToolStripSeparator18"
-        Me.ToolStripSeparator18.Size = New System.Drawing.Size(231, 6)
-        '
-        'miNovaSimplesSaida
-        '
-        Me.miNovaSimplesSaida.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
-        Me.miNovaSimplesSaida.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.miNovaSimplesSaida.Name = "miNovaSimplesSaida"
-        Me.miNovaSimplesSaida.Size = New System.Drawing.Size(234, 30)
-        Me.miNovaSimplesSaida.Text = "Nova Simples Saída"
+        Me.PictureBox1.Location = New System.Drawing.Point(3, 4)
+        Me.PictureBox1.Name = "PictureBox1"
+        Me.PictureBox1.Size = New System.Drawing.Size(33, 27)
+        Me.PictureBox1.TabIndex = 11
+        Me.PictureBox1.TabStop = False
         '
         'frmPrincipal
         '
@@ -880,6 +891,7 @@ Partial Class frmPrincipal
         Me.SContainerPrincipal.ResumeLayout(False)
         Me.PainelInferior.ResumeLayout(False)
         Me.PainelInferior.PerformLayout()
+        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -968,4 +980,5 @@ Partial Class frmPrincipal
     Friend WithEvents miProcurarTroca As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator18 As ToolStripSeparator
     Friend WithEvents miNovaSimplesSaida As ToolStripMenuItem
+    Friend WithEvents PictureBox1 As PictureBox
 End Class

@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 
 Public Class clAPagar : Implements IEditableObject
+    '
 #Region "ESTRUTURA DOS DADOS"
     Structure PagarStructure ' alguns usam FRIEND em vez de DIM
         '--- Itens da tblAPagar

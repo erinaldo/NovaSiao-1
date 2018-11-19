@@ -98,6 +98,10 @@ Public Class frmOperacaoSaidaProcurar
         '
         '--- consulta o banco de dados
         Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
                 SourceList = vndBLL.GetVendaLista_Procura(cmbOperacao.SelectedValue)
@@ -114,6 +118,10 @@ Public Class frmOperacaoSaidaProcurar
         Catch ex As Exception
             MessageBox.Show("Em erro ao obter a lista de Operações de Venda..." & vbNewLine &
             ex.Message, "Falha no Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
         End Try
         '
     End Sub
@@ -124,6 +132,10 @@ Public Class frmOperacaoSaidaProcurar
         '
         '--- consulta o banco de dados
         Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
                 SourceList = sBLL.GetSimplesSaidaLista_Procura()
@@ -140,6 +152,11 @@ Public Class frmOperacaoSaidaProcurar
         Catch ex As Exception
             MessageBox.Show("Em erro ao obter a lista de Operações de Simples Saídas..." & vbNewLine &
             ex.Message, "Falha no Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
         End Try
         '
     End Sub
@@ -483,42 +500,54 @@ Public Class frmOperacaoSaidaProcurar
             Exit Sub
         End If
         '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Select Case propOperacao
+                Case 1 ' VENDAS
+                    Dim _vnd As clVenda = dgvListagem.SelectedRows(0).DataBoundItem
+                    '
+                    If _vnd.CobrancaTipo = 1 Then ' VENDA À VISTA
+                        Dim frm As New frmVendaVista(_vnd) With {
+                            .MdiParent = frmPrincipal,
+                            .StartPosition = FormStartPosition.CenterScreen
+                        }
+                        Close()
+                        frm.Show()
+                    ElseIf _vnd.CobrancaTipo = 2 Then ' VENDA PARCELADA
+                        Dim frm As New frmVendaPrazo(_vnd) With {
+                            .MdiParent = frmPrincipal,
+                            .StartPosition = FormStartPosition.CenterScreen
+                        }
+                        Close()
+                        frm.Show()
+                    End If
+                Case 4 'SIMPLES SAÍDA
+                    Dim _sim As clSimplesSaida = dgvListagem.SelectedRows(0).DataBoundItem
+                    '
+                    Dim frm As New frmSimplesSaida(_sim) With {
+                        .MdiParent = frmPrincipal,
+                        .StartPosition = FormStartPosition.CenterScreen
+                    }
+                    Close()
+                    frm.Show()
+                '
+                Case 6 ' DEVOLUÇÃO DE COMPRA
+
+                Case 8 'DEVOLUÇÃO DE CONSIGNAÇÃO
+
+
+            End Select
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
-        Select Case propOperacao
-            Case 1 ' VENDAS
-                Dim _vnd As clVenda = dgvListagem.SelectedRows(0).DataBoundItem
-                '
-                If _vnd.CobrancaTipo = 1 Then ' VENDA À VISTA
-                    Dim frm As New frmVendaVista(_vnd) With {
-                        .MdiParent = frmPrincipal,
-                        .StartPosition = FormStartPosition.CenterScreen
-                    }
-                    Close()
-                    frm.Show()
-                ElseIf _vnd.CobrancaTipo = 2 Then ' VENDA PARCELADA
-                    Dim frm As New frmVendaPrazo(_vnd) With {
-                        .MdiParent = frmPrincipal,
-                        .StartPosition = FormStartPosition.CenterScreen
-                    }
-                    Close()
-                    frm.Show()
-                End If
-            Case 4 'SIMPLES SAÍDA
-                Dim _sim As clSimplesSaida = dgvListagem.SelectedRows(0).DataBoundItem
-                '
-                Dim frm As New frmSimplesSaida(_sim) With {
-                    .MdiParent = frmPrincipal,
-                    .StartPosition = FormStartPosition.CenterScreen
-                }
-                Close()
-                frm.Show()
-                '
-            Case 6 ' DEVOLUÇÃO DE COMPRA
-
-            Case 8 'DEVOLUÇÃO DE CONSIGNAÇÃO
-
-
-        End Select
     End Sub
     '
     Private Sub dgvListagem_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvListagem.CellDoubleClick

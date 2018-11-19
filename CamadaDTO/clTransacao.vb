@@ -388,3 +388,176 @@ Public Class clSimplesSaida
     End Property
     '
 End Class
+'
+'========================================================================
+' CLASSE FIM - SIMPLES_SAIDA (HERDA SIMPLES)
+'========================================================================
+Public Class clSimplesEntrada
+    Inherits clSimples
+    Implements IEditableObject
+    '
+    Structure SimplesEntradaStructure
+        'tblSimplesSaida =================================================
+        Dim _ArquivoGerado As Boolean
+        Dim _ArquivoRecebido As Boolean
+        '
+        'tblAReceber =====================================================
+        Dim _IDAReceber As Integer?
+        Dim _SituacaoAReceber As Byte '--- 0:EmAberto | 1:Pago | 2:Cancelada
+        Dim _ValorPagoTotal As Decimal
+        Dim _IDCobrancaForma As Int16? 'smallint
+        Dim _IDPlano As Int16?
+        '
+    End Structure
+    '
+    Friend SEntradaData As SimplesEntradaStructure
+    Friend SEntradaData_Backup As SimplesEntradaStructure
+    '
+    Sub New()
+        '
+        SEntradaData = New SimplesEntradaStructure With {
+            ._ValorPagoTotal = 0,
+            ._IDCobrancaForma = 1,
+            ._ArquivoGerado = False,
+            ._ArquivoRecebido = False
+        }
+        '
+        ' herdado de clTransacao
+        TData = New TransacaoStructure With {
+            ._IDSituacao = 1
+        }
+        '
+        ' herdado de clSimples
+        SData = New SimplesStructure With {
+            ._ValorTotal = 0
+        }
+        '
+    End Sub
+    '
+    Public Overridable Sub BeginEdit() Implements IEditableObject.BeginEdit
+        If Not RegistroAlterado Then
+            '--- reserva os dados para recuperacao futura
+            TData_Backup = TData
+            SData_Backup = SData
+            SEntradaData_Backup = SEntradaData
+            RegistroAlterado = True
+        End If
+    End Sub
+    '
+    Public Overridable Sub EndEdit() Implements IEditableObject.EndEdit
+        If RegistroAlterado Then
+            TData_Backup = New TransacaoStructure
+            SData_Backup = New SimplesStructure
+            SEntradaData_Backup = New SimplesEntradaStructure
+            RegistroAlterado = False
+        End If
+    End Sub
+    '
+    Public Overridable Sub CancelEdit() Implements IEditableObject.CancelEdit
+        If RegistroAlterado Then
+            TData = TData_Backup
+            SData = SData_Backup
+            SEntradaData = SEntradaData_Backup
+            RegistroAlterado = False
+        End If
+    End Sub
+    '
+    '--- Propriedade ArquivoGerado
+    '------------------------------------------------------
+    Public Property ArquivoGerado() As Boolean
+        Get
+            Return SEntradaData._ArquivoGerado
+        End Get
+        Set(ByVal value As Boolean)
+            If value <> SEntradaData._ArquivoGerado Then
+                RaiseAoAlterar()
+            End If
+            SEntradaData._ArquivoGerado = value
+        End Set
+    End Property
+    '
+    '--- Propriedade ArquivoRecebido
+    '------------------------------------------------------
+    Public Property ArquivoRecebido() As Boolean
+        Get
+            Return SEntradaData._ArquivoRecebido
+        End Get
+        Set(ByVal value As Boolean)
+            If value <> SEntradaData._ArquivoRecebido Then
+                RaiseAoAlterar()
+            End If
+            SEntradaData._ArquivoRecebido = value
+        End Set
+    End Property
+    '
+    '--- Propriedade IDAReceber
+    '------------------------------------------------------
+    Public Property IDAReceber() As Integer?
+        Get
+            Return SEntradaData._IDAReceber
+        End Get
+        Set(ByVal value As Integer?)
+            If value <> SEntradaData._IDAReceber Then
+                RaiseAoAlterar()
+            End If
+            SEntradaData._IDAReceber = value
+        End Set
+    End Property
+    '
+    '--- Propriedade SituacaoAReceber
+    '------------------------------------------------------
+    Public Property SituacaoAReceber() As Byte
+        Get
+            Return SEntradaData._SituacaoAReceber
+        End Get
+        Set(ByVal value As Byte)
+            If value <> SEntradaData._SituacaoAReceber Then
+                RaiseAoAlterar()
+            End If
+            SEntradaData._SituacaoAReceber = value
+        End Set
+    End Property
+    '
+    '--- Propriedade ValorPagoTotal
+    '------------------------------------------------------
+    Public Property ValorPagoTotal() As Decimal
+        Get
+            Return SEntradaData._ValorPagoTotal
+        End Get
+        Set(ByVal value As Decimal)
+            If value <> SEntradaData._ValorPagoTotal Then
+                RaiseAoAlterar()
+            End If
+            SEntradaData._ValorPagoTotal = value
+        End Set
+    End Property
+    '
+    '--- Propriedade IDCobrancaForma
+    '------------------------------------------------------
+    Public Property IDCobrancaForma() As Int16
+        Get
+            Return SEntradaData._IDCobrancaForma
+        End Get
+        Set(ByVal value As Int16)
+            If value <> SEntradaData._IDCobrancaForma Then
+                RaiseAoAlterar()
+            End If
+            SEntradaData._IDCobrancaForma = value
+        End Set
+    End Property
+    '
+    '--- Propriedade IDPlano
+    '------------------------------------------------------
+    Public Property IDPlano() As Int16?
+        Get
+            Return SEntradaData._IDPlano
+        End Get
+        Set(ByVal value As Int16?)
+            If value <> SEntradaData._IDPlano Then
+                RaiseAoAlterar()
+            End If
+            SEntradaData._IDPlano = value
+        End Set
+    End Property
+    '
+End Class

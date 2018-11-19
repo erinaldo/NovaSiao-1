@@ -1053,10 +1053,18 @@ Public Class frmSimplesSaida
         '
         '--- Verifica se a SITUACAO do registro permite salvar
         If Not (Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro) Then
-
+            '
+            If MessageBox.Show("Deseja gerar arquivo de transmissão de Simples Saída?",
+                               "Gerar Arquivo",
+                               MessageBoxButtons.YesNo,
+                               MessageBoxIcon.Question) = vbYes Then
+                CriarArquivoXML()
+            End If
+            '
             Close()
             MostraMenuPrincipal()
             Return
+            '
         End If
         '
         '--- Faz as VERIFICACOES DOS CAMPOS E VALORES
@@ -1270,24 +1278,101 @@ Public Class frmSimplesSaida
 #Region "XML"
     '
     Private Sub CriarArquivoXML()
+        '
+        Dim saveDir As String = ""
+        '
+        '--- get the path
+        Using FBDiag As New FolderBrowserDialog With {
+            .Description = "Escolher Pasta de Salvamento",
+            .SelectedPath = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}
+            '
+            If FBDiag.ShowDialog = DialogResult.OK Then
+                '
+                saveDir = FBDiag.SelectedPath
+                '
+            Else
+                Return
+            End If
+            '
+        End Using
+        '
         Try
-            '--- get the path
-
-            Dim writer As New XmlTextWriter("ConfigFiles\Simples.xml", Nothing)
-
-            writer.WriteDocType("SimplesSaida", Nothing, Nothing, Nothing)
+            '
+            Dim settings As XmlWriterSettings = New XmlWriterSettings() With {.Indent = True}
+            Dim arqName As String = "SS" & Format(_Simples.IDTransacao, "0000") & "O" & Format(_Simples.IDPessoaOrigem, "00")
+            Dim writer As XmlWriter = XmlWriter.Create(saveDir & "\" & arqName & ".xml", settings)
+            '
             writer.WriteStartDocument()
+            writer.WriteDocType("SimplesSaida", Nothing, Nothing, Nothing)
             '
             'define a indentação do arquivo
-            writer.Formatting = Formatting.Indented
-            writer.WriteStartElement("Configuracao")
+            writer.WriteStartElement("Dados")
+            '
+            ' atributo para marcar arquivo recebido
+            writer.WriteAttributeString("Recebido", False)
 
-            CriarXML.WriteObjProperty_XML(_Simples, writer)
-
+            ' atributo para marcar arquivo devolvido e confirmado
+            writer.WriteAttributeString("Confirmado", False)
+            '
+            ' envia o clSimplesSaida
+            SimplesXML.WriteObjProperty_XML(_Simples, writer)
+            '
+            ' envia os produtos
+            SimplesXML.WriteObjProperty_XML(_ItensList, writer)
+            '
+            ' envia os APagar
+            SimplesXML.WriteObjProperty_XML(_ParcelaList, writer)
+            '
+            ' send every envolved products in clProduto
+            Dim pBLL As New ProdutoBLL
+            Dim pList As New List(Of clProduto)
+            '
+            Try
+                '
+                '--- Ampulheta ON
+                Cursor = Cursors.WaitCursor
+                '
+                pList = pBLL.GetProdutosLista_Transacao(_Simples.IDTransacao)
+                '
+            Catch ex As Exception
+                '
+                MessageBox.Show("Uma exceção ocorreu ao Obter Produtos da Simples Saída..." & vbNewLine &
+                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '
+            Finally
+                '--- Ampulheta OFF
+                Cursor = Cursors.Default
+            End Try
+            '
+            ' envia os clProdutos LIST
+            SimplesXML.WriteObjProperty_XML(pList, writer)
+            '
+            'FECHA XML
+            writer.WriteEndElement()
+            '
+            'escreve o xml para o arquivo e fecha o objeto escritor
+            ' Write the XML to file and close the writer
+            writer.Flush()
+            writer.Close()
+            '
+            '--- pergunta ao usuario se deseja abrir a pasta
+            If MessageBox.Show("Arquivo de Transmissão da Simples Saída criado com sucesso!" & vbNewLine & vbNewLine &
+                               "Deseja abrir a pasta do arquivo de transmissão?",
+                               "Arquivo Criado",
+                               MessageBoxButtons.YesNo,
+                               MessageBoxIcon.Question,
+                               MessageBoxDefaultButton.Button2) = vbYes Then
+                '
+                Process.Start("explorer.exe", "/select," & saveDir & "\" & arqName & ".xml")
+                '
+            End If
+            '
         Catch ex As Exception
-
+            '
+            MessageBox.Show("Uma exceção ocorreu ao Gerar Arquivo de Simples Saída..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
-
+        '
     End Sub
     '
 #End Region
