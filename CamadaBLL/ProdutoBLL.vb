@@ -79,33 +79,33 @@ Public Class ProdutoBLL
     '---------------------------------------------------------------------------------------------------------
     Public Function ConvertDR_To_clProduto(dr As SqlDataReader) As clProduto
         '
-        Dim prod As clProduto = New clProduto
-        '
-        prod.IDProduto = IIf(IsDBNull(dr("IDProduto")), 0, dr("IDProduto"))
-        prod.RGProduto = IIf(IsDBNull(dr("RGProduto")), Nothing, dr("RGProduto"))
-        prod.Produto = IIf(IsDBNull(dr("Produto")), String.Empty, dr("Produto"))
-        prod.IDFabricante = IIf(IsDBNull(dr("IDFabricante")), Nothing, dr("IDFabricante"))
-        prod.Fabricante = IIf(IsDBNull(dr("Fabricante")), String.Empty, dr("Fabricante"))
-        prod.IDProdutoTipo = IIf(IsDBNull(dr("IDProdutoTipo")), Nothing, dr("IDProdutoTipo"))
-        prod.ProdutoTipo = IIf(IsDBNull(dr("ProdutoTipo")), String.Empty, dr("ProdutoTipo"))
-        prod.IDProdutoSubTipo = IIf(IsDBNull(dr("IDProdutoSubTipo")), Nothing, dr("IDProdutoSubTipo"))
-        prod.ProdutoSubTipo = IIf(IsDBNull(dr("ProdutoSubTipo")), String.Empty, dr("ProdutoSubTipo"))
-        prod.IDCategoria = IIf(IsDBNull(dr("IDCategoria")), Nothing, dr("IDCategoria"))
-        prod.ProdutoCategoria = IIf(IsDBNull(dr("ProdutoCategoria")), String.Empty, dr("ProdutoCategoria"))
-        prod.Autor = IIf(IsDBNull(dr("Autor")), String.Empty, dr("Autor"))
-        prod.Unidade = IIf(IsDBNull(dr("Unidade")), 1, dr("Unidade"))
-        prod.PCompra = IIf(IsDBNull(dr("PCompra")), 0, dr("PCompra"))
-        prod.DescontoCompra = IIf(IsDBNull(dr("DescontoCompra")), Nothing, dr("DescontoCompra"))
-        prod.PVenda = IIf(IsDBNull(dr("PVenda")), 0, dr("PVenda"))
-        prod.ProdutoAtivo = IIf(IsDBNull(dr("ProdutoAtivo")), Nothing, dr("ProdutoAtivo"))
-        prod.SitTributaria = IIf(IsDBNull(dr("SitTributaria")), Nothing, dr("SitTributaria"))
-        prod.SituacaoTributaria = IIf(IsDBNull(dr("SituacaoTributaria")), String.Empty, dr("SituacaoTributaria"))
-        prod.NCM = IIf(IsDBNull(dr("NCM")), String.Empty, dr("NCM"))
-        prod.UltAltera = IIf(IsDBNull(dr("UltAltera")), Nothing, dr("UltAltera"))
-        prod.EntradaData = IIf(IsDBNull(dr("EntradaData")), Nothing, dr("EntradaData"))
-        prod.CodBarrasA = IIf(IsDBNull(dr("CodBarrasA")), String.Empty, dr("CodBarrasA"))
-        prod.Movimento = IIf(IsDBNull(dr("Movimento")), Nothing, dr("Movimento"))
-        prod.MovimentoDescricao = IIf(IsDBNull(dr("MovimentoDescricao")), String.Empty, dr("MovimentoDescricao"))
+        Dim prod As New clProduto With {
+            .IDProduto = IIf(IsDBNull(dr("IDProduto")), 0, dr("IDProduto")),
+            .RGProduto = IIf(IsDBNull(dr("RGProduto")), Nothing, dr("RGProduto")),
+            .Produto = IIf(IsDBNull(dr("Produto")), String.Empty, dr("Produto")),
+            .IDFabricante = IIf(IsDBNull(dr("IDFabricante")), Nothing, dr("IDFabricante")),
+            .Fabricante = IIf(IsDBNull(dr("Fabricante")), String.Empty, dr("Fabricante")),
+            .IDProdutoTipo = IIf(IsDBNull(dr("IDProdutoTipo")), Nothing, dr("IDProdutoTipo")),
+            .ProdutoTipo = IIf(IsDBNull(dr("ProdutoTipo")), String.Empty, dr("ProdutoTipo")),
+            .IDProdutoSubTipo = IIf(IsDBNull(dr("IDProdutoSubTipo")), Nothing, dr("IDProdutoSubTipo")),
+            .ProdutoSubTipo = IIf(IsDBNull(dr("ProdutoSubTipo")), String.Empty, dr("ProdutoSubTipo")),
+            .IDCategoria = IIf(IsDBNull(dr("IDCategoria")), Nothing, dr("IDCategoria")),
+            .ProdutoCategoria = IIf(IsDBNull(dr("ProdutoCategoria")), String.Empty, dr("ProdutoCategoria")),
+            .Autor = IIf(IsDBNull(dr("Autor")), String.Empty, dr("Autor")),
+            .Unidade = IIf(IsDBNull(dr("Unidade")), 1, dr("Unidade")),
+            .PCompra = IIf(IsDBNull(dr("PCompra")), 0, dr("PCompra")),
+            .DescontoCompra = IIf(IsDBNull(dr("DescontoCompra")), Nothing, dr("DescontoCompra")),
+            .PVenda = IIf(IsDBNull(dr("PVenda")), 0, dr("PVenda")),
+            .ProdutoAtivo = IIf(IsDBNull(dr("ProdutoAtivo")), Nothing, dr("ProdutoAtivo")),
+            .SitTributaria = IIf(IsDBNull(dr("SitTributaria")), Nothing, dr("SitTributaria")),
+            .SituacaoTributaria = IIf(IsDBNull(dr("SituacaoTributaria")), String.Empty, dr("SituacaoTributaria")),
+            .NCM = IIf(IsDBNull(dr("NCM")), String.Empty, dr("NCM")),
+            .UltAltera = IIf(IsDBNull(dr("UltAltera")), Nothing, dr("UltAltera")),
+            .EntradaData = IIf(IsDBNull(dr("EntradaData")), Nothing, dr("EntradaData")),
+            .CodBarrasA = IIf(IsDBNull(dr("CodBarrasA")), String.Empty, dr("CodBarrasA")),
+            .Movimento = IIf(IsDBNull(dr("Movimento")), Nothing, dr("Movimento")),
+            .MovimentoDescricao = IIf(IsDBNull(dr("MovimentoDescricao")), String.Empty, dr("MovimentoDescricao"))
+        }
         '
         Return prod
         '
@@ -114,7 +114,7 @@ Public Class ProdutoBLL
     '---------------------------------------------------------------------------------------------------------
     ' GET REGISTRO POR ID/RG
     '---------------------------------------------------------------------------------------------------------
-    Public Function GetProduto_PorID(ByVal myIDProd As Integer, myFilial As Integer) As clProduto
+    Public Function GetProduto_PorID(myIDProd As Integer, myFilial As Integer) As clProduto
         Dim objdb As New AcessoDados
         Dim dt As DataTable
         '

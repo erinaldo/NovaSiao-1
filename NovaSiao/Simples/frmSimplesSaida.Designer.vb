@@ -674,7 +674,7 @@ Partial Class frmSimplesSaida
         'Label13
         '
         Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(747, 627)
+        Me.Label13.Location = New System.Drawing.Point(786, 627)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(45, 19)
         Me.Label13.TabIndex = 8

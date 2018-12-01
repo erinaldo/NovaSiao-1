@@ -63,6 +63,7 @@ Partial Class frmPrincipal
         Me.miProcurarReserva = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator17 = New System.Windows.Forms.ToolStripSeparator()
         Me.miControleDePedidos = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miSimplesEntrada = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator13 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsbAReceber = New System.Windows.Forms.ToolStripSplitButton()
         Me.miAReceberCliente = New System.Windows.Forms.ToolStripMenuItem()
@@ -108,7 +109,6 @@ Partial Class frmPrincipal
         Me.Label2 = New System.Windows.Forms.Label()
         Me.lblHora = New System.Windows.Forms.Label()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.PictureBox1 = New System.Windows.Forms.PictureBox()
         Me.tsPrincipal.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SContainerPrincipal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -116,7 +116,6 @@ Partial Class frmPrincipal
         Me.SContainerPrincipal.Panel2.SuspendLayout()
         Me.SContainerPrincipal.SuspendLayout()
         Me.PainelInferior.SuspendLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
         'tsPrincipal
@@ -376,7 +375,7 @@ Partial Class frmPrincipal
         'tsbCompras
         '
         Me.tsbCompras.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbCompras.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaCompra, Me.ToolStripSeparator6, Me.miProcurarOperacaoEntrada, Me.ToolStripSeparator16, Me.miNovaReserva, Me.miProcurarReserva, Me.ToolStripSeparator17, Me.miControleDePedidos})
+        Me.tsbCompras.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaCompra, Me.ToolStripSeparator6, Me.miProcurarOperacaoEntrada, Me.ToolStripSeparator16, Me.miNovaReserva, Me.miProcurarReserva, Me.ToolStripSeparator17, Me.miControleDePedidos, Me.miSimplesEntrada})
         Me.tsbCompras.Image = Global.NovaSiao.My.Resources.Resources.compras_entradas
         Me.tsbCompras.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbCompras.Name = "tsbCompras"
@@ -437,6 +436,12 @@ Partial Class frmPrincipal
         Me.miControleDePedidos.Name = "miControleDePedidos"
         Me.miControleDePedidos.Size = New System.Drawing.Size(259, 30)
         Me.miControleDePedidos.Text = "Controle de Pedidos"
+        '
+        'miSimplesEntrada
+        '
+        Me.miSimplesEntrada.Name = "miSimplesEntrada"
+        Me.miSimplesEntrada.Size = New System.Drawing.Size(259, 30)
+        Me.miSimplesEntrada.Text = "Simples Entrada"
         '
         'ToolStripSeparator13
         '
@@ -683,7 +688,6 @@ Partial Class frmPrincipal
         'Panel1
         '
         Me.Panel1.BackColor = System.Drawing.Color.SlateGray
-        Me.Panel1.Controls.Add(Me.PictureBox1)
         Me.Panel1.Controls.Add(Me.btnMinimizer)
         Me.Panel1.Controls.Add(Me.Label1)
         Me.Panel1.Dock = System.Windows.Forms.DockStyle.Top
@@ -855,14 +859,6 @@ Partial Class frmPrincipal
         Me.Timer1.Enabled = True
         Me.Timer1.Interval = 600
         '
-        'PictureBox1
-        '
-        Me.PictureBox1.Location = New System.Drawing.Point(3, 4)
-        Me.PictureBox1.Name = "PictureBox1"
-        Me.PictureBox1.Size = New System.Drawing.Size(33, 27)
-        Me.PictureBox1.TabIndex = 11
-        Me.PictureBox1.TabStop = False
-        '
         'frmPrincipal
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -891,7 +887,6 @@ Partial Class frmPrincipal
         Me.SContainerPrincipal.ResumeLayout(False)
         Me.PainelInferior.ResumeLayout(False)
         Me.PainelInferior.PerformLayout()
-        CType(Me.PictureBox1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
@@ -980,5 +975,5 @@ Partial Class frmPrincipal
     Friend WithEvents miProcurarTroca As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator18 As ToolStripSeparator
     Friend WithEvents miNovaSimplesSaida As ToolStripMenuItem
-    Friend WithEvents PictureBox1 As PictureBox
+    Friend WithEvents miSimplesEntrada As ToolStripMenuItem
 End Class

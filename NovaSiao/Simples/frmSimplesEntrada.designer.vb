@@ -19,7 +19,6 @@ Partial Class frmSimplesEntrada
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.components = New System.ComponentModel.Container()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -41,31 +40,13 @@ Partial Class frmSimplesEntrada
         Me.clnMVA = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnIPI = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.vtab2 = New VIBlend.WinForms.Controls.vTabPage()
-        Me.Label4 = New System.Windows.Forms.Label()
+        Me.btnInserirObservacao = New System.Windows.Forms.Button()
         Me.lblTotalProdutos = New System.Windows.Forms.Label()
         Me.Label27 = New System.Windows.Forms.Label()
-        Me.Label20 = New System.Windows.Forms.Label()
-        Me.txtDescontos = New Controles.Text_Monetario()
-        Me.txtDespesas = New Controles.Text_Monetario()
-        Me.Label19 = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.txtICMSValor = New Controles.Text_Monetario()
-        Me.Label2 = New System.Windows.Forms.Label()
-        Me.txtFreteCobrado = New Controles.Text_Monetario()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.txtObservacao = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.lblTotalCobrado = New System.Windows.Forms.Label()
         Me.Label17 = New System.Windows.Forms.Label()
-        Me.txtVolumes = New Controles.Text_SoNumeros()
-        Me.Label14 = New System.Windows.Forms.Label()
-        Me.txtFreteValor = New Controles.Text_Monetario()
-        Me.Label10 = New System.Windows.Forms.Label()
-        Me.Label9 = New System.Windows.Forms.Label()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.cmbIDTransportadora = New Controles.ComboBox_OnlyValues()
-        Me.cmbFreteTipo = New Controles.ComboBox_OnlyValues()
         Me.dgvAPagar = New System.Windows.Forms.DataGridView()
         Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnForma = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -73,12 +54,9 @@ Partial Class frmSimplesEntrada
         Me.clnVencimento = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.lblCobrancaTipo = New System.Windows.Forms.Label()
         Me.ShapeContainer2 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
         Me.LineShape4 = New Microsoft.VisualBasic.PowerPacks.LineShape()
         Me.LineShape3 = New Microsoft.VisualBasic.PowerPacks.LineShape()
-        Me.LineShape2 = New Microsoft.VisualBasic.PowerPacks.LineShape()
-        Me.LineShape1 = New Microsoft.VisualBasic.PowerPacks.LineShape()
         Me.vtab3 = New VIBlend.WinForms.Controls.vTabPage()
         Me.pnlNota = New System.Windows.Forms.Panel()
         Me.txtChaveAcesso = New System.Windows.Forms.TextBox()
@@ -105,17 +83,11 @@ Partial Class frmSimplesEntrada
         Me.clnEmissaoData = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnNotaValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.lblCli = New System.Windows.Forms.Label()
-        Me.lblFornecedor = New System.Windows.Forms.Label()
-        Me.ShapeContainer1 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
-        Me.RectangleShape2 = New Microsoft.VisualBasic.PowerPacks.RectangleShape()
-        Me.btnDataSuperior = New VIBlend.WinForms.Controls.vArrowButton()
-        Me.btnDataAnterior = New VIBlend.WinForms.Controls.vArrowButton()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.lbl_IdTexto = New System.Windows.Forms.Label()
-        Me.lblCompraData = New System.Windows.Forms.Label()
-        Me.lblIDCompra = New System.Windows.Forms.Label()
+        Me.lblTransacaoData = New System.Windows.Forms.Label()
+        Me.lblIDTransacao = New System.Windows.Forms.Label()
         Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
-        Me.lblTotalGeral = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.lblSituacao = New System.Windows.Forms.Label()
         Me.Label15 = New System.Windows.Forms.Label()
@@ -125,11 +97,6 @@ Partial Class frmSimplesEntrada
         Me.btnFinalizar = New VIBlend.WinForms.Controls.vButton()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.lblFilial = New System.Windows.Forms.Label()
-        Me.cmsMenuAPagar = New System.Windows.Forms.ContextMenuStrip(Me.components)
-        Me.miInserir = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miEditar = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
-        Me.miExcluir = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStrip1 = New System.Windows.Forms.ToolStrip()
         Me.btnProcurar = New System.Windows.Forms.ToolStripButton()
         Me.btnAdicionar = New System.Windows.Forms.ToolStripButton()
@@ -137,6 +104,11 @@ Partial Class frmSimplesEntrada
         Me.btnImprimir = New System.Windows.Forms.ToolStripSplitButton()
         Me.miImprimirEtiquetas = New System.Windows.Forms.ToolStripMenuItem()
         Me.miImprimirRelatorio = New System.Windows.Forms.ToolStripMenuItem()
+        Me.VPanel2 = New VIBlend.WinForms.Controls.vPanel()
+        Me.lblFilialOrigem = New System.Windows.Forms.Label()
+        Me.Content = New VIBlend.WinForms.Controls.vContentPanel()
+        Me.lblTotalGeral = New System.Windows.Forms.Label()
+        Me.VPanel1 = New VIBlend.WinForms.Controls.vPanel()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -146,8 +118,11 @@ Partial Class frmSimplesEntrada
         Me.vtab3.SuspendLayout()
         Me.pnlNota.SuspendLayout()
         CType(Me.dgvVendaNotas, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.cmsMenuAPagar.SuspendLayout()
         Me.ToolStrip1.SuspendLayout()
+        Me.VPanel2.Content.SuspendLayout()
+        Me.VPanel2.SuspendLayout()
+        Me.VPanel1.Content.SuspendLayout()
+        Me.VPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -158,19 +133,15 @@ Partial Class frmSimplesEntrada
         Me.Panel1.Controls.Add(Me.Label15)
         Me.Panel1.Controls.Add(Me.lbl_IdTexto)
         Me.Panel1.Controls.Add(Me.btnClose)
-        Me.Panel1.Controls.Add(Me.btnDataSuperior)
-        Me.Panel1.Controls.Add(Me.btnDataAnterior)
         Me.Panel1.Controls.Add(Me.lblSituacao)
-        Me.Panel1.Controls.Add(Me.lblIDCompra)
-        Me.Panel1.Controls.Add(Me.lblCompraData)
+        Me.Panel1.Controls.Add(Me.lblIDTransacao)
+        Me.Panel1.Controls.Add(Me.lblTransacaoData)
         Me.Panel1.Size = New System.Drawing.Size(1200, 50)
         Me.Panel1.TabIndex = 0
-        Me.Panel1.Controls.SetChildIndex(Me.lblCompraData, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.lblIDCompra, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblTransacaoData, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblIDTransacao, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblSituacao, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.btnDataAnterior, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.btnDataSuperior, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lbl_IdTexto, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label15, 0)
@@ -181,9 +152,9 @@ Partial Class frmSimplesEntrada
         'lblTitulo
         '
         Me.lblTitulo.Font = New System.Drawing.Font("Calibri", 21.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTitulo.Location = New System.Drawing.Point(893, 0)
-        Me.lblTitulo.Size = New System.Drawing.Size(307, 50)
-        Me.lblTitulo.Text = "Operação de Compra"
+        Me.lblTitulo.Location = New System.Drawing.Point(951, 0)
+        Me.lblTitulo.Size = New System.Drawing.Size(249, 50)
+        Me.lblTitulo.Text = "Simples Entrada"
         '
         'tabPrincipal
         '
@@ -351,34 +322,15 @@ Partial Class frmSimplesEntrada
         '
         'vtab2
         '
-        Me.vtab2.Controls.Add(Me.Label4)
+        Me.vtab2.Controls.Add(Me.btnInserirObservacao)
         Me.vtab2.Controls.Add(Me.lblTotalProdutos)
         Me.vtab2.Controls.Add(Me.Label27)
-        Me.vtab2.Controls.Add(Me.Label20)
-        Me.vtab2.Controls.Add(Me.txtDescontos)
-        Me.vtab2.Controls.Add(Me.txtDespesas)
-        Me.vtab2.Controls.Add(Me.Label19)
-        Me.vtab2.Controls.Add(Me.Label5)
-        Me.vtab2.Controls.Add(Me.txtICMSValor)
-        Me.vtab2.Controls.Add(Me.Label2)
-        Me.vtab2.Controls.Add(Me.txtFreteCobrado)
-        Me.vtab2.Controls.Add(Me.Label1)
         Me.vtab2.Controls.Add(Me.txtObservacao)
         Me.vtab2.Controls.Add(Me.Label12)
         Me.vtab2.Controls.Add(Me.lblTotalCobrado)
         Me.vtab2.Controls.Add(Me.Label17)
-        Me.vtab2.Controls.Add(Me.txtVolumes)
-        Me.vtab2.Controls.Add(Me.Label14)
-        Me.vtab2.Controls.Add(Me.txtFreteValor)
-        Me.vtab2.Controls.Add(Me.Label10)
-        Me.vtab2.Controls.Add(Me.Label9)
-        Me.vtab2.Controls.Add(Me.Label8)
-        Me.vtab2.Controls.Add(Me.Label7)
-        Me.vtab2.Controls.Add(Me.cmbIDTransportadora)
-        Me.vtab2.Controls.Add(Me.cmbFreteTipo)
         Me.vtab2.Controls.Add(Me.dgvAPagar)
         Me.vtab2.Controls.Add(Me.Label6)
-        Me.vtab2.Controls.Add(Me.lblCobrancaTipo)
         Me.vtab2.Controls.Add(Me.ShapeContainer2)
         Me.vtab2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.vtab2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -388,29 +340,32 @@ Partial Class frmSimplesEntrada
         Me.vtab2.SelectedTextFont = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.vtab2.Size = New System.Drawing.Size(1180, 462)
         Me.vtab2.TabIndex = 4
-        Me.vtab2.Text = "Pagamentos e Frete"
+        Me.vtab2.Text = "Pagamentos"
         Me.vtab2.TextFont = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.vtab2.TooltipText = "TabPage"
         Me.vtab2.UseDefaultTextFont = False
         Me.vtab2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.RETROBLUE
         Me.vtab2.Visible = False
         '
-        'Label4
+        'btnInserirObservacao
         '
-        Me.Label4.AutoSize = True
-        Me.Label4.BackColor = System.Drawing.Color.Transparent
-        Me.Label4.Location = New System.Drawing.Point(827, 274)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(126, 19)
-        Me.Label4.TabIndex = 13
-        Me.Label4.Text = "Tipo de Cobrança:"
+        Me.btnInserirObservacao.BackColor = System.Drawing.Color.Azure
+        Me.btnInserirObservacao.FlatAppearance.BorderColor = System.Drawing.SystemColors.ActiveCaption
+        Me.btnInserirObservacao.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnInserirObservacao.Location = New System.Drawing.Point(959, 172)
+        Me.btnInserirObservacao.Name = "btnInserirObservacao"
+        Me.btnInserirObservacao.Size = New System.Drawing.Size(163, 40)
+        Me.btnInserirObservacao.TabIndex = 16
+        Me.btnInserirObservacao.Tag = "Inserir"
+        Me.btnInserirObservacao.Text = "Alterar &Observação"
+        Me.btnInserirObservacao.UseVisualStyleBackColor = False
         '
         'lblTotalProdutos
         '
         Me.lblTotalProdutos.BackColor = System.Drawing.Color.Transparent
         Me.lblTotalProdutos.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblTotalProdutos.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTotalProdutos.Location = New System.Drawing.Point(959, 356)
+        Me.lblTotalProdutos.Location = New System.Drawing.Point(396, 315)
         Me.lblTotalProdutos.Margin = New System.Windows.Forms.Padding(0)
         Me.lblTotalProdutos.Name = "lblTotalProdutos"
         Me.lblTotalProdutos.Size = New System.Drawing.Size(151, 32)
@@ -422,98 +377,15 @@ Partial Class frmSimplesEntrada
         '
         Me.Label27.AutoSize = True
         Me.Label27.BackColor = System.Drawing.Color.Transparent
-        Me.Label27.Location = New System.Drawing.Point(819, 356)
+        Me.Label27.Location = New System.Drawing.Point(256, 315)
         Me.Label27.Name = "Label27"
         Me.Label27.Size = New System.Drawing.Size(134, 19)
         Me.Label27.TabIndex = 13
         Me.Label27.Text = "Valor dos Produtos:"
         '
-        'Label20
-        '
-        Me.Label20.AutoSize = True
-        Me.Label20.BackColor = System.Drawing.Color.Transparent
-        Me.Label20.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label20.Location = New System.Drawing.Point(20, 15)
-        Me.Label20.Name = "Label20"
-        Me.Label20.Size = New System.Drawing.Size(158, 26)
-        Me.Label20.TabIndex = 13
-        Me.Label20.Text = "Outras Despesas:"
-        '
-        'txtDescontos
-        '
-        Me.txtDescontos.Location = New System.Drawing.Point(371, 84)
-        Me.txtDescontos.Name = "txtDescontos"
-        Me.txtDescontos.Size = New System.Drawing.Size(100, 27)
-        Me.txtDescontos.TabIndex = 3
-        Me.txtDescontos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'txtDespesas
-        '
-        Me.txtDespesas.Location = New System.Drawing.Point(149, 84)
-        Me.txtDespesas.Name = "txtDespesas"
-        Me.txtDespesas.Size = New System.Drawing.Size(100, 27)
-        Me.txtDespesas.TabIndex = 2
-        Me.txtDespesas.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label19
-        '
-        Me.Label19.AutoSize = True
-        Me.Label19.BackColor = System.Drawing.Color.Transparent
-        Me.Label19.Location = New System.Drawing.Point(288, 87)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(77, 19)
-        Me.Label19.TabIndex = 9
-        Me.Label19.Text = "Descontos"
-        '
-        'Label5
-        '
-        Me.Label5.AutoSize = True
-        Me.Label5.BackColor = System.Drawing.Color.Transparent
-        Me.Label5.Location = New System.Drawing.Point(23, 87)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(120, 19)
-        Me.Label5.TabIndex = 9
-        Me.Label5.Text = "Outras Despesas"
-        '
-        'txtICMSValor
-        '
-        Me.txtICMSValor.Location = New System.Drawing.Point(371, 51)
-        Me.txtICMSValor.Name = "txtICMSValor"
-        Me.txtICMSValor.Size = New System.Drawing.Size(100, 27)
-        Me.txtICMSValor.TabIndex = 1
-        Me.txtICMSValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label2
-        '
-        Me.Label2.AutoSize = True
-        Me.Label2.BackColor = System.Drawing.Color.Transparent
-        Me.Label2.Location = New System.Drawing.Point(265, 54)
-        Me.Label2.Name = "Label2"
-        Me.Label2.Size = New System.Drawing.Size(100, 19)
-        Me.Label2.TabIndex = 9
-        Me.Label2.Text = "ICMS Cobrado"
-        '
-        'txtFreteCobrado
-        '
-        Me.txtFreteCobrado.Location = New System.Drawing.Point(149, 51)
-        Me.txtFreteCobrado.Name = "txtFreteCobrado"
-        Me.txtFreteCobrado.Size = New System.Drawing.Size(100, 27)
-        Me.txtFreteCobrado.TabIndex = 0
-        Me.txtFreteCobrado.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.BackColor = System.Drawing.Color.Transparent
-        Me.Label1.Location = New System.Drawing.Point(43, 54)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(100, 19)
-        Me.Label1.TabIndex = 9
-        Me.Label1.Text = "Frete Cobrado"
-        '
         'txtObservacao
         '
-        Me.txtObservacao.Location = New System.Drawing.Point(40, 329)
+        Me.txtObservacao.Location = New System.Drawing.Point(691, 57)
         Me.txtObservacao.Multiline = True
         Me.txtObservacao.Name = "txtObservacao"
         Me.txtObservacao.Size = New System.Drawing.Size(431, 109)
@@ -524,7 +396,7 @@ Partial Class frmSimplesEntrada
         Me.Label12.AutoSize = True
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.Location = New System.Drawing.Point(20, 290)
+        Me.Label12.Location = New System.Drawing.Point(670, 15)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(234, 26)
         Me.Label12.TabIndex = 15
@@ -535,7 +407,7 @@ Partial Class frmSimplesEntrada
         Me.lblTotalCobrado.BackColor = System.Drawing.Color.Transparent
         Me.lblTotalCobrado.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
         Me.lblTotalCobrado.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTotalCobrado.Location = New System.Drawing.Point(959, 314)
+        Me.lblTotalCobrado.Location = New System.Drawing.Point(396, 273)
         Me.lblTotalCobrado.Name = "lblTotalCobrado"
         Me.lblTotalCobrado.Size = New System.Drawing.Size(151, 32)
         Me.lblTotalCobrado.TabIndex = 12
@@ -546,101 +418,11 @@ Partial Class frmSimplesEntrada
         '
         Me.Label17.AutoSize = True
         Me.Label17.BackColor = System.Drawing.Color.Transparent
-        Me.Label17.Location = New System.Drawing.Point(850, 314)
+        Me.Label17.Location = New System.Drawing.Point(287, 273)
         Me.Label17.Name = "Label17"
         Me.Label17.Size = New System.Drawing.Size(103, 19)
         Me.Label17.TabIndex = 13
         Me.Label17.Text = "Total Cobrado:"
-        '
-        'txtVolumes
-        '
-        Me.txtVolumes.Inteiro = True
-        Me.txtVolumes.Location = New System.Drawing.Point(334, 234)
-        Me.txtVolumes.Name = "txtVolumes"
-        Me.txtVolumes.Size = New System.Drawing.Size(49, 27)
-        Me.txtVolumes.TabIndex = 7
-        Me.txtVolumes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label14
-        '
-        Me.Label14.AutoSize = True
-        Me.Label14.BackColor = System.Drawing.Color.Transparent
-        Me.Label14.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(20, 130)
-        Me.Label14.Name = "Label14"
-        Me.Label14.Size = New System.Drawing.Size(62, 26)
-        Me.Label14.TabIndex = 13
-        Me.Label14.Text = "Frete:"
-        '
-        'txtFreteValor
-        '
-        Me.txtFreteValor.Location = New System.Drawing.Point(149, 234)
-        Me.txtFreteValor.Name = "txtFreteValor"
-        Me.txtFreteValor.Size = New System.Drawing.Size(100, 27)
-        Me.txtFreteValor.TabIndex = 6
-        Me.txtFreteValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
-        'Label10
-        '
-        Me.Label10.AutoSize = True
-        Me.Label10.BackColor = System.Drawing.Color.Transparent
-        Me.Label10.Location = New System.Drawing.Point(264, 237)
-        Me.Label10.Name = "Label10"
-        Me.Label10.Size = New System.Drawing.Size(64, 19)
-        Me.Label10.TabIndex = 8
-        Me.Label10.Text = "Volumes"
-        '
-        'Label9
-        '
-        Me.Label9.AutoSize = True
-        Me.Label9.BackColor = System.Drawing.Color.Transparent
-        Me.Label9.Location = New System.Drawing.Point(44, 237)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(99, 19)
-        Me.Label9.TabIndex = 9
-        Me.Label9.Text = "Valor do Frete"
-        '
-        'Label8
-        '
-        Me.Label8.AutoSize = True
-        Me.Label8.BackColor = System.Drawing.Color.Transparent
-        Me.Label8.Location = New System.Drawing.Point(36, 204)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(107, 19)
-        Me.Label8.TabIndex = 10
-        Me.Label8.Text = "Transportadora"
-        '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.BackColor = System.Drawing.Color.Transparent
-        Me.Label7.Location = New System.Drawing.Point(49, 171)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(94, 19)
-        Me.Label7.TabIndex = 11
-        Me.Label7.Text = "Tipo de Frete"
-        '
-        'cmbIDTransportadora
-        '
-        Me.cmbIDTransportadora.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDTransportadora.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDTransportadora.FormattingEnabled = True
-        Me.cmbIDTransportadora.Location = New System.Drawing.Point(149, 201)
-        Me.cmbIDTransportadora.Name = "cmbIDTransportadora"
-        Me.cmbIDTransportadora.RestrictContentToListItems = True
-        Me.cmbIDTransportadora.Size = New System.Drawing.Size(322, 27)
-        Me.cmbIDTransportadora.TabIndex = 5
-        '
-        'cmbFreteTipo
-        '
-        Me.cmbFreteTipo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbFreteTipo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbFreteTipo.FormattingEnabled = True
-        Me.cmbFreteTipo.Location = New System.Drawing.Point(149, 168)
-        Me.cmbFreteTipo.Name = "cmbFreteTipo"
-        Me.cmbFreteTipo.RestrictContentToListItems = True
-        Me.cmbFreteTipo.Size = New System.Drawing.Size(149, 27)
-        Me.cmbFreteTipo.TabIndex = 4
         '
         'dgvAPagar
         '
@@ -651,7 +433,7 @@ Partial Class frmSimplesEntrada
         Me.dgvAPagar.ColumnHeadersHeight = 30
         Me.dgvAPagar.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnID, Me.clnForma, Me.clnIdentificador, Me.clnVencimento, Me.clnValor})
         Me.dgvAPagar.EnableHeadersVisualStyles = False
-        Me.dgvAPagar.Location = New System.Drawing.Point(596, 56)
+        Me.dgvAPagar.Location = New System.Drawing.Point(33, 57)
         Me.dgvAPagar.MultiSelect = False
         Me.dgvAPagar.Name = "dgvAPagar"
         Me.dgvAPagar.ReadOnly = True
@@ -702,30 +484,18 @@ Partial Class frmSimplesEntrada
         Me.Label6.AutoSize = True
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Font = New System.Drawing.Font("Calibri", 15.75!)
-        Me.Label6.Location = New System.Drawing.Point(591, 15)
+        Me.Label6.Location = New System.Drawing.Point(18, 15)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(264, 26)
         Me.Label6.TabIndex = 1
         Me.Label6.Text = "Desdobramento das Parcelas:"
-        '
-        'lblCobrancaTipo
-        '
-        Me.lblCobrancaTipo.BackColor = System.Drawing.Color.Transparent
-        Me.lblCobrancaTipo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.lblCobrancaTipo.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCobrancaTipo.Location = New System.Drawing.Point(959, 271)
-        Me.lblCobrancaTipo.Name = "lblCobrancaTipo"
-        Me.lblCobrancaTipo.Size = New System.Drawing.Size(151, 32)
-        Me.lblCobrancaTipo.TabIndex = 1
-        Me.lblCobrancaTipo.Text = "Tipo de Cobrança"
-        Me.lblCobrancaTipo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'ShapeContainer2
         '
         Me.ShapeContainer2.Location = New System.Drawing.Point(4, 4)
         Me.ShapeContainer2.Margin = New System.Windows.Forms.Padding(0)
         Me.ShapeContainer2.Name = "ShapeContainer2"
-        Me.ShapeContainer2.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.LineShape4, Me.LineShape3, Me.LineShape2, Me.LineShape1})
+        Me.ShapeContainer2.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.LineShape4, Me.LineShape3})
         Me.ShapeContainer2.Size = New System.Drawing.Size(1172, 454)
         Me.ShapeContainer2.TabIndex = 14
         Me.ShapeContainer2.TabStop = False
@@ -735,8 +505,8 @@ Partial Class frmSimplesEntrada
         Me.LineShape4.BorderColor = System.Drawing.Color.SlateGray
         Me.LineShape4.BorderWidth = 3
         Me.LineShape4.Name = "LineShape4"
-        Me.LineShape4.X1 = 852
-        Me.LineShape4.X2 = 1127
+        Me.LineShape4.X1 = 902
+        Me.LineShape4.X2 = 1129
         Me.LineShape4.Y1 = 26
         Me.LineShape4.Y2 = 26
         '
@@ -745,30 +515,10 @@ Partial Class frmSimplesEntrada
         Me.LineShape3.BorderColor = System.Drawing.Color.SlateGray
         Me.LineShape3.BorderWidth = 3
         Me.LineShape3.Name = "LineShape3"
-        Me.LineShape3.X1 = 249
-        Me.LineShape3.X2 = 500
-        Me.LineShape3.Y1 = 301
-        Me.LineShape3.Y2 = 301
-        '
-        'LineShape2
-        '
-        Me.LineShape2.BorderColor = System.Drawing.Color.SlateGray
-        Me.LineShape2.BorderWidth = 3
-        Me.LineShape2.Name = "LineShape2"
-        Me.LineShape2.X1 = 176
-        Me.LineShape2.X2 = 500
-        Me.LineShape2.Y1 = 25
-        Me.LineShape2.Y2 = 25
-        '
-        'LineShape1
-        '
-        Me.LineShape1.BorderColor = System.Drawing.Color.SlateGray
-        Me.LineShape1.BorderWidth = 3
-        Me.LineShape1.Name = "LineShape1"
-        Me.LineShape1.X1 = 77
-        Me.LineShape1.X2 = 500
-        Me.LineShape1.Y1 = 140
-        Me.LineShape1.Y2 = 140
+        Me.LineShape3.X1 = 280
+        Me.LineShape3.X2 = 580
+        Me.LineShape3.Y1 = 26
+        Me.LineShape3.Y2 = 26
         '
         'vtab3
         '
@@ -1039,70 +789,11 @@ Partial Class frmSimplesEntrada
         '
         Me.lblCli.AutoSize = True
         Me.lblCli.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCli.Location = New System.Drawing.Point(14, 69)
+        Me.lblCli.Location = New System.Drawing.Point(13, 69)
         Me.lblCli.Name = "lblCli"
-        Me.lblCli.Size = New System.Drawing.Size(91, 19)
+        Me.lblCli.Size = New System.Drawing.Size(98, 19)
         Me.lblCli.TabIndex = 6
-        Me.lblCli.Text = "Fornecedor:"
-        '
-        'lblFornecedor
-        '
-        Me.lblFornecedor.BackColor = System.Drawing.Color.White
-        Me.lblFornecedor.Location = New System.Drawing.Point(122, 67)
-        Me.lblFornecedor.Name = "lblFornecedor"
-        Me.lblFornecedor.Size = New System.Drawing.Size(614, 25)
-        Me.lblFornecedor.TabIndex = 1
-        Me.lblFornecedor.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
-        '
-        'ShapeContainer1
-        '
-        Me.ShapeContainer1.Location = New System.Drawing.Point(0, 0)
-        Me.ShapeContainer1.Margin = New System.Windows.Forms.Padding(0)
-        Me.ShapeContainer1.Name = "ShapeContainer1"
-        Me.ShapeContainer1.Shapes.AddRange(New Microsoft.VisualBasic.PowerPacks.Shape() {Me.RectangleShape2})
-        Me.ShapeContainer1.Size = New System.Drawing.Size(1200, 663)
-        Me.ShapeContainer1.TabIndex = 11
-        Me.ShapeContainer1.TabStop = False
-        '
-        'RectangleShape2
-        '
-        Me.RectangleShape2.BackColor = System.Drawing.Color.White
-        Me.RectangleShape2.BackStyle = Microsoft.VisualBasic.PowerPacks.BackStyle.Opaque
-        Me.RectangleShape2.BorderColor = System.Drawing.SystemColors.ActiveCaption
-        Me.RectangleShape2.FillColor = System.Drawing.Color.Transparent
-        Me.RectangleShape2.FillGradientColor = System.Drawing.Color.Transparent
-        Me.RectangleShape2.FillGradientStyle = Microsoft.VisualBasic.PowerPacks.FillGradientStyle.Central
-        Me.RectangleShape2.Location = New System.Drawing.Point(112, 64)
-        Me.RectangleShape2.Name = "RectangleShape2"
-        Me.RectangleShape2.Size = New System.Drawing.Size(626, 30)
-        '
-        'btnDataSuperior
-        '
-        Me.btnDataSuperior.AllowAnimations = True
-        Me.btnDataSuperior.ArrowDirection = System.Windows.Forms.ArrowDirection.Up
-        Me.btnDataSuperior.Location = New System.Drawing.Point(271, 10)
-        Me.btnDataSuperior.Maximum = 100
-        Me.btnDataSuperior.Minimum = 0
-        Me.btnDataSuperior.Name = "btnDataSuperior"
-        Me.btnDataSuperior.Size = New System.Drawing.Size(16, 16)
-        Me.btnDataSuperior.TabIndex = 52
-        Me.btnDataSuperior.TabStop = False
-        Me.btnDataSuperior.Value = 0
-        Me.btnDataSuperior.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
-        '
-        'btnDataAnterior
-        '
-        Me.btnDataAnterior.AllowAnimations = True
-        Me.btnDataAnterior.ArrowDirection = System.Windows.Forms.ArrowDirection.Down
-        Me.btnDataAnterior.Location = New System.Drawing.Point(271, 26)
-        Me.btnDataAnterior.Maximum = 100
-        Me.btnDataAnterior.Minimum = 0
-        Me.btnDataAnterior.Name = "btnDataAnterior"
-        Me.btnDataAnterior.Size = New System.Drawing.Size(16, 16)
-        Me.btnDataAnterior.TabIndex = 53
-        Me.btnDataAnterior.TabStop = False
-        Me.btnDataAnterior.Value = 0
-        Me.btnDataAnterior.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        Me.lblCli.Text = "Filial Origem:"
         '
         'Label3
         '
@@ -1132,31 +823,31 @@ Partial Class frmSimplesEntrada
         Me.lbl_IdTexto.Text = "Reg."
         Me.lbl_IdTexto.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
-        'lblCompraData
+        'lblTransacaoData
         '
-        Me.lblCompraData.BackColor = System.Drawing.Color.Transparent
-        Me.lblCompraData.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblCompraData.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblCompraData.Location = New System.Drawing.Point(112, 16)
-        Me.lblCompraData.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lblCompraData.Name = "lblCompraData"
-        Me.lblCompraData.Size = New System.Drawing.Size(155, 30)
-        Me.lblCompraData.TabIndex = 48
-        Me.lblCompraData.Text = "01/01/2017"
-        Me.lblCompraData.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblTransacaoData.BackColor = System.Drawing.Color.Transparent
+        Me.lblTransacaoData.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTransacaoData.ForeColor = System.Drawing.Color.AliceBlue
+        Me.lblTransacaoData.Location = New System.Drawing.Point(112, 16)
+        Me.lblTransacaoData.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblTransacaoData.Name = "lblTransacaoData"
+        Me.lblTransacaoData.Size = New System.Drawing.Size(155, 30)
+        Me.lblTransacaoData.TabIndex = 48
+        Me.lblTransacaoData.Text = "01/01/2017"
+        Me.lblTransacaoData.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'lblIDCompra
+        'lblIDTransacao
         '
-        Me.lblIDCompra.BackColor = System.Drawing.Color.Transparent
-        Me.lblIDCompra.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblIDCompra.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblIDCompra.Location = New System.Drawing.Point(5, 16)
-        Me.lblIDCompra.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
-        Me.lblIDCompra.Name = "lblIDCompra"
-        Me.lblIDCompra.Size = New System.Drawing.Size(85, 30)
-        Me.lblIDCompra.TabIndex = 49
-        Me.lblIDCompra.Text = "0001"
-        Me.lblIDCompra.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblIDTransacao.BackColor = System.Drawing.Color.Transparent
+        Me.lblIDTransacao.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblIDTransacao.ForeColor = System.Drawing.Color.AliceBlue
+        Me.lblIDTransacao.Location = New System.Drawing.Point(5, 16)
+        Me.lblIDTransacao.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblIDTransacao.Name = "lblIDTransacao"
+        Me.lblIDTransacao.Size = New System.Drawing.Size(85, 30)
+        Me.lblIDTransacao.TabIndex = 49
+        Me.lblIDTransacao.Text = "0001"
+        Me.lblIDTransacao.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'btnClose
         '
@@ -1175,22 +866,10 @@ Partial Class frmSimplesEntrada
         Me.btnClose.UseVisualStyleBackColor = False
         Me.btnClose.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICE2003SILVER
         '
-        'lblTotalGeral
-        '
-        Me.lblTotalGeral.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
-        Me.lblTotalGeral.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTotalGeral.Location = New System.Drawing.Point(968, 618)
-        Me.lblTotalGeral.Margin = New System.Windows.Forms.Padding(0)
-        Me.lblTotalGeral.Name = "lblTotalGeral"
-        Me.lblTotalGeral.Size = New System.Drawing.Size(187, 32)
-        Me.lblTotalGeral.TabIndex = 12
-        Me.lblTotalGeral.Text = "R$ 0,00"
-        Me.lblTotalGeral.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        '
         'Label13
         '
         Me.Label13.AutoSize = True
-        Me.Label13.Location = New System.Drawing.Point(878, 618)
+        Me.Label13.Location = New System.Drawing.Point(897, 623)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(84, 19)
         Me.Label13.TabIndex = 13
@@ -1313,38 +992,6 @@ Partial Class frmSimplesEntrada
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
-        'cmsMenuAPagar
-        '
-        Me.cmsMenuAPagar.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miInserir, Me.miEditar, Me.ToolStripSeparator1, Me.miExcluir})
-        Me.cmsMenuAPagar.Name = "cmsMenuAPagar"
-        Me.cmsMenuAPagar.Size = New System.Drawing.Size(179, 76)
-        '
-        'miInserir
-        '
-        Me.miInserir.Image = Global.NovaSiao.My.Resources.Resources.add
-        Me.miInserir.Name = "miInserir"
-        Me.miInserir.Size = New System.Drawing.Size(178, 22)
-        Me.miInserir.Text = "Inserir Nova Parcela"
-        '
-        'miEditar
-        '
-        Me.miEditar.Image = Global.NovaSiao.My.Resources.Resources.editar
-        Me.miEditar.Name = "miEditar"
-        Me.miEditar.Size = New System.Drawing.Size(178, 22)
-        Me.miEditar.Text = "Editar Parcela"
-        '
-        'ToolStripSeparator1
-        '
-        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
-        Me.ToolStripSeparator1.Size = New System.Drawing.Size(175, 6)
-        '
-        'miExcluir
-        '
-        Me.miExcluir.Image = Global.NovaSiao.My.Resources.Resources.delete
-        Me.miExcluir.Name = "miExcluir"
-        Me.miExcluir.Size = New System.Drawing.Size(178, 22)
-        Me.miExcluir.Text = "Excluir Parcela"
-        '
         'ToolStrip1
         '
         Me.ToolStrip1.AutoSize = False
@@ -1410,29 +1057,107 @@ Partial Class frmSimplesEntrada
         Me.miImprimirRelatorio.Size = New System.Drawing.Size(183, 22)
         Me.miImprimirRelatorio.Text = "Relatório da Compra"
         '
+        'VPanel2
+        '
+        Me.VPanel2.AllowAnimations = True
+        Me.VPanel2.BorderRadius = 0
+        '
+        'VPanel2.Content
+        '
+        Me.VPanel2.Content.AutoScroll = True
+        Me.VPanel2.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.VPanel2.Content.Controls.Add(Me.lblFilialOrigem)
+        Me.VPanel2.Content.Location = New System.Drawing.Point(1, 1)
+        Me.VPanel2.Content.Name = "Content"
+        Me.VPanel2.Content.Size = New System.Drawing.Size(346, 29)
+        Me.VPanel2.Content.TabIndex = 3
+        Me.VPanel2.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
+        Me.VPanel2.Location = New System.Drawing.Point(116, 63)
+        Me.VPanel2.Name = "VPanel2"
+        Me.VPanel2.Opacity = 1.0!
+        Me.VPanel2.PanelBorderColor = System.Drawing.SystemColors.ActiveCaption
+        Me.VPanel2.Size = New System.Drawing.Size(348, 31)
+        Me.VPanel2.TabIndex = 18
+        Me.VPanel2.Text = "VPanel2"
+        Me.VPanel2.UsePanelBorderColor = True
+        Me.VPanel2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        '
+        'lblFilialOrigem
+        '
+        Me.lblFilialOrigem.BackColor = System.Drawing.Color.White
+        Me.lblFilialOrigem.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblFilialOrigem.Location = New System.Drawing.Point(0, 0)
+        Me.lblFilialOrigem.Name = "lblFilialOrigem"
+        Me.lblFilialOrigem.Size = New System.Drawing.Size(346, 29)
+        Me.lblFilialOrigem.TabIndex = 5
+        Me.lblFilialOrigem.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Content
+        '
+        Me.Content.AutoScroll = True
+        Me.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.Content.Location = New System.Drawing.Point(1, 1)
+        Me.Content.Name = "Content"
+        Me.Content.Size = New System.Drawing.Size(200, 37)
+        Me.Content.TabIndex = 3
+        '
+        'lblTotalGeral
+        '
+        Me.lblTotalGeral.Dock = System.Windows.Forms.DockStyle.Fill
+        Me.lblTotalGeral.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold)
+        Me.lblTotalGeral.Location = New System.Drawing.Point(0, 0)
+        Me.lblTotalGeral.Name = "lblTotalGeral"
+        Me.lblTotalGeral.Size = New System.Drawing.Size(200, 37)
+        Me.lblTotalGeral.TabIndex = 9
+        Me.lblTotalGeral.Text = "R$ 0,00"
+        Me.lblTotalGeral.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'VPanel1
+        '
+        Me.VPanel1.AllowAnimations = True
+        Me.VPanel1.BorderRadius = 0
+        '
+        'VPanel1.Content
+        '
+        Me.VPanel1.Content.AutoScroll = True
+        Me.VPanel1.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.VPanel1.Content.Controls.Add(Me.lblTotalGeral)
+        Me.VPanel1.Content.Location = New System.Drawing.Point(1, 1)
+        Me.VPanel1.Content.Name = "Content"
+        Me.VPanel1.Content.Size = New System.Drawing.Size(200, 37)
+        Me.VPanel1.Content.TabIndex = 3
+        Me.VPanel1.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
+        Me.VPanel1.Location = New System.Drawing.Point(987, 614)
+        Me.VPanel1.Name = "VPanel1"
+        Me.VPanel1.Opacity = 1.0!
+        Me.VPanel1.PanelBorderColor = System.Drawing.SystemColors.ActiveCaption
+        Me.VPanel1.Size = New System.Drawing.Size(202, 39)
+        Me.VPanel1.TabIndex = 17
+        Me.VPanel1.Text = "VPanel1"
+        Me.VPanel1.UsePanelBorderColor = True
+        Me.VPanel1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        '
         'frmSimplesEntrada
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(1200, 663)
+        Me.Controls.Add(Me.VPanel1)
+        Me.Controls.Add(Me.VPanel2)
         Me.Controls.Add(Me.ToolStrip1)
         Me.Controls.Add(Me.btnFinalizar)
         Me.Controls.Add(Me.Label13)
-        Me.Controls.Add(Me.lblTotalGeral)
         Me.Controls.Add(Me.lblCli)
-        Me.Controls.Add(Me.lblFornecedor)
         Me.Controls.Add(Me.tabPrincipal)
-        Me.Controls.Add(Me.ShapeContainer1)
         Me.KeyPreview = True
         Me.Name = "frmSimplesEntrada"
-        Me.Controls.SetChildIndex(Me.ShapeContainer1, 0)
         Me.Controls.SetChildIndex(Me.tabPrincipal, 0)
-        Me.Controls.SetChildIndex(Me.lblFornecedor, 0)
         Me.Controls.SetChildIndex(Me.lblCli, 0)
-        Me.Controls.SetChildIndex(Me.lblTotalGeral, 0)
         Me.Controls.SetChildIndex(Me.Label13, 0)
         Me.Controls.SetChildIndex(Me.btnFinalizar, 0)
         Me.Controls.SetChildIndex(Me.ToolStrip1, 0)
+        Me.Controls.SetChildIndex(Me.VPanel2, 0)
         Me.Controls.SetChildIndex(Me.Panel1, 0)
+        Me.Controls.SetChildIndex(Me.VPanel1, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.tabPrincipal.ResumeLayout(False)
@@ -1446,9 +1171,12 @@ Partial Class frmSimplesEntrada
         Me.pnlNota.ResumeLayout(False)
         Me.pnlNota.PerformLayout()
         CType(Me.dgvVendaNotas, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.cmsMenuAPagar.ResumeLayout(False)
         Me.ToolStrip1.ResumeLayout(False)
         Me.ToolStrip1.PerformLayout()
+        Me.VPanel2.Content.ResumeLayout(False)
+        Me.VPanel2.ResumeLayout(False)
+        Me.VPanel1.Content.ResumeLayout(False)
+        Me.VPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1458,37 +1186,23 @@ Partial Class frmSimplesEntrada
     Friend WithEvents vtab1 As VIBlend.WinForms.Controls.vTabPage
     Friend WithEvents dgvItens As DataGridView
     Friend WithEvents vtab2 As VIBlend.WinForms.Controls.vTabPage
-    Friend WithEvents txtVolumes As Controles.Text_SoNumeros
-    Friend WithEvents txtFreteValor As Controles.Text_Monetario
-    Friend WithEvents Label10 As Label
-    Friend WithEvents Label9 As Label
-    Friend WithEvents Label8 As Label
-    Friend WithEvents Label7 As Label
-    Friend WithEvents cmbIDTransportadora As Controles.ComboBox_OnlyValues
-    Friend WithEvents cmbFreteTipo As Controles.ComboBox_OnlyValues
     Friend WithEvents dgvAPagar As DataGridView
     Friend WithEvents Label6 As Label
-    Friend WithEvents lblCobrancaTipo As Label
     Friend WithEvents vtab3 As VIBlend.WinForms.Controls.vTabPage
     Friend WithEvents Label11 As Label
     Friend WithEvents dgvVendaNotas As DataGridView
     Friend WithEvents lblCli As Label
-    Friend WithEvents lblFornecedor As Label
-    Friend WithEvents btnDataSuperior As VIBlend.WinForms.Controls.vArrowButton
-    Friend WithEvents btnDataAnterior As VIBlend.WinForms.Controls.vArrowButton
     Friend WithEvents Label3 As Label
-    Friend WithEvents lblIDCompra As Label
+    Friend WithEvents lblIDTransacao As Label
     Friend WithEvents lbl_IdTexto As Label
-    Friend WithEvents lblCompraData As Label
+    Friend WithEvents lblTransacaoData As Label
     Friend WithEvents btnClose As VIBlend.WinForms.Controls.vFormButton
-    Friend WithEvents lblTotalGeral As Label
     Friend WithEvents Label13 As Label
     Friend WithEvents Label15 As Label
     Friend WithEvents lblSituacao As Label
     Friend WithEvents VApplicationMenuItem2 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem3 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem4 As VIBlend.WinForms.Controls.vApplicationMenuItem
-    Friend WithEvents Label14 As Label
     Friend WithEvents lblTotalCobrado As Label
     Friend WithEvents Label17 As Label
     Friend WithEvents txtObservacao As TextBox
@@ -1496,15 +1210,6 @@ Partial Class frmSimplesEntrada
     Friend WithEvents btnFinalizar As VIBlend.WinForms.Controls.vButton
     Friend WithEvents Label18 As Label
     Friend WithEvents lblFilial As Label
-    Friend WithEvents txtICMSValor As Controles.Text_Monetario
-    Friend WithEvents Label2 As Label
-    Friend WithEvents txtFreteCobrado As Controles.Text_Monetario
-    Friend WithEvents Label1 As Label
-    Friend WithEvents Label20 As Label
-    Friend WithEvents txtDescontos As Controles.Text_Monetario
-    Friend WithEvents txtDespesas As Controles.Text_Monetario
-    Friend WithEvents Label19 As Label
-    Friend WithEvents Label5 As Label
     Friend WithEvents clnIDTransacaoItem As DataGridViewTextBoxColumn
     Friend WithEvents clnRGProduto As DataGridViewTextBoxColumn
     Friend WithEvents clnProduto As DataGridViewTextBoxColumn
@@ -1546,12 +1251,6 @@ Partial Class frmSimplesEntrada
     Friend WithEvents clnIdentificador As DataGridViewTextBoxColumn
     Friend WithEvents clnVencimento As DataGridViewTextBoxColumn
     Friend WithEvents clnValor As DataGridViewTextBoxColumn
-    Friend WithEvents Label4 As Label
-    Friend WithEvents cmsMenuAPagar As ContextMenuStrip
-    Friend WithEvents miInserir As ToolStripMenuItem
-    Friend WithEvents miEditar As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
-    Friend WithEvents miExcluir As ToolStripMenuItem
     Friend WithEvents ToolStrip1 As ToolStrip
     Friend WithEvents btnProcurar As ToolStripButton
     Friend WithEvents btnAdicionar As ToolStripButton
@@ -1559,11 +1258,13 @@ Partial Class frmSimplesEntrada
     Friend WithEvents btnImprimir As ToolStripSplitButton
     Friend WithEvents miImprimirEtiquetas As ToolStripMenuItem
     Friend WithEvents miImprimirRelatorio As ToolStripMenuItem
-    Private WithEvents ShapeContainer1 As PowerPacks.ShapeContainer
-    Private WithEvents RectangleShape2 As PowerPacks.RectangleShape
     Private WithEvents ShapeContainer2 As PowerPacks.ShapeContainer
-    Private WithEvents LineShape1 As PowerPacks.LineShape
-    Private WithEvents LineShape2 As PowerPacks.LineShape
     Private WithEvents LineShape3 As PowerPacks.LineShape
     Private WithEvents LineShape4 As PowerPacks.LineShape
+    Friend WithEvents VPanel2 As VIBlend.WinForms.Controls.vPanel
+    Friend WithEvents lblFilialOrigem As Label
+    Friend WithEvents Content As VIBlend.WinForms.Controls.vContentPanel
+    Friend WithEvents lblTotalGeral As Label
+    Friend WithEvents VPanel1 As VIBlend.WinForms.Controls.vPanel
+    Friend WithEvents btnInserirObservacao As Button
 End Class

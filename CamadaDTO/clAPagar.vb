@@ -6,7 +6,7 @@ Public Class clAPagar : Implements IEditableObject
     Structure PagarStructure ' alguns usam FRIEND em vez de DIM
         '--- Itens da tblAPagar
         Dim _IDAPagar As Integer?
-        Dim _Origem As Origem_APagar
+        Dim _Origem As Origem_APagar 'Compra = 1 | Despesa = 2
         Dim _IDOrigem As Integer?
         Dim _IDPessoa As Integer?
         Dim _IDFilial As Integer?
@@ -33,6 +33,8 @@ Public Class clAPagar : Implements IEditableObject
     Enum Origem_APagar
         Compra = 1
         Despesa = 2
+        DespesaPeriodica = 3
+        SimplesEntrada = 4
     End Enum
     '
 #End Region

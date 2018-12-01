@@ -23,7 +23,7 @@ Partial Class frmConfig
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
@@ -92,6 +92,9 @@ Partial Class frmConfig
         Me.menuCFOP = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ProcurarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LimparToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.GroupBox1 = New System.Windows.Forms.GroupBox()
+        Me.rbtServLocal = New System.Windows.Forms.RadioButton()
+        Me.rbtServRemoto = New System.Windows.Forms.RadioButton()
         Me.Panel1.SuspendLayout()
         Me.TabPrincipal.SuspendLayout()
         Me.Tab1.SuspendLayout()
@@ -105,6 +108,7 @@ Partial Class frmConfig
         Me.Panel2.SuspendLayout()
         CType(Me.EProvider, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.menuCFOP.SuspendLayout()
+        Me.GroupBox1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -736,6 +740,7 @@ Partial Class frmConfig
         '
         Me.Tab3.ContentBackColor = System.Drawing.Color.Azure
         Me.Tab3.ContentBorderColor = System.Drawing.Color.Transparent
+        Me.Tab3.Controls.Add(Me.GroupBox1)
         Me.Tab3.Controls.Add(Me.chkVerBackup)
         Me.Tab3.Controls.Add(Me.Label16)
         Me.Tab3.Controls.Add(Me.txtStringConexao)
@@ -760,9 +765,10 @@ Partial Class frmConfig
         Me.chkVerBackup.BackColor = System.Drawing.Color.Transparent
         Me.chkVerBackup.Checked = True
         Me.chkVerBackup.CheckState = System.Windows.Forms.CheckState.Checked
-        Me.chkVerBackup.Location = New System.Drawing.Point(214, 134)
+        Me.chkVerBackup.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.chkVerBackup.Location = New System.Drawing.Point(214, 251)
         Me.chkVerBackup.Name = "chkVerBackup"
-        Me.chkVerBackup.Size = New System.Drawing.Size(243, 20)
+        Me.chkVerBackup.Size = New System.Drawing.Size(300, 22)
         Me.chkVerBackup.TabIndex = 1
         Me.chkVerBackup.Text = "Verificar Ultimo Backup ao Iniciar"
         Me.chkVerBackup.UseVisualStyleBackColor = False
@@ -775,7 +781,7 @@ Partial Class frmConfig
         Me.Label16.Location = New System.Drawing.Point(43, 31)
         Me.Label16.Name = "Label16"
         Me.Label16.Size = New System.Drawing.Size(165, 18)
-        Me.Label16.TabIndex = 5
+        Me.Label16.TabIndex = 2
         Me.Label16.Text = "String de Conexão:"
         '
         'txtStringConexao
@@ -785,8 +791,8 @@ Partial Class frmConfig
         Me.txtStringConexao.Location = New System.Drawing.Point(214, 28)
         Me.txtStringConexao.Multiline = True
         Me.txtStringConexao.Name = "txtStringConexao"
-        Me.txtStringConexao.Size = New System.Drawing.Size(457, 68)
-        Me.txtStringConexao.TabIndex = 0
+        Me.txtStringConexao.Size = New System.Drawing.Size(457, 123)
+        Me.txtStringConexao.TabIndex = 3
         '
         'Tab5
         '
@@ -824,14 +830,14 @@ Partial Class frmConfig
         Me.dgvOperacao.AllowUserToAddRows = False
         Me.dgvOperacao.AllowUserToDeleteRows = False
         Me.dgvOperacao.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ActiveCaption
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Verdana", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvOperacao.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.ActiveCaption
+        DataGridViewCellStyle2.Font = New System.Drawing.Font("Verdana", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.White
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvOperacao.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvOperacao.ColumnHeadersHeight = 30
         Me.dgvOperacao.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
         Me.dgvOperacao.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnID, Me.clnOpercao})
@@ -935,6 +941,41 @@ Partial Class frmConfig
         Me.LimparToolStripMenuItem.Size = New System.Drawing.Size(130, 24)
         Me.LimparToolStripMenuItem.Text = "Limpar"
         '
+        'GroupBox1
+        '
+        Me.GroupBox1.BackColor = System.Drawing.Color.Transparent
+        Me.GroupBox1.Controls.Add(Me.rbtServRemoto)
+        Me.GroupBox1.Controls.Add(Me.rbtServLocal)
+        Me.GroupBox1.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.GroupBox1.Location = New System.Drawing.Point(214, 166)
+        Me.GroupBox1.Name = "GroupBox1"
+        Me.GroupBox1.Size = New System.Drawing.Size(306, 65)
+        Me.GroupBox1.TabIndex = 0
+        Me.GroupBox1.TabStop = False
+        Me.GroupBox1.Text = "Tipo de Banco de Dados"
+        '
+        'rbtServLocal
+        '
+        Me.rbtServLocal.AutoSize = True
+        Me.rbtServLocal.Location = New System.Drawing.Point(67, 28)
+        Me.rbtServLocal.Name = "rbtServLocal"
+        Me.rbtServLocal.Size = New System.Drawing.Size(68, 22)
+        Me.rbtServLocal.TabIndex = 0
+        Me.rbtServLocal.TabStop = True
+        Me.rbtServLocal.Text = "Local"
+        Me.rbtServLocal.UseVisualStyleBackColor = True
+        '
+        'rbtServRemoto
+        '
+        Me.rbtServRemoto.AutoSize = True
+        Me.rbtServRemoto.Location = New System.Drawing.Point(173, 28)
+        Me.rbtServRemoto.Name = "rbtServRemoto"
+        Me.rbtServRemoto.Size = New System.Drawing.Size(89, 22)
+        Me.rbtServRemoto.TabIndex = 1
+        Me.rbtServRemoto.TabStop = True
+        Me.rbtServRemoto.Text = "Remoto"
+        Me.rbtServRemoto.UseVisualStyleBackColor = True
+        '
         'frmConfig
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(10.0!, 18.0!)
@@ -973,6 +1014,8 @@ Partial Class frmConfig
         Me.Panel2.ResumeLayout(False)
         CType(Me.EProvider, System.ComponentModel.ISupportInitialize).EndInit()
         Me.menuCFOP.ResumeLayout(False)
+        Me.GroupBox1.ResumeLayout(False)
+        Me.GroupBox1.PerformLayout()
         Me.ResumeLayout(False)
 
     End Sub
@@ -1045,4 +1088,7 @@ Partial Class frmConfig
     Friend WithEvents btnAlteraConta As VIBlend.WinForms.Controls.vButton
     Friend WithEvents txtContaPadrao As TextBox
     Friend WithEvents txtFilialPadrao As TextBox
+    Friend WithEvents GroupBox1 As GroupBox
+    Friend WithEvents rbtServRemoto As RadioButton
+    Friend WithEvents rbtServLocal As RadioButton
 End Class

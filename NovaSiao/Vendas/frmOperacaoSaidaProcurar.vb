@@ -35,18 +35,8 @@ Public Class frmOperacaoSaidaProcurar
             _Operacao = value
             txtProcura.Clear()
             '
-            Select Case _Operacao
-                Case 1 '--- OPERACAO DE VENDA
-                    GetList_Venda()
-                    PreencheColunas_Venda()
-                Case 4 '--- OPERACAO DE SIMPLES SAIDA
-                    GetList_Simples()
-                    PreencheColunas_Simples()
-                Case 6 '--- OPERACAO DE DEVOLUCAO DE COMPRA
-
-                Case 8 '--- OPERACAO DE DEVOLUCAO DE CONSIGNACAO
-
-            End Select
+            '--- obtem a nova listagem source e altera o DataGrid
+            GetList_AlteraListagem()
             '
             AlteraEtiquetas()
             '
@@ -92,6 +82,26 @@ Public Class frmOperacaoSaidaProcurar
         '
     End Sub
     '
+    '--- OBTEM A NOVA LISTAGEM SOURCE E ALTERA O DATAGRID
+    Private Sub GetList_AlteraListagem()
+        '
+        Select Case _Operacao
+            Case 1 '--- OPERACAO DE VENDA
+                GetList_Venda()
+                PreencheColunas_Venda()
+            Case 4 '--- OPERACAO DE SIMPLES SAIDA
+                GetList_Simples()
+                PreencheColunas_Simples()
+            Case 6 '--- OPERACAO DE DEVOLUCAO DE COMPRA
+                GetList_Devolucao()
+                PreencheColunas_Devolucao()
+            Case 8 '--- OPERACAO DE DEVOLUCAO DE CONSIGNACAO
+                GetList_Consignacao()
+                PreencheColunas_Consignacao()
+        End Select
+        '
+    End Sub
+    '
     Private Sub GetList_Venda()
         '
         Dim vndBLL As New VendaBLL
@@ -104,13 +114,13 @@ Public Class frmOperacaoSaidaProcurar
             '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
-                SourceList = vndBLL.GetVendaLista_Procura(cmbOperacao.SelectedValue)
+                SourceList = vndBLL.GetVendaLista_Procura(Obter_FilialPadrao)
             Else
                 Dim f As New FuncoesUtilitarias
                 Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
                 Dim dtFinal As Date = f.LastDayOfMonth(myMes)
                 '
-                SourceList = vndBLL.GetVendaLista_Procura(cmbOperacao.SelectedValue, dtInicial, dtFinal)
+                SourceList = vndBLL.GetVendaLista_Procura(Obter_FilialPadrao, dtInicial, dtFinal)
             End If
             '
             dgvListagem.DataSource = SourceList
@@ -138,13 +148,13 @@ Public Class frmOperacaoSaidaProcurar
             '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
-                SourceList = sBLL.GetSimplesSaidaLista_Procura()
+                SourceList = sBLL.GetSimplesSaidaLista_Procura(Obter_FilialPadrao)
             Else
                 Dim f As New FuncoesUtilitarias
                 Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
                 Dim dtFinal As Date = f.LastDayOfMonth(myMes)
                 '
-                SourceList = sBLL.GetSimplesSaidaLista_Procura(dtInicial, dtFinal)
+                SourceList = sBLL.GetSimplesSaidaLista_Procura(Obter_FilialPadrao, dtInicial, dtFinal)
             End If
             '
             dgvListagem.DataSource = SourceList
@@ -159,6 +169,16 @@ Public Class frmOperacaoSaidaProcurar
             '
         End Try
         '
+    End Sub
+    '
+    Private Sub GetList_Devolucao()
+        SourceList = Nothing
+        dgvListagem.DataSource = Nothing
+    End Sub
+    '
+    Private Sub GetList_Consignacao()
+        SourceList = Nothing
+        dgvListagem.DataSource = Nothing
     End Sub
     '
 #End Region
@@ -266,7 +286,7 @@ Public Class frmOperacaoSaidaProcurar
         ' (6) COLUNA IMAGEM SITUACAO
         Dim colImage As New DataGridViewImageColumn
         With colImage
-            .HeaderText = "Situação"
+            .HeaderText = "Sit."
             .Resizable = False
             .Width = 50
         End With
@@ -369,7 +389,7 @@ Public Class frmOperacaoSaidaProcurar
         ' (6) COLUNA IMAGEM SITUACAO
         Dim colImage As New DataGridViewImageColumn
         With colImage
-            .HeaderText = "Situação"
+            .HeaderText = "Sit."
             .Resizable = False
             .Width = 50
         End With
@@ -389,6 +409,20 @@ Public Class frmOperacaoSaidaProcurar
         '
     End Sub
     '
+    Private Sub PreencheColunas_Devolucao()
+        '
+        '--- limpa as colunas do datagrid
+        dgvListagem.Columns.Clear()
+        '
+    End Sub
+    '
+    Private Sub PreencheColunas_Consignacao()
+        '
+        '--- limpa as colunas do datagrid
+        dgvListagem.Columns.Clear()
+        '
+    End Sub
+    '
     Private Sub Handler_GetList(sender As Object, e As EventArgs) ' HANDLER cmbOpercao.SelectedIndexChanged
         '
         propOperacao = cmbOperacao.SelectedValue
@@ -398,11 +432,21 @@ Public Class frmOperacaoSaidaProcurar
     '--- ALTERA AS ETIQUETAS PARA COMBINAR COM A LISTAGEM
     Private Sub AlteraEtiquetas()
         '
-        lbl1.Text = dgvListagem.Columns(0).HeaderText
-        lbl2.Text = dgvListagem.Columns(1).HeaderText
-        lbl3.Text = dgvListagem.Columns(2).HeaderText
-        lbl4.Text = dgvListagem.Columns(3).HeaderText
-        lbl5.Text = dgvListagem.Columns(4).HeaderText
+        Try
+            lbl1.Text = dgvListagem.Columns(0).HeaderText
+            lbl2.Text = dgvListagem.Columns(1).HeaderText
+            lbl3.Text = dgvListagem.Columns(2).HeaderText
+            lbl4.Text = dgvListagem.Columns(3).HeaderText
+            lbl5.Text = dgvListagem.Columns(4).HeaderText
+            lbl6.Text = dgvListagem.Columns(5).HeaderText
+        Catch ex As Exception
+            lbl1.Text = ""
+            lbl2.Text = ""
+            lbl3.Text = ""
+            lbl4.Text = ""
+            lbl5.Text = ""
+            lbl6.Text = ""
+        End Try
         '
     End Sub
     '
@@ -493,6 +537,7 @@ Public Class frmOperacaoSaidaProcurar
 #Region "ACAO DOS BOTOES"
     '
     Private Sub btnEscolher_Click(sender As Object, e As EventArgs) Handles btnEscolher.Click
+        '
         If dgvListagem.Rows.Count = 0 OrElse dgvListagem.SelectedRows.Count = 0 Then
             MessageBox.Show("Selecione um Operação de Saída antes de pressionar ESCOLHER...",
                             "Escolher Registro", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -609,7 +654,10 @@ Public Class frmOperacaoSaidaProcurar
         If CDate(e.Start.ToShortDateString) <= CDate(Today.ToShortDateString) Then
             myMes = e.Start
             lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
-            GetList_Venda()
+            '
+            '--- obtem a nova listagem source e altera o DataGrid
+            GetList_AlteraListagem()
+            '
         Else
             MessageBox.Show("Escolha um mês anterior ou igual ao mês atual...",
                 "Período", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -633,7 +681,8 @@ Public Class frmOperacaoSaidaProcurar
             lblPeriodo.Visible = False
         End If
         '
-        GetList_Venda()
+        '--- obtem a nova listagem source e altera o DataGrid
+        GetList_AlteraListagem()
         '
     End Sub
     '

@@ -19,8 +19,8 @@ Partial Class frmOperacaoEntradaProcurar
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.cmbOperacao = New Controles.ComboBox_OnlyValues()
         Me.txtProcura = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -40,15 +40,14 @@ Partial Class frmOperacaoEntradaProcurar
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnEscolher = New System.Windows.Forms.Button()
         Me.pnlVenda = New System.Windows.Forms.Panel()
-        Me.Label9 = New System.Windows.Forms.Label()
-        Me.Label6 = New System.Windows.Forms.Label()
-        Me.Label4 = New System.Windows.Forms.Label()
-        Me.Label7 = New System.Windows.Forms.Label()
-        Me.Label5 = New System.Windows.Forms.Label()
-        Me.Label8 = New System.Windows.Forms.Label()
+        Me.lbl6 = New System.Windows.Forms.Label()
+        Me.lbl5 = New System.Windows.Forms.Label()
+        Me.lbl1 = New System.Windows.Forms.Label()
+        Me.lbl3 = New System.Windows.Forms.Label()
+        Me.lbl4 = New System.Windows.Forms.Label()
+        Me.lbl2 = New System.Windows.Forms.Label()
         Me.pnlMes = New System.Windows.Forms.Panel()
         Me.dtMes = New System.Windows.Forms.MonthCalendar()
-        Me.btnProcurar = New VIBlend.WinForms.Controls.vButton()
         Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
@@ -203,8 +202,8 @@ Partial Class frmOperacaoEntradaProcurar
         '
         Me.dgvListagem.AllowUserToAddRows = False
         Me.dgvListagem.AllowUserToDeleteRows = False
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.Azure
-        Me.dgvListagem.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.Azure
+        Me.dgvListagem.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle3
         Me.dgvListagem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvListagem.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID, Me.VendaData, Me.CadastroNome, Me.TotalCompra})
         Me.dgvListagem.GridColor = System.Drawing.Color.LightSteelBlue
@@ -213,8 +212,8 @@ Partial Class frmOperacaoEntradaProcurar
         Me.dgvListagem.Name = "dgvListagem"
         Me.dgvListagem.ReadOnly = True
         Me.dgvListagem.RowHeadersWidth = 30
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.LightSlateGray
-        Me.dgvListagem.RowsDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.LightSlateGray
+        Me.dgvListagem.RowsDefaultCellStyle = DataGridViewCellStyle4
         Me.dgvListagem.Size = New System.Drawing.Size(920, 368)
         Me.dgvListagem.TabIndex = 5
         '
@@ -269,81 +268,75 @@ Partial Class frmOperacaoEntradaProcurar
         'pnlVenda
         '
         Me.pnlVenda.BackColor = System.Drawing.Color.LightSteelBlue
-        Me.pnlVenda.Controls.Add(Me.Label9)
-        Me.pnlVenda.Controls.Add(Me.Label6)
-        Me.pnlVenda.Controls.Add(Me.Label4)
-        Me.pnlVenda.Controls.Add(Me.Label7)
-        Me.pnlVenda.Controls.Add(Me.Label5)
-        Me.pnlVenda.Controls.Add(Me.Label8)
+        Me.pnlVenda.Controls.Add(Me.lbl6)
+        Me.pnlVenda.Controls.Add(Me.lbl5)
+        Me.pnlVenda.Controls.Add(Me.lbl1)
+        Me.pnlVenda.Controls.Add(Me.lbl3)
+        Me.pnlVenda.Controls.Add(Me.lbl4)
+        Me.pnlVenda.Controls.Add(Me.lbl2)
         Me.pnlVenda.Location = New System.Drawing.Point(12, 149)
         Me.pnlVenda.Name = "pnlVenda"
         Me.pnlVenda.Size = New System.Drawing.Size(920, 28)
         Me.pnlVenda.TabIndex = 5
         '
-        'Label9
+        'lbl6
         '
-        Me.Label9.AutoSize = True
-        Me.Label9.BackColor = System.Drawing.Color.Transparent
-        Me.Label9.Location = New System.Drawing.Point(811, 4)
-        Me.Label9.Name = "Label9"
-        Me.Label9.Size = New System.Drawing.Size(25, 19)
-        Me.Label9.TabIndex = 7
-        Me.Label9.Text = "Sit"
+        Me.lbl6.BackColor = System.Drawing.Color.Transparent
+        Me.lbl6.Location = New System.Drawing.Point(811, 4)
+        Me.lbl6.Name = "lbl6"
+        Me.lbl6.Size = New System.Drawing.Size(25, 19)
+        Me.lbl6.TabIndex = 7
+        Me.lbl6.Text = "Sit"
         '
-        'Label6
+        'lbl5
         '
-        Me.Label6.AutoSize = True
-        Me.Label6.BackColor = System.Drawing.Color.Transparent
-        Me.Label6.Location = New System.Drawing.Point(705, 4)
-        Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(70, 19)
-        Me.Label6.TabIndex = 7
-        Me.Label6.Text = "Cobrança"
+        Me.lbl5.BackColor = System.Drawing.Color.Transparent
+        Me.lbl5.Location = New System.Drawing.Point(705, 4)
+        Me.lbl5.Name = "lbl5"
+        Me.lbl5.Size = New System.Drawing.Size(70, 19)
+        Me.lbl5.TabIndex = 7
+        Me.lbl5.Text = "Cobrança"
         '
-        'Label4
+        'lbl1
         '
-        Me.Label4.AutoSize = True
-        Me.Label4.BackColor = System.Drawing.Color.Transparent
-        Me.Label4.Location = New System.Drawing.Point(33, 4)
-        Me.Label4.Name = "Label4"
-        Me.Label4.Size = New System.Drawing.Size(38, 19)
-        Me.Label4.TabIndex = 7
-        Me.Label4.Text = "Reg."
+        Me.lbl1.BackColor = System.Drawing.Color.Transparent
+        Me.lbl1.Location = New System.Drawing.Point(33, 4)
+        Me.lbl1.Name = "lbl1"
+        Me.lbl1.Size = New System.Drawing.Size(38, 19)
+        Me.lbl1.TabIndex = 7
+        Me.lbl1.Text = "Reg."
         '
-        'Label7
+        'lbl3
         '
-        Me.Label7.AutoSize = True
-        Me.Label7.BackColor = System.Drawing.Color.Transparent
-        Me.Label7.Location = New System.Drawing.Point(183, 4)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(81, 19)
-        Me.Label7.TabIndex = 7
-        Me.Label7.Text = "Fornecedor"
+        Me.lbl3.BackColor = System.Drawing.Color.Transparent
+        Me.lbl3.Location = New System.Drawing.Point(183, 4)
+        Me.lbl3.Name = "lbl3"
+        Me.lbl3.Size = New System.Drawing.Size(81, 19)
+        Me.lbl3.TabIndex = 7
+        Me.lbl3.Text = "Fornecedor"
         '
-        'Label5
+        'lbl4
         '
-        Me.Label5.AutoSize = True
-        Me.Label5.BackColor = System.Drawing.Color.Transparent
-        Me.Label5.Location = New System.Drawing.Point(586, 4)
-        Me.Label5.Name = "Label5"
-        Me.Label5.Size = New System.Drawing.Size(78, 19)
-        Me.Label5.TabIndex = 7
-        Me.Label5.Text = "Valor Total"
+        Me.lbl4.BackColor = System.Drawing.Color.Transparent
+        Me.lbl4.Location = New System.Drawing.Point(586, 4)
+        Me.lbl4.Name = "lbl4"
+        Me.lbl4.Size = New System.Drawing.Size(78, 19)
+        Me.lbl4.TabIndex = 7
+        Me.lbl4.Text = "Valor Total"
         '
-        'Label8
+        'lbl2
         '
-        Me.Label8.AutoSize = True
-        Me.Label8.BackColor = System.Drawing.Color.Transparent
-        Me.Label8.Location = New System.Drawing.Point(110, 4)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(40, 19)
-        Me.Label8.TabIndex = 7
-        Me.Label8.Text = "Data"
+        Me.lbl2.BackColor = System.Drawing.Color.Transparent
+        Me.lbl2.Location = New System.Drawing.Point(110, 4)
+        Me.lbl2.Name = "lbl2"
+        Me.lbl2.Size = New System.Drawing.Size(40, 19)
+        Me.lbl2.TabIndex = 7
+        Me.lbl2.Text = "Data"
         '
         'pnlMes
         '
         Me.pnlMes.Controls.Add(Me.dtMes)
-        Me.pnlMes.Location = New System.Drawing.Point(636, 130)
+        Me.pnlMes.Location = New System.Drawing.Point(466, 254)
         Me.pnlMes.Name = "pnlMes"
         Me.pnlMes.Size = New System.Drawing.Size(234, 166)
         Me.pnlMes.TabIndex = 10
@@ -354,21 +347,6 @@ Partial Class frmOperacaoEntradaProcurar
         Me.dtMes.Location = New System.Drawing.Point(3, 0)
         Me.dtMes.Name = "dtMes"
         Me.dtMes.TabIndex = 0
-        '
-        'btnProcurar
-        '
-        Me.btnProcurar.AllowAnimations = True
-        Me.btnProcurar.BackColor = System.Drawing.Color.Transparent
-        Me.btnProcurar.Location = New System.Drawing.Point(497, 105)
-        Me.btnProcurar.Name = "btnProcurar"
-        Me.btnProcurar.RoundedCornersMask = CType(15, Byte)
-        Me.btnProcurar.RoundedCornersRadius = 0
-        Me.btnProcurar.Size = New System.Drawing.Size(79, 27)
-        Me.btnProcurar.TabIndex = 4
-        Me.btnProcurar.TabStop = False
-        Me.btnProcurar.Text = "&Procurar"
-        Me.btnProcurar.UseVisualStyleBackColor = False
-        Me.btnProcurar.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
         'btnClose
         '
@@ -391,7 +369,6 @@ Partial Class frmOperacaoEntradaProcurar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(944, 601)
-        Me.Controls.Add(Me.btnProcurar)
         Me.Controls.Add(Me.pnlMes)
         Me.Controls.Add(Me.pnlVenda)
         Me.Controls.Add(Me.btnEscolher)
@@ -414,14 +391,12 @@ Partial Class frmOperacaoEntradaProcurar
         Me.Controls.SetChildIndex(Me.btnEscolher, 0)
         Me.Controls.SetChildIndex(Me.pnlVenda, 0)
         Me.Controls.SetChildIndex(Me.pnlMes, 0)
-        Me.Controls.SetChildIndex(Me.btnProcurar, 0)
         Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         CType(Me.dgvListagem, System.ComponentModel.ISupportInitialize).EndInit()
         Me.pnlVenda.ResumeLayout(False)
-        Me.pnlVenda.PerformLayout()
         Me.pnlMes.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
@@ -442,16 +417,15 @@ Partial Class frmOperacaoEntradaProcurar
     Friend WithEvents btnCancelar As Button
     Friend WithEvents btnEscolher As Button
     Friend WithEvents pnlVenda As Panel
-    Friend WithEvents Label6 As Label
-    Friend WithEvents Label4 As Label
-    Friend WithEvents Label7 As Label
-    Friend WithEvents Label5 As Label
-    Friend WithEvents Label8 As Label
-    Friend WithEvents Label9 As Label
+    Friend WithEvents lbl5 As Label
+    Friend WithEvents lbl1 As Label
+    Friend WithEvents lbl3 As Label
+    Friend WithEvents lbl4 As Label
+    Friend WithEvents lbl2 As Label
+    Friend WithEvents lbl6 As Label
     Friend WithEvents btnMesAtual As VIBlend.WinForms.Controls.vButton
     Friend WithEvents pnlMes As Panel
     Friend WithEvents dtMes As MonthCalendar
-    Friend WithEvents btnProcurar As VIBlend.WinForms.Controls.vButton
     Friend WithEvents btnClose As VIBlend.WinForms.Controls.vFormButton
     Friend WithEvents ID As DataGridViewTextBoxColumn
     Friend WithEvents VendaData As DataGridViewTextBoxColumn

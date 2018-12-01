@@ -3,12 +3,14 @@ Imports CamadaDTO
 Imports System.Drawing.Drawing2D
 '
 Public Class frmOperacaoEntradaProcurar
-    Private cmpBLL As New CompraBLL
-    Private cmpLista As DataTable
+    Private SourceList As Object
     Private ImgAtivo As Image = My.Resources.accept
     Private ImgInativo As Image = My.Resources.block
     Private ImgLock As Image = My.Resources.lock
     Private _myMes As Date
+    Private _Operacao As Byte
+    'Private cmpBLL As New CompraBLL
+    'Private cmpLista As DataTable
     '
     Private Property myMes() As DateTime
         Get
@@ -26,17 +28,37 @@ Public Class frmOperacaoEntradaProcurar
         End Set
     End Property
     '
+    Private Property propOperacao As Byte
+        Get
+            Return _Operacao
+        End Get
+        Set(value As Byte)
+            '
+            _Operacao = value
+            txtProcura.Clear()
+            '
+            '--- obtem a nova listagem source e altera o DataGrid
+            GetList_AlteraListagem()
+            '
+            AlteraEtiquetas()
+            '
+        End Set
+    End Property
+    '
 #Region "EVENTO LOAD"
     '
     Private Sub frmOperacaoEntradaProcurar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
+        '--- define a posicao do pnlMes
+        pnlMes.Location = New Point(636, 130)
+        '
         PreencheComboOperacao()
         myMes = ObterDefault("DataPadrao")
         lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
-        PreencheListagem()
+        FormataListagem()
+        propOperacao = 2 '--- Operacao de Compra
         '
-        AddHandler cmbOperacao.SelectedIndexChanged, AddressOf Handler_PreencheListagem
-        AddHandler btnProcurar.Click, AddressOf Handler_PreencheListagem
+        AddHandler cmbOperacao.SelectedIndexChanged, AddressOf Handler_GetList
         AddHandler dtMes.DateChanged, AddressOf dtMes_DateChanged
         '
     End Sub
@@ -58,12 +80,111 @@ Public Class frmOperacaoEntradaProcurar
         End With
     End Sub
     '
+    '--- OBTEM A NOVA LISTAGEM SOURCE E ALTERA O DATAGRID
+    Private Sub GetList_AlteraListagem()
+        '
+        Select Case _Operacao
+            Case 2 '--- OPERACAO DE COMPRA
+                GetList_Compra()
+                PreencheColunas_Compra()
+            Case 3 '--- OPERACAO DE SIMPLES ENTRADA
+                GetList_Simples()
+                PreencheColunas_Simples()
+            Case 5 '--- OPERACAO DE DEVOLUCAO DE VENDA
+                GetList_Devolucao()
+                PreencheColunas_Devolucao()
+            Case 7 '--- CONSIGNACAO DE ENTRADA
+                GetList_Consignacao()
+                PreencheColunas_Consignacao()
+        End Select
+        '
+    End Sub
+    '
+    Private Sub GetList_Compra()
+        '
+        Dim cBLL As New CompraBLL
+        '
+        '--- consulta o banco de dados
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            '--- verifica o filtro das datas
+            If chkPeriodoTodos.Checked = True Then
+                SourceList = cBLL.GetCompraLista_Procura(Obter_FilialPadrao)
+            Else
+                Dim f As New FuncoesUtilitarias
+                Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
+                Dim dtFinal As Date = f.LastDayOfMonth(myMes)
+                '
+                SourceList = cBLL.GetCompraLista_Procura(Obter_FilialPadrao, dtInicial, dtFinal)
+            End If
+            '
+            dgvListagem.DataSource = SourceList
+            '
+        Catch ex As Exception
+            MessageBox.Show("Em erro ao obter a lista de Operações de Compra..." & vbNewLine &
+            ex.Message, "Falha no Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
+    End Sub
+    '
+    Private Sub GetList_Simples()
+        '
+        Dim sBLL As New SimplesMovimentacaoBLL
+        '
+        '--- consulta o banco de dados
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            '--- verifica o filtro das datas
+            If chkPeriodoTodos.Checked = True Then
+                SourceList = sBLL.GetSimplesEntradaLista_Procura(Obter_FilialPadrao)
+            Else
+                Dim f As New FuncoesUtilitarias
+                Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
+                Dim dtFinal As Date = f.LastDayOfMonth(myMes)
+                '
+                SourceList = sBLL.GetSimplesEntradaLista_Procura(Obter_FilialPadrao, dtInicial, dtFinal)
+            End If
+            '
+            dgvListagem.DataSource = SourceList
+            '
+        Catch ex As Exception
+            MessageBox.Show("Em erro ao obter a lista de Operações de Simples Entradas..." & vbNewLine &
+            ex.Message, "Falha no Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
+    End Sub
+    '
+    Private Sub GetList_Devolucao()
+        SourceList = Nothing
+        dgvListagem.DataSource = Nothing
+    End Sub
+    '
+    Private Sub GetList_Consignacao()
+        SourceList = Nothing
+        dgvListagem.DataSource = Nothing
+    End Sub
+    '
 #End Region
     '
 #Region "LISTAGEM CONFIGURAÇÃO"
-    Private Sub PreencheListagem()
-        '--- limpa as colunas do datagrid
-        dgvListagem.Columns.Clear()
+    '
+    Private Sub FormataListagem()
+        '
         dgvListagem.AutoGenerateColumns = False
         '
         ' altera as propriedades importantes
@@ -78,36 +199,14 @@ Public Class frmOperacaoEntradaProcurar
         dgvListagem.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         dgvListagem.StandardTab = True
         '
-        If cmbOperacao.SelectedValue = 2 Then
-            PreencheListagem_Compra()
-        Else
-            MsgBox("Ainda não implementado")
-        End If
     End Sub
     '
-    Private Sub PreencheListagem_Compra()
-        '--- consulta o banco de dados
-        Try
-            '--- verifica o filtro das datas
-            If chkPeriodoTodos.Checked = True Then
-                cmpLista = cmpBLL.GetCompraLista_Procura(cmbOperacao.SelectedValue, txtProcura.Text)
-            Else
-                Dim f As New FuncoesUtilitarias
-                Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
-                Dim dtFinal As Date = f.LastDayOfMonth(myMes)
-                '
-                cmpLista = cmpBLL.GetCompraLista_Procura(cmbOperacao.SelectedValue, txtProcura.Text, dtInicial, dtFinal)
-            End If
-            '
-            dgvListagem.DataSource = cmpLista
-            '
-        Catch ex As Exception
-            MessageBox.Show("Em erro ao obter a lista de Operações de Entrada..." & vbNewLine &
-            ex.Message, "Falha no Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+    Private Sub PreencheColunas_Compra()
         '
+        '--- limpa as colunas do datagrid
+        dgvListagem.Columns.Clear()
         '
-        ' (1) COLUNA REG
+        ' (0) COLUNA REG
         dgvListagem.Columns.Add("IDCompra", "Reg.")
         With dgvListagem.Columns("IDCompra")
             .DataPropertyName = "IDCompra"
@@ -120,7 +219,7 @@ Public Class frmOperacaoEntradaProcurar
             .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
         End With
         '
-        ' (2) COLUNA DATACOMPRA
+        ' (1) COLUNA DATACOMPRA
         dgvListagem.Columns.Add("CompraData", "Data")
         With dgvListagem.Columns("CompraData")
             .DataPropertyName = "TransacaoData"
@@ -133,7 +232,7 @@ Public Class frmOperacaoEntradaProcurar
             '.DefaultCellStyle.Font = New Font("Arial Narrow", 12)
         End With
         '
-        ' (3) COLUNA NOME
+        ' (2) COLUNA NOME
         dgvListagem.Columns.Add("CadastroNome", "Fornecedor")
         With dgvListagem.Columns("CadastroNome")
             .DataPropertyName = "Cadastro"
@@ -145,7 +244,7 @@ Public Class frmOperacaoEntradaProcurar
             .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
         End With
         '
-        ' (4) COLUNA VALOR
+        ' (3) COLUNA VALOR
         dgvListagem.Columns.Add("TotalCompra", "Valor")
         With dgvListagem.Columns("TotalCompra")
             .DataPropertyName = "TotalCompra"
@@ -158,7 +257,7 @@ Public Class frmOperacaoEntradaProcurar
             .DefaultCellStyle.Format = "C"
         End With
         '
-        ' (5) COLUNA COBRANCA TIPO
+        ' (4) COLUNA COBRANCA TIPO
         dgvListagem.Columns.Add("CobrancaTipoTexto", "Cobrança")
         With dgvListagem.Columns("CobrancaTipoTexto")
             .DataPropertyName = "CobrancaTipoTexto"
@@ -170,16 +269,16 @@ Public Class frmOperacaoEntradaProcurar
             .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
         End With
         '
-        ' (6) COLUNA IMAGEM SITUACAO
+        ' (5) COLUNA IMAGEM SITUACAO
         Dim colImage As New DataGridViewImageColumn
         With colImage
-            .HeaderText = "Situação"
+            .HeaderText = "Sit."
             .Resizable = False
             .Width = 50
         End With
         dgvListagem.Columns.Add(colImage)
         '
-        ' (7) COLUNA SITUAÇÃO
+        ' (6) COLUNA SITUAÇÃO
         dgvListagem.Columns.Add("Situacao", "Situação")
         With dgvListagem.Columns("Situacao")
             .DataPropertyName = "IDSituacao"
@@ -193,23 +292,217 @@ Public Class frmOperacaoEntradaProcurar
         '
     End Sub
     '
-    Private Sub Handler_PreencheListagem(sender As Object, e As EventArgs)
-        PreencheListagem()
+    Private Sub PreencheColunas_Simples()
+        '
+        '--- limpa as colunas do datagrid
+        dgvListagem.Columns.Clear()
+        '
+        ' (0) COLUNA REG
+        dgvListagem.Columns.Add("IDTransacao", "Reg.")
+        With dgvListagem.Columns("IDTransacao")
+            .DataPropertyName = "IDTransacao"
+            .Width = 50
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Format = "0000"
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        End With
+        '
+        ' (1) COLUNA TRANSACAODATA
+        dgvListagem.Columns.Add("TransacaoData", "Data")
+        With dgvListagem.Columns("TransacaoData")
+            .DataPropertyName = "TransacaoData"
+            .Width = 100
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            '.DefaultCellStyle.Font = New Font("Arial Narrow", 12)
+        End With
+        '
+        ' (2) COLUNA PESSOADESTINO
+        dgvListagem.Columns.Add("PessoaDestino", "Filial Destino")
+        With dgvListagem.Columns("PessoaDestino")
+            .DataPropertyName = "PessoaDestino"
+            .Width = 300
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+        End With
+        '
+        ' (3) COLUNA PESSOAORIGEM
+        dgvListagem.Columns.Add("PessoaOrigem", "Filial Origem")
+        With dgvListagem.Columns("PessoaOrigem")
+            .DataPropertyName = "PessoaOrigem"
+            .Width = 150
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+        End With
+        '
+        ' (4) COLUNA VALORTOTAL
+        dgvListagem.Columns.Add("ValorTotal", "Total")
+        With dgvListagem.Columns("ValorTotal")
+            .DataPropertyName = "ValorTotal"
+            .Width = 100
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .DefaultCellStyle.Format = "C"
+        End With
+        '
+        ' (5) COLUNA IMAGEM SITUACAO
+        Dim colImage As New DataGridViewImageColumn
+        With colImage
+            .HeaderText = "Sit."
+            .Resizable = False
+            .Width = 50
+        End With
+        dgvListagem.Columns.Add(colImage)
+        '
+        ' (6) COLUNA SITUAÇÃO
+        dgvListagem.Columns.Add("Situacao", "Sit")
+        With dgvListagem.Columns("Situacao")
+            .HeaderText = "Sit."
+            .DataPropertyName = "IDSituacao"
+            .Width = 80
+            .Resizable = DataGridViewTriState.False
+            .Visible = False
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+        End With
+        '
     End Sub
+    '
+    Private Sub PreencheColunas_Devolucao()
+        '
+        '--- limpa as colunas do datagrid
+        dgvListagem.Columns.Clear()
+        '
+    End Sub
+    '
+    Private Sub PreencheColunas_Consignacao()
+        '
+        '--- limpa as colunas do datagrid
+        dgvListagem.Columns.Clear()
+        '
+    End Sub
+    '
+    Private Sub Handler_GetList(sender As Object, e As EventArgs) ' HANDLER cmbOpercao.SelectedIndexChanged
+        '
+        propOperacao = cmbOperacao.SelectedValue
+        '
+    End Sub
+    '
+    '--- ALTERA AS ETIQUETAS PARA COMBINAR COM A LISTAGEM
+    Private Sub AlteraEtiquetas()
+        '
+        Try
+            '
+            Dim r As New Rectangle
+            '
+            lbl1.Text = dgvListagem.Columns(0).HeaderText
+            lbl2.Text = dgvListagem.Columns(1).HeaderText
+            lbl3.Text = dgvListagem.Columns(2).HeaderText
+            '
+            ' coluna 4
+            lbl4.Text = dgvListagem.Columns(3).HeaderText
+            r = dgvListagem.GetCellDisplayRectangle(3, 0, False)
+            lbl4.Location = New Point(r.X, lbl4.Location.Y)
+            '
+            ' column 5
+            lbl5.Text = dgvListagem.Columns(4).HeaderText
+            r = dgvListagem.GetCellDisplayRectangle(4, 0, False)
+            lbl5.Location = New Point(r.X, lbl5.Location.Y)
+            '
+            ' column 6 - Column SIT
+            lbl6.Text = dgvListagem.Columns(5).HeaderText
+            r = dgvListagem.GetCellDisplayRectangle(5, 0, False)
+            lbl6.Width = r.Width
+            lbl6.Location = New Point(r.X, lbl6.Location.Y)
+            lbl6.TextAlign = ContentAlignment.MiddleCenter
+            '
+        Catch ex As Exception
+            lbl1.Text = ""
+            lbl2.Text = ""
+            lbl3.Text = ""
+            lbl4.Text = ""
+            lbl5.Text = ""
+            lbl6.Text = ""
+        End Try
+        '
+    End Sub
+    '
+    '
+    '--- FILTAR LISTAGEM 
+    Private Sub txtProcura_TextChanged_Venda(sender As Object, e As EventArgs) Handles txtProcura.TextChanged
+        FiltrarListagem()
+    End Sub
+    '
+    Private Sub FiltrarListagem()
+        Select Case propOperacao
+            Case 1 '--- VENDA
+                dgvListagem.DataSource = DirectCast(SourceList, List(Of clVenda)).FindAll(AddressOf FindCadastro)
+            Case 4 '--- SIMPLES SAIDA
+                dgvListagem.DataSource = DirectCast(SourceList, List(Of clSimplesSaida)).FindAll(AddressOf FindCadastro)
+        End Select
+
+    End Sub
+    '
+    Private Function FindCadastro(ByVal v As clVenda) As Boolean
+        '
+        If (v.Cadastro.ToLower Like "*" & txtProcura.Text.ToLower & "*") Then
+            Return True
+        Else
+            Return False
+        End If
+        '
+    End Function
+    '
+    Private Function FindCadastro(ByVal s As clSimplesSaida) As Boolean
+        '
+        If (s.PessoaDestino.ToLower Like "*" & txtProcura.Text.ToLower & "*") Then
+            Return True
+        Else
+            Return False
+        End If
+        '
+    End Function
     '
     Private Sub dgvListagem_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvListagem.CellFormatting
         '
-        '--- altera a imagem da coluna 5
+        '--- altera a IMAGEM da coluna 5
         If e.ColumnIndex = 5 Then '--- coluna Imagem Situação
-            Dim sit As Integer = dgvListagem.Rows(e.RowIndex).DataBoundItem("IDSituacao")
+            Dim sit As Integer
+            '
+            Select Case propOperacao
+                Case 2 '--- COMPRA
+                    sit = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clCompra).IDSituacao
+                Case 3 '--- SIMPLES ENTRADA
+                    sit = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clSimplesEntrada).IDSituacao
+                Case 5 '--- DEVOLUCAO DE VENDA
+
+                Case 7 '--- CONSIGNACAO DE ENTRADA
+
+            End Select
             '
             Select Case sit
                 Case 1
-                    dgvListagem.Rows(e.RowIndex).Cells(5).Value = ImgInativo
+                    e.Value = ImgInativo
                 Case 2
-                    dgvListagem.Rows(e.RowIndex).Cells(5).Value = ImgAtivo
+                    e.Value = ImgAtivo
                 Case 3
-                    dgvListagem.Rows(e.RowIndex).Cells(5).Value = ImgLock
+                    e.Value = ImgLock
             End Select
         End If
         '
@@ -220,6 +513,7 @@ Public Class frmOperacaoEntradaProcurar
 #Region "ACAO DOS BOTOES"
     '
     Private Sub btnEscolher_Click(sender As Object, e As EventArgs) Handles btnEscolher.Click
+        '
         If dgvListagem.Rows.Count = 0 OrElse dgvListagem.SelectedRows.Count = 0 Then
             MessageBox.Show("Selecione uma OPERAÇÃO DE ENTRADA antes de pressionar ESCOLHER...",
                             "Escolher Registro", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -228,34 +522,47 @@ Public Class frmOperacaoEntradaProcurar
         End If
         '
         '
-        Select Case cmbOperacao.SelectedValue
-            Case 2 ' COMPRAS
-                '
-                Dim cmpBLL As New CompraBLL
-                Dim _cmp As New clCompra
-                '
-                '--- ampulheta ON
-                Cursor = Cursors.WaitCursor
-                '
-                _cmp = cmpBLL.GetCompra_PorID_OBJ(dgvListagem.SelectedRows(0).Cells(0).Value)
-                '
-                Dim frm As New frmCompra(_cmp)
-                frm.MdiParent = frmPrincipal
-                frm.StartPosition = FormStartPosition.CenterScreen
-                Close()
-                frm.Show()
-                '
-                '--- ampulheta OFF
-                Cursor = Cursors.Default
-                '
-            Case 3 ' SIMPLES ENTRADA
-                MsgBox("Operação de Entrada: SIMPLES ENTRADA, ainda não foi implementada")
-            Case 5 ' DEVOLUÇÃO DE VENDA
-                MsgBox("Operação de Entrada: DEVOLUÇÃO DE VENDA, ainda não foi implementada")
-            Case 7 ' CONSIGNAÇÃO DE ENTRADA
-                MsgBox("Operação de Entrada: CONSIGNAÇÃO DE ENTRADA, ainda não foi implementada")
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Select Case cmbOperacao.SelectedValue
+                Case 2 ' COMPRAS
+                    Dim _cmp As clCompra = dgvListagem.SelectedRows(0).DataBoundItem
+                    '
+                    Dim frm As New frmCompra(_cmp) With {
+                        .MdiParent = frmPrincipal,
+                        .StartPosition = FormStartPosition.CenterScreen
+                    }
+                    Close()
+                    frm.Show()
+                    ' 
+                Case 3 ' SIMPLES ENTRADA
+                    '
+                    Dim _sim As clSimplesEntrada = dgvListagem.SelectedRows(0).DataBoundItem
+                    '
+                    Dim frm As New frmSimplesEntrada(_sim) With {
+                        .MdiParent = frmPrincipal,
+                        .StartPosition = FormStartPosition.CenterScreen
+                    }
+                    Close()
+                    frm.Show()
+                    ' 
+                Case 5 ' DEVOLUÇÃO DE VENDA
+                    MsgBox("Operação de Entrada: DEVOLUÇÃO DE VENDA, ainda não foi implementada")
+                Case 7 ' CONSIGNAÇÃO DE ENTRADA
+                    MsgBox("Operação de Entrada: CONSIGNAÇÃO DE ENTRADA, ainda não foi implementada")
 
-        End Select
+            End Select
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Abrir o registro de Saída..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
     End Sub
     '
     Private Sub dgvListagem_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvListagem.CellDoubleClick
@@ -278,11 +585,12 @@ Public Class frmOperacaoEntradaProcurar
     '
     '--- AO PRESSIONAR A TECLA (ENTER) ENVIAR (TAB)
     Private Sub txt_KeyDown(sender As Object, e As KeyEventArgs) Handles txtProcura.KeyDown
+        '
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
-            PreencheListagem()
             SendKeys.Send("{Tab}")
         End If
+        '
     End Sub
     '
 #End Region
@@ -316,7 +624,10 @@ Public Class frmOperacaoEntradaProcurar
         If CDate(e.Start.ToShortDateString) <= CDate(Today.ToShortDateString) Then
             myMes = e.Start
             lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
-            PreencheListagem()
+            '
+            '--- obtem a nova listagem source e altera o DataGrid
+            GetList_AlteraListagem()
+            '
         Else
             MessageBox.Show("Escolha um mês anterior ou igual ao mês atual...",
                 "Período", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -327,6 +638,7 @@ Public Class frmOperacaoEntradaProcurar
     End Sub
     '
     Private Sub chkPeriodoTodos_CheckedChanged(sender As Object, e As EventArgs) Handles chkPeriodoTodos.CheckedChanged
+        '
         If chkPeriodoTodos.Checked = False Then
             btnPeriodoAnterior.Enabled = True
             btnPeriodoPosterior.Enabled = True
@@ -339,7 +651,9 @@ Public Class frmOperacaoEntradaProcurar
             lblPeriodo.Visible = False
         End If
         '
-        PreencheListagem()
+        '--- obtem a nova listagem source e altera o DataGrid
+        GetList_AlteraListagem()
+        '
     End Sub
     '
     Private Sub lblPerido_Click(sender As Object, e As EventArgs) Handles lblPeriodo.Click

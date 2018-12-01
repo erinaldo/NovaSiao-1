@@ -113,7 +113,10 @@ Public Class TransacaoItemBLL
     '==========================================================================================
     ' INSERE UM NOVO ITEM NA TRANSACAO
     '==========================================================================================
-    Public Function InserirNovoItem(Item As clTransacaoItem, Movimento As EnumMovimento, MovData As Date) As Long
+    Public Function InserirNovoItem(Item As clTransacaoItem,
+                                    Movimento As EnumMovimento,
+                                    MovData As Date,
+                                    InsereCustos As Boolean) As Long
         Dim db As New AcessoDados
         '
         '--- limpa os parametros
@@ -128,8 +131,9 @@ Public Class TransacaoItemBLL
         db.AdicionarParametros("@IDFilial", Item.IDFilial)
         db.AdicionarParametros("@Movimento", Movimento.ToString)
         db.AdicionarParametros("@MovData", MovData)
+        db.AdicionarParametros("@InsereCustos", InsereCustos)
         '
-        If Movimento = EnumMovimento.ENTRADA Then ' SE FOR ENTRADA ADICIONA OS CUSTOS NO tblTransacaoItensCustos
+        If InsereCustos Then ' SE InsereCustos ADICIONA OS CUSTOS NO tblTransacaoItensCustos
             db.AdicionarParametros("@ICMS", Item.ICMS)
             db.AdicionarParametros("@Substituicao", Item.Substituicao)
             db.AdicionarParametros("@FreteRateado", Item.FreteRateado)
@@ -155,7 +159,11 @@ Public Class TransacaoItemBLL
     '==========================================================================================
     ' EDITA UM ITEM EXISTENTE NA TRANSACAO
     '==========================================================================================
-    Public Function EditarItem(Item As clTransacaoItem, Movimento As EnumMovimento, MovData As Date) As Long
+    Public Function EditarItem(Item As clTransacaoItem,
+                               Movimento As EnumMovimento,
+                               MovData As Date,
+                               InsereCustos As Boolean) As Long
+        '
         Dim db As New AcessoDados
         '
         '--- limpa os parametros
@@ -171,8 +179,9 @@ Public Class TransacaoItemBLL
         db.AdicionarParametros("@IDFilial", Item.IDFilial)
         db.AdicionarParametros("@Movimento", Movimento.ToString)
         db.AdicionarParametros("@MovData", MovData)
+        db.AdicionarParametros("@InsereCustos", InsereCustos)
         '
-        If Movimento = EnumMovimento.ENTRADA Then ' SE FOR ENTRADA EDITA OS CUSTOS NO tblTransacaoItensCustos
+        If InsereCustos Then ' SE insereCustos EDITA OS CUSTOS NO tblTransacaoItensCustos
             db.AdicionarParametros("@ICMS", Item.ICMS)
             db.AdicionarParametros("@Substituicao", Item.Substituicao)
             db.AdicionarParametros("@FreteRateado", Item.FreteRateado)

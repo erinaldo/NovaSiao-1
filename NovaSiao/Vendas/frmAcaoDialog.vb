@@ -8,8 +8,9 @@
         '
         ' Add any initialization after the InitializeComponent() call.
         _formOrigem = Origem
-        btnNova.Text = "Nova " & OrigemTexto
-        btnProcurar.Text = "Procurar " & OrigemTexto
+        lblOrigem.Text = OrigemTexto.ToUpper
+        btnNova.Text = "Nova"
+        btnProcurar.Text = "Procurar"
         '
     End Sub
     '
@@ -29,6 +30,9 @@
             Case "frmCompra"
                 Me.DialogResult = DialogResult.OK
                 DirectCast(_formOrigem, frmCompra).NovaCompra()
+            Case "frmSimplesEntrada"
+                Me.DialogResult = DialogResult.OK
+                DirectCast(_formOrigem, frmSimplesEntrada).NovaSimples()
             Case Else
                 Me.DialogResult = DialogResult.Cancel
         End Select
@@ -47,6 +51,9 @@
             Case "frmCompra"
                 Me.DialogResult = DialogResult.OK
                 DirectCast(_formOrigem, frmCompra).ProcuraCompra()
+            Case "frmSimplesEntrada"
+                Me.DialogResult = DialogResult.OK
+                DirectCast(_formOrigem, frmSimplesEntrada).ProcuraSimples()
             Case Else
                 Me.DialogResult = DialogResult.Cancel
         End Select
@@ -90,6 +97,26 @@
                 c.BackColor = Color.SlateGray
             End If
         Next
+    End Sub
+    '
+    '-------------------------------------------------------------------------------------------------
+    ' CRIAR LINHA SOB O LBLORIGEM
+    '-------------------------------------------------------------------------------------------------
+    Private Sub lblOrigem_Paint(sender As Object, e As PaintEventArgs) Handles lblOrigem.Paint
+        '
+        Dim myPen As New Pen(Color.SlateGray, 2)
+        Dim formGraphics As Graphics
+        formGraphics = Me.CreateGraphics()
+
+        Dim x1 As Integer = e.ClipRectangle.Left + lblOrigem.Location.X
+        Dim x2 As Integer = e.ClipRectangle.Right + lblOrigem.Location.X
+        Dim y1 As Integer = e.ClipRectangle.Bottom + lblOrigem.Location.Y + 5
+
+        formGraphics.DrawLine(myPen, x1, y1, x2, y1)
+
+        myPen.Dispose()
+        formGraphics.Dispose()
+        '
     End Sub
     '
 End Class

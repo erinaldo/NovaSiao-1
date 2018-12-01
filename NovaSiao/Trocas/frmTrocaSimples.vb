@@ -721,7 +721,7 @@ Public Class frmTrocaSimples
             Try
                 newItem.IDTransacao = _Troca.IDTransacaoEntrada
                 '
-                myID = ItemBLL.InserirNovoItem(newItem, Movimento, _Troca.TrocaData)
+                myID = ItemBLL.InserirNovoItem(newItem, Movimento, _Troca.TrocaData, InsereCustos:=False)
                 newItem.IDTransacaoItem = myID
                 '
             Catch ex As Exception
@@ -776,7 +776,7 @@ Public Class frmTrocaSimples
             '--- Altera o ITEM no BD e reforma o ESTOQUE
             Try
                 itmAtual.IDTransacao = _Troca.IDTroca
-                myID = ItemBLL.EditarItem(itmAtual, Movimento, _Troca.TrocaData)
+                myID = ItemBLL.EditarItem(itmAtual, Movimento, _Troca.TrocaData, InsereCustos:=False)
                 itmAtual.IDTransacaoItem = myID
             Catch ex As Exception
                 MessageBox.Show("Houve um exceção ao ALTERAR o item no BD..." & vbNewLine & ex.Message,

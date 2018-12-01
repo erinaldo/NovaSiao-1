@@ -42,4 +42,12 @@ Public Class BackupBLL
         '
     End Function
     '
+    Public Function GetConString() As String
+        '
+        Dim con As String = If(AcessoDados.GetConnectionString, "")
+        '
+        Return con
+        '
+    End Function
+    '
 End Class

@@ -57,8 +57,8 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=T"& _ 
-            "rue;User ID=sa;Password=123456")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=Tru"& _ 
+            "e;User ID=sa;Password=123456")>  _
         Public ReadOnly Property NovaSiaoConnectionString() As String
             Get
                 Return CType(Me("NovaSiaoConnectionString"),String)
@@ -67,9 +67,8 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Server=tcp:novasiaoserver.database.windows.net,1433;Initial Catalog=ProgramaLoja;"& _ 
-            "Persist Security Info=False;User ID=Daniel;Password=f8ip7Ofr;MultipleActiveResul"& _ 
-            "tSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=Tru"& _ 
+            "e;User ID=sa;Password=123456")>  _
         Public Property ConexaoString() As String
             Get
                 Return CType(Me("ConexaoString"),String)
@@ -116,6 +115,19 @@ Namespace My
             End Get
             Set
                 Me("StringAzure") = value
+            End Set
+        End Property
+        
+        <Global.System.Configuration.UserScopedSettingAttribute(),  _
+         Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=Tru"& _ 
+            "e;User ID=sa;Password=123456")>  _
+        Public Property StringDesktop() As String
+            Get
+                Return CType(Me("StringDesktop"),String)
+            End Get
+            Set
+                Me("StringDesktop") = value
             End Set
         End Property
     End Class

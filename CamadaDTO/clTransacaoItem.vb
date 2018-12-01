@@ -313,7 +313,7 @@ Public Class clTransacaoItem : Implements IEditableObject
     '--- Propriedade FreteRateado
     Public Property FreteRateado() As Decimal?
         Get
-            Return itemData._FreteRateado
+            Return If(itemData._FreteRateado, 0)
         End Get
         Set(ByVal value As Decimal?)
             If value <> itemData._FreteRateado Then
@@ -326,7 +326,7 @@ Public Class clTransacaoItem : Implements IEditableObject
     '--- Propriedade Substituicao
     Public Property Substituicao() As Decimal?
         Get
-            Return itemData._Substituicao
+            Return If(itemData._Substituicao, 0)
         End Get
         Set(ByVal value As Decimal?)
             If value <> itemData._Substituicao Then
@@ -339,7 +339,7 @@ Public Class clTransacaoItem : Implements IEditableObject
     '--- Propriedade ICMS
     Public Property ICMS() As Decimal?
         Get
-            Return itemData._ICMS
+            Return If(itemData._ICMS, 0)
         End Get
         Set(ByVal value As Decimal?)
             If value <> itemData._ICMS Then
@@ -352,7 +352,7 @@ Public Class clTransacaoItem : Implements IEditableObject
     '--- Propriedade MVA
     Public Property MVA() As Decimal?
         Get
-            Return itemData._MVA
+            Return If(itemData._MVA, 0)
         End Get
         Set(ByVal value As Decimal?)
             If value <> itemData._MVA Then
@@ -365,7 +365,7 @@ Public Class clTransacaoItem : Implements IEditableObject
     '--- Propriedade IPI
     Public Property IPI() As Decimal?
         Get
-            Return itemData._IPI
+            Return If(itemData._IPI, 0)
         End Get
         Set(ByVal value As Decimal?)
             If value <> itemData._IPI Then

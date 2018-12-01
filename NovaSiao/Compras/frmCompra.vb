@@ -555,7 +555,11 @@ Public Class frmCompra
         '--- Insere o novo ITEM no BD
         Try
             newItem.IDTransacao = _Compra.IDCompra
-            myID = ItemBLL.InserirNovoItem(newItem, TransacaoItemBLL.EnumMovimento.ENTRADA, _Compra.TransacaoData)
+            myID = ItemBLL.InserirNovoItem(newItem,
+                                           TransacaoItemBLL.EnumMovimento.ENTRADA,
+                                           _Compra.TransacaoData,
+                                           InsereCustos:=True
+                                           )
             newItem.IDTransacaoItem = myID
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao INSERIR o item no BD..." & vbNewLine & ex.Message, "Exceção Inesperada",
@@ -603,7 +607,11 @@ Public Class frmCompra
         '--- Altera o ITEM no BD e reforma o ESTOQUE
         Try
             itmAtual.IDTransacao = _Compra.IDCompra
-            myID = ItemBLL.EditarItem(itmAtual, TransacaoItemBLL.EnumMovimento.ENTRADA, _Compra.TransacaoData)
+            myID = ItemBLL.EditarItem(itmAtual,
+                                      TransacaoItemBLL.EnumMovimento.ENTRADA,
+                                      _Compra.TransacaoData,
+                                      InsereCustos:=True
+                                      )
             itmAtual.IDTransacaoItem = myID
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao ALTERAR o item no BD..." & vbNewLine & ex.Message,
@@ -1274,7 +1282,7 @@ Public Class frmCompra
         Try
             pagBLL.Excluir_APagar_Origem(_Compra.IDCompra, clAPagar.Origem_APagar.Compra)
             '
-            '--- Insere cada um AReceber no BD
+            '--- Insere cada um APagar no BD
             For Each pag As clAPagar In _APagarList
                 pagBLL.InserirNovo_APagar(pag)
             Next

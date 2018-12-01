@@ -860,6 +860,15 @@ Public Class frmPrincipal
         '
     End Sub
     '
+    Private Sub miSimplesEntrada_Click(sender As Object, e As EventArgs) Handles miSimplesEntrada.Click
+        '
+        OcultaMenuPrincipal()
+        Dim f As New frmSimplesEntradaControle
+        f.MdiParent = Me
+        f.Show()
+        '
+    End Sub
+    '
 #End Region
     '
     '========================================================================================================

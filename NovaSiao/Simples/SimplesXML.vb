@@ -1,10 +1,14 @@
 ﻿Imports System.Xml
 Imports System.Reflection
 Imports CamadaDTO
+Imports CamadaBLL
 '
 Public Class SimplesXML
-    Private Const filename As String = "sampledata.xml"
     '
+    Private pBLL As New ProdutoBLL
+    '
+    '--- WRITE ALL PROPERTYS OF OBJECT IN A XML FILE
+    '-----------------------------------------------------------------------------------------------
     Public Shared Sub WriteObjProperty_XML(o As Object, writer As XmlWriter)
         '
         '--- verify if object is list(of) or class
@@ -49,6 +53,8 @@ Public Class SimplesXML
         '
     End Sub
     '
+    '--- WRITE ALL PROPERTYS VALUES IN A XML FILE
+    '-----------------------------------------------------------------------------------------------
     Public Shared Sub WritePropValuesXML(minhaclasse As Object, writer As XmlWriter)
         '
         Try
@@ -64,9 +70,12 @@ Public Class SimplesXML
                         myValue = DirectCast(p.GetValue(minhaclasse), Date).ToShortDateString
                     ElseIf T Is GetType(Decimal) OrElse T Is GetType(Double) Then
                         myValue = Format(p.GetValue(minhaclasse), "#,##0.00").ToString
-                        myValue = myValue.Replace(",", ".")
                     Else
                         myValue = p.GetValue(minhaclasse).ToString
+                    End If
+                    '
+                    If T.IsEnum Then
+                        myValue = CInt(p.GetValue(minhaclasse))
                     End If
                     '
                 Else
@@ -83,6 +92,8 @@ Public Class SimplesXML
         '
     End Sub
     '
+    '--- VERIFY IF OBJECT IS ILIST
+    '-----------------------------------------------------------------------------------------------
     Public Shared Function IsList(o As Object) As Boolean
         '
         If o Is Nothing Then Return False
@@ -92,9 +103,525 @@ Public Class SimplesXML
         '
     End Function
     '
-    Public Shared Function CriarSimplesEntradaXML() As clSimplesSaida
-        Return New clSimplesSaida
+    '--- GET THE XML NODE VALUES AND FILL CLASS
+    '-----------------------------------------------------------------------------------------------
+    Public Sub FillClassWithNode(o As Object, myNode As XmlNode)
+        '
+        '--- Verifica se existe child Node
+        If myNode.HasChildNodes Then
+            '
+            '--- Percorre por todas propertys do object
+            For Each p As PropertyInfo In o.GetType().GetProperties()
+                '
+                '--- get Type of Property
+                Dim T As Type = If(Nullable.GetUnderlyingType(p.PropertyType), p.PropertyType)
+                '
+                '--- Se o Tipo for ENUM convert TIPO para byte
+                If T.IsEnum Then
+                    T = GetType(Byte)
+                End If
+                '
+                '--- get Value of Node
+                Dim v As String = myNode.SelectSingleNode(p.Name).InnerText
+                '--- convert Value to Type of
+                Dim x As Object = Nothing
+                '
+                If Not String.IsNullOrEmpty(v) Then
+                    x = Convert.ChangeType(v, T)
+                End If
+                '
+                '--- set value in new class
+                If p.CanWrite Then p.SetValue(o, x)
+                '
+            Next
+            '
+        End If
+        '
+    End Sub
+    '
+#Region "INSERE SIMPLES ENTRADA PELO XML"
+    '
+    '--------------------------------------------------------------------------------------------
+    ' INSERT NOVA SIMPLES ENTRADA PELO ARQUIVO XML
+    '--------------------------------------------------------------------------------------------
+    Public Function Insert_SimplesEntrada_XML(XMLfile As String) As clSimplesEntrada
+        '
+        Dim doc As New XmlDocument()
+        Dim nodelist As XmlNodeList
+        '
+        '--- Try open XML document
+        Try
+            doc.Load(XMLfile)
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao Ler o arquivo XML..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+            Return Nothing
+            '
+        End Try
+        '
+        '--- Try Load XML classes e propertys
+        Try
+            '
+            '--- Verifica se o ARQUIVO ja foi recebido
+            '------------------------------------------------------------------
+            Dim dados As XmlNode = doc.GetElementsByTagName("Dados").Item(0)
+            '
+            If dados.Attributes.ItemOf("Recebido").Value Then
+                MessageBox.Show("Esse Arquivo XML de Simples Entrada já foi devidamente Recebido!",
+                                "Arquivo Recebido", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return Nothing
+            End If
+            '
+            '--- Verifica a ORIGEM e o DESTINO da Simples Saida de Origem
+            '------------------------------------------------------------------
+            Dim IDFil As Integer = Obter_FilialPadrao()
+            Dim nodeSS As XmlElement = doc.GetElementsByTagName("clSimplesSaida")(0)
+            '
+            If CInt(nodeSS.Item("IDPessoaDestino").InnerText) <> IDFil Then
+                MessageBox.Show("A Filial padrão é: " & ObterDefault("FilialDescricao").ToUpper &
+                                vbNewLine & vbNewLine &
+                                "Esse Arquivo XML de Simples Entrada é destinado à outra Filial!",
+                                "Filial Padrão", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return Nothing
+            End If
+            '
+            '--- Verifica e Insere a SIMPLES SAIDA
+            '------------------------------------------------------------------
+            Dim _simples As New clSimplesSaida
+            FillClassWithNode(_simples, nodeSS)
+            '
+            '--- Verifica e Insere os NOVOS PRODUTOS
+            '------------------------------------------------------------------
+            nodelist = doc.GetElementsByTagName("clProduto-ITEM")
+            '
+            If nodelist.Count = 0 Then
+                Throw New Exception("Arquivo XML corrompido...")
+            End If
+            '
+            Dim lstProdutos As New List(Of clProduto)
+            '
+            For Each node As XmlElement In nodelist
+                Dim _produto As New clProduto
+                FillClassWithNode(_produto, node)
+                '
+                lstProdutos.Add(_produto)
+                '
+            Next
+            '
+            '--- Verifica e Insere os ITENS da SIMPLES SAIDA 
+            '------------------------------------------------------------------
+            nodelist = doc.GetElementsByTagName("clTransacaoItem-ITEM")
+            '
+            If nodelist.Count = 0 Then
+                Throw New Exception("Arquivo XML corrompido...")
+            End If
+            '
+            Dim lstItens As New List(Of clTransacaoItem)
+            '
+            For Each node As XmlElement In nodelist
+                Dim _item As New clTransacaoItem
+                FillClassWithNode(_item, node)
+                '
+                lstItens.Add(_item)
+                '
+            Next
+            '
+            '--- Verifica e Insere os APAGAR da SIMPLES SAIDA
+            '------------------------------------------------------------------
+            nodelist = doc.GetElementsByTagName("clAReceberParcela-ITEM")
+            '
+            If nodelist.Count = 0 Then
+                Throw New Exception("Arquivo XML corrompido...")
+            End If
+            '
+            Dim lstAReceber As New List(Of clAReceberParcela)
+            '
+            For Each node As XmlElement In nodelist
+                Dim _pag As New clAReceberParcela
+                FillClassWithNode(_pag, node)
+                '
+                lstAReceber.Add(_pag)
+                '
+            Next
+            '
+            '
+            '--- REALIZA INSERT DOS NOVOS PRODUTOS
+            '------------------------------------------------------------------
+            InsertProdutos(lstProdutos)
+            '
+            '--- If IsNothing lstProdutos houve incompatibilidade de Produtos
+            '--- cancela toda a operacao
+            If IsNothing(lstProdutos) Then
+                '
+                Return Nothing
+                '
+            End If
+            '
+            '--- Verifica se houve alteracao nos produtos da lista pela Filial Destino
+            '--- Altera os Itens da lstItens com o ID e RG da filial destino
+            For Each p In lstProdutos
+                Dim results As List(Of clTransacaoItem) = lstItens.FindAll(Function(x) x.Produto = p.Produto)
+                '
+                For Each i In results
+                    i.IDProduto = p.IDProduto
+                Next
+                '
+            Next
+            '
+            '
+            '--- REALIZA INSERT DA SIMPLES ENTRADA
+            '------------------------------------------------------------------
+            Dim NewSEntrada As clSimplesEntrada = InsertSimplesEntrada(_simples)
+            '
+            '--- REALIZA O INSERT DOS ITENS DA SIMPLES ENTRADA
+            '------------------------------------------------------------------
+            If InsertItems(lstItens, NewSEntrada) = False Then
+                Return Nothing
+            End If
+            '
+            '--- REALIZA O INSERT DOS A PAGAR DA SIMPLES ENTRADA
+            '------------------------------------------------------------------
+            If InsertAPagar(lstAReceber, NewSEntrada) = False Then
+                Return Nothing
+            End If
+            '
+            '--- ATUALIZA O ARQUIVO XML (RECEBIDO = TRUE)
+            '------------------------------------------------------------------
+            dados.Attributes.ItemOf("Recebido").Value = True
+            doc.Save(XMLfile)
+            '
+            '--- RETORNA A NOVA SIMPLES ENTRADA
+            '------------------------------------------------------------------
+            Return NewSEntrada
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao salvar Simples Entrada..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+            Return Nothing
+        End Try
+        '
     End Function
+    '
+    '--- INSERT NOVOS PRODUTOS
+    '-----------------------------------------------------------------------------------------------
+    Private Sub InsertProdutos(ListProdutos As List(Of clProduto))
+        '
+        '--- Verifica se o produto ja existe
+        For Each p As clProduto In ListProdutos
+            '
+            Dim NewProduto As Boolean = False
+            '
+            NewProduto = ProcuraProdutoPeloRG(p)
+            '
+            '--- procura pelo cod de barra
+            If NewProduto AndAlso Not String.IsNullOrEmpty(p.CodBarrasA) Then
+                '
+                NewProduto = ProcuraProdutoPeloCodBarras(p)
+                '
+            End If
+            '
+            '--- procura pelo mesmo Nome de Produto
+            If NewProduto Then
+                '
+                NewProduto = ProcuraProdutoPeloProdutoNome(p)
+                '
+                If IsNothing(p) Then '--- nesse caso houve incompatibilidade de produto diferente com mesmo nome
+                    ListProdutos = Nothing
+                End If
+                '
+            End If
+            '
+            If NewProduto Then
+                '
+                Try
+                    p.IDProduto = pBLL.SalvaNovoProduto_Procedure_ID(p, Obter_FilialPadrao)
+                Catch ex As Exception
+                    Throw ex
+                    ListProdutos = Nothing
+                End Try
+                '
+            End If
+            '
+        Next
+        '
+    End Sub
+    '
+    '--- PROCURA PRODUTO COM MESMO RGPRODUTO E VERIFICA COMPATIBILIDADE
+    '-----------------------------------------------------------------------------------------------
+    Private Function ProcuraProdutoPeloRG(p As clProduto) As Boolean
+        '
+        '--- procura pelo RG
+        Dim myWhere As String = "RGProduto = " & p.RGProduto
+        '
+        Try
+            Dim lstOldProd As List(Of clProduto) = pBLL.GetProdutos_Where(myWhere)
+            '
+            If lstOldProd.Count > 0 Then '--- achou produto com o mesmo RG
+                Dim OldProd As clProduto = lstOldProd(0)
+                p.IDProduto = OldProd.IDProduto
+                '
+                If p.Produto <> OldProd.Produto Then '--- if not same product name
+                    '
+                    '--- verifica o nome do produto com o usuário
+                    If MessageBox.Show("Verificar produto com mesmo RG..." & vbNewLine & vbNewLine &
+                                       "Por gentileza verifique se os dois produtos abaixo são os mesmos:" & vbNewLine &
+                                       p.Produto & vbNewLine &
+                                       OldProd.Produto,
+                                       "Verificar Produto",
+                                       MessageBoxButtons.YesNo) = DialogResult.Yes Then
+                        Return False '--> nao insere
+                    Else
+                        '--> produtos diferentes usando o mesmo RG!
+                        '--- procura um RG possível para o novo produto
+                        p.RGProduto = pBLL.ProcuraMaxRGProduto
+                        '
+                        '--> Insere produto
+                        Return True
+                        '
+                    End If
+                    '
+                Else
+                    Return False '--> nao insere
+                End If
+                '
+            End If
+            '
+            Return True '--> insere
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao verificar cadastro de produto..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+            Return False
+            '
+        End Try
+        '
+    End Function
+    '
+    '--- PROCURA PRODUTO COM MESMO COD.BARRAS E VERIFICA COMPATIBILIDADE
+    '-----------------------------------------------------------------------------------------------
+    Private Function ProcuraProdutoPeloCodBarras(p As clProduto) As Boolean
+        '
+        '--- procura pelo RG
+        Dim myWhereCod As String = "RGProduto <> " & p.RGProduto & " AND CodBarrasA LIKE '" & p.CodBarrasA & "'"
+        '
+        Try
+            Dim lstOldProd As List(Of clProduto) = pBLL.GetProdutos_Where(myWhereCod)
+            '
+            If lstOldProd.Count > 0 Then '--- achou produto com o mesmo CODBARRAS
+                Dim OldProd As clProduto = lstOldProd(0)
+                '
+                If p.Produto <> OldProd.Produto Then '--- if not same product name
+                    '
+                    '--- verifica o nome do produto com o Cliente
+                    If MessageBox.Show("Verificar produto com mesmo Cod.Barras..." & vbNewLine & vbNewLine &
+                                   "Por gentileza verifique se os dois produtos abaixo são os mesmos:" & vbNewLine &
+                    p.Produto & vbNewLine &
+                    OldProd.Produto,
+                                   "Verificar Produto",
+                    MessageBoxButtons.YesNo) = DialogResult.Yes Then
+                        '
+                        p.IDProduto = OldProd.IDProduto
+                        p.RGProduto = OldProd.RGProduto
+                        Return False '--> nao insere
+                        '
+                    Else
+                        '--> produtos diferentes usando o mesmo RG!
+                        '--- procura um RG possível para o novo produto
+                        p.CodBarrasA = Nothing
+                        '
+                        '--> Insere produto
+                        Return True
+                        '
+                    End If
+                    '
+                Else
+                    Return False '---> Nao insere
+                End If
+                '
+            End If
+            '
+            Return True '--> insere
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao verificar cadastro de produto..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+            Return False
+            '
+        End Try
+        '
+    End Function
+    '
+    '--- PROCURA PRODUTO COM MESMO NOME/DESCRICAO E VERIFICA COMPATIBILIDADE
+    '-----------------------------------------------------------------------------------------------
+    Private Function ProcuraProdutoPeloProdutoNome(p As clProduto) As Boolean
+        '
+        '--- procura pelo RG
+        Dim myWhereCod As String = "RGProduto <> " & p.RGProduto & " AND Produto = " & p.Produto
+        '
+        Try
+            Dim lstOldProd As List(Of clProduto) = pBLL.GetProdutos_Where(myWhereCod)
+            '
+            If lstOldProd.Count > 0 Then '--- achou produto com o mesmo CODBARRAS
+                Dim OldProd As clProduto = lstOldProd(0)
+                '
+                '--- verifica o nome do produto com o Cliente
+                If MessageBox.Show("Verificar produto com a mesma Descrição/Nome..." & vbNewLine & vbNewLine &
+                                   "Por gentileza verifique se os dois produtos abaixo são os mesmos:" & vbNewLine &
+                                   "(1) " & p.Produto.ToUpper & vbNewLine &
+                                   "AUTOR:" & p.Autor & vbNewLine &
+                                   "TIPO:" & p.ProdutoTipo & vbNewLine &
+                                   "FABRICANTE:" & p.Fabricante & vbNewLine & vbNewLine &
+                                   "(2) " & OldProd.Produto.ToUpper & vbNewLine &
+                                   "AUTOR:" & OldProd.Autor & vbNewLine &
+                                   "TIPO:" & OldProd.ProdutoTipo & vbNewLine &
+                                   "FABRICANTE:" & OldProd.Fabricante,
+                                   "Verificar Produto",
+                                   MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.Yes Then
+                    '
+                    p.IDProduto = OldProd.IDProduto
+                    p.RGProduto = OldProd.RGProduto
+                    Return True '--> insere
+                    '
+                Else
+                    '--> produtos diferentes usando a mesma descricao!
+                    '--- nao é possivel inserir produto assim
+                    '--> Nao Insere produto
+                    p = Nothing
+                    MessageBox.Show("Houve um erro: produtos diferentes estão usando a mesma descrição..." & vbNewLine & vbNewLine &
+                                    "É necessário que haja alteração na descrição desse produto em uma das Filiais." & vbNewLine &
+                                    "Favor realizar essa alteração e gerar o arquivo de transmissão novamente.",
+                                    "Erro: Mesma Descrição", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    Return False
+                    '
+                End If
+                '
+                '
+            End If
+            '
+            Return True '--> insere
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao verificar cadastro de produto..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+            Return False
+            '
+        End Try
+        '
+    End Function
+    '
+    '--- INSERT SIMPLES ENTRADA
+    '-----------------------------------------------------------------------------------------------
+    Private Function InsertSimplesEntrada(_simples As clSimplesSaida) As clSimplesEntrada
+        '
+        Dim sBLL As New SimplesMovimentacaoBLL
+        '
+        Dim newSEntrada As New clSimplesEntrada With {
+            .IDPessoaDestino = _simples.IDPessoaDestino,
+            .IDPessoaOrigem = _simples.IDPessoaOrigem,
+            .IDUser = UsuarioAcesso(0),
+            .TransacaoData = _simples.TransacaoData,
+            .EntradaData = Today(),
+            .IDTransacaoOrigem = _simples.IDTransacao,
+            .ValorTotal = _simples.ValorTotal
+        }
+        '
+        Try
+            newSEntrada = sBLL.InsertSimplesEntrada_Procedure_Classe(newSEntrada)
+            Return newSEntrada
+        Catch ex As Exception
+            Throw ex
+            Return Nothing
+        End Try
+        '
+    End Function
+    '
+    '--- INSERT ITEMS DA SIMPLES ENTRADA
+    '-----------------------------------------------------------------------------------------------
+    Private Function InsertItems(ListItems As List(Of clTransacaoItem), SEntrada As clSimplesEntrada) As Boolean
+        '
+        Dim ItemBLL As New TransacaoItemBLL
+        '
+        For Each item As clTransacaoItem In ListItems
+            '
+            '--- cria o novo Item
+            Dim newItem As New clTransacaoItem With {
+                .Desconto = item.Desconto,
+                .IDProduto = item.IDProduto,
+                .Preco = item.Preco,
+                .Quantidade = item.Quantidade,
+                .IDFilial = SEntrada.IDPessoaDestino,
+                .IDTransacao = SEntrada.IDTransacao
+            }
+            '
+            '
+            Dim myID As Long? = Nothing
+            '
+            '--- Insere o novo ITEM no BD
+            Try
+                myID = ItemBLL.InserirNovoItem(newItem,
+                                               TransacaoItemBLL.EnumMovimento.ENTRADA,
+                                               SEntrada.EntradaData,
+                                               InsereCustos:=False)
+                newItem.IDTransacaoItem = myID
+            Catch ex As Exception
+                Throw ex
+                Return False
+            End Try
+            '
+        Next
+        '
+        Return True
+        '
+    End Function
+    '
+    '--- INSERT A PAGAR
+    '-----------------------------------------------------------------------------------------------
+    Private Function InsertAPagar(ListAPagar As List(Of clAReceberParcela),
+                                  _simplesEntrada As clSimplesEntrada) As Boolean
+        '
+        Dim pagBLL As New APagarBLL
+        '
+        Try
+            '--- transforma cada AReceber (SimplesSaida) em APagar (SimplesEntrada)
+            For Each rec As clAReceberParcela In ListAPagar
+                Dim newAPagar As New clAPagar With {
+                    .Origem = 4, '--> tblSimplesEntrada
+                    .IDOrigem = _simplesEntrada.IDTransacao,
+                    .IDPessoa = _simplesEntrada.IDPessoaOrigem,
+                    .IDFilial = _simplesEntrada.IDPessoaDestino,
+                    .IDCobrancaForma = 1, '--> EmCarteira
+                    .Identificador = Format(rec.IDAReceber, "0000") & rec.Letra,
+                    .RGBanco = Nothing,
+                    .Vencimento = rec.Vencimento,
+                    .APagarValor = rec.ParcelaValor,
+                    .Situacao = 0,
+                    .ValorPago = 0
+                }
+                '
+                '--- Insere cada um APagar no BD
+                pagBLL.InserirNovo_APagar(newAPagar)
+                '
+            Next
+            '
+            Return True
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+    End Function
+    '
+#End Region '/ INSERE SIMPLES ENTRADA PELO XML
     '
 End Class
 

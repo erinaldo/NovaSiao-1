@@ -311,34 +311,51 @@ Public Class CompraBLL
     '--------------------------------------------------------------------------------------------
     ' GET LISTA COMPRA PARA FRMPROCURA
     '--------------------------------------------------------------------------------------------
-    Public Function GetCompraLista_Procura(myIDOperacao As Byte, myProcura As String,
-                                          Optional dtInicial As Date? = Nothing,
-                                          Optional dtFinal As Date? = Nothing) As DataTable
-
-
-
-
-
-        Dim db As New AcessoDados
+    Public Function GetCompraLista_Procura(IDFilial As Integer,
+                                           Optional dtInicial As Date? = Nothing,
+                                           Optional dtFinal As Date? = Nothing) As List(Of clCompra)
         '
-        db.LimparParametros()
+        Dim sql As New SQLControl
         '
-        db.AdicionarParametros("@IDOperacao", myIDOperacao)
-        db.AdicionarParametros("@PessoaOrigemNome", myProcura)
+        sql.AddParam("@IDFilial", IDFilial)
+        Dim myQuery As String = "SELECT * FROM qryCompra WHERE IDPessoaDestino = @IDFilial"
+        '
         If Not IsNothing(dtInicial) Then
-            Dim dtI As String = Format(dtInicial, "MM/dd/yyyy")
-
-            db.AdicionarParametros("@DataInicial", dtI)
+            '
+            sql.AddParam("@DataInicial", dtInicial)
+            myQuery = myQuery & " AND TransacaoData >= @DataInicial"
+            '
         End If
         '
         If Not IsNothing(dtFinal) Then
-            Dim dtF As String = Format(dtFinal, "MM/dd/yyyy")
-
-            db.AdicionarParametros("@DataFinal", dtF)
+            '
+            sql.AddParam("@DataFinal", dtFinal)
+            myQuery = myQuery & " AND TransacaoData <= @DataFinal"
+            '
         End If
         '
         Try
-            Return db.ExecutarConsulta(CommandType.StoredProcedure, "uspCompra_ProcurarLista")
+            Dim cmpList As New List(Of clCompra)
+            '
+            sql.ExecQuery(myQuery)
+            '
+            If sql.HasException Then
+                Throw New Exception(sql.Exception)
+            End If
+            '
+            If sql.DBDT.Rows.Count = 0 Then Return cmpList
+            '
+            For Each r As DataRow In sql.DBDT.Rows
+                Dim cmp As New clCompra
+                '
+                cmp = ConvertDtRow_clCompra(r)
+                '
+                cmpList.Add(cmp)
+                '
+            Next
+            '
+            Return cmpList
+            '
         Catch ex As Exception
             Throw ex
         End Try

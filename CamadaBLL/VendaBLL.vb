@@ -355,24 +355,28 @@ Public Class VendaBLL
     '--------------------------------------------------------------------------------------------
     ' GET LISTA VENDAS PARA FRMPROCURA RETORNA LIST OF CLVENDA
     '--------------------------------------------------------------------------------------------
-    Public Function GetVendaLista_Procura(myIDOperacao As Byte,
+    Public Function GetVendaLista_Procura(IDFilial As Integer,
                                           Optional dtInicial As Date? = Nothing,
                                           Optional dtFinal As Date? = Nothing) As List(Of clVenda)
         '
         Dim sql As New SQLControl
         '
-        sql.AddParam("@IDOperacao", myIDOperacao)
+        sql.AddParam("@IDFilial", IDFilial)
+        Dim myQuery As String = "SELECT * FROM qryVenda WHERE IDPessoaOrigem = @IDFilial"
         '
-        Dim myQuery As String = "SELECT * FROM qryVenda WHERE IDOperacao = @IDOperacao"
-        '
+
         If Not IsNothing(dtInicial) Then
+            '
             sql.AddParam("@DataInicial", dtInicial)
             myQuery = myQuery & " AND TransacaoData >= @DataInicial"
+            '
         End If
         '
         If Not IsNothing(dtFinal) Then
+            '
             sql.AddParam("@DataFinal", dtFinal)
             myQuery = myQuery & " AND TransacaoData <= @DataFinal"
+            '
         End If
         '
         Try

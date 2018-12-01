@@ -22,6 +22,7 @@ Partial Class frmAcaoDialog
         Me.btnFechar = New VIBlend.WinForms.Controls.vButton()
         Me.btnNova = New VIBlend.WinForms.Controls.vButton()
         Me.btnProcurar = New VIBlend.WinForms.Controls.vButton()
+        Me.lblOrigem = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.SuspendLayout()
         '
@@ -43,7 +44,7 @@ Partial Class frmAcaoDialog
         Me.btnFechar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnFechar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_24x24
         Me.btnFechar.ImageAbsolutePosition = New System.Drawing.Point(20, 10)
-        Me.btnFechar.Location = New System.Drawing.Point(137, 139)
+        Me.btnFechar.Location = New System.Drawing.Point(136, 178)
         Me.btnFechar.Name = "btnFechar"
         Me.btnFechar.RoundedCornersMask = CType(15, Byte)
         Me.btnFechar.Size = New System.Drawing.Size(153, 43)
@@ -61,13 +62,13 @@ Partial Class frmAcaoDialog
         Me.btnNova.AllowAnimations = True
         Me.btnNova.BackColor = System.Drawing.Color.Transparent
         Me.btnNova.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
-        Me.btnNova.ImageAbsolutePosition = New System.Drawing.Point(10, 10)
-        Me.btnNova.Location = New System.Drawing.Point(52, 72)
+        Me.btnNova.ImageAbsolutePosition = New System.Drawing.Point(35, 10)
+        Me.btnNova.Location = New System.Drawing.Point(51, 123)
         Me.btnNova.Name = "btnNova"
         Me.btnNova.RoundedCornersMask = CType(15, Byte)
         Me.btnNova.Size = New System.Drawing.Size(153, 43)
         Me.btnNova.TabIndex = 0
-        Me.btnNova.Text = "&Nova Venda"
+        Me.btnNova.Text = "&Nova"
         Me.btnNova.TextAbsolutePosition = New System.Drawing.Point(20, 5)
         Me.btnNova.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnNova.UseAbsoluteImagePositioning = True
@@ -81,32 +82,45 @@ Partial Class frmAcaoDialog
         Me.btnProcurar.AllowAnimations = True
         Me.btnProcurar.BackColor = System.Drawing.Color.Transparent
         Me.btnProcurar.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
-        Me.btnProcurar.ImageAbsolutePosition = New System.Drawing.Point(10, 5)
-        Me.btnProcurar.Location = New System.Drawing.Point(227, 72)
+        Me.btnProcurar.ImageAbsolutePosition = New System.Drawing.Point(25, 5)
+        Me.btnProcurar.Location = New System.Drawing.Point(226, 123)
         Me.btnProcurar.Name = "btnProcurar"
         Me.btnProcurar.RoundedCornersMask = CType(15, Byte)
         Me.btnProcurar.Size = New System.Drawing.Size(153, 43)
         Me.btnProcurar.TabIndex = 1
-        Me.btnProcurar.Text = "&Procurar Venda"
-        Me.btnProcurar.TextAbsolutePosition = New System.Drawing.Point(40, 5)
+        Me.btnProcurar.Text = "&Procurar"
+        Me.btnProcurar.TextAbsolutePosition = New System.Drawing.Point(30, 5)
         Me.btnProcurar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnProcurar.UseAbsoluteImagePositioning = True
         Me.btnProcurar.UseAbsoluteTextPositioning = True
         Me.btnProcurar.UseVisualStyleBackColor = False
         Me.btnProcurar.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
+        'lblOrigem
+        '
+        Me.lblOrigem.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblOrigem.ForeColor = System.Drawing.Color.SlateGray
+        Me.lblOrigem.Location = New System.Drawing.Point(51, 66)
+        Me.lblOrigem.Name = "lblOrigem"
+        Me.lblOrigem.Size = New System.Drawing.Size(328, 27)
+        Me.lblOrigem.TabIndex = 3
+        Me.lblOrigem.Text = "Label1"
+        Me.lblOrigem.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'frmAcaoDialog
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(430, 205)
+        Me.ClientSize = New System.Drawing.Size(430, 238)
+        Me.Controls.Add(Me.lblOrigem)
         Me.Controls.Add(Me.btnProcurar)
         Me.Controls.Add(Me.btnNova)
         Me.Controls.Add(Me.btnFechar)
         Me.Name = "frmAcaoDialog"
-        Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Controls.SetChildIndex(Me.btnFechar, 0)
         Me.Controls.SetChildIndex(Me.btnNova, 0)
         Me.Controls.SetChildIndex(Me.btnProcurar, 0)
+        Me.Controls.SetChildIndex(Me.lblOrigem, 0)
+        Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Panel1.ResumeLayout(False)
         Me.ResumeLayout(False)
 
@@ -115,4 +129,5 @@ Partial Class frmAcaoDialog
     Friend WithEvents btnFechar As VIBlend.WinForms.Controls.vButton
     Friend WithEvents btnNova As VIBlend.WinForms.Controls.vButton
     Friend WithEvents btnProcurar As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents lblOrigem As Label
 End Class

@@ -612,6 +612,12 @@
     <Compile Include="Simples\frmSimplesEntrada.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Simples\frmSimplesEntradaControle.designer.vb">
+      <DependentUpon>frmSimplesEntradaControle.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Simples\frmSimplesEntradaControle.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Simples\SimplesXML.vb" />
     <Compile Include="Simples\frmSimplesSaida.Designer.vb">
       <DependentUpon>frmSimplesSaida.vb</DependentUpon>
@@ -933,6 +939,9 @@
     <EmbeddedResource Include="Simples\frmSimplesEntrada.resx">
       <DependentUpon>frmSimplesEntrada.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Simples\frmSimplesEntradaControle.resx">
+      <DependentUpon>frmSimplesEntradaControle.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Simples\frmSimplesSaida.resx">
       <DependentUpon>frmSimplesSaida.vb</DependentUpon>
     </EmbeddedResource>
@@ -998,6 +1007,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\NovaSiao_PNG_256px.PNG" />
     <None Include="Resources\limpar 24x24.png" />
     <None Include="packages.config" />
     <Content Include="ConfigFiles\Config.xml">

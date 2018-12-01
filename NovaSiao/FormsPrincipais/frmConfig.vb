@@ -83,6 +83,11 @@ Public Class frmConfig
             '
         End If
         '
+        '--- Get Connection String
+        Dim bBLL As New BackupBLL
+        '
+        txtStringConexao.Text = bBLL.GetConString
+        '
         HandlerChangedControles()
         _VerAlteracao = True
         '
@@ -134,6 +139,12 @@ Public Class frmConfig
             ' Lendo a QUARTA seção
             txtStringConexao.Text = .SelectSingleNode("ServidorDados").ChildNodes(0).InnerText
             chkVerBackup.Checked = CType(.SelectSingleNode("ServidorDados").ChildNodes(1).InnerText, Boolean)
+            '
+            If .SelectSingleNode("ServidorDados").ChildNodes(2).InnerText Then
+                rbtServLocal.Checked = True
+            Else
+                rbtServRemoto.Checked = True
+            End If
             '
         End With
         Return True
@@ -208,6 +219,7 @@ Error_Handler:
                 ' Sub Elementos
                 .WriteElementString("StringConexao", txtStringConexao.Text)
                 .WriteElementString("ControlaBackup", chkVerBackup.Checked.ToString)
+                .WriteElementString("ServidorLocal", rbtServLocal.Checked.ToString)
                 'encerra o elemento
                 .WriteEndElement()
                 '
@@ -227,14 +239,27 @@ Error_Handler:
 #End Region
     '
 #Region "DATAGRID OPERACOES"
+    '
     ' PREENCHER DATAGRIDVIEW OPERACOES
     '-----------------------------------------------------------------------------------------------
     Private Sub PreencheOperacoesCFOP()
         Dim SQL As New SQLControl
         Dim dtOp As New DataTable
         '
-        SQL.ExecQuery("SELECT * FROM tblOperacao ORDER BY MovimentoEstoque")
-        dtOp = SQL.DBDT
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            SQL.ExecQuery("SELECT * FROM tblOperacao ORDER BY MovimentoEstoque")
+            dtOp = SQL.DBDT
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao obter lista de Operações..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
         dgvOperacao.DataSource = dtOp
         FormataListagem()
@@ -533,10 +558,15 @@ Error_Handler:
         '
     End Sub
     '
-    Private Sub chkVerBackup_CheckedChanged(sender As Object, e As EventArgs) Handles chkVerBackup.CheckedChanged
+    Private Sub chkVerBackup_CheckedChanged(sender As Object, e As EventArgs) Handles _
+        chkVerBackup.CheckedChanged,
+        rbtServLocal.CheckedChanged,
+        rbtServRemoto.CheckedChanged
+        '
         If Sit = FlagEstado.RegistroSalvo Then
             Sit = FlagEstado.Alterado
         End If
+        '
     End Sub
     '
     '--- FAZER O txtTaxa formatar como 0,00
@@ -579,10 +609,16 @@ Error_Handler:
         '
         ' cria o arquivo de configuração
         If CriaConfigXML() Then
+            '
+            Dim frmP As frmPrincipal = Application.OpenForms().Item("frmPrincipal")
+            frmP.propContaPadrao = txtContaPadrao.Text
+            frmP.propFilialPadrao = txtFilialPadrao.Text
+            frmP.propDataPadrao = dtpDataPadrao.Value
+            '
             MessageBox.Show("Arquivo de Configuração SALVO com sucesso!",
                             "Configuração do Sistema", MessageBoxButtons.OK,
                             MessageBoxIcon.Information)
-
+            '
             Sit = FlagEstado.RegistroSalvo
         Else
             MessageBox.Show("Erro ao gravar o arquivo de Configuração",
@@ -659,15 +695,26 @@ Error_Handler:
         Dim dt As DataTable = dgvOperacao.DataSource
         Dim tBLL As New TransacaoBLL
         '
-        For Each r As DataRow In dt.Rows
-            Try
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            For Each r As DataRow In dt.Rows
                 tBLL.SalvaOperacao_CFOP(r("IDOperacao"), r("CFOPDentro"), r("CFOPFora"))
-            Catch ex As Exception
-                MessageBox.Show("Uma exceção ocorreu ao salvar registros de Operações e CFOP." & vbNewLine &
-                                ex.Message, "Exceção Inesperada", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return False
-            End Try
-        Next
+            Next
+            '
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao salvar registros de Operações e CFOP no BD..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+            Return False
+            '
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
         '
         Return True
         '
@@ -865,8 +912,7 @@ Error_Handler:
                                                      MousePosition.Y - Me.Location.Y - Py))
         End If
     End Sub
-
-
+    '
 #End Region
     '
 End Class

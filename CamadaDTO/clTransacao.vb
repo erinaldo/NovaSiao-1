@@ -397,16 +397,10 @@ Public Class clSimplesEntrada
     Implements IEditableObject
     '
     Structure SimplesEntradaStructure
-        'tblSimplesSaida =================================================
-        Dim _ArquivoGerado As Boolean
-        Dim _ArquivoRecebido As Boolean
         '
-        'tblAReceber =====================================================
-        Dim _IDAReceber As Integer?
-        Dim _SituacaoAReceber As Byte '--- 0:EmAberto | 1:Pago | 2:Cancelada
-        Dim _ValorPagoTotal As Decimal
-        Dim _IDCobrancaForma As Int16? 'smallint
-        Dim _IDPlano As Int16?
+        'tblSimplesEntrada =================================================
+        Dim _IDTransacaoOrigem As Integer
+        Dim _EntradaData As Date
         '
     End Structure
     '
@@ -415,12 +409,7 @@ Public Class clSimplesEntrada
     '
     Sub New()
         '
-        SEntradaData = New SimplesEntradaStructure With {
-            ._ValorPagoTotal = 0,
-            ._IDCobrancaForma = 1,
-            ._ArquivoGerado = False,
-            ._ArquivoRecebido = False
-        }
+        SEntradaData = New SimplesEntradaStructure
         '
         ' herdado de clTransacao
         TData = New TransacaoStructure With {
@@ -462,101 +451,31 @@ Public Class clSimplesEntrada
         End If
     End Sub
     '
-    '--- Propriedade ArquivoGerado
+    '--- Propriedade IDTransacaoOrigem
     '------------------------------------------------------
-    Public Property ArquivoGerado() As Boolean
+    Public Property IDTransacaoOrigem() As Integer
         Get
-            Return SEntradaData._ArquivoGerado
+            Return SEntradaData._IDTransacaoOrigem
         End Get
-        Set(ByVal value As Boolean)
-            If value <> SEntradaData._ArquivoGerado Then
+        Set(ByVal value As Integer)
+            If value <> SEntradaData._IDTransacaoOrigem Then
                 RaiseAoAlterar()
             End If
-            SEntradaData._ArquivoGerado = value
+            SEntradaData._IDTransacaoOrigem = value
         End Set
     End Property
     '
-    '--- Propriedade ArquivoRecebido
+    '--- Propriedade EntradaData
     '------------------------------------------------------
-    Public Property ArquivoRecebido() As Boolean
+    Public Property EntradaData() As Date
         Get
-            Return SEntradaData._ArquivoRecebido
+            Return SEntradaData._EntradaData
         End Get
-        Set(ByVal value As Boolean)
-            If value <> SEntradaData._ArquivoRecebido Then
+        Set(ByVal value As Date)
+            If value <> SEntradaData._EntradaData Then
                 RaiseAoAlterar()
             End If
-            SEntradaData._ArquivoRecebido = value
-        End Set
-    End Property
-    '
-    '--- Propriedade IDAReceber
-    '------------------------------------------------------
-    Public Property IDAReceber() As Integer?
-        Get
-            Return SEntradaData._IDAReceber
-        End Get
-        Set(ByVal value As Integer?)
-            If value <> SEntradaData._IDAReceber Then
-                RaiseAoAlterar()
-            End If
-            SEntradaData._IDAReceber = value
-        End Set
-    End Property
-    '
-    '--- Propriedade SituacaoAReceber
-    '------------------------------------------------------
-    Public Property SituacaoAReceber() As Byte
-        Get
-            Return SEntradaData._SituacaoAReceber
-        End Get
-        Set(ByVal value As Byte)
-            If value <> SEntradaData._SituacaoAReceber Then
-                RaiseAoAlterar()
-            End If
-            SEntradaData._SituacaoAReceber = value
-        End Set
-    End Property
-    '
-    '--- Propriedade ValorPagoTotal
-    '------------------------------------------------------
-    Public Property ValorPagoTotal() As Decimal
-        Get
-            Return SEntradaData._ValorPagoTotal
-        End Get
-        Set(ByVal value As Decimal)
-            If value <> SEntradaData._ValorPagoTotal Then
-                RaiseAoAlterar()
-            End If
-            SEntradaData._ValorPagoTotal = value
-        End Set
-    End Property
-    '
-    '--- Propriedade IDCobrancaForma
-    '------------------------------------------------------
-    Public Property IDCobrancaForma() As Int16
-        Get
-            Return SEntradaData._IDCobrancaForma
-        End Get
-        Set(ByVal value As Int16)
-            If value <> SEntradaData._IDCobrancaForma Then
-                RaiseAoAlterar()
-            End If
-            SEntradaData._IDCobrancaForma = value
-        End Set
-    End Property
-    '
-    '--- Propriedade IDPlano
-    '------------------------------------------------------
-    Public Property IDPlano() As Int16?
-        Get
-            Return SEntradaData._IDPlano
-        End Get
-        Set(ByVal value As Int16?)
-            If value <> SEntradaData._IDPlano Then
-                RaiseAoAlterar()
-            End If
-            SEntradaData._IDPlano = value
+            SEntradaData._EntradaData = value
         End Set
     End Property
     '

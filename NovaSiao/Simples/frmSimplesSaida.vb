@@ -389,7 +389,11 @@ Public Class frmSimplesSaida
         '--- Insere o novo ITEM no BD
         Try
             newItem.IDTransacao = _Simples.IDTransacao
-            myID = ItemBLL.InserirNovoItem(newItem, TransacaoItemBLL.EnumMovimento.SAIDA, _Simples.TransacaoData)
+            myID = ItemBLL.InserirNovoItem(newItem,
+                                           TransacaoItemBLL.EnumMovimento.SAIDA,
+                                           _Simples.TransacaoData,
+                                           InsereCustos:=False
+                                           )
             newItem.IDTransacaoItem = myID
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao INSERIR o item no BD..." & vbNewLine & ex.Message, "Exceção Inesperada",
@@ -440,8 +444,13 @@ Public Class frmSimplesSaida
         '--- Altera o ITEM no BD e reforma o ESTOQUE
         Try
             itmAtual.IDTransacao = _Simples.IDTransacao
-            myID = ItemBLL.EditarItem(itmAtual, TransacaoItemBLL.EnumMovimento.SAIDA, _Simples.TransacaoData)
+            myID = ItemBLL.EditarItem(itmAtual,
+                                      TransacaoItemBLL.EnumMovimento.SAIDA,
+                                      _Simples.TransacaoData,
+                                      InsereCustos:=False)
+            '
             itmAtual.IDTransacaoItem = myID
+            '
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao ALTERAR o item no BD..." & vbNewLine & ex.Message,
                             "Exceção Inesperada", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)

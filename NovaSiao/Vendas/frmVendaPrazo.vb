@@ -525,7 +525,11 @@ Public Class frmVendaPrazo
         '--- Insere o novo ITEM no BD
         Try
             newItem.IDTransacao = _Venda.IDVenda
-            myID = ItemBLL.InserirNovoItem(newItem, TransacaoItemBLL.EnumMovimento.SAIDA, _Venda.TransacaoData)
+            myID = ItemBLL.InserirNovoItem(newItem,
+                                           TransacaoItemBLL.EnumMovimento.SAIDA,
+                                           _Venda.TransacaoData,
+                                           InsereCustos:=False
+                                           )
             newItem.IDTransacaoItem = myID
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao INSERIR o item no BD..." & vbNewLine & ex.Message, "Exceção Inesperada",
@@ -576,7 +580,10 @@ Public Class frmVendaPrazo
         '--- Altera o ITEM no BD e reforma o ESTOQUE
         Try
             itmAtual.IDTransacao = _Venda.IDVenda
-            myID = ItemBLL.EditarItem(itmAtual, TransacaoItemBLL.EnumMovimento.SAIDA, _Venda.TransacaoData)
+            myID = ItemBLL.EditarItem(itmAtual,
+                                      TransacaoItemBLL.EnumMovimento.SAIDA,
+                                      _Venda.TransacaoData,
+                                      InsereCustos:=False)
             itmAtual.IDTransacaoItem = myID
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao ALTERAR o item no BD..." & vbNewLine & ex.Message,

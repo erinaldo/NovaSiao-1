@@ -85,7 +85,7 @@ Partial Class frmFilialEscolher
         '
         Me.btnCancelar.FlatAppearance.BorderSize = 0
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.block
-        Me.btnCancelar.Location = New System.Drawing.Point(207, 332)
+        Me.btnCancelar.Location = New System.Drawing.Point(207, 340)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(135, 41)
         Me.btnCancelar.TabIndex = 4
@@ -98,7 +98,7 @@ Partial Class frmFilialEscolher
         '
         Me.btnEscolher.FlatAppearance.BorderSize = 0
         Me.btnEscolher.Image = Global.NovaSiao.My.Resources.Resources.accept
-        Me.btnEscolher.Location = New System.Drawing.Point(66, 332)
+        Me.btnEscolher.Location = New System.Drawing.Point(66, 340)
         Me.btnEscolher.Name = "btnEscolher"
         Me.btnEscolher.Size = New System.Drawing.Size(135, 41)
         Me.btnEscolher.TabIndex = 3
@@ -117,7 +117,7 @@ Partial Class frmFilialEscolher
         'frmFilialEscolher
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(418, 379)
+        Me.ClientSize = New System.Drawing.Size(418, 395)
         Me.Controls.Add(Me.txtProcura)
         Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.btnEscolher)
