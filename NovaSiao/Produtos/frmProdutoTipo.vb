@@ -9,7 +9,8 @@ Public Class frmProdutoTipo
     Private _formProcura As ProcurarPor
     Property ItemEscolhido() As Integer? '--- quando o form fechar informa o Tipo, SubTipo ou Categoria
     Private _tipoPadrao As Integer?
-    Dim SQL As New SQLControl
+    Private pTipoBLL As New TipoSubTipoCategoriaBLL
+    'Dim SQL As New SQLControl
     Dim _Sit As Byte
     '
 #Region "LOAD"
@@ -458,36 +459,39 @@ Public Class frmProdutoTipo
         Dim regSalvos As Integer = 0
         '
         For Each r As DataGridViewRow In dgvTipos.Rows
+            '
             ' verfica se já existe valor igual
             If dtTipo.Rows(r.Index).RowState <> DataRowState.Unchanged Then
-                If VerificaDuplicado(r.Index, dgvTipos.Rows(r.Index).Cells(1).Value, dtTipo) = True Then
+                If VerificaDuplicado(r.Index, r.Cells(1).Value, dtTipo) = True Then
                     MessageBox.Show("Já existe um Tipo de Produto com a mesma descrição:" & vbNewLine &
-                                        CStr(dgvTipos.Rows(r.Index).Cells(1).Value).ToUpper,
-                                        "Valor Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                                    CStr(r.Cells(1).Value).ToUpper,
+                                    "Valor Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Continue For
                 End If
             End If
             '
             '---salva os registros
-            If dtTipo.Rows(r.Index).RowState = DataRowState.Modified Then ' registro ALTERADO
-                SQL.ExecQuery("UPDATE tblProdutoTipo " &
-                              "SET ProdutoTipo = '" & dgvTipos.Rows(r.Index).Cells(1).Value & "', " &
-                              " Ativo = '" & dgvTipos.Rows(r.Index).Cells(3).Value & "'" &
-                              " WHERE IDProdutoTipo = " & dgvTipos.Rows(r.Index).Cells(0).Value)
-                regSalvos += 1
-            ElseIf dtTipo.Rows(r.Index).RowState = DataRowState.Added Then ' registro NOVO
-                SQL.ExecQuery("INSERT INTO tblProdutoTipo" &
-                              " (ProdutoTipo, Ativo) VALUES ('" & dgvTipos.Rows(r.Index).Cells(1).Value & "', 'TRUE')", True)
-                regSalvos += 1
-            End If
-            '
-            '---veridica se houve erro
-            If SQL.HasException(True) Then
+            Try
+                If dtTipo.Rows(r.Index).RowState = DataRowState.Modified Then ' registro ALTERADO
+                    '
+                    pTipoBLL.ProdutoTipo_Update(r.Cells(0).Value,
+                                                r.Cells(1).Value,
+                                                r.Cells(3).Value)
+                    regSalvos += 1
+                    '
+                ElseIf dtTipo.Rows(r.Index).RowState = DataRowState.Added Then ' registro NOVO
+                    '
+                    pTipoBLL.ProdutoTipo_Insert(r.Cells(1).Value)
+                    regSalvos += 1
+                    '
+                End If
+            Catch ex As Exception
                 MessageBox.Show("O seguinte registro não pôde ser salvo:" & vbNewLine &
-                                CStr(dgvTipos.Rows(r.Index).Cells(1).Value).ToUpper, "Erro ao Salvar",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+                                    CStr(r.Cells(1).Value).ToUpper, "Erro ao Salvar",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Error)
                 regSalvos -= 1
-            End If
+            End Try
+            '
         Next
         '
         '--- mensagem de sucesso---
@@ -501,6 +505,7 @@ Public Class frmProdutoTipo
         '---preencher a listagem com os novos valores
         PreencheListaTipo()
         Sit = FlagEstado.RegistroSalvo
+        '
     End Sub
     '
     Private Sub SalvarSubTipo()
@@ -510,35 +515,35 @@ Public Class frmProdutoTipo
         For Each r As DataGridViewRow In dgvSubTipo.Rows
             ' verfica se já existe valor igual
             If dtSubTipo.Rows(r.Index).RowState <> DataRowState.Unchanged Then
-                If VerificaDuplicado(r.Index, dgvSubTipo.Rows(r.Index).Cells(1).Value, dtSubTipo) = True Then
+                If VerificaDuplicado(r.Index, r.Cells(1).Value, dtSubTipo) = True Then
                     MessageBox.Show("Já existe uma Classificação de Produto com a mesma descrição:" & vbNewLine &
-                                        CStr(dgvSubTipo.Rows(r.Index).Cells(1).Value).ToUpper,
+                                        CStr(r.Cells(1).Value).ToUpper,
                                         "Valor Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Continue For
                 End If
             End If
             '
             '---salva os registros
-            If dtSubTipo.Rows(r.Index).RowState = DataRowState.Modified Then ' registro ALTERADO
-                SQL.ExecQuery("UPDATE tblProdutoSubTipo " &
-                              "SET ProdutoSubTipo = '" & dgvSubTipo.Rows(r.Index).Cells(1).Value & "', " &
-                              " Ativo = '" & dgvSubTipo.Rows(r.Index).Cells(3).Value & "'" &
-                              " WHERE IDProdutoSubTipo = " & dgvSubTipo.Rows(r.Index).Cells(0).Value)
-                regSalvos += 1
-            ElseIf dtSubTipo.Rows(r.Index).RowState = DataRowState.Added Then ' registro NOVO
-                SQL.ExecQuery("INSERT INTO tblProdutoSubTipo" & " (ProdutoSubTipo, IDProdutoTipo, Ativo) VALUES ('" &
-                              dgvSubTipo.Rows(r.Index).Cells(1).Value & "', " & dgvTipos.CurrentRow.Cells(0).Value &
-                              ", 'TRUE')", True)
-                regSalvos += 1
-            End If
-            '
-            '---veridica se houve erro
-            If SQL.HasException(True) Then
+            Try
+                '
+                If dtSubTipo.Rows(r.Index).RowState = DataRowState.Modified Then ' registro ALTERADO
+                    '
+                    pTipoBLL.ProdutoSubTipo_Update(r.Cells(0).Value, r.Cells(1).Value, r.Cells(3).Value)
+                    regSalvos += 1
+                    '
+                ElseIf dtSubTipo.Rows(r.Index).RowState = DataRowState.Added Then ' registro NOVO
+                    '
+                    pTipoBLL.ProdutoSubTipo_Insert(r.Cells(1).Value, r.Cells(0).Value)
+                    regSalvos += 1
+                    '
+                End If
+                '
+            Catch ex As Exception
                 MessageBox.Show("O seguinte registro não pôde ser salvo:" & vbNewLine &
-                                CStr(dgvSubTipo.Rows(r.Index).Cells(1).Value).ToUpper, "Erro ao Salvar",
+                                CStr(r.Cells(1).Value).ToUpper, "Erro ao Salvar",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error)
                 regSalvos -= 1
-            End If
+            End Try
         Next
         '
         '--- mensagem de sucesso---
@@ -552,6 +557,7 @@ Public Class frmProdutoTipo
         '---preencher a listagem com os novos valores
         PreencheListaSubTipo()
         Sit = FlagEstado.RegistroSalvo
+        '
     End Sub
     '
     Private Sub SalvarCategoria()
@@ -561,35 +567,37 @@ Public Class frmProdutoTipo
         For Each r As DataGridViewRow In dgvCategoria.Rows
             ' verfica se já existe valor igual
             If dtCat.Rows(r.Index).RowState <> DataRowState.Unchanged Then
-                If VerificaDuplicado(r.Index, dgvCategoria.Rows(r.Index).Cells(1).Value, dtCat) = True Then
+                If VerificaDuplicado(r.Index, r.Cells(1).Value, dtCat) = True Then
                     MessageBox.Show("Já existe uma Categoria de Produto com a mesma descrição:" & vbNewLine &
-                                        CStr(dgvCategoria.Rows(r.Index).Cells(1).Value).ToUpper,
+                                        CStr(r.Cells(1).Value).ToUpper,
                                         "Valor Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Continue For
                 End If
             End If
             '
             '---salva os registros
-            If dtCat.Rows(r.Index).RowState = DataRowState.Modified Then ' registro ALTERADO
-                SQL.ExecQuery("UPDATE tblProdutoCategoria " &
-                              "SET ProdutoCategoria = '" & dgvCategoria.Rows(r.Index).Cells(1).Value & "', " &
-                              " Ativo = '" & dgvCategoria.Rows(r.Index).Cells(3).Value & "'" &
-                              " WHERE IDCategoria = " & dgvCategoria.Rows(r.Index).Cells(0).Value)
-                regSalvos += 1
-            ElseIf dtCat.Rows(r.Index).RowState = DataRowState.Added Then ' registro NOVO
-                SQL.ExecQuery("INSERT INTO tblProdutoCategoria" &
-                " (ProdutoCategoria, IDProdutoTipo, Ativo) VALUES ('" & dgvCategoria.Rows(r.Index).Cells(1).Value &
-                "', " & dgvTipos.CurrentRow.Cells(0).Value & ", 'TRUE')")
-                regSalvos += 1
-            End If
-            '
-            '---veridica se houve erro
-            If SQL.HasException(True) Then
+            Try
+
+                If dtCat.Rows(r.Index).RowState = DataRowState.Modified Then ' registro ALTERADO
+                    '
+                    pTipoBLL.ProdutoCategoria_Update(r.Cells(0).Value, r.Cells(1).Value, r.Cells(3).Value)
+                    regSalvos += 1
+                    '
+                ElseIf dtCat.Rows(r.Index).RowState = DataRowState.Added Then ' registro NOVO
+                    '
+                    pTipoBLL.ProdutoCategoria_Insert(r.Cells(1).Value, r.Cells(0).Value)
+                    regSalvos += 1
+                    '
+                End If
+                '
+            Catch ex As Exception
+                '
                 MessageBox.Show("O seguinte registro não pôde ser salvo:" & vbNewLine &
-                                CStr(dgvCategoria.Rows(r.Index).Cells(1).Value).ToUpper, "Erro ao Salvar",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            CStr(r.Cells(1).Value).ToUpper, "Erro ao Salvar",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error)
                 regSalvos -= 1
-            End If
+                '
+            End Try
         Next
         '
         '--- mensagem de sucesso---

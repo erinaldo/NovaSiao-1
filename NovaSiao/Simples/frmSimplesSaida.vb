@@ -1067,7 +1067,9 @@ Public Class frmSimplesSaida
                                "Gerar Arquivo",
                                MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = vbYes Then
+                '--- cria o arquivo XML
                 CriarArquivoXML()
+                '
             End If
             '
             Close()

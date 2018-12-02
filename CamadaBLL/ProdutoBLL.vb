@@ -344,101 +344,6 @@ Public Class ProdutoBLL
     End Function
     '
     '-----------------------------------------------------------------------------------------------------------------
-    ' RETORNA UMA DATATABLE DE TIPOS DE PRODUTOS
-    '-----------------------------------------------------------------------------------------------------------------
-    Public Function GetTipos(Optional Ativo As Boolean? = Nothing) As DataTable
-        Dim SQL As New SQLControl
-        '
-        Dim strSQL As String = "SELECT * FROM tblProdutoTipo"
-        '
-        If Not Ativo Is Nothing Then
-            strSQL = strSQL & " WHERE Ativo = '" & CBool(Ativo).ToString & "'"
-        End If
-        '
-        Try
-            SQL.ExecQuery(strSQL)
-            '
-            If SQL.HasException(True) Then
-                Throw New Exception(SQL.Exception)
-            End If
-            '
-            Return SQL.DBDT
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
-    '-----------------------------------------------------------------------------------------------------------------
-    ' RETORNA UMA DATATABLE DE SUBTIPOS DE PRODUTOS
-    '-----------------------------------------------------------------------------------------------------------------
-    Public Function GetSubTipos(Optional IDTipo As Integer? = Nothing,
-                                Optional Ativo As Boolean? = Nothing) As DataTable
-        '
-        Dim SQL As New SQLControl
-        Dim strSQL As String = "SELECT * FROM tblProdutoSubTipo"
-        '
-        '--- determina as possibiliadades da clausula WHERE
-        If Not IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
-            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo & " Ativo = '" & CBool(Ativo).ToString & "'"
-        ElseIf IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
-            strSQL = strSQL & " WHERE Ativo = '" & CBool(Ativo).ToString & "'"
-        ElseIf Not IDTipo Is Nothing AndAlso Ativo Is Nothing Then
-            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo
-        End If
-        '
-        '--- executa o comando
-        Try
-            SQL.ExecQuery(strSQL)
-            '
-            If SQL.HasException(True) Then
-                Throw New Exception(SQL.Exception)
-            End If
-            '
-            Return SQL.DBDT
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
-    '-----------------------------------------------------------------------------------------------------------------
-    ' RETORNA UMA DATATABLE DE CATEGORIAS DE PRODUTOS
-    '-----------------------------------------------------------------------------------------------------------------
-    Public Function GetCategorias(Optional IDTipo As Integer? = Nothing,
-                                  Optional Ativo As Boolean? = Nothing) As DataTable
-        '
-        Dim SQL As New SQLControl
-        Dim strSQL As String = "SELECT * FROM tblProdutoCategoria"
-        '
-        '--- determina as possibiliadades da clausula WHERE
-        If Not IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
-            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo & " Ativo = '" & CBool(Ativo).ToString & "'"
-        ElseIf IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
-            strSQL = strSQL & " WHERE Ativo = '" & CBool(Ativo).ToString & "'"
-        ElseIf Not IDTipo Is Nothing AndAlso Ativo Is Nothing Then
-            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo
-        End If
-        '
-        '--- executa o comando
-        Try
-            SQL.ExecQuery(strSQL)
-            '
-            If SQL.HasException(True) Then
-                Throw New Exception(SQL.Exception)
-            End If
-            '
-            Return SQL.DBDT
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
-    '-----------------------------------------------------------------------------------------------------------------
     ' RETORNA UMA DATATABLE DE FABRICANTES DE PRODUTO
     '-----------------------------------------------------------------------------------------------------------------
     Public Function GetFabricantes(Optional Ativo As Boolean? = Nothing) As DataTable
@@ -650,7 +555,7 @@ Public Class ProdutoBLL
     End Function
     '
     '---------------------------------------------------------------------------------------------------------
-    ' ALTERA O TIPO | SUBTIPO | CATEGORIA DO PRODUTO INFORMADO
+    ' ALTERA O TIPO | SUBTIPO DO PRODUTO INFORMADO
     '---------------------------------------------------------------------------------------------------------
     Public Function ProdutoAlterarTipoSubTipo(IDProduto As Integer,
                                               newIDTipo As Integer,
@@ -951,6 +856,378 @@ Public Class ProdutoEtiquetaBLL
         Catch ex As Exception
             Throw ex
         End Try
+    End Function
+    '
+End Class
+'
+'
+'=================================================================================================================
+' PRODUTO TIPO SUBTIPO CATEGORIA
+'=================================================================================================================
+Public Class TipoSubTipoCategoriaBLL
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' GET TIPOS WITH WHERE DATATABLE
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoTipo_GET_WithWhere(Optional myWhere As String = "") As DataTable
+        '
+        Dim SQL As New SQLControl
+        Dim myQuery As String = "SELECT * FROM tblProdutoTipo "
+        '
+        If myWhere.Length > 0 Then
+            myQuery = myQuery & " WHERE " & myWhere
+        End If
+        '
+        Try
+            SQL.ExecQuery(myQuery, True)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            Return SQL.DBDT
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' INSERE NOVO TIPO DE PRODUTO
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoTipo_Insert(ProdutoTipo As String) As Integer
+        '
+        Dim SQL As New SQLControl
+        Dim newID As Integer
+        Dim myQuery As String = "INSERT INTO tblProdutoTipo" &
+                                " (ProdutoTipo, Ativo) VALUES ('@ProdutoTipo', 'TRUE')"
+        '
+        SQL.AddParam("@ProdutoTipo", ProdutoTipo)
+        '
+        Try
+            SQL.ExecQuery(myQuery, True)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            If SQL.RecordCount > 0 Then
+                newID = SQL.DBDT.Rows(0).Item(0)
+                Return newID
+            Else
+                Return Nothing
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' ALTERA TIPO DE PRODUTO
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoTipo_Update(IDProdutoTipo As Integer, ProdutoTipo As String, Ativo As Boolean) As Boolean
+        '
+        Dim SQL As New SQLControl
+        Dim myQuery As String = "UPDATE tblProdutoTipo " &
+                                "SET ProdutoTipo = @ProdutoTipo, " &
+                                " Ativo = @Ativo" &
+                                " WHERE IDProdutoTipo = @IDProdutoTipo"
+        '
+        SQL.AddParam("@ProdutoTipo", ProdutoTipo)
+        SQL.AddParam("@Ativo", Ativo)
+        SQL.AddParam("@IDProdutoTipo", IDProdutoTipo)
+        '
+        Try
+            SQL.ExecQuery(myQuery)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' GET SUBTIPOS WITH WHERE DATATABLE
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoSubTipo_GET_WithWhere(Optional myWhere As String = "") As DataTable
+        '
+        Dim SQL As New SQLControl
+        Dim myQuery As String = "SELECT * FROM tblProdutoSubTipo "
+        '
+        If myWhere.Length > 0 Then
+            myQuery = myQuery & " WHERE " & myWhere
+        End If
+        '
+        Try
+            SQL.ExecQuery(myQuery, True)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            Return SQL.DBDT
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' INSERE NOVO SUBTIPO DE PRODUTO
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoSubTipo_Insert(SubTipo As String, IDTipo As Integer) As Integer
+        '
+        Dim SQL As New SQLControl
+        Dim newID As Integer
+        Dim myQuery As String = "INSERT INTO tblProdutoSubTipo (ProdutoSubTipo, IDProdutoTipo, Ativo) " &
+                                "VALUES ('@SubTipo', @IDTipo, 'TRUE')"
+        '
+        SQL.AddParam("@IDTipo", IDTipo)
+        SQL.AddParam("@SubTipo", SubTipo)
+        '
+        Try
+            SQL.ExecQuery(myQuery, True)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            If SQL.RecordCount > 0 Then
+                newID = SQL.DBDT.Rows(0).Item(0)
+                Return newID
+            Else
+                Return Nothing
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' ALTERA SUBTIPO DE PRODUTO
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoSubTipo_Update(IDSubTipo As Integer, SubTipo As String, Ativo As Boolean) As Boolean
+        '
+        Dim SQL As New SQLControl
+        Dim myQuery As String = "UPDATE tblProdutoSubTipo " &
+                                "SET ProdutoSubTipo = '@SubTipo', " &
+                                " Ativo = @Ativo" &
+                                " WHERE IDSubTipo = @IDSubTipo"
+        '
+        SQL.AddParam("@SubTipo", SubTipo)
+        SQL.AddParam("@Ativo", Ativo)
+        SQL.AddParam("@IDSubTipo", IDSubTipo)
+        '
+        Try
+            SQL.ExecQuery(myQuery)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' GET CATEGORIAS WITH WHERE DATATABLE
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoCategoria_GET_WithWhere(Optional myWhere As String = "") As DataTable
+        '
+        Dim SQL As New SQLControl
+        Dim myQuery As String = "SELECT * FROM tblProdutoCategoria "
+        '
+        If myWhere.Length > 0 Then
+            myQuery = myQuery & " WHERE " & myWhere
+        End If
+        '
+        Try
+            SQL.ExecQuery(myQuery, True)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            Return SQL.DBDT
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' INSERE NOVA CATEGORIA DE PRODUTO
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoCategoria_Insert(Categoria As String, IDTipo As Integer) As Integer
+        '
+        Dim SQL As New SQLControl
+        Dim newID As Integer
+        Dim myQuery As String = "INSERT INTO tblProdutoCategoria (ProdutoSubTipo, IDProdutoTipo, Ativo) " &
+                                "VALUES ('@Categoria', @IDTipo, 'TRUE')"
+        '
+        SQL.AddParam("@IDTipo", IDTipo)
+        SQL.AddParam("@Categoria", Categoria)
+        '
+        Try
+            SQL.ExecQuery(myQuery, True)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            If SQL.RecordCount > 0 Then
+                newID = SQL.DBDT.Rows(0).Item(0)
+                Return newID
+            Else
+                Return Nothing
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' ALTERA CATEGORIA DE PRODUTO
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function ProdutoCategoria_Update(IDCategoria As Integer, Categoria As String, Ativo As Boolean) As Boolean
+        '
+        Dim SQL As New SQLControl
+        Dim myQuery As String = "UPDATE tblProdutoCategoria" &
+                                " SET ProdutoCategoria = '@Categoria', " &
+                                " Ativo = @Ativo" &
+                                " WHERE IDCategoria = @IDCategoria"
+        '
+        SQL.AddParam("@Categoria", Categoria)
+        SQL.AddParam("@Ativo", Ativo)
+        SQL.AddParam("@IDCategoria", IDCategoria)
+        '
+        Try
+            SQL.ExecQuery(myQuery)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' RETORNA UMA DATATABLE DE TIPOS DE PRODUTOS
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function GetTipos(Optional Ativo As Boolean? = Nothing) As DataTable
+        Dim SQL As New SQLControl
+        '
+        Dim strSQL As String = "SELECT * FROM tblProdutoTipo"
+        '
+        If Not Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE Ativo = '" & CBool(Ativo).ToString & "'"
+        End If
+        '
+        Try
+            SQL.ExecQuery(strSQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            Return SQL.DBDT
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' RETORNA UMA DATATABLE DE SUBTIPOS DE PRODUTOS
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function GetSubTipos(Optional IDTipo As Integer? = Nothing,
+                                Optional Ativo As Boolean? = Nothing) As DataTable
+        '
+        Dim SQL As New SQLControl
+        Dim strSQL As String = "SELECT * FROM tblProdutoSubTipo"
+        '
+        '--- determina as possibiliadades da clausula WHERE
+        If Not IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo & " Ativo = '" & CBool(Ativo).ToString & "'"
+        ElseIf IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE Ativo = '" & CBool(Ativo).ToString & "'"
+        ElseIf Not IDTipo Is Nothing AndAlso Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo
+        End If
+        '
+        '--- executa o comando
+        Try
+            SQL.ExecQuery(strSQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            Return SQL.DBDT
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '-----------------------------------------------------------------------------------------------------------------
+    ' RETORNA UMA DATATABLE DE CATEGORIAS DE PRODUTOS
+    '-----------------------------------------------------------------------------------------------------------------
+    Public Function GetCategorias(Optional IDTipo As Integer? = Nothing,
+                                  Optional Ativo As Boolean? = Nothing) As DataTable
+        '
+        Dim SQL As New SQLControl
+        Dim strSQL As String = "SELECT * FROM tblProdutoCategoria"
+        '
+        '--- determina as possibiliadades da clausula WHERE
+        If Not IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo & " Ativo = '" & CBool(Ativo).ToString & "'"
+        ElseIf IDTipo Is Nothing AndAlso Not Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE Ativo = '" & CBool(Ativo).ToString & "'"
+        ElseIf Not IDTipo Is Nothing AndAlso Ativo Is Nothing Then
+            strSQL = strSQL & " WHERE IDProdutoTipo = " & IDTipo
+        End If
+        '
+        '--- executa o comando
+        Try
+            SQL.ExecQuery(strSQL)
+            '
+            If SQL.HasException(True) Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            Return SQL.DBDT
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
     End Function
     '
 End Class

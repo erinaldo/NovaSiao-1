@@ -60,7 +60,7 @@ Public Class frmProdutoProcurarSubTipo
     '--- OBTER OS TIPOS
     Private Sub ObterSubTipo(myTipo As Integer?)
         '
-        Dim pBLL As New ProdutoBLL
+        Dim pBLL As New TipoSubTipoCategoriaBLL
         '
         Try
             '

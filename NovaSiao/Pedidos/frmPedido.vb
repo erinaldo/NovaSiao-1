@@ -218,7 +218,7 @@ Public Class frmPedido
     '
     '--- PREENCHE DGVCOMBO IDPRODUTOTIPO
     Private Sub PreencheCombo_IDProdutoTipo()
-        Dim PBLL As New ProdutoBLL
+        Dim PBLL As New TipoSubTipoCategoriaBLL
         Try
             Dim TipoDt As DataTable = PBLL.GetTipos
             '

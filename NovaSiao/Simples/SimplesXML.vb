@@ -192,7 +192,7 @@ Public Class SimplesXML
             Dim _simples As New clSimplesSaida
             FillClassWithNode(_simples, nodeSS)
             '
-            '--- Verifica e Insere os NOVOS PRODUTOS
+            '--- Fill the List OF PRODUTOS
             '------------------------------------------------------------------
             nodelist = doc.GetElementsByTagName("clProduto-ITEM")
             '
@@ -210,7 +210,7 @@ Public Class SimplesXML
                 '
             Next
             '
-            '--- Verifica e Insere os ITENS da SIMPLES SAIDA 
+            '--- Fill the List OF ITENS da SIMPLES SAIDA 
             '------------------------------------------------------------------
             nodelist = doc.GetElementsByTagName("clTransacaoItem-ITEM")
             '
@@ -228,7 +228,7 @@ Public Class SimplesXML
                 '
             Next
             '
-            '--- Verifica e Insere os APAGAR da SIMPLES SAIDA
+            '--- Fill the List OF APAGAR da SIMPLES SAIDA
             '------------------------------------------------------------------
             nodelist = doc.GetElementsByTagName("clAReceberParcela-ITEM")
             '
@@ -246,6 +246,9 @@ Public Class SimplesXML
                 '
             Next
             '
+            '============================================================================
+            '--- INSERTS ON BD
+            '============================================================================
             '
             '--- REALIZA INSERT DOS NOVOS PRODUTOS
             '------------------------------------------------------------------
@@ -310,7 +313,9 @@ Public Class SimplesXML
     '-----------------------------------------------------------------------------------------------
     Private Sub InsertProdutos(ListProdutos As List(Of clProduto))
         '
-        '--- Verifica se o produto ja existe
+        '--- Verifica se o produto ja existe --> procurara pelo mesmo RGProduto
+        '--- Se encontra entao verifica o nome do Produto
+        '--- Se nome diferente entao pergunta ao user
         For Each p As clProduto In ListProdutos
             '
             Dim NewProduto As Boolean = False
@@ -329,14 +334,82 @@ Public Class SimplesXML
                 '
                 NewProduto = ProcuraProdutoPeloProdutoNome(p)
                 '
-                If IsNothing(p) Then '--- nesse caso houve incompatibilidade de produto diferente com mesmo nome
+                If IsNothing(p) Then '--- nesse caso houve incompatibilidade: produto diferentes com mesmo nome
                     ListProdutos = Nothing
+                    Return
                 End If
                 '
             End If
             '
+            '--- INSERE O NOVO PRODUTO NO BD
             If NewProduto Then
                 '
+                Dim pTipo As New TipoSubTipoCategoriaBLL
+                Dim dt As New DataTable
+                Dim newID As Integer
+                '
+                '--- Verifica o TIPO
+                Try
+                    dt = pTipo.ProdutoTipo_GET_WithWhere("ProdutoTipo = " & p.ProdutoTipo)
+                    '
+                    If dt.Rows.Count = 0 Then '--- O TIPO não existe, INSERE NOVO TIPO
+                        newID = pTipo.ProdutoTipo_Insert(p.ProdutoTipo)
+                        p.IDProdutoTipo = newID
+                    Else '--- O Tipo foi encontrado
+                        p.IDProdutoTipo = dt.Rows(0).Item("IDProdutoTipo")
+                    End If
+                    '
+                Catch ex As Exception
+                    '
+                    MessageBox.Show("Uma exceção ocorreu ao Salvar o Produto Tipo..." & vbNewLine &
+                                    ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    ListProdutos = Nothing
+                    Return
+                    '
+                End Try
+                '
+                '--- Verifica o SUBTIPO
+                Try
+                    dt = pTipo.ProdutoSubTipo_GET_WithWhere("ProdutoSubTipo = " & p.ProdutoSubTipo)
+                    '
+                    If dt.Rows.Count = 0 Then '--- O SUBTIPO não existe, INSERE NOVO SUBTIPO
+                        newID = pTipo.ProdutoSubTipo_Insert(p.ProdutoSubTipo, p.IDProdutoTipo)
+                        p.IDProdutoSubTipo = newID
+                    Else '--- O SubTipo foi encontrado
+                        p.IDProdutoSubTipo = dt.Rows(0).Item("IDProdutoTipo")
+                    End If
+                    '
+                Catch ex As Exception
+                    '
+                    MessageBox.Show("Uma exceção ocorreu ao Salvar o Produto SUBTipo..." & vbNewLine &
+                                    ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    ListProdutos = Nothing
+                    Return
+                    '
+                End Try
+                '
+                '
+                '--- Verifica a CATEGORIA
+                Try
+                    dt = pTipo.ProdutoCategoria_GET_WithWhere("ProdutoCategoria = " & p.ProdutoCategoria)
+                    '
+                    If dt.Rows.Count = 0 Then '--- O CATEGORIA não existe, INSERE NOVO CATEGORIA
+                        newID = pTipo.ProdutoCategoria_Insert(p.ProdutoCategoria, p.IDProdutoTipo)
+                        p.IDCategoria = newID
+                    Else '--- O SubTipo foi encontrado
+                        p.IDCategoria = dt.Rows(0).Item("IDCategoria")
+                    End If
+                    '
+                Catch ex As Exception
+                    '
+                    MessageBox.Show("Uma exceção ocorreu ao Salvar o Produto CATEGORIA..." & vbNewLine &
+                                    ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                    ListProdutos = Nothing
+                    Return
+                    '
+                End Try
+                '
+                '--- SALVA O NOVO PRODUTO
                 Try
                     p.IDProduto = pBLL.SalvaNovoProduto_Procedure_ID(p, Obter_FilialPadrao)
                 Catch ex As Exception
@@ -364,33 +437,38 @@ Public Class SimplesXML
                 Dim OldProd As clProduto = lstOldProd(0)
                 p.IDProduto = OldProd.IDProduto
                 '
-                If p.Produto <> OldProd.Produto Then '--- if not same product name
+                If p.Produto = OldProd.Produto Then '--- SAME product name
+                    '
+                    Return False '--> NAO INSERE
+                    '
+                Else
                     '
                     '--- verifica o nome do produto com o usuário
-                    If MessageBox.Show("Verificar produto com mesmo RG..." & vbNewLine & vbNewLine &
+                    If MessageBox.Show("Verificar produto com mesmo número de REG..." & vbNewLine & vbNewLine &
                                        "Por gentileza verifique se os dois produtos abaixo são os mesmos:" & vbNewLine &
                                        p.Produto & vbNewLine &
-                                       OldProd.Produto,
+                                       OldProd.Produto & vbNewLine & vbNewLine &
+                                       "Responda SIM se forem os mesmos produtos e NÃO se forem produtos diferentes...",
                                        "Verificar Produto",
                                        MessageBoxButtons.YesNo) = DialogResult.Yes Then
-                        Return False '--> nao insere
+                        '
+                        Return False '--> NAO INSERE
+                        '
                     Else
                         '--> produtos diferentes usando o mesmo RG!
-                        '--- procura um RG possível para o novo produto
+                        '--- procura um NOVO RG possível para o NOVO produto
                         p.RGProduto = pBLL.ProcuraMaxRGProduto
                         '
-                        '--> Insere produto
+                        '--> Insere produto - NOVO PRODUTO COM RG NOVO
                         Return True
                         '
                     End If
                     '
-                Else
-                    Return False '--> nao insere
                 End If
                 '
             End If
             '
-            Return True '--> insere
+            Return True '--> INSERE - NOVO PRODUTO
             '
         Catch ex As Exception
             '
@@ -419,20 +497,21 @@ Public Class SimplesXML
                 If p.Produto <> OldProd.Produto Then '--- if not same product name
                     '
                     '--- verifica o nome do produto com o Cliente
-                    If MessageBox.Show("Verificar produto com mesmo Cod.Barras..." & vbNewLine & vbNewLine &
-                                   "Por gentileza verifique se os dois produtos abaixo são os mesmos:" & vbNewLine &
-                    p.Produto & vbNewLine &
-                    OldProd.Produto,
-                                   "Verificar Produto",
-                    MessageBoxButtons.YesNo) = DialogResult.Yes Then
+                    If MessageBox.Show("Verificar produto com mesmo Cod. Barras..." & vbNewLine & vbNewLine &
+                                       "Por gentileza verifique se os dois produtos abaixo são os mesmos:" & vbNewLine &
+                                       p.Produto & vbNewLine &
+                                       OldProd.Produto & vbNewLine & vbNewLine &
+                                       "Responda SIM se forem os mesmos produtos e NÃO se forem produtos diferentes...",
+                                       "Verificar Produto",
+                                       MessageBoxButtons.YesNo) = DialogResult.Yes Then
                         '
                         p.IDProduto = OldProd.IDProduto
                         p.RGProduto = OldProd.RGProduto
                         Return False '--> nao insere
                         '
                     Else
-                        '--> produtos diferentes usando o mesmo RG!
-                        '--- procura um RG possível para o novo produto
+                        '--> produtos diferentes usando o mesmo COD BARRAS!
+                        '--- Limpa O COD DE BARRAS do novo produto
                         p.CodBarrasA = Nothing
                         '
                         '--> Insere produto

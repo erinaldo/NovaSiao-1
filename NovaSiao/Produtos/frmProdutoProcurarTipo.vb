@@ -59,7 +59,7 @@ Public Class frmProdutoProcurarTipo
     '--- OBTER OS TIPOS
     Private Sub ObterTipo()
         '
-        Dim pBLL As New ProdutoBLL
+        Dim pBLL As New TipoSubTipoCategoriaBLL
         '
         Try
             dtTipos = pBLL.GetTipos
