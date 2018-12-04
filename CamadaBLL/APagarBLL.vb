@@ -131,7 +131,8 @@ Public Class APagarBLL
     '===================================================================================================
     ' GET LISTA APAGAR PARA FRMPROCURA
     '===================================================================================================
-    Public Function GetAPagarLista_Procura(myIDCobrancaForma As Int16?,
+    Public Function GetAPagarLista_Procura(myIDFilial As Integer,
+                                           myIDCobrancaForma As Int16?,
                                            myCredorCadastro As String,
                                            Optional dtInicial As Date? = Nothing,
                                            Optional dtFinal As Date? = Nothing) As List(Of clAPagar)
@@ -139,8 +140,11 @@ Public Class APagarBLL
         '
         db.LimparParametros()
         '
+        db.AdicionarParametros("@APagarExterno", True) '--> TRUE: APAGAR WITHOUT SIMPLES | FALSE: APAGAR ONLY SIMPLES
         db.AdicionarParametros("@IDCobrancaForma", myIDCobrancaForma)
+        db.AdicionarParametros("@IDFilial", myIDFilial)
         db.AdicionarParametros("@CredorCadastro", myCredorCadastro)
+        '
         If Not IsNothing(dtInicial) Then
             db.AdicionarParametros("@DataInicial", dtInicial)
         End If
@@ -179,7 +183,8 @@ Public Class APagarBLL
                 '
             Next
             '
-            Dim pListPeriodica As List(Of clAPagar) = GetAPagarPeriodicoLista_Procura(myIDCobrancaForma,
+            Dim pListPeriodica As List(Of clAPagar) = GetAPagarPeriodicoLista_Procura(myIDFilial,
+                                                                                      myIDCobrancaForma,
                                                                                       myCredorCadastro,
                                                                                       dtInicial, dtFinal)
             '
@@ -201,7 +206,8 @@ Public Class APagarBLL
     '===================================================================================================
     ' GET LISTA APAGAR PERIODICO PARA FRMPROCURA
     '===================================================================================================
-    Private Function GetAPagarPeriodicoLista_Procura(myIDCobrancaForma As Int16?,
+    Private Function GetAPagarPeriodicoLista_Procura(myIDFilial As Integer,
+                                                     myIDCobrancaForma As Int16?,
                                                      myCredorCadastro As String,
                                                      Optional dtInicial As Date? = Nothing,
                                                      Optional dtFinal As Date? = Nothing) As List(Of clAPagar)
@@ -210,6 +216,7 @@ Public Class APagarBLL
         '--- Adiciona os Parametros da pesquisa
         db.LimparParametros()
         '
+        db.AdicionarParametros("@IDFilial", myIDFilial)
         db.AdicionarParametros("@IDCobrancaForma", myIDCobrancaForma)
         db.AdicionarParametros("@CredorCadastro", myCredorCadastro)
         '

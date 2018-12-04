@@ -192,6 +192,7 @@ Public Class frmAPagarProcurar
     Private Sub Get_Dados()
         '
         Dim pagBLL As New APagarBLL
+        '
         '--- Verifica o IDCobrancaForma
         Dim myIDCobrancaForma As Int16?
         '
@@ -201,17 +202,20 @@ Public Class frmAPagarProcurar
             myIDCobrancaForma = cmbCobrancaForma.SelectedValue
         End If
         '
+        '--- Verifica o IDFilial
+        Dim myFilial As Integer = Obter_FilialPadrao()
+        '
         '--- consulta o banco de dados
         Try
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
-                pagLista = pagBLL.GetAPagarLista_Procura(myIDCobrancaForma, txtCredorCadastro.Text)
+                pagLista = pagBLL.GetAPagarLista_Procura(myFilial, myIDCobrancaForma, txtCredorCadastro.Text)
             Else
                 Dim f As New FuncoesUtilitarias
                 Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
                 Dim dtFinal As Date = f.LastDayOfMonth(myMes)
                 '
-                pagLista = pagBLL.GetAPagarLista_Procura(myIDCobrancaForma, txtCredorCadastro.Text, dtInicial, dtFinal)
+                pagLista = pagBLL.GetAPagarLista_Procura(myFilial, myIDCobrancaForma, txtCredorCadastro.Text, dtInicial, dtFinal)
             End If
             '
             FiltraSituacao()
