@@ -56,6 +56,7 @@ Partial Class frmPrincipal
         Me.miNovaSimplesSaida = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsbCompras = New System.Windows.Forms.ToolStripSplitButton()
         Me.miNovaCompra = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miSimplesEntrada = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator6 = New System.Windows.Forms.ToolStripSeparator()
         Me.miProcurarOperacaoEntrada = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator16 = New System.Windows.Forms.ToolStripSeparator()
@@ -63,10 +64,10 @@ Partial Class frmPrincipal
         Me.miProcurarReserva = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator17 = New System.Windows.Forms.ToolStripSeparator()
         Me.miControleDePedidos = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miSimplesEntrada = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator13 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsbAReceber = New System.Windows.Forms.ToolStripSplitButton()
         Me.miAReceberCliente = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miAReceberMovInterna = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsbAPagar = New System.Windows.Forms.ToolStripSplitButton()
         Me.miNovaDespesa = New System.Windows.Forms.ToolStripMenuItem()
         Me.miNovaDespesaQuitada = New System.Windows.Forms.ToolStripMenuItem()
@@ -109,6 +110,7 @@ Partial Class frmPrincipal
         Me.Label2 = New System.Windows.Forms.Label()
         Me.lblHora = New System.Windows.Forms.Label()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.miAPagarMovInterna = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsPrincipal.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SContainerPrincipal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -375,7 +377,7 @@ Partial Class frmPrincipal
         'tsbCompras
         '
         Me.tsbCompras.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbCompras.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaCompra, Me.ToolStripSeparator6, Me.miProcurarOperacaoEntrada, Me.ToolStripSeparator16, Me.miNovaReserva, Me.miProcurarReserva, Me.ToolStripSeparator17, Me.miControleDePedidos, Me.miSimplesEntrada})
+        Me.tsbCompras.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaCompra, Me.miSimplesEntrada, Me.ToolStripSeparator6, Me.miProcurarOperacaoEntrada, Me.ToolStripSeparator16, Me.miNovaReserva, Me.miProcurarReserva, Me.ToolStripSeparator17, Me.miControleDePedidos})
         Me.tsbCompras.Image = Global.NovaSiao.My.Resources.Resources.compras_entradas
         Me.tsbCompras.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbCompras.Name = "tsbCompras"
@@ -389,6 +391,14 @@ Partial Class frmPrincipal
         Me.miNovaCompra.Name = "miNovaCompra"
         Me.miNovaCompra.Size = New System.Drawing.Size(259, 30)
         Me.miNovaCompra.Text = "Nova Compra"
+        '
+        'miSimplesEntrada
+        '
+        Me.miSimplesEntrada.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
+        Me.miSimplesEntrada.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miSimplesEntrada.Name = "miSimplesEntrada"
+        Me.miSimplesEntrada.Size = New System.Drawing.Size(259, 30)
+        Me.miSimplesEntrada.Text = "Simples Entrada"
         '
         'ToolStripSeparator6
         '
@@ -437,12 +447,6 @@ Partial Class frmPrincipal
         Me.miControleDePedidos.Size = New System.Drawing.Size(259, 30)
         Me.miControleDePedidos.Text = "Controle de Pedidos"
         '
-        'miSimplesEntrada
-        '
-        Me.miSimplesEntrada.Name = "miSimplesEntrada"
-        Me.miSimplesEntrada.Size = New System.Drawing.Size(259, 30)
-        Me.miSimplesEntrada.Text = "Simples Entrada"
-        '
         'ToolStripSeparator13
         '
         Me.ToolStripSeparator13.AutoSize = False
@@ -453,7 +457,7 @@ Partial Class frmPrincipal
         'tsbAReceber
         '
         Me.tsbAReceber.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbAReceber.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miAReceberCliente})
+        Me.tsbAReceber.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miAReceberCliente, Me.miAReceberMovInterna})
         Me.tsbAReceber.Image = Global.NovaSiao.My.Resources.Resources.AReceber
         Me.tsbAReceber.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbAReceber.Name = "tsbAReceber"
@@ -462,16 +466,24 @@ Partial Class frmPrincipal
         '
         'miAReceberCliente
         '
-        Me.miAReceberCliente.Image = Global.NovaSiao.My.Resources.Resources.editar
+        Me.miAReceberCliente.Image = CType(resources.GetObject("miAReceberCliente.Image"), System.Drawing.Image)
         Me.miAReceberCliente.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miAReceberCliente.Name = "miAReceberCliente"
-        Me.miAReceberCliente.Size = New System.Drawing.Size(227, 30)
+        Me.miAReceberCliente.Size = New System.Drawing.Size(252, 36)
         Me.miAReceberCliente.Text = "A Receber por Cliente"
+        '
+        'miAReceberMovInterna
+        '
+        Me.miAReceberMovInterna.Image = CType(resources.GetObject("miAReceberMovInterna.Image"), System.Drawing.Image)
+        Me.miAReceberMovInterna.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miAReceberMovInterna.Name = "miAReceberMovInterna"
+        Me.miAReceberMovInterna.Size = New System.Drawing.Size(252, 36)
+        Me.miAReceberMovInterna.Text = "A Receber - Mov. Interna"
         '
         'tsbAPagar
         '
         Me.tsbAPagar.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbAPagar.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaDespesa, Me.miNovaDespesaQuitada, Me.miProcurarDespesa, Me.miTipoDeDespesa, Me.ToolStripSeparator8, Me.miDespesasPeriodicas, Me.ToolStripSeparator7, Me.miAPagarProcurar})
+        Me.tsbAPagar.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaDespesa, Me.miNovaDespesaQuitada, Me.miProcurarDespesa, Me.miTipoDeDespesa, Me.ToolStripSeparator8, Me.miDespesasPeriodicas, Me.ToolStripSeparator7, Me.miAPagarProcurar, Me.miAPagarMovInterna})
         Me.tsbAPagar.Image = Global.NovaSiao.My.Resources.Resources.APagar
         Me.tsbAPagar.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbAPagar.Name = "tsbAPagar"
@@ -483,7 +495,7 @@ Partial Class frmPrincipal
         Me.miNovaDespesa.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
         Me.miNovaDespesa.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miNovaDespesa.Name = "miNovaDespesa"
-        Me.miNovaDespesa.Size = New System.Drawing.Size(235, 30)
+        Me.miNovaDespesa.Size = New System.Drawing.Size(241, 36)
         Me.miNovaDespesa.Text = "Nova Despesa"
         '
         'miNovaDespesaQuitada
@@ -491,7 +503,7 @@ Partial Class frmPrincipal
         Me.miNovaDespesaQuitada.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
         Me.miNovaDespesaQuitada.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miNovaDespesaQuitada.Name = "miNovaDespesaQuitada"
-        Me.miNovaDespesaQuitada.Size = New System.Drawing.Size(235, 30)
+        Me.miNovaDespesaQuitada.Size = New System.Drawing.Size(241, 36)
         Me.miNovaDespesaQuitada.Text = "Nova Despesa Quitada"
         '
         'miProcurarDespesa
@@ -499,7 +511,7 @@ Partial Class frmPrincipal
         Me.miProcurarDespesa.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
         Me.miProcurarDespesa.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miProcurarDespesa.Name = "miProcurarDespesa"
-        Me.miProcurarDespesa.Size = New System.Drawing.Size(235, 30)
+        Me.miProcurarDespesa.Size = New System.Drawing.Size(241, 36)
         Me.miProcurarDespesa.Text = "Procurar Despesa"
         '
         'miTipoDeDespesa
@@ -507,33 +519,33 @@ Partial Class frmPrincipal
         Me.miTipoDeDespesa.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
         Me.miTipoDeDespesa.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miTipoDeDespesa.Name = "miTipoDeDespesa"
-        Me.miTipoDeDespesa.Size = New System.Drawing.Size(235, 30)
+        Me.miTipoDeDespesa.Size = New System.Drawing.Size(241, 36)
         Me.miTipoDeDespesa.Text = "Tipos de Despesa"
         '
         'ToolStripSeparator8
         '
         Me.ToolStripSeparator8.Name = "ToolStripSeparator8"
-        Me.ToolStripSeparator8.Size = New System.Drawing.Size(232, 6)
+        Me.ToolStripSeparator8.Size = New System.Drawing.Size(238, 6)
         '
         'miDespesasPeriodicas
         '
         Me.miDespesasPeriodicas.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
         Me.miDespesasPeriodicas.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miDespesasPeriodicas.Name = "miDespesasPeriodicas"
-        Me.miDespesasPeriodicas.Size = New System.Drawing.Size(235, 30)
+        Me.miDespesasPeriodicas.Size = New System.Drawing.Size(241, 36)
         Me.miDespesasPeriodicas.Text = "Despesas Periódicas"
         '
         'ToolStripSeparator7
         '
         Me.ToolStripSeparator7.Name = "ToolStripSeparator7"
-        Me.ToolStripSeparator7.Size = New System.Drawing.Size(232, 6)
+        Me.ToolStripSeparator7.Size = New System.Drawing.Size(238, 6)
         '
         'miAPagarProcurar
         '
         Me.miAPagarProcurar.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
         Me.miAPagarProcurar.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miAPagarProcurar.Name = "miAPagarProcurar"
-        Me.miAPagarProcurar.Size = New System.Drawing.Size(235, 30)
+        Me.miAPagarProcurar.Size = New System.Drawing.Size(241, 36)
         Me.miAPagarProcurar.Text = "A Pagar Procurar"
         '
         'tsbCaixa
@@ -859,6 +871,14 @@ Partial Class frmPrincipal
         Me.Timer1.Enabled = True
         Me.Timer1.Interval = 600
         '
+        'miAPagarMovInterna
+        '
+        Me.miAPagarMovInterna.Image = Global.NovaSiao.My.Resources.Resources.APagar_30px
+        Me.miAPagarMovInterna.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miAPagarMovInterna.Name = "miAPagarMovInterna"
+        Me.miAPagarMovInterna.Size = New System.Drawing.Size(241, 36)
+        Me.miAPagarMovInterna.Text = "A Pagar - Mov. Interna"
+        '
         'frmPrincipal
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -976,4 +996,6 @@ Partial Class frmPrincipal
     Friend WithEvents ToolStripSeparator18 As ToolStripSeparator
     Friend WithEvents miNovaSimplesSaida As ToolStripMenuItem
     Friend WithEvents miSimplesEntrada As ToolStripMenuItem
+    Friend WithEvents miAReceberMovInterna As ToolStripMenuItem
+    Friend WithEvents miAPagarMovInterna As ToolStripMenuItem
 End Class

@@ -911,6 +911,15 @@ Public Class frmPrincipal
         '
     End Sub
     '
+    Private Sub miAReceberMovInterna_Click(sender As Object, e As EventArgs) Handles miAReceberMovInterna.Click
+        '
+        Dim frmS As New frmAPagarReceberSimples(True)
+        OcultaMenuPrincipal()
+        frmS.MdiParent = Me
+        frmS.Show()
+        '
+    End Sub
+    '   
 #End Region
     '
     '========================================================================================================
@@ -1033,6 +1042,15 @@ Public Class frmPrincipal
         OcultaMenuPrincipal()
         frmD.MdiParent = Me
         frmD.Show()
+    End Sub
+    '
+    Private Sub miAPagarMovInterna_Click(sender As Object, e As EventArgs) Handles miAPagarMovInterna.Click
+        '
+        Dim frmS As New frmAPagarReceberSimples(False)
+        OcultaMenuPrincipal()
+        frmS.MdiParent = Me
+        frmS.Show()
+        '
     End Sub
     '
 #End Region

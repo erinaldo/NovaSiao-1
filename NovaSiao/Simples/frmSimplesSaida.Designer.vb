@@ -594,7 +594,7 @@ Partial Class frmSimplesSaida
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.ForeColor = System.Drawing.Color.Gainsboro
         Me.Label3.Location = New System.Drawing.Point(166, 4)
         Me.Label3.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label3.Name = "Label3"
@@ -608,7 +608,7 @@ Partial Class frmSimplesSaida
         Me.lbl_IdTexto.AutoSize = True
         Me.lbl_IdTexto.BackColor = System.Drawing.Color.Transparent
         Me.lbl_IdTexto.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbl_IdTexto.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lbl_IdTexto.ForeColor = System.Drawing.Color.Gainsboro
         Me.lbl_IdTexto.Location = New System.Drawing.Point(29, 4)
         Me.lbl_IdTexto.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lbl_IdTexto.Name = "lbl_IdTexto"
@@ -698,7 +698,7 @@ Partial Class frmSimplesSaida
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label15.ForeColor = System.Drawing.Color.Gainsboro
         Me.Label15.Location = New System.Drawing.Point(357, 4)
         Me.Label15.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label15.Name = "Label15"
@@ -799,7 +799,7 @@ Partial Class frmSimplesSaida
         Me.Label18.AutoSize = True
         Me.Label18.BackColor = System.Drawing.Color.Transparent
         Me.Label18.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label18.ForeColor = System.Drawing.Color.Gainsboro
         Me.Label18.Location = New System.Drawing.Point(522, 4)
         Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label18.Name = "Label18"

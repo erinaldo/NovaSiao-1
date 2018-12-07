@@ -606,6 +606,12 @@
     <Compile Include="Reservas\frmReservaProcurar.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Simples\frmAPagarReceberSimples.Designer.vb">
+      <DependentUpon>frmAPagarReceberSimples.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Simples\frmAPagarReceberSimples.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Simples\frmSimplesEntrada.designer.vb">
       <DependentUpon>frmSimplesEntrada.vb</DependentUpon>
     </Compile>
@@ -936,6 +942,9 @@
     <EmbeddedResource Include="Reservas\frmReservaProcurar.resx">
       <DependentUpon>frmReservaProcurar.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Simples\frmAPagarReceberSimples.resx">
+      <DependentUpon>frmAPagarReceberSimples.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Simples\frmSimplesEntrada.resx">
       <DependentUpon>frmSimplesEntrada.vb</DependentUpon>
     </EmbeddedResource>
@@ -1007,6 +1016,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\AReceber_30px.png" />
+    <None Include="Resources\AReceber_30px.bmp" />
+    <None Include="Resources\AReceber1.png" />
     <None Include="Resources\NovaSiao_PNG_256px.PNG" />
     <None Include="Resources\limpar 24x24.png" />
     <None Include="packages.config" />

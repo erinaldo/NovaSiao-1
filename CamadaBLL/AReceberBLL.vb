@@ -21,13 +21,14 @@ Public Class AReceberBLL
             If dt.Rows.Count = 0 Then Return clRec
             '
             Dim r As DataRow = dt.Rows(0)
-
             '
             With clRec
                 '--- tblAReceber
                 .IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
                 .IDOrigem = IDOrigem
                 .Origem = Origem
+                .IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
+                .ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
                 .IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
                 .AReceberValor = IIf(IsDBNull(r("AReceberValor")), 0, r("AReceberValor"))
                 .ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), 0, r("ValorPagoTotal"))
@@ -57,6 +58,7 @@ Public Class AReceberBLL
                 db.AdicionarParametros("@Origem", .Origem)
                 db.AdicionarParametros("@IDPessoa", .IDPessoa)
                 db.AdicionarParametros("@AReceberValor", .AReceberValor)
+                db.AdicionarParametros("@IDFilial", .IDFilial)
             End With
             '
             obj = db.ExecutarManipulacao(CommandType.StoredProcedure, "uspAReceber_Inserir")
@@ -246,34 +248,8 @@ Public Class ParcelaBLL
             If dt.Rows.Count = 0 Then Return ParcList
             '
             For Each r As DataRow In dt.Rows
-                Dim clPar As New clAReceberParcela
                 '
-                With clPar
-                    '--- tblAReceber
-                    .IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
-                    .IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
-                    .Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
-                    .IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
-                    .AReceberValor = IIf(IsDBNull(r("AReceberValor")), Nothing, r("AReceberValor"))
-                    .ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), 0, r("ValorPagoTotal"))
-                    .SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
-                    .IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-                    .IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
-                    '--- tblAReceberParcela
-                    .IDAReceberParcela = IIf(IsDBNull(r("IDAReceberParcela")), Nothing, r("IDAReceberParcela"))
-                    .Letra = IIf(IsDBNull(r("Letra")), String.Empty, r("Letra"))
-                    .Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
-                    .ParcelaValor = IIf(IsDBNull(r("ParcelaValor")), 0, r("ParcelaValor"))
-                    .PermanenciaTaxa = IIf(IsDBNull(r("PermanenciaTaxa")), 0, r("PermanenciaTaxa"))
-                    .ValorPagoParcela = IIf(IsDBNull(r("ValorPagoParcela")), 0, r("ValorPagoParcela"))
-                    .ValorJuros = IIf(IsDBNull(r("ValorJuros")), Nothing, r("ValorJuros"))
-                    .SituacaoParcela = IIf(IsDBNull(r("SituacaoParcela")), Nothing, r("SituacaoParcela"))
-                    .PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
-                    '--- qryPessoaFisicaJuridica
-                    .Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
-                    .CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
-                End With
-                '
+                Dim clPar As clAReceberParcela = Convert_DataRow_ClAReceberParcela(r)
                 ParcList.Add(clPar)
                 '
             Next
@@ -340,33 +316,7 @@ Public Class ParcelaBLL
             If dt.Rows.Count = 0 Then Return ParcList
             '
             For Each r As DataRow In dt.Rows
-                Dim clPar As New clAReceberParcela
-                '
-                With clPar
-                    '--- tblAReceber
-                    .IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
-                    .IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
-                    .Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
-                    .IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
-                    .AReceberValor = IIf(IsDBNull(r("AReceberValor")), Nothing, r("AReceberValor"))
-                    .ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), 0, r("ValorPagoTotal"))
-                    .SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
-                    .IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-                    .IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
-                    '--- tblAReceberParcela
-                    .IDAReceberParcela = IIf(IsDBNull(r("IDAReceberParcela")), Nothing, r("IDAReceberParcela"))
-                    .Letra = IIf(IsDBNull(r("Letra")), String.Empty, r("Letra"))
-                    .Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
-                    .ParcelaValor = IIf(IsDBNull(r("ParcelaValor")), 0, r("ParcelaValor"))
-                    .PermanenciaTaxa = IIf(IsDBNull(r("PermanenciaTaxa")), 0, r("PermanenciaTaxa"))
-                    .ValorPagoParcela = IIf(IsDBNull(r("ValorPagoParcela")), 0, r("ValorPagoParcela"))
-                    .ValorJuros = IIf(IsDBNull(r("ValorJuros")), Nothing, r("ValorJuros"))
-                    .SituacaoParcela = IIf(IsDBNull(r("SituacaoParcela")), Nothing, r("SituacaoParcela"))
-                    .PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
-                    '--- qryPessoaFisicaJuridica
-                    .Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
-                    .CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
-                End With
+                Dim clPar As clAReceberParcela = Convert_DataRow_ClAReceberParcela(r)
                 '
                 ParcList.Add(clPar)
                 '
@@ -556,30 +506,7 @@ Public Class ParcelaBLL
             '
             '--- Preenche Nova clParcela com a DataROW
             '---------------------------------------------------------------------
-            Dim clPar As New clAReceberParcela
-            '--- tblAReceber
-            clPar.IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
-            clPar.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
-            clPar.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
-            clPar.IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
-            clPar.AReceberValor = IIf(IsDBNull(r("AReceberValor")), Nothing, r("AReceberValor"))
-            clPar.ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), 0, r("ValorPagoTotal"))
-            clPar.SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
-            clPar.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-            clPar.IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
-            '--- tblAReceberParcela
-            clPar.IDAReceberParcela = IIf(IsDBNull(r("IDAReceberParcela")), Nothing, r("IDAReceberParcela"))
-            clPar.Letra = IIf(IsDBNull(r("Letra")), String.Empty, r("Letra"))
-            clPar.Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
-            clPar.ParcelaValor = IIf(IsDBNull(r("ParcelaValor")), 0, r("ParcelaValor"))
-            clPar.PermanenciaTaxa = IIf(IsDBNull(r("PermanenciaTaxa")), 0, r("PermanenciaTaxa"))
-            clPar.ValorPagoParcela = IIf(IsDBNull(r("ValorPagoParcela")), 0, r("ValorPagoParcela"))
-            clPar.ValorJuros = IIf(IsDBNull(r("ValorJuros")), Nothing, r("ValorJuros"))
-            clPar.SituacaoParcela = IIf(IsDBNull(r("SituacaoParcela")), Nothing, r("SituacaoParcela"))
-            clPar.PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
-            '--- qryPessoaFisicaJuridica
-            clPar.Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
-            clPar.CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
+            Dim clPar As clAReceberParcela = Convert_DataRow_ClAReceberParcela(r)
             '
             '--- Retorna
             Return clPar
@@ -590,4 +517,44 @@ Public Class ParcelaBLL
         '
     End Function
     '
+    '
+    '===================================================================================================
+    ' CONVERT DATAROW IN CLARECEBERPARCELA
+    '===================================================================================================
+    Private Function Convert_DataRow_ClAReceberParcela(r As DataRow) As clAReceberParcela
+        '
+        Dim newParcela As New clAReceberParcela
+        '
+        With newParcela
+            '--- tblAReceber
+            .IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
+            .IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
+            .Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
+            .IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
+            .AReceberValor = IIf(IsDBNull(r("AReceberValor")), Nothing, r("AReceberValor"))
+            .ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), 0, r("ValorPagoTotal"))
+            .SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
+            .IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
+            .IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
+            '--- tblAReceberParcela
+            .IDAReceberParcela = IIf(IsDBNull(r("IDAReceberParcela")), Nothing, r("IDAReceberParcela"))
+            .Letra = IIf(IsDBNull(r("Letra")), String.Empty, r("Letra"))
+            .Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
+            .ParcelaValor = IIf(IsDBNull(r("ParcelaValor")), 0, r("ParcelaValor"))
+            .PermanenciaTaxa = IIf(IsDBNull(r("PermanenciaTaxa")), 0, r("PermanenciaTaxa"))
+            .ValorPagoParcela = IIf(IsDBNull(r("ValorPagoParcela")), 0, r("ValorPagoParcela"))
+            .ValorJuros = IIf(IsDBNull(r("ValorJuros")), Nothing, r("ValorJuros"))
+            .SituacaoParcela = IIf(IsDBNull(r("SituacaoParcela")), Nothing, r("SituacaoParcela"))
+            .PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
+            '--- qryPessoaFisicaJuridica
+            .Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
+            .CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
+            '--- tblPessoaFilial
+            .IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
+            .ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
+        End With
+        '
+        Return newParcela
+        '
+    End Function
 End Class

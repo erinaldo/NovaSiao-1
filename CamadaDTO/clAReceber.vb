@@ -8,10 +8,12 @@
 Public Class clAReceber : Implements IEditableObject
 #Region "ESTRUTURA DOS DADOS"
     Structure ReceberStructure ' alguns usam FRIEND em vez de DIM
+        '
         '--- Itens da tblAReceber
         Dim _IDAReceber As Integer?
         Dim _IDOrigem As Integer?
         Dim _Origem As Byte
+        Dim _IDFilial As Integer
         Dim _IDPessoa As Integer?
         Dim _AReceberValor As Decimal
         Dim _ValorPagoTotal As Decimal
@@ -21,6 +23,9 @@ Public Class clAReceber : Implements IEditableObject
         '--- Itens da qryPessoaFisicaJuridica
         Dim _Cadastro As String
         Dim _CNP As String
+        '--- Itens da tblPessoaFilial
+        Dim _ApelidoFilial As String
+        '
     End Structure
 #End Region
     '
@@ -125,6 +130,34 @@ Public Class clAReceber : Implements IEditableObject
                 RaiseEvent AoAlterar()
             End If
             ReceberData._Origem = value
+        End Set
+    End Property
+    '
+    '--- Propriedade IDFilial
+    '------------------------------------------------------
+    Public Property IDFilial() As Integer
+        Get
+            Return ReceberData._IDFilial
+        End Get
+        Set(ByVal value As Integer)
+            If value <> ReceberData._IDFilial Then
+                RaiseEvent AoAlterar()
+            End If
+            ReceberData._IDFilial = value
+        End Set
+    End Property
+    '
+    '--- Propriedade FilialApelido
+    '------------------------------------------------------
+    Public Property ApelidoFilial() As String
+        Get
+            Return ReceberData._ApelidoFilial
+        End Get
+        Set(ByVal value As String)
+            If value <> ReceberData._ApelidoFilial Then
+                RaiseEvent AoAlterar()
+            End If
+            ReceberData._ApelidoFilial = value
         End Set
     End Property
     '
@@ -246,10 +279,10 @@ Public Class clAReceberParcela
         Dim _IDAReceberParcela As Integer?
         Dim _Letra As String
         Dim _Vencimento As Date?
-        Dim _ParcelaValor As Decimal?
+        Dim _ParcelaValor As Decimal
         Dim _PermanenciaTaxa As Double
         Dim _ValorPagoParcela As Decimal
-        Dim _ValorJuros As Decimal?
+        Dim _ValorJuros As Decimal
         Dim _SituacaoParcela As Byte  '--- 0:EmAberto | 1:Pago | 2:Cancelada | 3:Negativada | 4:Negociada
         Dim _PagamentoData As Date?
         '
@@ -370,11 +403,11 @@ Public Class clAReceberParcela
     End Property
     '
     '--- Propriedade ValorJuros
-    Public Property ValorJuros() As Decimal?
+    Public Property ValorJuros() As Decimal
         Get
             Return ParData._ValorJuros
         End Get
-        Set(ByVal value As Decimal?)
+        Set(ByVal value As Decimal)
             If value <> ParData._ValorJuros Then
                 RaiseAoAlterar()
             End If
@@ -383,11 +416,11 @@ Public Class clAReceberParcela
     End Property
     '
     '--- Propriedade ParcelaValor
-    Public Property ParcelaValor() As Decimal?
+    Public Property ParcelaValor() As Decimal
         Get
             Return ParData._ParcelaValor
         End Get
-        Set(ByVal value As Decimal?)
+        Set(ByVal value As Decimal)
             If value <> ParData._ParcelaValor Then
                 RaiseAoAlterar()
             End If
@@ -396,11 +429,11 @@ Public Class clAReceberParcela
     End Property
     '
     '--- Propriedade ValorPagoParcela
-    Public Property ValorPagoParcela() As Decimal?
+    Public Property ValorPagoParcela() As Decimal
         Get
             Return ParData._ValorPagoParcela
         End Get
-        Set(ByVal value As Decimal?)
+        Set(ByVal value As Decimal)
             If value <> ParData._ValorPagoParcela Then
                 RaiseAoAlterar()
             End If

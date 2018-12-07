@@ -195,6 +195,96 @@ Public Class SimplesMovimentacaoBLL
         '
     End Function
     '
+    '--------------------------------------------------------------------------------------------
+    ' GET LISTA ARECEBER SIMPLES SAIDA PARA FRMPROCURA
+    '--------------------------------------------------------------------------------------------
+    Public Function GetSimplesAReceberLista_Procura(IDFilialOrigem As Integer,
+                                                    Optional IDFilialDestino As Integer? = Nothing,
+                                                    Optional dtInicial As Date? = Nothing,
+                                                    Optional dtFinal As Date? = Nothing) As List(Of clAReceberParcela)
+        Dim SQL As New SQLControl
+        Dim myQuery As String = "SELECT * FROM qryAReceberParcela WHERE Origem = 3 AND IDFilial = @IDFilialOrigem "
+        '
+        '--- Add Params
+        '----------------------------------------------------------------
+        SQL.AddParam("@IDFilialOrigem", IDFilialOrigem)
+        '
+        If Not IsNothing(IDFilialDestino) Then
+            SQL.AddParam("@IDFilialDestino", IDFilialDestino)
+            myQuery = myQuery & " AND IDPessoa = @IDFilialDestino "
+        End If
+        '
+        If Not IsNothing(dtInicial) Then
+            SQL.AddParam("@dtInicial", dtInicial)
+            myQuery = myQuery & " AND Vencimento >= @dtInicial"
+        End If
+        '
+        If Not IsNothing(dtFinal) Then
+            SQL.AddParam("@dtFinal", dtFinal)
+            myQuery = myQuery & " AND Vencimento <= @dtFinal"
+        End If
+        '
+        '--- Execute
+        '----------------------------------------------------------------
+        Try
+            '
+            Dim eList As New List(Of clAReceberParcela)
+            '
+            SQL.ExecQuery(myQuery)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            If SQL.DBDT.Rows.Count = 0 Then Return eList
+            '
+            For Each r As DataRow In SQL.DBDT.Rows
+                '
+                Dim newParcela As New clAReceberParcela
+                '
+                With newParcela
+                    '--- tblAReceber
+                    .IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
+                    .IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
+                    .Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
+                    .IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
+                    .AReceberValor = IIf(IsDBNull(r("AReceberValor")), Nothing, r("AReceberValor"))
+                    .ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), 0, r("ValorPagoTotal"))
+                    .SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
+                    .IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
+                    .IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
+                    '--- tblAReceberParcela
+                    .IDAReceberParcela = IIf(IsDBNull(r("IDAReceberParcela")), Nothing, r("IDAReceberParcela"))
+                    .Letra = IIf(IsDBNull(r("Letra")), String.Empty, r("Letra"))
+                    .Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
+                    .ParcelaValor = IIf(IsDBNull(r("ParcelaValor")), 0, r("ParcelaValor"))
+                    .PermanenciaTaxa = IIf(IsDBNull(r("PermanenciaTaxa")), 0, r("PermanenciaTaxa"))
+                    .ValorPagoParcela = IIf(IsDBNull(r("ValorPagoParcela")), 0, r("ValorPagoParcela"))
+                    .ValorJuros = IIf(IsDBNull(r("ValorJuros")), Nothing, r("ValorJuros"))
+                    .SituacaoParcela = IIf(IsDBNull(r("SituacaoParcela")), Nothing, r("SituacaoParcela"))
+                    .PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
+                    '--- qryPessoaFisicaJuridica
+                    .Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
+                    .CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
+                    '--- tblPessoaFilial
+                    .IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
+                    .ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
+                End With
+                '
+                eList.Add(newParcela)
+                '
+            Next
+            '
+            Return eList
+            '
+        Catch ex As Exception
+            '
+            Throw ex
+            '
+        End Try
+        '
+    End Function
+    '
 #End Region '/ SIMPLES SAIDA
     '
 #Region "SIMPES ENTRADA"
@@ -414,6 +504,70 @@ Public Class SimplesMovimentacaoBLL
             End If
             '
             Return True
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
+    ' GET LISTA APAGAR SIMPLES ENTRADA PARA FRMPROCURA
+    '--------------------------------------------------------------------------------------------
+    Public Function GetSimplesAPagarLista_Procura(myIDFilial As Integer,
+                                                  myCredorCadastro As String,
+                                                  Optional dtInicial As Date? = Nothing,
+                                                  Optional dtFinal As Date? = Nothing) As List(Of clAPagar)
+        Dim db As New AcessoDados
+        '
+        db.LimparParametros()
+        '
+        db.AdicionarParametros("@APagarExterno", False) '--> TRUE: APAGAR WITHOUT SIMPLES | FALSE: APAGAR ONLY SIMPLES
+        db.AdicionarParametros("@IDFilial", myIDFilial)
+        db.AdicionarParametros("@CredorCadastro", myCredorCadastro)
+        '
+        If Not IsNothing(dtInicial) Then
+            db.AdicionarParametros("@DataInicial", dtInicial)
+        End If
+        '
+        If Not IsNothing(dtFinal) Then
+            db.AdicionarParametros("@DataFinal", dtFinal)
+        End If
+        '
+        Try
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAPagar_ProcurarLista")
+            Dim pList As New List(Of clAPagar)
+            '
+            For Each r In dt.Rows
+                Dim p As New clAPagar
+                '
+                p.IDAPagar = IIf(IsDBNull(r("IDAPagar")), Nothing, r("IDAPagar"))
+                p.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
+                p.OrigemTexto = IIf(IsDBNull(r("OrigemTexto")), String.Empty, r("OrigemTexto"))
+                p.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
+                p.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
+                p.IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
+                p.Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
+                p.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
+                p.CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), String.Empty, r("CobrancaForma"))
+                p.Identificador = IIf(IsDBNull(r("Identificador")), String.Empty, r("Identificador"))
+                p.RGBanco = IIf(IsDBNull(r("RGBanco")), Nothing, r("RGBanco"))
+                p.BancoNome = IIf(IsDBNull(r("BancoNome")), String.Empty, r("BancoNome"))
+                p.Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
+                p.APagarValor = IIf(IsDBNull(r("APagarValor")), 0, r("APagarValor"))
+                p.Situacao = IIf(IsDBNull(r("Situacao")), Nothing, r("Situacao"))
+                p.PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
+                p.Desconto = IIf(IsDBNull(r("Desconto")), Nothing, r("Desconto"))
+                p.Acrescimo = IIf(IsDBNull(r("Acrescimo")), Nothing, r("Acrescimo"))
+                '
+                pList.Add(p)
+                '
+            Next
+            '
+            '--- Ordena a listagem pelos vencimentos
+            pList = pList.OrderBy(Function(x) x.Vencimento).ToList
+            '
+            Return pList
             '
         Catch ex As Exception
             Throw ex

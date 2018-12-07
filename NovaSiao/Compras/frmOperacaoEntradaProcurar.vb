@@ -9,13 +9,13 @@ Public Class frmOperacaoEntradaProcurar
     Private ImgLock As Image = My.Resources.lock
     Private _myMes As Date
     Private _Operacao As Byte
-    'Private cmpBLL As New CompraBLL
-    'Private cmpLista As DataTable
     '
     Private Property myMes() As DateTime
+        '
         Get
             Return _myMes
         End Get
+        '
         Set(ByVal value As DateTime)
             If CDate(value.ToShortDateString) > CDate(Now.ToShortDateString) Then
                 value = Now.ToShortDateString
@@ -26,12 +26,15 @@ Public Class frmOperacaoEntradaProcurar
             _myMes = value
             lblPeriodo.Text = Format(_myMes, "MMMM | yyyy")
         End Set
+        '
     End Property
     '
     Private Property propOperacao As Byte
+        '
         Get
             Return _Operacao
         End Get
+        '
         Set(value As Byte)
             '
             _Operacao = value
@@ -43,6 +46,7 @@ Public Class frmOperacaoEntradaProcurar
             AlteraEtiquetas()
             '
         End Set
+        '
     End Property
     '
 #Region "EVENTO LOAD"

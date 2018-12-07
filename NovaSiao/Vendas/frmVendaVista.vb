@@ -1102,6 +1102,7 @@ Public Class frmVendaVista
             rec.Origem = clAReceber.AReceberOrigem.Transacao
             rec.IDPessoa = _Venda.IDPessoaDestino
             rec.AReceberValor = _Venda.TotalVenda
+            rec.IDFilial = _Venda.IDPessoaOrigem
             '
             recBLL.InserirNovo_AReceber(rec)
             '
