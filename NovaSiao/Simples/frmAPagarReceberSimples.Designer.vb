@@ -21,7 +21,7 @@ Partial Class frmAPagarReceberSimples
     Private Sub InitializeComponent()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Me.txtFilial = New System.Windows.Forms.TextBox()
+        Me.txtFilialDestino = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.btnMesAtual = New VIBlend.WinForms.Controls.vButton()
@@ -31,9 +31,15 @@ Partial Class frmAPagarReceberSimples
         Me.chkPeriodoTodos = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.dgvListagem = New System.Windows.Forms.DataGridView()
+        Me.clnVencimento = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnFilial = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnPago = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnSituacao = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnEditar = New System.Windows.Forms.Button()
         Me.pnlHeader = New System.Windows.Forms.Panel()
+        Me.lbl4 = New System.Windows.Forms.Label()
         Me.lbl3 = New System.Windows.Forms.Label()
         Me.lbl2 = New System.Windows.Forms.Label()
         Me.lbl1 = New System.Windows.Forms.Label()
@@ -50,13 +56,6 @@ Partial Class frmAPagarReceberSimples
         Me.rbtAPagar = New System.Windows.Forms.RadioButton()
         Me.rbtAReceber = New System.Windows.Forms.RadioButton()
         Me.btnProcurarFilial = New VIBlend.WinForms.Controls.vButton()
-        Me.lbl4 = New System.Windows.Forms.Label()
-        Me.clnVencimento = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnFilial = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnPago = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnSituacao = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.btnCredito = New System.Windows.Forms.Button()
         Me.VPanel1 = New VIBlend.WinForms.Controls.vPanel()
         Me.lblTotal = New System.Windows.Forms.Label()
         Me.lblT1 = New System.Windows.Forms.Label()
@@ -87,6 +86,7 @@ Partial Class frmAPagarReceberSimples
         Me.Panel1.Controls.Add(Me.Label18)
         Me.Panel1.Controls.Add(Me.lblFilial)
         Me.Panel1.Controls.Add(Me.btnClose)
+        Me.Panel1.Size = New System.Drawing.Size(941, 50)
         Me.Panel1.TabIndex = 0
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
@@ -102,12 +102,12 @@ Partial Class frmAPagarReceberSimples
         Me.lblTitulo.TabIndex = 2
         Me.lblTitulo.Text = "Simples Entradas - A Pagar"
         '
-        'txtFilial
+        'txtFilialDestino
         '
-        Me.txtFilial.Location = New System.Drawing.Point(124, 68)
-        Me.txtFilial.Name = "txtFilial"
-        Me.txtFilial.Size = New System.Drawing.Size(208, 27)
-        Me.txtFilial.TabIndex = 2
+        Me.txtFilialDestino.Location = New System.Drawing.Point(124, 68)
+        Me.txtFilialDestino.Name = "txtFilialDestino"
+        Me.txtFilialDestino.Size = New System.Drawing.Size(208, 27)
+        Me.txtFilialDestino.TabIndex = 2
         '
         'Label2
         '
@@ -228,6 +228,40 @@ Partial Class frmAPagarReceberSimples
         Me.dgvListagem.Size = New System.Drawing.Size(920, 368)
         Me.dgvListagem.TabIndex = 10
         '
+        'clnVencimento
+        '
+        Me.clnVencimento.Frozen = True
+        Me.clnVencimento.HeaderText = "Vencimento"
+        Me.clnVencimento.Name = "clnVencimento"
+        Me.clnVencimento.ReadOnly = True
+        '
+        'clnFilial
+        '
+        Me.clnFilial.Frozen = True
+        Me.clnFilial.HeaderText = "Filial"
+        Me.clnFilial.Name = "clnFilial"
+        Me.clnFilial.ReadOnly = True
+        Me.clnFilial.Width = 280
+        '
+        'clnValor
+        '
+        Me.clnValor.HeaderText = "Valor"
+        Me.clnValor.Name = "clnValor"
+        Me.clnValor.ReadOnly = True
+        '
+        'clnPago
+        '
+        Me.clnPago.HeaderText = "Pago"
+        Me.clnPago.Name = "clnPago"
+        Me.clnPago.ReadOnly = True
+        '
+        'clnSituacao
+        '
+        Me.clnSituacao.HeaderText = "Situação"
+        Me.clnSituacao.Name = "clnSituacao"
+        Me.clnSituacao.ReadOnly = True
+        Me.clnSituacao.Width = 80
+        '
         'btnCancelar
         '
         Me.btnCancelar.BackColor = System.Drawing.Color.WhiteSmoke
@@ -237,10 +271,10 @@ Partial Class frmAPagarReceberSimples
         Me.btnCancelar.ForeColor = System.Drawing.Color.DarkRed
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_24x24
         Me.btnCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnCancelar.Location = New System.Drawing.Point(786, 7)
+        Me.btnCancelar.Location = New System.Drawing.Point(786, 9)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(143, 41)
-        Me.btnCancelar.TabIndex = 13
+        Me.btnCancelar.TabIndex = 3
         Me.btnCancelar.Text = "&Fechar"
         Me.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnCancelar.UseVisualStyleBackColor = False
@@ -253,10 +287,10 @@ Partial Class frmAPagarReceberSimples
         Me.btnEditar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnEditar.ForeColor = System.Drawing.Color.DarkBlue
         Me.btnEditar.Image = Global.NovaSiao.My.Resources.Resources.editar
-        Me.btnEditar.Location = New System.Drawing.Point(368, 7)
+        Me.btnEditar.Location = New System.Drawing.Point(12, 9)
         Me.btnEditar.Name = "btnEditar"
         Me.btnEditar.Size = New System.Drawing.Size(143, 41)
-        Me.btnEditar.TabIndex = 12
+        Me.btnEditar.TabIndex = 0
         Me.btnEditar.Text = "&Ver Origem"
         Me.btnEditar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnEditar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -274,6 +308,16 @@ Partial Class frmAPagarReceberSimples
         Me.pnlHeader.Name = "pnlHeader"
         Me.pnlHeader.Size = New System.Drawing.Size(920, 28)
         Me.pnlHeader.TabIndex = 9
+        '
+        'lbl4
+        '
+        Me.lbl4.AutoSize = True
+        Me.lbl4.BackColor = System.Drawing.Color.Transparent
+        Me.lbl4.Location = New System.Drawing.Point(624, 4)
+        Me.lbl4.Name = "lbl4"
+        Me.lbl4.Size = New System.Drawing.Size(64, 19)
+        Me.lbl4.TabIndex = 4
+        Me.lbl4.Text = "Situação"
         '
         'lbl3
         '
@@ -378,10 +422,10 @@ Partial Class frmAPagarReceberSimples
         Me.btnQuitar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnQuitar.ForeColor = System.Drawing.Color.DarkBlue
         Me.btnQuitar.Image = Global.NovaSiao.My.Resources.Resources.dollar_currency_sign
-        Me.btnQuitar.Location = New System.Drawing.Point(219, 7)
+        Me.btnQuitar.Location = New System.Drawing.Point(161, 9)
         Me.btnQuitar.Name = "btnQuitar"
         Me.btnQuitar.Size = New System.Drawing.Size(143, 41)
-        Me.btnQuitar.TabIndex = 11
+        Me.btnQuitar.TabIndex = 1
         Me.btnQuitar.Text = "&Quitar"
         Me.btnQuitar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnQuitar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -479,67 +523,6 @@ Partial Class frmAPagarReceberSimples
         Me.btnProcurarFilial.UseVisualStyleBackColor = False
         Me.btnProcurarFilial.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
-        'lbl4
-        '
-        Me.lbl4.AutoSize = True
-        Me.lbl4.BackColor = System.Drawing.Color.Transparent
-        Me.lbl4.Location = New System.Drawing.Point(624, 4)
-        Me.lbl4.Name = "lbl4"
-        Me.lbl4.Size = New System.Drawing.Size(64, 19)
-        Me.lbl4.TabIndex = 3
-        Me.lbl4.Text = "Situação"
-        '
-        'clnVencimento
-        '
-        Me.clnVencimento.Frozen = True
-        Me.clnVencimento.HeaderText = "Vencimento"
-        Me.clnVencimento.Name = "clnVencimento"
-        Me.clnVencimento.ReadOnly = True
-        '
-        'clnFilial
-        '
-        Me.clnFilial.Frozen = True
-        Me.clnFilial.HeaderText = "Filial"
-        Me.clnFilial.Name = "clnFilial"
-        Me.clnFilial.ReadOnly = True
-        Me.clnFilial.Width = 280
-        '
-        'clnValor
-        '
-        Me.clnValor.HeaderText = "Valor"
-        Me.clnValor.Name = "clnValor"
-        Me.clnValor.ReadOnly = True
-        '
-        'clnPago
-        '
-        Me.clnPago.HeaderText = "Pago"
-        Me.clnPago.Name = "clnPago"
-        Me.clnPago.ReadOnly = True
-        '
-        'clnSituacao
-        '
-        Me.clnSituacao.HeaderText = "Situação"
-        Me.clnSituacao.Name = "clnSituacao"
-        Me.clnSituacao.ReadOnly = True
-        Me.clnSituacao.Width = 80
-        '
-        'btnCredito
-        '
-        Me.btnCredito.BackColor = System.Drawing.Color.WhiteSmoke
-        Me.btnCredito.DialogResult = System.Windows.Forms.DialogResult.Cancel
-        Me.btnCredito.FlatAppearance.BorderColor = System.Drawing.Color.LightSlateGray
-        Me.btnCredito.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnCredito.ForeColor = System.Drawing.Color.DarkRed
-        Me.btnCredito.Image = Global.NovaSiao.My.Resources.Resources.dollar_currency_sign
-        Me.btnCredito.Location = New System.Drawing.Point(9, 7)
-        Me.btnCredito.Name = "btnCredito"
-        Me.btnCredito.Size = New System.Drawing.Size(204, 41)
-        Me.btnCredito.TabIndex = 11
-        Me.btnCredito.Text = "&Quitar com a Receber"
-        Me.btnCredito.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnCredito.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.btnCredito.UseVisualStyleBackColor = False
-        '
         'VPanel1
         '
         Me.VPanel1.AllowAnimations = True
@@ -572,7 +555,7 @@ Partial Class frmAPagarReceberSimples
         Me.lblTotal.Location = New System.Drawing.Point(0, 0)
         Me.lblTotal.Name = "lblTotal"
         Me.lblTotal.Size = New System.Drawing.Size(144, 37)
-        Me.lblTotal.TabIndex = 9
+        Me.lblTotal.TabIndex = 0
         Me.lblTotal.Text = "R$ 0,00"
         Me.lblTotal.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -581,7 +564,7 @@ Partial Class frmAPagarReceberSimples
         Me.lblT1.Location = New System.Drawing.Point(49, 559)
         Me.lblT1.Name = "lblT1"
         Me.lblT1.Size = New System.Drawing.Size(119, 27)
-        Me.lblT1.TabIndex = 14
+        Me.lblT1.TabIndex = 11
         Me.lblT1.Text = "A Pagar Total:"
         Me.lblT1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -590,7 +573,7 @@ Partial Class frmAPagarReceberSimples
         Me.lblT2.Location = New System.Drawing.Point(325, 559)
         Me.lblT2.Name = "lblT2"
         Me.lblT2.Size = New System.Drawing.Size(76, 27)
-        Me.lblT2.TabIndex = 14
+        Me.lblT2.TabIndex = 12
         Me.lblT2.Text = "Pago:"
         Me.lblT2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -626,7 +609,7 @@ Partial Class frmAPagarReceberSimples
         Me.lblPago.Location = New System.Drawing.Point(0, 0)
         Me.lblPago.Name = "lblPago"
         Me.lblPago.Size = New System.Drawing.Size(144, 37)
-        Me.lblPago.TabIndex = 9
+        Me.lblPago.TabIndex = 0
         Me.lblPago.Text = "R$ 0,00"
         Me.lblPago.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -635,7 +618,7 @@ Partial Class frmAPagarReceberSimples
         Me.lblT3.Location = New System.Drawing.Point(564, 559)
         Me.lblT3.Name = "lblT3"
         Me.lblT3.Size = New System.Drawing.Size(80, 27)
-        Me.lblT3.TabIndex = 14
+        Me.lblT3.TabIndex = 13
         Me.lblT3.Text = "Em Aberto:"
         Me.lblT3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -671,7 +654,7 @@ Partial Class frmAPagarReceberSimples
         Me.lblEmAberto.Location = New System.Drawing.Point(0, 0)
         Me.lblEmAberto.Name = "lblEmAberto"
         Me.lblEmAberto.Size = New System.Drawing.Size(144, 37)
-        Me.lblEmAberto.TabIndex = 9
+        Me.lblEmAberto.TabIndex = 0
         Me.lblEmAberto.Text = "R$ 0,00"
         Me.lblEmAberto.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -681,17 +664,16 @@ Partial Class frmAPagarReceberSimples
         Me.Panel4.Controls.Add(Me.btnEditar)
         Me.Panel4.Controls.Add(Me.btnCancelar)
         Me.Panel4.Controls.Add(Me.btnQuitar)
-        Me.Panel4.Controls.Add(Me.btnCredito)
         Me.Panel4.Dock = System.Windows.Forms.DockStyle.Bottom
-        Me.Panel4.Location = New System.Drawing.Point(0, 605)
+        Me.Panel4.Location = New System.Drawing.Point(0, 608)
         Me.Panel4.Name = "Panel4"
-        Me.Panel4.Size = New System.Drawing.Size(944, 53)
-        Me.Panel4.TabIndex = 16
+        Me.Panel4.Size = New System.Drawing.Size(941, 59)
+        Me.Panel4.TabIndex = 14
         '
         'frmAPagarReceberSimples
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(944, 658)
+        Me.ClientSize = New System.Drawing.Size(941, 667)
         Me.Controls.Add(Me.Panel4)
         Me.Controls.Add(Me.VPanel3)
         Me.Controls.Add(Me.lblT3)
@@ -708,10 +690,10 @@ Partial Class frmAPagarReceberSimples
         Me.Controls.Add(Me.dgvListagem)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.txtFilial)
+        Me.Controls.Add(Me.txtFilialDestino)
         Me.Name = "frmAPagarReceberSimples"
         Me.Text = "Procurar Saída de Produto"
-        Me.Controls.SetChildIndex(Me.txtFilial, 0)
+        Me.Controls.SetChildIndex(Me.txtFilialDestino, 0)
         Me.Controls.SetChildIndex(Me.Label2, 0)
         Me.Controls.SetChildIndex(Me.Panel2, 0)
         Me.Controls.SetChildIndex(Me.dgvListagem, 0)
@@ -749,7 +731,7 @@ Partial Class frmAPagarReceberSimples
         Me.PerformLayout()
 
     End Sub
-    Friend WithEvents txtFilial As TextBox
+    Friend WithEvents txtFilialDestino As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents Panel2 As Panel
     Friend WithEvents chkPeriodoTodos As CheckBox
@@ -785,7 +767,6 @@ Partial Class frmAPagarReceberSimples
     Friend WithEvents clnValor As DataGridViewTextBoxColumn
     Friend WithEvents clnPago As DataGridViewTextBoxColumn
     Friend WithEvents clnSituacao As DataGridViewTextBoxColumn
-    Friend WithEvents btnCredito As Button
     Friend WithEvents VPanel1 As VIBlend.WinForms.Controls.vPanel
     Friend WithEvents lblTotal As Label
     Friend WithEvents lblT1 As Label

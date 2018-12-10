@@ -33,9 +33,7 @@ Public Class frmAPagarReceberSimples
     Public Property propEntradaSaida() As Boolean
         '
         Get
-            '
             Return EntradaSaida
-            '
         End Get
         '
         Set(ByVal value As Boolean)
@@ -60,7 +58,6 @@ Public Class frmAPagarReceberSimples
         '
         '--- define a posicao do pnlMes
         pnlMes.Location = New Point(636, 130)
-        '
         '
     End Sub
     '
@@ -96,7 +93,7 @@ Public Class frmAPagarReceberSimples
     Private Sub GetList_AlteraListagem()
         '
         Select Case EntradaSaida
-            Case 0 '--- A PAGAR | SIMPLES ENTRADA
+            Case False '--- A PAGAR | SIMPLES ENTRADA
                 GetList_APagar()
                 PreencheColunas_APagar()
                 '
@@ -109,7 +106,7 @@ Public Class frmAPagarReceberSimples
                 lblPago.Text = Format(Pago, "C")
                 lblEmAberto.Text = Format(APagar - Pago, "C")
                 '
-            Case 1 '--- A RECEBER | SIMPLES SAIDAS
+            Case True '--- A RECEBER | SIMPLES SAIDAS
                 GetList_AReceber()
                 PreencheColunas_AReceber()
                 '
@@ -161,22 +158,28 @@ Public Class frmAPagarReceberSimples
         '
         '--- consulta o banco de dados
         Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
-                SourceList = pagBLL.GetSimplesAPagarLista_Procura(_IDFilialPadrao, txtFilial.Text)
+                SourceList = pagBLL.GetSimplesAPagarLista_Procura(_IDFilialPadrao, txtFilialDestino.Text)
             Else
                 Dim f As New FuncoesUtilitarias
                 Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
                 Dim dtFinal As Date = f.LastDayOfMonth(myMes)
                 '
-                SourceList = pagBLL.GetSimplesAPagarLista_Procura(_IDFilialPadrao, txtFilial.Text, dtInicial, dtFinal)
+                SourceList = pagBLL.GetSimplesAPagarLista_Procura(_IDFilialPadrao, txtFilialDestino.Text, dtInicial, dtFinal)
             End If
             '
             dgvListagem.DataSource = SourceList
             '
         Catch ex As Exception
-            MessageBox.Show("Ocorreu exceção ao obter a lista de A Pagar..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Uma exceção ocorreu ao obter a lista de A Pagar..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub
@@ -186,7 +189,11 @@ Public Class frmAPagarReceberSimples
         Dim simplesBLL As New SimplesMovimentacaoBLL
         '
         '--- consulta o banco de dados
+        '
         Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
                 SourceList = simplesBLL.GetSimplesAReceberLista_Procura(_IDFilialPadrao, _IDFilial)
@@ -201,13 +208,16 @@ Public Class frmAPagarReceberSimples
             dgvListagem.DataSource = SourceList
             '
         Catch ex As Exception
-            MessageBox.Show("Ocorreu exceção ao obter a lista de A Receber..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Uma exceção ocorreu ao obter lista de A Receber..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub
     '
-#End Region
+#End Region '/PROPERTY E EVENTO LOAD
     '
 #Region "LISTAGEM CONFIGURAÇÃO"
     '
@@ -415,68 +425,89 @@ Public Class frmAPagarReceberSimples
     '
 #Region "ACAO DOS BOTOES"
     '
-    Private Sub btnQuitar_Click(sender As Object, e As EventArgs) Handles btnQuitar.Click, btnCredito.Click
+    Private Sub btnQuitar_Click(sender As Object, e As EventArgs) Handles btnQuitar.Click
         '
-        'If dgvListagem.SelectedRows.Count = 0 Then
-        '    MessageBox.Show("Não existe nenhum A Pagar selecionado na listagem", "Escolher",
-        '                    MessageBoxButtons.OK, MessageBoxIcon.Information)
-        '    Exit Sub
-        'End If
-        ''
-        'Dim clP As clAPagar = dgvListagem.SelectedRows(0).DataBoundItem
-        ''
-        'Dim f As New frmAPagarSaidas(clP, Me)
-        ''
-        'f.ShowDialog()
-        ''
-        ''--- Se retornar DIALOGRESULT = OK THEN
-        'If f.DialogResult <> DialogResult.Cancel Then
-        '    FormataListagem()
-        'End If
+        Dim f As New frmSimplesQuitar(Me, propEntradaSaida,
+                                      _IDFilialPadrao,
+                                      lblFilial.Text,
+                                      _IDFilial,
+                                      txtFilialDestino.Text)
+        '
+        f.ShowDialog()
+        '
+        '--- Se retornar DIALOGRESULT = OK THEN
+        If f.DialogResult <> DialogResult.Cancel Then
+            GetList_AlteraListagem()
+        End If
         '
     End Sub
     '
     Private Sub btnEditar_Click(sender As Object, e As EventArgs) Handles btnEditar.Click
-
-        'If dgvListagem.SelectedRows.Count = 0 Then
-        '    MessageBox.Show("Não existe nenhum A Pagar selecionado na listagem", "Escolher",
-        '                    MessageBoxButtons.OK, MessageBoxIcon.Information)
-        '    Exit Sub
-        'End If
-        ''
-        'Dim clP As clAPagar = dgvListagem.SelectedRows(0).DataBoundItem
-        ''
-        'If clP.Origem = 1 Then '--- A Origem é transacao de compras
-        '    Dim cBLL As New CompraBLL
-        '    '
-        '    Dim clC As clCompra = cBLL.GetCompra_PorID_OBJ(clP.IDOrigem)
-        '    '
-        '    Dim frm = New frmCompra(clC)
-        '    frm.MdiParent = frmPrincipal
-        '    frm.StartPosition = FormStartPosition.CenterScreen
-        '    Close()
-        '    frm.Show()
-        'ElseIf clP.Origem = 2 Then '--- A Origem é Despesa
-        '    Dim dBLL As New DespesaBLL
-        '    '
-        '    Dim clD As clDespesa = dBLL.GetDespesa_PorID(clP.IDOrigem)
-        '    '
-        '    Dim frm As New frmDespesa(clD)
-        '    frm.MdiParent = frmPrincipal
-        '    frm.StartPosition = FormStartPosition.CenterScreen
-        '    Close()
-        '    frm.Show()
-        'ElseIf clP.Origem = 3 Then '--- A Origem é DespesaPeriodica
-        '    Dim dBLL As New DespesaPeriodicaBLL
-        '    '
-        '    Dim clD As clDespesaPeriodica = dBLL.GetDespesaPeriodica_PorID(clP.IDOrigem)
-        '    '
-        '    Dim frm As New frmDespesaPeriodica(clD)
-        '    frm.MdiParent = frmPrincipal
-        '    frm.StartPosition = FormStartPosition.CenterScreen
-        '    Close()
-        '    frm.Show()
-        'End If
+        '
+        '--- Verifica se esta selecionado
+        If dgvListagem.SelectedRows.Count = 0 Then
+            MessageBox.Show("Não existe nenhum A Pagar selecionado na listagem", "Escolher",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Exit Sub
+        End If
+        '
+        Dim sBLL As New SimplesMovimentacaoBLL
+        '
+        If propEntradaSaida = False Then '--- A PAGAR | SIMPLES ENTRADA
+            '
+            Dim clP As clAPagar = dgvListagem.SelectedRows(0).DataBoundItem
+            '
+            Try
+                '--- Ampulheta ON
+                Cursor = Cursors.WaitCursor
+                '
+                Dim simples As clSimplesEntrada = sBLL.GetSimplesEntrada_PorID(clP.IDOrigem)
+                '
+                Dim frm = New frmSimplesEntrada(simples)
+                frm.MdiParent = frmPrincipal
+                frm.StartPosition = FormStartPosition.CenterScreen
+                Close()
+                frm.Show()
+                '
+            Catch ex As Exception
+                MessageBox.Show("Uma exceção ocorreu ao obter a Simples Entrada..." & vbNewLine &
+                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Finally
+                '--- Ampulheta OFF
+                Cursor = Cursors.Default
+            End Try
+            '
+        ElseIf propEntradaSaida = True Then '--- A RECEBER | SIMPLES SAIDA
+            '
+            Dim clP As clAReceberParcela = dgvListagem.SelectedRows(0).DataBoundItem
+            '
+            Try
+                '--- Ampulheta ON
+                Cursor = Cursors.WaitCursor
+                '
+                Dim simples As clSimplesSaida = sBLL.GetSimplesSaida_PorID(clP.IDOrigem)
+                '
+                Dim frm = New frmSimplesSaida(simples)
+                frm.MdiParent = frmPrincipal
+                frm.StartPosition = FormStartPosition.CenterScreen
+                Close()
+                frm.Show()
+                '
+            Catch ex As Exception
+                MessageBox.Show("Uma exceção ocorreu ao obter a Simples Saída..." & vbNewLine &
+                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Finally
+                '--- Ampulheta OFF
+                Cursor = Cursors.Default
+            End Try
+            '
+        End If
+        '
+    End Sub
+    '
+    Private Sub dgvListagem_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvListagem.CellDoubleClick
+        '
+        btnEditar_Click(sender, New EventArgs)
         '
     End Sub
     '
@@ -487,7 +518,7 @@ Public Class frmAPagarReceberSimples
     '
     '--- BOTAO PROCURAR FILIAL
     Private Sub btnProcurarFilial_Click(sender As Object, e As EventArgs) Handles btnProcurarFilial.Click
-        ProcurarEscolherFilial(txtFilial)
+        ProcurarEscolherFilial(txtFilialDestino)
     End Sub
     '
     '--- ESCOLHER FILIAL
@@ -514,11 +545,11 @@ Public Class frmAPagarReceberSimples
                                 "Favor escolher uma Filial diferente...",
                                 "Mesma Filial Padrão",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information)
-                txtFilial.Focus()
+                txtFilialDestino.Focus()
                 Return
             End If
             '
-            txtFilial.Text = DirectCast(frmT, frmFilialEscolher).propFilial_Escolha
+            txtFilialDestino.Text = DirectCast(frmT, frmFilialEscolher).propFilial_Escolha
             _IDFilial = IDFilialEscolha
             '
             ' altera o FlagEstado para ALTERADO
@@ -530,7 +561,7 @@ Public Class frmAPagarReceberSimples
             End If
             '
             ' move focus
-            txtFilial.Focus()
+            txtFilialDestino.Focus()
             '
         End If
         '
@@ -549,7 +580,7 @@ Public Class frmAPagarReceberSimples
         End If
     End Sub
     '
-    Private Sub txtFilial_TextChanged(sender As Object, e As EventArgs) Handles txtFilial.TextChanged
+    Private Sub txtFilial_TextChanged(sender As Object, e As EventArgs) Handles txtFilialDestino.TextChanged
         '
 
         '
@@ -564,7 +595,7 @@ Public Class frmAPagarReceberSimples
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
     '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
     Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _
-        Handles txtFilial.KeyDown
+        Handles txtFilialDestino.KeyDown
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '
@@ -574,7 +605,7 @@ Public Class frmAPagarReceberSimples
             '
         ElseIf e.KeyCode = Keys.Delete Then
             e.Handled = True
-            txtFilial.Clear()
+            txtFilialDestino.Clear()
             '
             If Not IsNothing(_IDFilial) Then
                 _IDFilial = Nothing
@@ -595,7 +626,7 @@ Public Class frmAPagarReceberSimples
     End Sub
     '
     '--- SUBSTITUI A TECLA (ENTER) PELA (TAB)
-    Private Sub txtControl_KeyDown(sender As Object, e As KeyEventArgs) Handles txtFilial.KeyDown
+    Private Sub txtControl_KeyDown(sender As Object, e As KeyEventArgs) Handles txtFilialDestino.KeyDown
         '
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
@@ -676,7 +707,7 @@ Public Class frmAPagarReceberSimples
         pnlMes.Visible = False
     End Sub
     '
-#End Region
+#End Region '/CONTROLE DO PERÍODO
     '
 #Region "CONTROLE DOS BTN PESQUISA"
     '
@@ -696,7 +727,6 @@ Public Class frmAPagarReceberSimples
             lblT2.Text = "Pago"
             '
             btnQuitar.Text = "&Quitar"
-            btnCredito.Text = "&Quitar com AReceber"
             '
         Else ' A RECEBER
             If propEntradaSaida <> True Then propEntradaSaida = True
@@ -712,13 +742,12 @@ Public Class frmAPagarReceberSimples
             lblT2.Text = "Recebido"
             '
             btnQuitar.Text = "&Receber"
-            btnCredito.Text = "&Receber com APagar"
             '
         End If
         '
     End Sub
     '
-#End Region
+#End Region '/ CONTROLE DOS BTN PESQUISA
     '
 #Region "TRATAMENTO VISUAL"
     '
@@ -729,6 +758,6 @@ Public Class frmAPagarReceberSimples
         '
     End Sub
     '
-#End Region
+#End Region '/ TRATAMENTO VISUAL
     '
 End Class

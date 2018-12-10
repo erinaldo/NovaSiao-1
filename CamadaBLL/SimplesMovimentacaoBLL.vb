@@ -110,6 +110,36 @@ Public Class SimplesMovimentacaoBLL
     End Function
     '
     '--------------------------------------------------------------------------------------------
+    ' GET SIMPLES SAIDA PELO ID RETORNA CL_SIMPLES_SAIDA
+    '--------------------------------------------------------------------------------------------
+    Public Function GetSimplesSaida_PorID(myID As Integer) As clSimplesSaida
+        '
+        Dim SQL As New SQLControl
+        SQL.AddParam("@IDTransacao", myID)
+        Dim myQuery As String = "SELECT * FROM qrySimplesSaida WHERE IDTransacao = @IDTransacao"
+        '
+        Try
+            SQL.ExecQuery(myQuery)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            If SQL.RecordCount > 0 Then
+                Dim simples As clSimplesSaida = ConvertDtRow_clSimplesSaida(SQL.DBDT.Rows(0))
+                '
+                Return simples
+            Else
+                Return Nothing
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
     ' CONVERT DATAROW DA DATATABLE qrySimplesSaida EM UM clSimplesSaida
     '--------------------------------------------------------------------------------------------
     Private Function ConvertDtRow_clSimplesSaida(r As DataRow) As clSimplesSaida
@@ -356,7 +386,7 @@ Public Class SimplesMovimentacaoBLL
     End Function
     '
     '--------------------------------------------------------------------------------------------
-    ' GET LISTA SIMPLES SAIDA PARA FRMPROCURA RETORNA LIST OF clSimplesSaida
+    ' GET LISTA SIMPLES ENTRADA PARA FRMPROCURA RETORNA LIST OF clSimplesEntrada
     '--------------------------------------------------------------------------------------------
     Public Function GetSimplesEntradaLista_Procura(IDFilial As Integer,
                                                    Optional dtInicial As Date? = Nothing,
@@ -402,6 +432,36 @@ Public Class SimplesMovimentacaoBLL
             Next
             '
             Return sList
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
+    ' GET SIMPLES ENTRADA PELO ID RETORNA CL_SIMPLES_ENTRADA
+    '--------------------------------------------------------------------------------------------
+    Public Function GetSimplesEntrada_PorID(myID As Integer) As clSimplesEntrada
+        '
+        Dim SQL As New SQLControl
+        SQL.AddParam("@IDTransacao", myID)
+        Dim myQuery As String = "SELECT * FROM qrySimplesEntrada WHERE IDTransacao = @IDTransacao"
+        '
+        Try
+            SQL.ExecQuery(myQuery)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            If SQL.RecordCount > 0 Then
+                Dim simples As clSimplesEntrada = ConvertDtRow_clSimplesEntrada(SQL.DBDT.Rows(0))
+                '
+                Return simples
+            Else
+                Return Nothing
+            End If
             '
         Catch ex As Exception
             Throw ex

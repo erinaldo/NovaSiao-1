@@ -624,6 +624,12 @@
     <Compile Include="Simples\frmSimplesEntradaControle.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Simples\frmSimplesQuitar.designer.vb">
+      <DependentUpon>frmSimplesQuitar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Simples\frmSimplesQuitar.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Simples\SimplesXML.vb" />
     <Compile Include="Simples\frmSimplesSaida.Designer.vb">
       <DependentUpon>frmSimplesSaida.vb</DependentUpon>
@@ -950,6 +956,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Simples\frmSimplesEntradaControle.resx">
       <DependentUpon>frmSimplesEntradaControle.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Simples\frmSimplesQuitar.resx">
+      <DependentUpon>frmSimplesQuitar.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Simples\frmSimplesSaida.resx">
       <DependentUpon>frmSimplesSaida.vb</DependentUpon>
