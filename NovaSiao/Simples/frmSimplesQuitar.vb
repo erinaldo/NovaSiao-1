@@ -1,5 +1,4 @@
 ﻿Imports CamadaBLL
-Imports CamadaDTO
 
 Public Class frmSimplesQuitar
     '
@@ -7,6 +6,7 @@ Public Class frmSimplesQuitar
     Private _IDFilialDestino As Integer?
     Private _IDFilialOrigem As Integer
     Private _FilialOrigem As String
+    Private _EntradaSaida As Boolean
     '
     Public Sub New(formOrigem As Form,
                    EntradaSaida As Boolean,
@@ -21,6 +21,7 @@ Public Class frmSimplesQuitar
         ' Add any initialization after the InitializeComponent() call.
         _formOrigem = formOrigem
         _IDFilialOrigem = IDFilialOrigem
+        _EntradaSaida = EntradaSaida
         lblFilial.Text = FilialOrigem
         CarregaCmbContaOrigem()
         '
@@ -129,6 +130,45 @@ Public Class frmSimplesQuitar
             Exit Sub
         End If
         '
+        Dim simplesBLL As New SimplesMovimentacaoBLL
+        '
+        If _EntradaSaida Then '-- A RECEBER ================================================
+            '
+            '--- Verifica o valor do EmAberto da FilialOrigem
+            '--------------------------------------------------------------------------------------------------------
+            Try
+                '--- Ampulheta ON
+                Cursor = Cursors.WaitCursor
+                '
+                Dim totalAReceber As Double = simplesBLL.Simples_AReceberTotal_Filial(_IDFilialOrigem, _IDFilialDestino)
+                '
+                If totalAReceber < txtValor.Text Then
+                    MessageBox.Show("O Valor que você deseja quitar é maior que o Valor Total do A Receber que há entre as Filiais: " &
+                                    vbNewLine &
+                                    lblFilial.Text.ToUpper & " e " & txtFilialDestino.Text.ToUpper _
+                                    & vbNewLine & "Valor Total A Receber: " & Format(totalAReceber, "C"),
+                                    "Valor Total",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    Return
+                End If
+                '
+            Catch ex As Exception
+                MessageBox.Show("Uma exceção ocorreu ao Verificar Valor de A Receber..." & vbNewLine &
+                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Finally
+                '--- Ampulheta OFF
+                Cursor = Cursors.Default
+            End Try
+            '
+
+            '
+        Else '--- A PAGAR ===================================================================
+
+        End If
+
+
+
+
         '--- Verifica se a DATA DA ENTRADA é permitida pelo sistema
         'If DataBloqueada(propEntrada.EntradaData, propEntrada.IDConta) Then
         '    Exit Sub

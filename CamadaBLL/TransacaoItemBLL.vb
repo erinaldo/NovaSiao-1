@@ -116,8 +116,17 @@ Public Class TransacaoItemBLL
     Public Function InserirNovoItem(Item As clTransacaoItem,
                                     Movimento As EnumMovimento,
                                     MovData As Date,
-                                    InsereCustos As Boolean) As Long
-        Dim db As New AcessoDados
+                                    InsereCustos As Boolean,
+                                    Optional _myAcesso As Object = Nothing) As Long
+        '
+        Dim db As AcessoDados
+        '
+        '--- define o Acesso Dados
+        If IsNothing(_myAcesso) Then
+            db = New AcessoDados
+        Else
+            db = _myAcesso
+        End If
         '
         '--- limpa os parametros
         db.LimparParametros()
@@ -147,13 +156,17 @@ Public Class TransacaoItemBLL
             '
             '--- verifica o resultado
             If Not IsNothing(obj) AndAlso IsNumeric(obj) Then
+                db.CommitTransaction()
                 Return obj
             Else
                 Throw New Exception(obj.ToString)
             End If
+            '
         Catch ex As Exception
+            db.RollBackTransaction()
             Throw ex
         End Try
+        '
     End Function
     '
     '==========================================================================================

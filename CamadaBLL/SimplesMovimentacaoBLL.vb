@@ -4,6 +4,8 @@ Imports System.Data.SqlClient
 
 Public Class SimplesMovimentacaoBLL
     '
+    Private SQL As New SQLControl
+    '
 #Region "SIMPLES SAIDA"
     '
     '--------------------------------------------------------------------------------------------
@@ -114,7 +116,6 @@ Public Class SimplesMovimentacaoBLL
     '--------------------------------------------------------------------------------------------
     Public Function GetSimplesSaida_PorID(myID As Integer) As clSimplesSaida
         '
-        Dim SQL As New SQLControl
         SQL.AddParam("@IDTransacao", myID)
         Dim myQuery As String = "SELECT * FROM qrySimplesSaida WHERE IDTransacao = @IDTransacao"
         '
@@ -178,21 +179,19 @@ Public Class SimplesMovimentacaoBLL
                                                  Optional dtInicial As Date? = Nothing,
                                                  Optional dtFinal As Date? = Nothing) As List(Of clSimplesSaida)
         '
-        Dim sql As New SQLControl
-        '
-        sql.AddParam("@IDFilial", IDFilial)
+        SQL.AddParam("@IDFilial", IDFilial)
         Dim myQuery As String = "SELECT * FROM qrySimplesSaida WHERE IDPessoaOrigem = @IDFilial"
         '
         If Not IsNothing(dtInicial) Then
             '
-            sql.AddParam("@DataInicial", dtInicial)
+            SQL.AddParam("@DataInicial", dtInicial)
             myQuery = myQuery & " AND TransacaoData >= @DataInicial"
             '
         End If
         '
         If Not IsNothing(dtFinal) Then
             '
-            sql.AddParam("@DataFinal", dtFinal)
+            SQL.AddParam("@DataFinal", dtFinal)
             myQuery = myQuery & " AND TransacaoData <= @DataFinal"
             '
         End If
@@ -232,7 +231,7 @@ Public Class SimplesMovimentacaoBLL
                                                     Optional IDFilialDestino As Integer? = Nothing,
                                                     Optional dtInicial As Date? = Nothing,
                                                     Optional dtFinal As Date? = Nothing) As List(Of clAReceberParcela)
-        Dim SQL As New SQLControl
+        '
         Dim myQuery As String = "SELECT * FROM qryAReceberParcela WHERE Origem = 3 AND IDFilial = @IDFilialOrigem "
         '
         '--- Add Params
@@ -315,6 +314,133 @@ Public Class SimplesMovimentacaoBLL
         '
     End Function
     '
+    '--------------------------------------------------------------------------------------------
+    ' GERA SIMPLES ENTRADA A PARTIR DE UMA SIMPLES SAIDA
+    '--------------------------------------------------------------------------------------------
+    Public Function Insert_SimplesEntrada_FOR_SimplesSaida(_Simples As clSimplesSaida,
+                                                           _IDFilial As Integer,
+                                                           _IDUser As Integer) As clSimplesEntrada
+        '
+        '--- GET LIST OF ITENS E ARECEBER
+        '========================================================================
+        Dim SaidaItens As New List(Of clTransacaoItem)
+        Dim SaidaAReceber As New List(Of clAReceberParcela)
+        '
+        Try
+            '--- GET A LIST OF ITENS
+            Dim tBLL As New TransacaoItemBLL
+            SaidaItens = tBLL.GetVendaItens_IDVenda_List(_Simples.IDTransacao, _IDFilial)
+            '
+            ' GET A LIST OF ARECEBER
+            Dim rBLL As New ParcelaBLL
+            SaidaAReceber = rBLL.Parcela_GET_PorIDOrigem(3, _Simples.IDTransacao)
+            '
+        Catch ex As Exception
+            Throw ex
+            Return Nothing
+        End Try
+        '
+        ' INIT ACESSODADOS AND TRANSACTION
+        '========================================================================
+        Dim db As New AcessoDados
+        db.BeginTransaction()
+        '
+        ' INSERT SIMPLES ENTRADA
+        '========================================================================
+        Dim sBLL As New SimplesMovimentacaoBLL
+        Dim newSimplesEntrada As New clSimplesEntrada
+        '
+        Dim newSEntrada As New clSimplesEntrada With {
+            .IDPessoaDestino = _Simples.IDPessoaDestino,
+            .IDPessoaOrigem = _Simples.IDPessoaOrigem,
+            .IDUser = _IDUser,
+            .TransacaoData = _Simples.TransacaoData,
+            .EntradaData = _Simples.TransacaoData,
+            .IDTransacaoOrigem = _Simples.IDTransacao,
+            .ValorTotal = _Simples.ValorTotal
+        }
+        '
+        Try
+            newSimplesEntrada = sBLL.InsertSimplesEntrada_Procedure_Classe(newSEntrada, db)
+        Catch ex As Exception
+            Throw ex
+            db.RollBackTransaction()
+            Return Nothing
+        End Try
+        '
+        ' INSERT ITENS
+        '========================================================================
+        Dim ItemBLL As New TransacaoItemBLL
+        '
+        For Each item As clTransacaoItem In SaidaItens
+            '
+            '--- cria o novo Item
+            Dim newItem As New clTransacaoItem With {
+                .Desconto = item.Desconto,
+                .IDProduto = item.IDProduto,
+                .Preco = item.Preco,
+                .Quantidade = item.Quantidade,
+                .IDFilial = _Simples.IDPessoaDestino,
+                .IDTransacao = newSimplesEntrada.IDTransacao
+            }
+            '
+            '
+            Dim myID As Long? = Nothing
+            '
+            '--- Insere o novo ITEM no BD
+            Try
+                myID = ItemBLL.InserirNovoItem(newItem,
+                                               TransacaoItemBLL.EnumMovimento.ENTRADA,
+                                               newSimplesEntrada.EntradaData,
+                                               False, db)
+                newItem.IDTransacaoItem = myID
+            Catch ex As Exception
+                Throw ex
+                db.RollBackTransaction()
+                Return Nothing
+            End Try
+            '
+        Next
+        '
+        ' INSERT A APAGAR
+        '========================================================================
+        Dim pagBLL As New APagarBLL
+        '
+        '--- transforma cada AReceber (SimplesSaida) em APagar (SimplesEntrada)
+        For Each rec As clAReceberParcela In SaidaAReceber
+            Dim newAPagar As New clAPagar With {
+                    .Origem = 4, '--> tblSimplesEntrada
+                    .IDOrigem = _Simples.IDTransacao,
+                    .IDPessoa = _Simples.IDPessoaOrigem,
+                    .IDFilial = _Simples.IDPessoaDestino,
+                    .IDCobrancaForma = 1, '--> EmCarteira
+                    .Identificador = Format(rec.IDAReceber, "0000") & rec.Letra,
+                    .RGBanco = Nothing,
+                    .Vencimento = rec.Vencimento,
+                    .APagarValor = rec.ParcelaValor,
+                    .Situacao = 0,
+                    .ValorPago = 0
+            }
+            '
+            '--- Insere cada um APagar no BD
+            Try
+                pagBLL.InserirNovo_APagar(newAPagar, db)
+            Catch ex As Exception
+                Throw ex
+                db.RollBackTransaction()
+                Return Nothing
+            End Try
+            '
+        Next
+        '
+        ' COMMIT TRANSACTION
+        '========================================================================
+        db.CommitTransaction()
+        '
+        Return newSimplesEntrada
+        '
+    End Function
+    '
 #End Region '/ SIMPLES SAIDA
     '
 #Region "SIMPES ENTRADA"
@@ -322,11 +448,13 @@ Public Class SimplesMovimentacaoBLL
     '--------------------------------------------------------------------------------------------
     ' INSERT NOVA SIMPLES ENTRADA E RETORNA UMA CLSIMPLESENTRADA
     '--------------------------------------------------------------------------------------------
-    Public Function InsertSimplesEntrada_Procedure_Classe(_simples As clSimplesEntrada) As clSimplesEntrada
+    Public Function InsertSimplesEntrada_Procedure_Classe(_simples As clSimplesEntrada,
+                                                          Optional _myAcesso As Object = Nothing) As clSimplesEntrada
         Try
             Dim dtSimples As DataTable
             '
-            dtSimples = InsertSimplesEntrada_Procedure_DT(_simples)
+            dtSimples = InsertSimplesEntrada_Procedure_DT(_simples, _myAcesso)
+            '
             If dtSimples.Rows.Count > 0 Then
                 Dim r As DataRow = dtSimples(0)
                 '
@@ -343,12 +471,22 @@ Public Class SimplesMovimentacaoBLL
     '--------------------------------------------------------------------------------------------
     ' INSERT SIMPLES ENTRADA E RETORNA UM DATATABLE
     '--------------------------------------------------------------------------------------------
-    Public Function InsertSimplesEntrada_Procedure_DT(ByVal _sim As clSimplesEntrada) As DataTable
-        Dim objDB As New AcessoDados
+    Public Function InsertSimplesEntrada_Procedure_DT(ByVal _sim As clSimplesEntrada,
+                                                      Optional myAcesso As AcessoDados = Nothing) As DataTable
+        '
+        Dim objDB As AcessoDados
+        '
+        If IsNothing(myAcesso) Then
+            objDB = New AcessoDados
+        Else
+            objDB = myAcesso
+        End If
+        '
         Dim Conn As New SqlCommand
         '
         'Adiciona os Parâmetros
         objDB.LimparParametros()
+        objDB.BeginTransaction()
         '
         '-- PARAMETROS DA TBLTRANSACAO
         '@IDPessoaDestino AS INT, x
@@ -374,12 +512,14 @@ Public Class SimplesMovimentacaoBLL
             End If
             '
             If IsNumeric(dtV.Rows(0).Item(0)) Then
+                objDB.CommitTransaction()
                 Return dtV
             Else
                 Throw New Exception(dtV.Rows(0).Item(0))
             End If
             '
         Catch ex As Exception
+            objDB.RollBackTransaction()
             Throw ex
         End Try
         '
@@ -392,9 +532,7 @@ Public Class SimplesMovimentacaoBLL
                                                    Optional dtInicial As Date? = Nothing,
                                                    Optional dtFinal As Date? = Nothing) As List(Of clSimplesEntrada)
         '
-        Dim sql As New SQLControl
-        '
-        sql.AddParam("@IDFilial", IDFilial)
+        SQL.AddParam("@IDFilial", IDFilial)
         Dim myQuery As String = "SELECT * FROM qrySimplesEntrada WHERE IDPessoaDestino = @IDFilial "
         '
         If Not IsNothing(dtInicial) Then
@@ -444,7 +582,6 @@ Public Class SimplesMovimentacaoBLL
     '--------------------------------------------------------------------------------------------
     Public Function GetSimplesEntrada_PorID(myID As Integer) As clSimplesEntrada
         '
-        Dim SQL As New SQLControl
         SQL.AddParam("@IDTransacao", myID)
         Dim myQuery As String = "SELECT * FROM qrySimplesEntrada WHERE IDTransacao = @IDTransacao"
         '
@@ -501,7 +638,6 @@ Public Class SimplesMovimentacaoBLL
     '--------------------------------------------------------------------------------------------
     Public Function VerificaEntrada(IDTransacaoOrigem As Integer) As clSimplesEntrada
         '
-        Dim SQL As New SQLControl
         Dim myQuery As String = "SELECT * FROM qrySimplesEntrada WHERE IDTransacaoOrigem = @ID"
         '
         SQL.AddParam("@ID", IDTransacaoOrigem)
@@ -533,7 +669,6 @@ Public Class SimplesMovimentacaoBLL
     '--------------------------------------------------------------------------------------------
     Public Function Updata_SimplesEntrada_Observacao(IDSimples As Integer, Observacao As String) As Boolean
         '
-        Dim SQL As New SQLControl
         Dim myQuery As String = ""
         '
         SQL.AddParam("@IDSimples", IDSimples)
@@ -628,6 +763,42 @@ Public Class SimplesMovimentacaoBLL
             pList = pList.OrderBy(Function(x) x.Vencimento).ToList
             '
             Return pList
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
+    ' RETORNA TOTAL DE A PAGAR ENTRE DUAS FILIAIS 
+    '--------------------------------------------------------------------------------------------
+    Public Function Simples_AReceberTotal_Filial(IDFilialCreditada As Integer,
+                                                 IDFilialDebitada As Integer) As Double
+        '
+        Dim myQuery As String = "SELECT SUM(ParcelaValor) - SUM(ValorPagoParcela) " &
+                                "FROM qryAReceberParcela " &
+                                "WHERE Origem = 3 " &
+                                "AND SituacaoParcela = 0 " &
+                                "AND IDFilial = @IDFilialCreditada " &
+                                "AND IDPessoa = @IDFilialDebitada"
+        '
+        SQL.ClearParams()
+        SQL.AddParam("@IDFilialCreditada", IDFilialCreditada)
+        SQL.AddParam("@IDFilialDebitada", IDFilialDebitada)
+        '
+        Try
+            SQL.ExecQuery(myQuery)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            End If
+            '
+            If SQL.RecordCount = 0 Then
+                Return 0
+            Else
+                Return SQL.DBDT.Rows(0).Item(0)
+            End If
             '
         Catch ex As Exception
             Throw ex

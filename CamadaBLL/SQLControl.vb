@@ -70,6 +70,11 @@ Public Class SQLControl
         Params.Add(NewParam)
     End Sub
     '
+    ' CLEAR PARAMS
+    Public Sub ClearParams()
+        Params.Clear()
+    End Sub
+    '
     ' ERROR CHECKING
     Public Function HasException(Optional Report As Boolean = False) As Boolean
         '

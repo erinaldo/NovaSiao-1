@@ -54,8 +54,20 @@ Public Class APagarBLL
     '===================================================================================================
     ' SALVAR ITEM APAGAR
     '===================================================================================================
-    Public Function InserirNovo_APagar(_pag As clAPagar) As Integer
-        Dim db As New AcessoDados
+    Public Function InserirNovo_APagar(_pag As clAPagar,
+                                       Optional _myAcesso As Object = Nothing) As Integer
+        '
+        '
+        '--- define o Acesso Dados
+        Dim db As AcessoDados
+        '
+        If IsNothing(_myAcesso) Then
+            db = New AcessoDados
+        Else
+            db = _myAcesso
+        End If
+        '
+        '--- define o object response
         Dim obj As Object = Nothing
         '
         Try

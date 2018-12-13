@@ -87,7 +87,7 @@ Public Class AcessoBackup
             Dim db As New AcessoDados
             '
             Dim sqlProp As String = String.Format("UPDATE tblPropriedades SET BackupData = '{0}'", Today)
-            db.ExecutarManipulacao(CommandType.Text, sqlProp)
+            db.ExecutarConsulta(CommandType.Text, sqlProp)
             '
             '--- retorna
             Return True

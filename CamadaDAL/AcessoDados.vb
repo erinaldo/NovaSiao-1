@@ -1,5 +1,4 @@
 ﻿Imports System.Data.SqlClient
-Imports System.Reflection
 '
 Public Class AcessoDados
     '-------------------------------------------------------------------------------------------------------
@@ -8,6 +7,8 @@ Public Class AcessoDados
     Dim conn As SqlConnection
     Dim cmd As SqlCommand
     Dim connStr As String
+    Dim isTran As Boolean = False
+    Private trans As SqlTransaction
     Public ParamList As New List(Of SqlParameter)
     '
     '-------------------------------------------------------------------------------------------------------
@@ -23,6 +24,7 @@ Public Class AcessoDados
     ' RETORNAR A CONECTION STRING
     '-------------------------------------------------------------------------------------------------------
     Public Shared Function GetConnectionString() As String
+        '
         Dim retorno As New String("")
         '
         Try
@@ -49,6 +51,7 @@ Public Class AcessoDados
         End If
         '
         Return retorno
+        '
     End Function
     '
     '-------------------------------------------------------------------------------------------------------
@@ -125,10 +128,17 @@ Public Class AcessoDados
             '
             ParamList.ForEach(Sub(p) cmd.Parameters.Add(p))
             '
-            Return cmd.ExecuteScalar
+            If Not isTran Then
+                Return cmd.ExecuteScalar
+                CloseConn()
+            Else
+                cmd.Transaction = trans
+                Return cmd.ExecuteScalar
+            End If
             '
         Catch ex As Exception
             '
+            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try
@@ -139,6 +149,7 @@ Public Class AcessoDados
     '--- EXECUTAR CONSULTA
     '-------------------------------------------------------------------------------------------------------
     Public Function ExecutarConsulta(comandType As CommandType, nomeStoredProcedureOuTextoSQL As String) As DataTable
+        '
         Try
             '
             If conn.State = ConnectionState.Closed Then Connect()
@@ -150,20 +161,26 @@ Public Class AcessoDados
             cmd.CommandTimeout = 7200
             '
             ParamList.ForEach(Sub(p) cmd.Parameters.Add(p))
+            '
+            '--- IF active transaction
+            If isTran Then cmd.Transaction = trans
 
             Dim sqlDA As SqlDataAdapter = New SqlDataAdapter(cmd)
             '
             Dim dtTable As DataTable = New DataTable()
-            '
             sqlDA.Fill(dtTable)
-            '
             Return dtTable
+            '
+            '--- Close connection if NOT active Transaction
+            If Not isTran Then CloseConn()
             '
         Catch ex As Exception
             '
+            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try
+        '
     End Function
     '
     '-------------------------------------------------------------------------------------------------------
@@ -181,13 +198,23 @@ Public Class AcessoDados
             cmd.CommandText = strCmdTxt
             cmd.CommandType = CommandType.Text
             '
-            'EXECUTA QUERY
-            intRows = cmd.ExecuteNonQuery()
-
+            If Not isTran Then
+                'EXECUTA QUERY
+                intRows = cmd.ExecuteNonQuery()
+                ' Close Connection
+                CloseConn()
+            Else
+                ' Add Active Transaction
+                cmd.Transaction = trans
+                'EXECUTA QUERY
+                intRows = cmd.ExecuteNonQuery()
+            End If
+            '
         Catch ex As Exception
+            '
+            If isTran Then RollBackTransaction()
             Throw ex
-        Finally
-            CloseConn()
+            '
         End Try
         '
         ' RETORNA A QUANTIDADE DE REGISTROS
@@ -218,10 +245,20 @@ Public Class AcessoDados
         cmd.CommandType = CommandType.Text
         '
         Try
-            Return cmd.ExecuteReader
-            CloseConn()
+            '
+            If Not isTran Then
+                Return cmd.ExecuteReader
+                CloseConn()
+            Else
+                cmd.Transaction = trans
+                Return cmd.ExecuteReader
+            End If
+            '
         Catch ex As Exception
+            '
+            If isTran Then RollBackTransaction()
             Throw ex
+            '
         End Try
         '
     End Function
@@ -229,7 +266,9 @@ Public Class AcessoDados
     '-------------------------------------------------------------------------------------------------------
     ' EXECUTAR UM PROCEDURE COM PARÂMETROS
     '----------------------------------------------------------------------------
-    Public Function ExecuteProcedure(ByVal myProcedureName As String, Optional ByVal myParam As SqlParameterCollection = Nothing) As String
+    Public Function ExecuteProcedure(ByVal myProcedureName As String,
+                                     Optional ByVal myParam As SqlParameterCollection = Nothing) As String
+        '
         If conn.State = ConnectionState.Closed Then
             Try
                 Connect()
@@ -250,19 +289,30 @@ Public Class AcessoDados
         End If
         '
         Try
-            ExecuteProcedure = cmd.ExecuteScalar
+            '
+            If Not isTran Then
+                Return cmd.ExecuteScalar
+                CloseConn()
+            Else
+                cmd.Transaction = trans
+                Return cmd.ExecuteScalar
+            End If
+            '
         Catch ex As SqlException
+            '
+            If isTran Then RollBackTransaction()
             Throw ex
-        Finally
-            conn.Close()
-            ExecuteProcedure = ""
+            '
         End Try
+        '
     End Function
     '
     '-------------------------------------------------------------------------------------------------------
     ' EXECUTAR UM PROCEDURE COM PARÂMETROS E OBTER O IDENTITY
     '----------------------------------------------------------------------------
-    Public Function ExecuteProcedureID(ByVal myProcedureName As String, Optional ByVal myParam As SqlParameterCollection = Nothing) As String
+    Public Function ExecuteProcedureID(ByVal myProcedureName As String,
+                                       Optional ByVal myParam As SqlParameterCollection = Nothing) As String
+        '
         Try
             If conn.State = ConnectionState.Closed Then Connect()
             '
@@ -277,15 +327,19 @@ Public Class AcessoDados
                 Next i
             End If
             '
-            Dim obj = cmd.ExecuteScalar
-
-            Return obj
-
-            'Return cmd.ExecuteScalar
+            If Not isTran Then
+                Return cmd.ExecuteScalar
+                CloseConn()
+            Else
+                cmd.Transaction = trans
+                Return cmd.ExecuteScalar
+            End If
+            '
         Catch ex As Exception
+            '
+            If isTran Then RollBackTransaction()
             Throw ex
-        Finally
-            CloseConn()
+            '
         End Try
         '
     End Function
@@ -313,6 +367,9 @@ Public Class AcessoDados
             cmd.CommandText = nomeStoredProcedureOuTextoSQL
             cmd.CommandTimeout = 1800
             '
+            '--- verifica transaction
+            If isTran Then cmd.Transaction = trans
+            '
             '--- cria o Adapter e o DataTable
             Dim sqlDtAdapter As New SqlDataAdapter(cmd)
             Dim dtTable As New DataTable
@@ -320,32 +377,51 @@ Public Class AcessoDados
             '--- preenche o DataTable
             sqlDtAdapter.Fill(dtTable)
             '
+            '--- Retorna
             Return dtTable
+            '
+            '--- close Connection if not Transaction
+            If Not isTran Then CloseConn()
+            '
         Catch ex As Exception
+            '
+            If isTran Then RollBackTransaction()
             Throw ex
-        Finally
-            CloseConn()
+            '
         End Try
+        '
     End Function
     '
-    '-------------------------------------------------------------------------------------------------------
-    ' EXECUTA UM DATAREADER E RETORNA UM DATASET
-    '----------------------------------------------------------------------------
-    Public Sub PreencheDataSetDeDataReader(ByVal ds As DataSet, ByVal table As String, ByVal dr As IDataReader)
-        '
-        ' Cria um  xxxDataAdapter do mesmo tipo de um DataReader
-        Dim tipoDataReader As Type = CObj(dr).GetType
-        Dim nomeTipo As String = tipoDataReader.FullName.Replace("DataReader", "DataAdapter")
-        Dim tipoDataAdapter As Type = tipoDataReader.Assembly.GetType(nomeTipo)
-        Dim da As Object = Activator.CreateInstance(tipoDataAdapter)
-
-        ' invoca o método protegido Fill que toma um objeto IDataReader
-        Dim args() As Object = {ds, table, dr, 0, 999999}
-        tipoDataAdapter.InvokeMember("Fill", BindingFlags.InvokeMethod Or BindingFlags.NonPublic Or BindingFlags.Instance, Nothing, da, args)
-
-        ' fecha o DataReader
-        dr.Close()
-        '
+    '=============================================================
+    ' SQL TRANSACTIONS
+    '=============================================================
+    '
+    '--- INICIA TRANSACTION
+    Public Sub BeginTransaction()
+        If isTran Then Return
+        If conn.State = ConnectionState.Closed Then
+            conn.Open()
+        End If
+        trans = conn.BeginTransaction()
+        isTran = True
+    End Sub
+    '
+    '--- COMMIT TRANSACTION
+    Public Sub CommitTransaction()
+        If Not isTran Then Return
+        trans.Commit()
+        conn.Close()
+        trans = Nothing
+        isTran = False
+    End Sub
+    '
+    '--- ROLLBACK TRANSACTION
+    Public Sub RollBackTransaction()
+        If Not isTran Then Return
+        trans.Rollback()
+        conn.Close()
+        trans = Nothing
+        isTran = False
     End Sub
     '
 End Class

@@ -31,30 +31,6 @@ Public Class UsuarioBLL
     End Function
     '
     '--------------------------------------------------------------------------------------------------------------------
-    ' GET DATASET
-    '--------------------------------------------------------------------------------------------------------------------
-    Public Function GetUsuarios_DS() As DataSet
-        Dim objdb As New AcessoDados
-        Dim strSql As String = ""
-        Dim ds As New DataSet
-
-        strSql = "SELECT * FROM tblUsuario"
-
-        Try
-            Dim dr As SqlDataReader = objdb.ExecuteAndGetReader(strSql)
-            Dim db As New AcessoDados
-
-            db.PreencheDataSetDeDataReader(ds, "tblUsuario", dr)
-            dr.Close()
-
-            Return ds
-        Catch ex As Exception
-            Throw ex
-        End Try
-
-    End Function
-    '
-    '--------------------------------------------------------------------------------------------------------------------
     ' UPDATE
     '--------------------------------------------------------------------------------------------------------------------
     Public Function AtualizaUsuario_Procedure_ID(ByVal _usuario As clUsuario) As Long

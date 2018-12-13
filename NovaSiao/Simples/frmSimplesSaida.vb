@@ -389,6 +389,7 @@ Public Class frmSimplesSaida
         '--- Insere o novo ITEM no BD
         Try
             newItem.IDTransacao = _Simples.IDTransacao
+
             myID = ItemBLL.InserirNovoItem(newItem,
                                            TransacaoItemBLL.EnumMovimento.SAIDA,
                                            _Simples.TransacaoData,
@@ -1062,6 +1063,9 @@ Public Class frmSimplesSaida
         '
         '--- Verifica se a SITUACAO do registro permite salvar
         If Not (Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro) Then
+            '
+            ' Verifica se a SIMPLES ENTRADA foi GERADA e pergunta ao Usuario
+
             '
             If MessageBox.Show("Deseja gerar arquivo de transmissão de Simples Saída?",
                                "Gerar Arquivo",
