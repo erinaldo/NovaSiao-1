@@ -32,7 +32,7 @@ Public Class MovimentacaoBLL
         Dim SQL As New SQLControl
         SQL.AddParam("@IDConta", IDConta)
         '
-        Dim strSQL As String = "SELECT BloqueioData FROM tblContas WHERE IDConta = @IDConta"
+        Dim strSQL As String = "SELECT BloqueioData FROM tblCaixaContas WHERE IDConta = @IDConta"
         '
         Try
             SQL.ExecQuery(strSQL)
@@ -170,6 +170,9 @@ Public Class MovimentacaoBLL
         mySQL.AddParam("@Parcelas", IIf(IsNothing(myMovForma.Parcelas), DBNull.Value, myMovForma.Parcelas))
         mySQL.AddParam("@Comissao", IIf(IsNothing(myMovForma.Comissao), DBNull.Value, myMovForma.Comissao))
         mySQL.AddParam("@NoDias", IIf(IsNothing(myMovForma.NoDias), DBNull.Value, myMovForma.NoDias))
+        mySQL.AddParam("@IDFilial", IIf(IsNothing(myMovForma.IDFilial), DBNull.Value, myMovForma.IDFilial))
+        mySQL.AddParam("@IDContaPadrao", IIf(IsNothing(myMovForma.IDContaPadrao), DBNull.Value, myMovForma.IDContaPadrao))
+
         mySQL.AddParam("@Ativo", True)
         '
         Try
@@ -204,6 +207,8 @@ Public Class MovimentacaoBLL
         mySQL.AddParam("@Parcelas", IIf(IsNothing(myMovForma.Parcelas), DBNull.Value, myMovForma.Parcelas))
         mySQL.AddParam("@Comissao", IIf(IsNothing(myMovForma.Comissao), DBNull.Value, myMovForma.Comissao))
         mySQL.AddParam("@NoDias", IIf(IsNothing(myMovForma.NoDias), DBNull.Value, myMovForma.NoDias))
+        mySQL.AddParam("@IDFilial", IIf(IsNothing(myMovForma.IDFilial), DBNull.Value, myMovForma.IDFilial))
+        mySQL.AddParam("@IDContaPadrao", If(myMovForma.IDContaPadrao, DBNull.Value))
         mySQL.AddParam("@Ativo", True)
         '
         Try
@@ -236,7 +241,7 @@ Public Class MovimentacaoBLL
         '
         Try
             '
-            SQL.ExecQuery("SELECT * FROM tblMovTipo")
+            SQL.ExecQuery("SELECT * FROM tblCaixaMovFormaTipo")
             Dim dtTipo As DataTable = SQL.DBDT
             '
             If SQL.HasException Then

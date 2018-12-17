@@ -64,8 +64,6 @@ Public Class frmMovTipos
             Select Case value
                 Case DadosOrigem.MovTipo
                     lblTitulo.Text = "Tipos de Movimentação"
-                Case DadosOrigem.Operadora
-                    lblTitulo.Text = "Operadoras de Cartao"
                 Case DadosOrigem.Cartao
                     lblTitulo.Text = "Tipos de Cartao"
             End Select
@@ -110,7 +108,6 @@ Public Class frmMovTipos
     '
     Public Enum DadosOrigem
         MovTipo = 1
-        Operadora = 2
         Cartao = 3
     End Enum
     '
@@ -147,8 +144,6 @@ Public Class frmMovTipos
         Select Case propDadosOrigem
             Case DadosOrigem.MovTipo
                 dtOrigem = mbll.MovTipo_GET_Dt
-            Case DadosOrigem.Operadora
-                dtOrigem = mbll.MovOperadora_GET_Dt
             Case DadosOrigem.Cartao
                 dtOrigem = mbll.MovCartao_GET_Dt
         End Select
@@ -165,8 +160,6 @@ Public Class frmMovTipos
             Select Case propDadosOrigem
                 Case DadosOrigem.MovTipo
                     .DataPropertyName = "IDMovTipo"
-                Case DadosOrigem.Operadora
-                    .DataPropertyName = "IDOperadora"
                 Case DadosOrigem.Cartao
                     .DataPropertyName = "IDCartao"
             End Select
@@ -187,9 +180,6 @@ Public Class frmMovTipos
                 Case DadosOrigem.MovTipo
                     .HeaderText = "Tipo de Movimentação"
                     .DataPropertyName = "MovTipo"
-                Case DadosOrigem.Operadora
-                    .HeaderText = "Nome da Operadora"
-                    .DataPropertyName = "Operadora"
                 Case DadosOrigem.Cartao
                     .HeaderText = "Tipo de Cartão"
                     .DataPropertyName = "Cartao"
@@ -371,8 +361,6 @@ Public Class frmMovTipos
             Select Case propDadosOrigem
                 Case DadosOrigem.MovTipo
                     SalvarRegistro_Tipo()
-                Case DadosOrigem.Operadora
-                    SalvarRegistro_Operadora()
                 Case DadosOrigem.Cartao
                     SalvarRegistro_Cartao()
             End Select
@@ -463,87 +451,6 @@ Public Class frmMovTipos
         Else
             Try
                 mBLL.MovTipo_Update(IDMovTipo, MovTipo, Ativo)
-                Return True
-            Catch ex As Exception
-                MessageBox.Show("Uma exceção ocorreu ao alterar registro..." & vbNewLine &
-                                ex.Message & vbNewLine &
-                                "O seguinte registro não pôde ser salvo: " & MovTipo.ToUpper,
-                                "Erro ao Salvar",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return False
-            End Try
-        End If
-        '
-    End Function
-    '
-    ' SALVAR O REGISTRO OPERADORA (INSERIDO | ALTERADO)
-    Private Sub SalvarRegistro_Operadora()
-        '
-        '-- variavel para informar o número de registros salvos
-        Dim regSalvos As Integer = 0
-        '
-        For Each r As DataGridViewRow In dgvListagem.Rows
-            '
-            ' verfica se já existe valor igual
-            If DirectCast(r.DataBoundItem, DataRowView).Row.RowState <> DataRowState.Unchanged Then
-                If VerificaDuplicado(r.Index, dgvListagem.Rows(r.Index).Cells(1).Value) = True Then
-                    Continue For
-                End If
-            End If
-            '
-            '---salva os registros
-            If dtOrigem.Rows(r.Index).RowState = DataRowState.Modified Then ' registro ALTERADO
-                '
-                If Salva_Operadora(r.Index, False) = True Then
-                    regSalvos += 1
-                End If
-                '
-            ElseIf dtOrigem.Rows(r.Index).RowState = DataRowState.Added Then ' registro NOVO
-                '
-                If Salva_Operadora(r.Index, True) = True Then
-                    regSalvos += 1
-                End If
-                '
-            End If
-            '
-        Next
-        '
-        '--- mensagem de sucesso---
-        If regSalvos > 0 Then
-            MessageBox.Show("Sucesso ao salvar registro(s) de Operadora" & vbNewLine &
-                            "Foram salvo(s) com sucesso " & Format(regSalvos, "00") &
-                            IIf(regSalvos > 1, " registros", " registro"),
-                            "Registro(s) Salvo(s)", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        End If
-        '
-        '---preencher a listagem com os novos valores
-        Get_Dados()
-        Sit = FlagEstado.RegistroSalvo
-        '
-    End Sub
-    '
-    Private Function Salva_Operadora(myRowIndex As Integer, Inserir As Boolean) As Boolean
-        '
-        Dim mBLL As New MovimentacaoBLL
-        Dim IDMovTipo As Integer = dgvListagem.Rows(myRowIndex).Cells(0).Value
-        Dim MovTipo As String = dgvListagem.Rows(myRowIndex).Cells(1).Value
-        Dim Ativo As Boolean = dgvListagem.Rows(myRowIndex).DataBoundItem("Ativo")
-        '
-        If Inserir = True Then
-            Try
-                mBLL.Operadora_Inserir(MovTipo)
-                Return True
-            Catch ex As Exception
-                MessageBox.Show("Uma exceção ocorreu ao inserir registro..." & vbNewLine &
-                                ex.Message & vbNewLine &
-                                "O seguinte registro não pôde ser salvo: " & MovTipo.ToUpper,
-                                "Erro ao Salvar",
-                                MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Return False
-            End Try
-        Else
-            Try
-                mBLL.Operadora_Update(IDMovTipo, MovTipo, Ativo)
                 Return True
             Catch ex As Exception
                 MessageBox.Show("Uma exceção ocorreu ao alterar registro..." & vbNewLine &
@@ -657,10 +564,6 @@ Public Class frmMovTipos
                     Select Case propDadosOrigem
                         Case DadosOrigem.MovTipo
                             MessageBox.Show("Já existe um Tipo de Movimentação com a mesma descrição:" & vbNewLine &
-                                            myNewValor.ToUpper,
-                                            "Valor Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                        Case DadosOrigem.Operadora
-                            MessageBox.Show("Já existe uma Operadora com a mesma descrição:" & vbNewLine &
                                             myNewValor.ToUpper,
                                             "Valor Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                         Case DadosOrigem.Cartao

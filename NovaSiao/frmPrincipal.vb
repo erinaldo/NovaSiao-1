@@ -228,6 +228,7 @@ Public Class frmPrincipal
             Catch ex As Exception
                 MessageBox.Show("Ocorreu uma exceção inesperada ao obter a Conta Padrão:" & vbNewLine &
                                 ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return Nothing
             End Try
             '
         End If

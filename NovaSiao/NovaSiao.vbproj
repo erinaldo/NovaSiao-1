@@ -246,6 +246,12 @@
     <Compile Include="Caixa\frmCaixaProcurar.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Caixa\frmContaProcurar.designer.vb">
+      <DependentUpon>frmContaProcurar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Caixa\frmContaProcurar.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Caixa\frmContas.Designer.vb">
       <DependentUpon>frmContas.vb</DependentUpon>
     </Compile>
@@ -767,6 +773,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Caixa\frmCaixaProcurar.resx">
       <DependentUpon>frmCaixaProcurar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Caixa\frmContaProcurar.resx">
+      <DependentUpon>frmContaProcurar.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Caixa\frmContas.resx">
       <DependentUpon>frmContas.vb</DependentUpon>

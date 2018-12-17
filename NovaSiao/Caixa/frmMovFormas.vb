@@ -11,7 +11,11 @@ Public Class frmMovFormas
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
     '
+    Private _IDFilial As Integer
+    Private _IDConta As Int16
+    '
 #Region "EVENTO LOAD E PROPRIEDADE SIT"
+    '
     Private Property Sit As FlagEstado
         Get
             Return _Sit
@@ -46,6 +50,19 @@ Public Class frmMovFormas
             End If
         End Set
     End Property
+    '
+    Sub New()
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        '
+        '--- define a FilialPadrao
+        _IDFilial = Obter_FilialPadrao()
+        lblFilial.Text = ObterDefault("FilialDescricao")
+        '
+    End Sub
     '
     ' EVENTO LOAD
     Private Sub frmPagamentoFormas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -91,8 +108,8 @@ Public Class frmMovFormas
         txtParcelas.DataBindings.Add("Text", bindMovForma, "Parcelas", True, DataSourceUpdateMode.OnPropertyChanged)
         txtNoDias.DataBindings.Add("Text", bindMovForma, "NoDias", True, DataSourceUpdateMode.OnPropertyChanged)
         txtMovTipo.DataBindings.Add("Text", bindMovForma, "MovTipo", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtOperadora.DataBindings.Add("Text", bindMovForma, "Operadora", True, DataSourceUpdateMode.OnPropertyChanged)
         txtCartao.DataBindings.Add("Text", bindMovForma, "Cartao", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtConta.DataBindings.Add("Text", bindMovForma, "ContaPadrao", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblIDMovForma.DataBindings("Text").Format, AddressOf idFormatRG
@@ -309,29 +326,6 @@ Public Class frmMovFormas
         '
     End Sub
     '
-    ' BUTON ABRIR OPERADORA
-    Private Sub btnOperadora_Click(sender As Object, e As EventArgs) Handles btnOperadora.Click
-        '
-        Dim clF As clMovForma = DirectCast(bindMovForma.CurrencyManager.Current, clMovForma)
-        '    
-        '---abre o formTipos
-        Dim frmTipo As New frmMovTipos(frmMovTipos.DadosOrigem.Operadora, True, Me, IIf(IsNothing(clF.IDOperadora), Nothing, clF.IDOperadora))
-        frmTipo.ShowDialog()
-        '
-        '---verifica os valores
-        If frmTipo.DialogResult <> DialogResult.OK Then
-            txtOperadora.Focus()
-            Exit Sub
-        End If
-        '
-        '--- grava os novos valores
-        txtOperadora.Text = frmTipo.OrigemDesc_Escolhido
-        clF.IDOperadora = frmTipo.IDOrigem_Escolhido
-        txtOperadora.Focus()
-        txtOperadora.SelectAll()
-        '
-    End Sub
-    '
     ' BUTON ABRIR CARTAO PROCURA
     Private Sub btnCartao_Click(sender As Object, e As EventArgs) Handles btnCartao.Click
         '
@@ -352,6 +346,33 @@ Public Class frmMovFormas
         clF.IDCartao = frmTipo.IDOrigem_Escolhido
         txtCartao.Focus()
         txtCartao.SelectAll()
+        '
+    End Sub
+    '
+    Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
+        '
+        '--- Verifica se existe uma filial definida
+        If IsNothing(_IDFilial) Then
+            MessageBox.Show("É necessário definir a Filial para escolher a conta a partir dela..." & vbNewLine &
+                            "Favor escolher uma Filial Padrão...",
+                            "Escolher Filial",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            Return
+        End If
+        '
+        Dim clF As clMovForma = DirectCast(bindMovForma.CurrencyManager.Current, clMovForma)
+        '
+        '--- Abre o frmContas
+        Dim frmConta As New frmContaProcurar(Me, _IDFilial, _IDConta)
+        '
+        frmConta.ShowDialog()
+        '
+        If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
+        '
+        txtConta.Text = frmConta.propConta_Escolha
+        _IDConta = frmConta.propIdConta_Escolha
+        clF.IDContaPadrao = _IDConta
         '
     End Sub
     '
@@ -421,10 +442,6 @@ Public Class frmMovFormas
             Return False
         End If
         '
-        If Not f.VerificaDadosClasse(txtOperadora, "Operadora de Movimento", clF, epValida) Then
-            Return False
-        End If
-        '
         If Not IsNothing(clF.IDCartao) Then
             '
             If Not f.VerificaDadosClasse(txtNoDias, "Intervalo/Prazo de pagamento do Cartão", clF, epValida) Then
@@ -489,17 +506,20 @@ Public Class frmMovFormas
             btnAtivo.Text = "Forma Ativa"
         End Try
     End Sub
+
+    '--- QUANDO PRESSIONA DELETE APAGA LIMPA O CONTA
+    ????
     '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtOperadora.KeyDown, txtMovTipo.KeyDown, txtCartao.KeyDown
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtMovTipo.KeyDown, txtCartao.KeyDown, txtConta.KeyDown
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '
         If e.KeyCode = Keys.Add Then
             e.Handled = True
             Select Case ctr.Name
-                Case "txtOperadora"
-                    btnOperadora_Click(New Object, New EventArgs)
+                Case "txtConta"
+                    btnContaEscolher_Click(New Object, New EventArgs)
                 Case "txtMovTipo"
                     btnMovTipos_Click(New Object, New EventArgs)
                 Case "txtCartao"

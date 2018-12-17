@@ -29,7 +29,6 @@ Partial Class frmMovFormas
         Me.txtNoDias = New Controles.Text_SoNumeros()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
@@ -51,10 +50,13 @@ Partial Class frmMovFormas
         Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
         Me.btnMovTipos = New VIBlend.WinForms.Controls.vButton()
         Me.txtMovTipo = New System.Windows.Forms.TextBox()
-        Me.txtOperadora = New System.Windows.Forms.TextBox()
         Me.txtCartao = New System.Windows.Forms.TextBox()
-        Me.btnOperadora = New VIBlend.WinForms.Controls.vButton()
         Me.btnCartao = New VIBlend.WinForms.Controls.vButton()
+        Me.Label18 = New System.Windows.Forms.Label()
+        Me.lblFilial = New System.Windows.Forms.Label()
+        Me.Label9 = New System.Windows.Forms.Label()
+        Me.txtConta = New System.Windows.Forms.TextBox()
+        Me.btnContaEscolher = New VIBlend.WinForms.Controls.vButton()
         Me.Panel1.SuspendLayout()
         CType(Me.lstFormas, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -67,18 +69,24 @@ Partial Class frmMovFormas
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.Label18)
+        Me.Panel1.Controls.Add(Me.lblFilial)
         Me.Panel1.Controls.Add(Me.btnClose)
         Me.Panel1.Size = New System.Drawing.Size(740, 50)
         Me.Panel1.TabIndex = 0
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblFilial, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.Label18, 0)
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(455, 0)
+        Me.lblTitulo.Location = New System.Drawing.Point(427, 0)
         Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblTitulo.Size = New System.Drawing.Size(285, 50)
+        Me.lblTitulo.Size = New System.Drawing.Size(313, 50)
+        Me.lblTitulo.TabIndex = 2
         Me.lblTitulo.Text = "Formas de Movimentação"
+        Me.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'lstFormas
         '
@@ -164,22 +172,13 @@ Partial Class frmMovFormas
         Me.Label2.TabIndex = 4
         Me.Label2.Text = "Descrição"
         '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(382, 167)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(78, 19)
-        Me.Label3.TabIndex = 9
-        Me.Label3.Text = "Operadora"
-        '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(356, 200)
+        Me.Label4.Location = New System.Drawing.Point(356, 167)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(104, 19)
-        Me.Label4.TabIndex = 12
+        Me.Label4.TabIndex = 9
         Me.Label4.Text = "Tipo do Cartão"
         '
         'Label5
@@ -371,13 +370,13 @@ Partial Class frmMovFormas
         Me.btnClose.BorderStyle = VIBlend.WinForms.Controls.ButtonBorderStyle.NONE
         Me.btnClose.ButtonType = VIBlend.WinForms.Controls.vFormButtonType.CloseButton
         Me.btnClose.CausesValidation = False
-        Me.btnClose.Location = New System.Drawing.Point(12, 14)
+        Me.btnClose.Location = New System.Drawing.Point(709, 12)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.RibbonStyle = False
         Me.btnClose.RoundedCornersMask = CType(15, Byte)
         Me.btnClose.ShowFocusRectangle = False
         Me.btnClose.Size = New System.Drawing.Size(19, 20)
-        Me.btnClose.TabIndex = 27
+        Me.btnClose.TabIndex = 3
         Me.btnClose.TabStop = False
         Me.btnClose.UseVisualStyleBackColor = False
         Me.btnClose.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.BLUEBLEND
@@ -410,40 +409,12 @@ Partial Class frmMovFormas
         Me.txtMovTipo.Size = New System.Drawing.Size(201, 27)
         Me.txtMovTipo.TabIndex = 7
         '
-        'txtOperadora
-        '
-        Me.txtOperadora.Location = New System.Drawing.Point(466, 164)
-        Me.txtOperadora.Name = "txtOperadora"
-        Me.txtOperadora.Size = New System.Drawing.Size(201, 27)
-        Me.txtOperadora.TabIndex = 10
-        '
         'txtCartao
         '
-        Me.txtCartao.Location = New System.Drawing.Point(466, 197)
+        Me.txtCartao.Location = New System.Drawing.Point(466, 164)
         Me.txtCartao.Name = "txtCartao"
         Me.txtCartao.Size = New System.Drawing.Size(201, 27)
-        Me.txtCartao.TabIndex = 13
-        '
-        'btnOperadora
-        '
-        Me.btnOperadora.AllowAnimations = True
-        Me.btnOperadora.BackColor = System.Drawing.Color.Transparent
-        Me.btnOperadora.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None
-        Me.btnOperadora.FlatAppearance.BorderSize = 0
-        Me.btnOperadora.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnOperadora.Image = CType(resources.GetObject("btnOperadora.Image"), System.Drawing.Image)
-        Me.btnOperadora.ImageAbsolutePosition = New System.Drawing.Point(0, 0)
-        Me.btnOperadora.Location = New System.Drawing.Point(673, 164)
-        Me.btnOperadora.Name = "btnOperadora"
-        Me.btnOperadora.RoundedCornersMask = CType(15, Byte)
-        Me.btnOperadora.RoundedCornersRadius = 2
-        Me.btnOperadora.Size = New System.Drawing.Size(27, 27)
-        Me.btnOperadora.StretchImage = True
-        Me.btnOperadora.TabIndex = 11
-        Me.btnOperadora.TabStop = False
-        Me.btnOperadora.UseAbsoluteImagePositioning = True
-        Me.btnOperadora.UseVisualStyleBackColor = True
-        Me.btnOperadora.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICESILVER
+        Me.txtCartao.TabIndex = 10
         '
         'btnCartao
         '
@@ -454,26 +425,90 @@ Partial Class frmMovFormas
         Me.btnCartao.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnCartao.Image = CType(resources.GetObject("btnCartao.Image"), System.Drawing.Image)
         Me.btnCartao.ImageAbsolutePosition = New System.Drawing.Point(0, 0)
-        Me.btnCartao.Location = New System.Drawing.Point(673, 197)
+        Me.btnCartao.Location = New System.Drawing.Point(673, 164)
         Me.btnCartao.Name = "btnCartao"
         Me.btnCartao.RoundedCornersMask = CType(15, Byte)
         Me.btnCartao.RoundedCornersRadius = 2
         Me.btnCartao.Size = New System.Drawing.Size(27, 27)
         Me.btnCartao.StretchImage = True
-        Me.btnCartao.TabIndex = 14
+        Me.btnCartao.TabIndex = 11
         Me.btnCartao.TabStop = False
         Me.btnCartao.UseAbsoluteImagePositioning = True
         Me.btnCartao.UseVisualStyleBackColor = True
         Me.btnCartao.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICESILVER
+        '
+        'Label18
+        '
+        Me.Label18.AutoSize = True
+        Me.Label18.BackColor = System.Drawing.Color.Transparent
+        Me.Label18.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label18.ForeColor = System.Drawing.Color.Gainsboro
+        Me.Label18.Location = New System.Drawing.Point(101, 3)
+        Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(43, 13)
+        Me.Label18.TabIndex = 1
+        Me.Label18.Text = "Filial:"
+        Me.Label18.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
+        'lblFilial
+        '
+        Me.lblFilial.BackColor = System.Drawing.Color.Transparent
+        Me.lblFilial.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblFilial.ForeColor = System.Drawing.Color.AliceBlue
+        Me.lblFilial.Location = New System.Drawing.Point(4, 15)
+        Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblFilial.Name = "lblFilial"
+        Me.lblFilial.Size = New System.Drawing.Size(240, 30)
+        Me.lblFilial.TabIndex = 0
+        Me.lblFilial.Text = "Filial"
+        Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label9
+        '
+        Me.Label9.AutoSize = True
+        Me.Label9.Location = New System.Drawing.Point(359, 200)
+        Me.Label9.Name = "Label9"
+        Me.Label9.Size = New System.Drawing.Size(101, 19)
+        Me.Label9.TabIndex = 12
+        Me.Label9.Text = "Conta Destino"
+        '
+        'txtConta
+        '
+        Me.txtConta.Location = New System.Drawing.Point(466, 197)
+        Me.txtConta.Name = "txtConta"
+        Me.txtConta.Size = New System.Drawing.Size(201, 27)
+        Me.txtConta.TabIndex = 13
+        '
+        'btnContaEscolher
+        '
+        Me.btnContaEscolher.AllowAnimations = True
+        Me.btnContaEscolher.BackColor = System.Drawing.Color.Transparent
+        Me.btnContaEscolher.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None
+        Me.btnContaEscolher.FlatAppearance.BorderSize = 0
+        Me.btnContaEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnContaEscolher.Image = CType(resources.GetObject("btnContaEscolher.Image"), System.Drawing.Image)
+        Me.btnContaEscolher.ImageAbsolutePosition = New System.Drawing.Point(0, 0)
+        Me.btnContaEscolher.Location = New System.Drawing.Point(673, 197)
+        Me.btnContaEscolher.Name = "btnContaEscolher"
+        Me.btnContaEscolher.RoundedCornersMask = CType(15, Byte)
+        Me.btnContaEscolher.RoundedCornersRadius = 2
+        Me.btnContaEscolher.Size = New System.Drawing.Size(27, 27)
+        Me.btnContaEscolher.StretchImage = True
+        Me.btnContaEscolher.TabIndex = 14
+        Me.btnContaEscolher.TabStop = False
+        Me.btnContaEscolher.UseAbsoluteImagePositioning = True
+        Me.btnContaEscolher.UseVisualStyleBackColor = True
+        Me.btnContaEscolher.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICESILVER
         '
         'frmMovFormas
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(740, 414)
         Me.Controls.Add(Me.btnCartao)
-        Me.Controls.Add(Me.btnOperadora)
+        Me.Controls.Add(Me.btnContaEscolher)
         Me.Controls.Add(Me.txtCartao)
-        Me.Controls.Add(Me.txtOperadora)
+        Me.Controls.Add(Me.txtConta)
         Me.Controls.Add(Me.txtMovTipo)
         Me.Controls.Add(Me.btnMovTipos)
         Me.Controls.Add(Me.txtParcelas)
@@ -484,8 +519,8 @@ Partial Class frmMovFormas
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label7)
         Me.Controls.Add(Me.Label5)
+        Me.Controls.Add(Me.Label9)
         Me.Controls.Add(Me.Label4)
-        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtNoDias)
         Me.Controls.Add(Me.txtComissao)
@@ -500,8 +535,8 @@ Partial Class frmMovFormas
         Me.Controls.SetChildIndex(Me.txtComissao, 0)
         Me.Controls.SetChildIndex(Me.txtNoDias, 0)
         Me.Controls.SetChildIndex(Me.Label1, 0)
-        Me.Controls.SetChildIndex(Me.Label3, 0)
         Me.Controls.SetChildIndex(Me.Label4, 0)
+        Me.Controls.SetChildIndex(Me.Label9, 0)
         Me.Controls.SetChildIndex(Me.Label5, 0)
         Me.Controls.SetChildIndex(Me.Label7, 0)
         Me.Controls.SetChildIndex(Me.Label6, 0)
@@ -512,11 +547,12 @@ Partial Class frmMovFormas
         Me.Controls.SetChildIndex(Me.txtParcelas, 0)
         Me.Controls.SetChildIndex(Me.btnMovTipos, 0)
         Me.Controls.SetChildIndex(Me.txtMovTipo, 0)
-        Me.Controls.SetChildIndex(Me.txtOperadora, 0)
+        Me.Controls.SetChildIndex(Me.txtConta, 0)
         Me.Controls.SetChildIndex(Me.txtCartao, 0)
-        Me.Controls.SetChildIndex(Me.btnOperadora, 0)
+        Me.Controls.SetChildIndex(Me.btnContaEscolher, 0)
         Me.Controls.SetChildIndex(Me.btnCartao, 0)
         Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
         CType(Me.lstFormas, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.Panel1.ResumeLayout(False)
         Me.SplitContainer1.Panel2.ResumeLayout(False)
@@ -538,7 +574,6 @@ Partial Class frmMovFormas
     Friend WithEvents txtNoDias As Controles.Text_SoNumeros
     Friend WithEvents Label1 As Label
     Friend WithEvents Label2 As Label
-    Friend WithEvents Label3 As Label
     Friend WithEvents Label4 As Label
     Friend WithEvents Label5 As Label
     Friend WithEvents Label6 As Label
@@ -560,8 +595,11 @@ Partial Class frmMovFormas
     Friend WithEvents btnClose As VIBlend.WinForms.Controls.vFormButton
     Friend WithEvents btnMovTipos As VIBlend.WinForms.Controls.vButton
     Friend WithEvents txtCartao As TextBox
-    Friend WithEvents txtOperadora As TextBox
     Friend WithEvents txtMovTipo As TextBox
     Friend WithEvents btnCartao As VIBlend.WinForms.Controls.vButton
-    Friend WithEvents btnOperadora As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents Label18 As Label
+    Friend WithEvents lblFilial As Label
+    Friend WithEvents btnContaEscolher As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents txtConta As TextBox
+    Friend WithEvents Label9 As Label
 End Class

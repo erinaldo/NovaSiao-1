@@ -23,6 +23,10 @@ Partial Class frmContas
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.dgvContas = New System.Windows.Forms.DataGridView()
+        Me.IDFabricante = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnConta = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnBancaria = New System.Windows.Forms.DataGridViewCheckBoxColumn()
+        Me.clnAtivo = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnFechar = New System.Windows.Forms.Button()
         Me.btnNovo = New System.Windows.Forms.Button()
         Me.btnSalvar = New System.Windows.Forms.Button()
@@ -31,10 +35,6 @@ Partial Class frmContas
         Me.DesativarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.cmbFilial = New Controles.ComboBox_OnlyValues()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.IDFabricante = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnConta = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnBancaria = New System.Windows.Forms.DataGridViewCheckBoxColumn()
-        Me.clnAtivo = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvContas, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.MenuListagem.SuspendLayout()
@@ -47,13 +47,12 @@ Partial Class frmContas
         '
         'lblTitulo
         '
-        Me.lblTitulo.Anchor = CType((System.Windows.Forms.AnchorStyles.Top Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
-        Me.lblTitulo.Dock = System.Windows.Forms.DockStyle.None
-        Me.lblTitulo.Location = New System.Drawing.Point(226, 0)
-        Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblTitulo.Size = New System.Drawing.Size(273, 50)
+        Me.lblTitulo.Location = New System.Drawing.Point(222, 0)
+        Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.Yes
+        Me.lblTitulo.Size = New System.Drawing.Size(277, 50)
         Me.lblTitulo.TabIndex = 0
         Me.lblTitulo.Text = "Contas de Movimentação"
+        Me.lblTitulo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
         'dgvContas
         '
@@ -89,6 +88,36 @@ Partial Class frmContas
         Me.dgvContas.RowTemplate.Height = 30
         Me.dgvContas.Size = New System.Drawing.Size(478, 345)
         Me.dgvContas.TabIndex = 3
+        '
+        'IDFabricante
+        '
+        Me.IDFabricante.HeaderText = "Reg."
+        Me.IDFabricante.Name = "IDFabricante"
+        Me.IDFabricante.ReadOnly = True
+        Me.IDFabricante.Width = 50
+        '
+        'clnConta
+        '
+        Me.clnConta.HeaderText = "Conta"
+        Me.clnConta.Name = "clnConta"
+        Me.clnConta.ReadOnly = True
+        Me.clnConta.Width = 200
+        '
+        'clnBancaria
+        '
+        Me.clnBancaria.HeaderText = "Bancaria"
+        Me.clnBancaria.Name = "clnBancaria"
+        Me.clnBancaria.ReadOnly = True
+        Me.clnBancaria.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.clnBancaria.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
+        Me.clnBancaria.Width = 80
+        '
+        'clnAtivo
+        '
+        Me.clnAtivo.HeaderText = "Ativo"
+        Me.clnAtivo.Name = "clnAtivo"
+        Me.clnAtivo.ReadOnly = True
+        Me.clnAtivo.Width = 70
         '
         'btnFechar
         '
@@ -171,36 +200,6 @@ Partial Class frmContas
         Me.Label15.Size = New System.Drawing.Size(119, 18)
         Me.Label15.TabIndex = 1
         Me.Label15.Text = "Filial Origem:"
-        '
-        'IDFabricante
-        '
-        Me.IDFabricante.HeaderText = "Reg."
-        Me.IDFabricante.Name = "IDFabricante"
-        Me.IDFabricante.ReadOnly = True
-        Me.IDFabricante.Width = 50
-        '
-        'clnConta
-        '
-        Me.clnConta.HeaderText = "Conta"
-        Me.clnConta.Name = "clnConta"
-        Me.clnConta.ReadOnly = True
-        Me.clnConta.Width = 200
-        '
-        'clnBancaria
-        '
-        Me.clnBancaria.HeaderText = "Bancaria"
-        Me.clnBancaria.Name = "clnBancaria"
-        Me.clnBancaria.ReadOnly = True
-        Me.clnBancaria.Resizable = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.clnBancaria.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic
-        Me.clnBancaria.Width = 80
-        '
-        'clnAtivo
-        '
-        Me.clnAtivo.HeaderText = "Ativo"
-        Me.clnAtivo.Name = "clnAtivo"
-        Me.clnAtivo.ReadOnly = True
-        Me.clnAtivo.Width = 70
         '
         'frmContas
         '

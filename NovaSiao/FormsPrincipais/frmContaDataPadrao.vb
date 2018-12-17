@@ -122,20 +122,27 @@ Public Class frmContaDataPadrao
 
     Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
         '
+        '--- Verifica se existe uma filial definida
+        If IsNothing(_IDFilial) Then
+            MessageBox.Show("É necessário definir a Filial para escolher a conta a partir dela..." & vbNewLine &
+                            "Favor escolher uma Filial Padrão...",
+                            "Escolher Filial",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            txtFilial.Focus()
+            Return
+        End If
+        '
         '--- Abre o frmContas
-        Dim frmConta As New frmContas(True, _IDFilial, Me)
+        Dim frmConta As New frmContaProcurar(Me, _IDFilial, _IDConta)
         '
         frmConta.ShowDialog()
         '
         If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        _Conta = frmConta.ContaEscolhida
-        txtConta.Text = frmConta.ContaEscolhida
-        _IDConta = frmConta.IDContaEscolhida
-        '
-        _IDFilial = frmConta.IDFilialEscolhida
-        _Filial = frmConta.FilialEscolhida
-        txtFilial.Text = frmConta.FilialEscolhida
+        _Conta = frmConta.propConta_Escolha
+        txtConta.Text = frmConta.propConta_Escolha
+        _IDConta = frmConta.propIdConta_Escolha
         '
         VerficaBloqueioDataConta()
         '
