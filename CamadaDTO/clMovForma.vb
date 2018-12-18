@@ -11,8 +11,6 @@ Public Class clMovForma : Implements IEditableObject
         Dim _MovForma As String
         Dim _IDMovTipo As Int16?
         Dim _MovTipo As String
-        'Dim _IDOperadora As Int16?
-        'Dim _Operadora As String
         Dim _IDCartao As Int16?
         Dim _Cartao As String
         Dim _Parcelas As Byte?
@@ -274,4 +272,5 @@ Public Class clMovForma : Implements IEditableObject
     End Property
     '
 #End Region
+    '
 End Class

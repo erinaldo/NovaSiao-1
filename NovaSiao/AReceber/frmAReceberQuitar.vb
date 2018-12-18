@@ -80,7 +80,7 @@ Public Class frmAReceberQuitar
     '
     Private Sub CarregaCmbForma()
         Dim TipoBLL As New MovimentacaoBLL
-        Dim dtForma As DataTable = TipoBLL.MovForma_GET
+        Dim dtForma As DataTable = TipoBLL.MovTipo_GET_Dt
         '
         With cmbIDMovForma
             .DataSource = dtForma
@@ -104,7 +104,7 @@ Public Class frmAReceberQuitar
         End Try
         '
         Try
-            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial
+            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial_DT
             '
             With cmbIDConta
                 .DataSource = dt

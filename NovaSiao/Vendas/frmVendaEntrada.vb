@@ -91,7 +91,7 @@ Public Class frmVendaEntrada
     '
     Private Sub CarregaCmbForma()
         Dim TipoBLL As New MovimentacaoBLL
-        Dim dtForma As DataTable = TipoBLL.MovForma_GET
+        Dim dtForma As DataTable = TipoBLL.MovForma_GET_DT
         '
         With cmbForma
             .DataSource = dtForma

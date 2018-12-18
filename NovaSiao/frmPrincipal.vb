@@ -75,6 +75,7 @@ Public Class frmPrincipal
         ' ABRE E VERIFICA O LOGIN DO USUARIO
         '----------------------------------------------------------------
         Dim frmLog As New frmLogin
+        Dim contaInicial As New clConta
 
         SContainerPrincipal.Enabled = False
         frmLog.ShowDialog()
@@ -93,31 +94,31 @@ Public Class frmPrincipal
         '        
         ' VERFICA SE HA CONTA PADRAO ATIVA
         '----------------------------------------------------------------
-        Dim dtInit As DataTable = Verifica_ContaFilial()
-        If IsNothing(dtInit) Then
+        contaInicial = Verifica_ContaFilial()
+        '
+        If IsNothing(contaInicial) OrElse IsNothing(contaInicial.IDConta) Then
             Application.Exit()
             Exit Sub
         End If
         '
         ' DETERMINA A CONTA ATIVA | FILIAL ATIVA | DATAPADRAO
         '----------------------------------------------------------------
-        Dim r As DataRow = dtInit.Rows(0)
         '
         Try
             '
-            If IsDBNull(r("IDFilial").ToString) Or IsDBNull(r("IDFilial").ToString) Or IsDBNull(r("IDFilial").ToString) Then
+            If IsNothing(contaInicial.IDFilial) Then
                 Throw New Exception("Não foi possível salvar arquivo de configuração...")
             End If
             '
-            SetarDefault("FilialPadrao", r("IDFilial").ToString)
-            propContaPadrao = r("Conta")
-            propFilialPadrao = r("ApelidoFilial")
+            SetarDefault("FilialPadrao", contaInicial.IDFilial)
+            propContaPadrao = contaInicial.Conta
+            propFilialPadrao = contaInicial.ApelidoFilial
             '
             '--- configurar DATAPADRAO
-            If Not IsDBNull(r("BloqueioData")) Then
+            If Not IsNothing(contaInicial.BloqueioData) Then
                 '
                 '--  adiciona um dia à data do caixa final
-                Dim dtPadrao As Date = r("BloqueioData")
+                Dim dtPadrao As Date = contaInicial.BloqueioData
                 dtPadrao = dtPadrao.AddDays(1)
                 '
                 '-- verifica se a data adicionada é DOMINGO, sendo adiciona um dia
@@ -128,7 +129,7 @@ Public Class frmPrincipal
                 '
             Else
                 '
-                MessageBox.Show("A CONTA PADRÃO escolhida: " & r("Conta").ToString.ToUpper & vbNewLine &
+                MessageBox.Show("A CONTA PADRÃO escolhida: " & contaInicial.Conta.ToUpper & vbNewLine &
                                 "ainda não tem data de bloqueio definida..." & vbNewLine &
                                 "Logo a DATA PADRÃO do sistema será escolhida como" & vbNewLine &
                                 "DATA ATUAL: " & Now.ToLongDateString, "Data Padrão", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -204,11 +205,11 @@ Public Class frmPrincipal
     '========================================================================================================
     ' VERIFICA CONTA | FILIAL | DATA PADRAO
     '========================================================================================================
-    Private Function Verifica_ContaFilial() As DataTable
+    Private Function Verifica_ContaFilial() As clConta
         '
         Dim mBLL As New MovimentacaoBLL
         Dim AbrirConfig As Boolean = False
-        Dim dt As New DataTable
+        Dim myConta As New clConta
         '
         '--- VERIFICA CONTA
         If IsNothing(Obter_ContaPadrao) Then
@@ -216,10 +217,9 @@ Public Class frmPrincipal
         Else
             Try
                 '
-                dt = mBLL.Conta_GetDados_Inicial(Obter_ContaPadrao)
+                myConta = mBLL.Conta_GetDados_Inicial(Obter_ContaPadrao)
                 '
-                Dim r As DataRow = dt.Rows(0)
-                If IsDBNull(r("Conta")) Then
+                If IsDBNull(myConta.IDConta) Then
                     AbrirConfig = True
                 Else
                     AbrirConfig = False
@@ -250,10 +250,9 @@ Public Class frmPrincipal
             Else
                 Try
                     '
-                    dt = mBLL.Conta_GetDados_Inicial(Obter_ContaPadrao)
+                    myConta = mBLL.Conta_GetDados_Inicial(Obter_ContaPadrao)
                     '
-                    Dim r As DataRow = dt.Rows(0)
-                    If IsDBNull(r("Conta")) Then
+                    If IsDBNull(myConta.IDConta) Then
                         AbrirConfig = True
                     Else
                         AbrirConfig = False
@@ -274,7 +273,7 @@ Public Class frmPrincipal
             MessageBoxIcon.Exclamation)
             Return Nothing
         Else
-            Return dt
+            Return myConta
         End If
         '
     End Function
@@ -1133,31 +1132,7 @@ Public Class frmPrincipal
         End Try
         '
     End Sub
-
-    Private Sub miTipoDeOperadoras_Click(sender As Object, e As EventArgs) Handles miTiposDeOperadora.Click
-        '
-        Try
-            '
-            '--- Ampulheta ON
-            Cursor = Cursors.WaitCursor
-            '
-            Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.Operadora)
-            OcultaMenuPrincipal()
-            frmC.MdiParent = Me
-            frmC.Show()
-            '
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao abrir formulário..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            '
-            '--- Ampulheta OFF
-            Cursor = Cursors.Default
-            '
-        End Try
-        '
-    End Sub
-
+    '
     Private Sub miTiposDeCartao_Click(sender As Object, e As EventArgs) Handles miTiposDeCartao.Click
         '
         Try

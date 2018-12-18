@@ -73,6 +73,7 @@ Public Class frmAPagarQuitar
     '------------------------------------------------------------------------------------------
     '
     Private Sub CarregaCmbConta()
+        '
         Dim EntBLL As New MovimentacaoBLL
         Dim Filial As Integer
         '
@@ -85,7 +86,7 @@ Public Class frmAPagarQuitar
         End Try
         '
         Try
-            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial(Filial)
+            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial_DT(Filial)
             '
             With cmbIDConta
                 .DataSource = dt

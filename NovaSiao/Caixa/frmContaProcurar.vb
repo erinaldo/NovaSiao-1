@@ -1,9 +1,10 @@
 ﻿Imports System.Drawing.Drawing2D
 Imports CamadaBLL
 Imports ComponentOwl.BetterListView
+Imports CamadaDTO
 
 Public Class frmContaProcurar
-    Private dtContas As DataTable = Nothing
+    Private listContas As List(Of clConta)
     Private ItemAtivo As Image = My.Resources.accept
     Private ItemInativo As Image = My.Resources.block
     Private _formOrigem As Form = Nothing
@@ -66,9 +67,9 @@ Public Class frmContaProcurar
         Try
             '
             If IsNothing(myFilial) Then
-                dtContas = mBLL.Contas_GET_PorIDFilial
+                listContas = mBLL.Contas_GET_PorIDFilial
             Else
-                dtContas = mBLL.Contas_GET_PorIDFilial(myFilial)
+                listContas = mBLL.Contas_GET_PorIDFilial(myFilial)
             End If
             '
         Catch ex As Exception
@@ -81,7 +82,7 @@ Public Class frmContaProcurar
     '
     '--- PREENCHE LISTAGEM
     Private Sub PreencheListagem()
-        lstItens.DataSource = dtContas
+        lstItens.DataSource = listContas
         FormataListagem()
     End Sub
     '
@@ -214,18 +215,37 @@ Public Class frmContaProcurar
         '
     End Sub
     '
-    ' PROCURAR TIPO
+    ' PROCURAR CONTA
     Private Sub ProcurarST()
         '
-        Dim dvConta As DataView = dtContas.DefaultView
-        '
         If txtProcura.TextLength > 0 AndAlso IsNumeric(txtProcura.Text.Substring(0, 1)) Then
-            dvConta.RowFilter = "IDConta = " & txtProcura.Text ' PROCURA PELO ID
+            lstItens.DataSource = listContas.FindAll(AddressOf FiltroID)
         Else
-            dvConta.RowFilter = "Conta LIKE '*" & txtProcura.Text & "*'" ' PROCURA PELA CONTA
+            lstItens.DataSource = listContas.FindAll(AddressOf FiltroContas)
         End If
         '
     End Sub
+
+    Private Function FiltroContas(ByVal c As clConta) As Boolean
+        '
+        If (c.Conta.ToLower Like "*" & txtProcura.Text.ToLower & "*") Then
+            Return True
+        Else
+            Return False
+        End If
+        '
+    End Function
+    '
+    Private Function FiltroID(ByVal c As clConta) As Boolean
+        '
+        If (c.IDConta = CInt(txtProcura.Text)) Then
+            Return True
+        Else
+            Return False
+        End If
+        '
+    End Function
+    '
     '
     '--- QUANDO PRESSIONA A TECLA ESC FECHA O FORMULARIO
     '--- QUANDO A TECLA CIMA E BAIXO NAVEGA ENTRE OS ITENS DA LISTAGEM

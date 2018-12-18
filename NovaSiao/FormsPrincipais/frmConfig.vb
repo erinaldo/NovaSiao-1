@@ -358,7 +358,7 @@ Error_Handler:
     '
 #Region "FILIAL E CONTA"
     '
-    Private Sub btnAlteraFilial_Click(sender As Object, e As EventArgs) Handles btnAlteraFilial.Click
+    Private Sub btnFilialAdd_Click(sender As Object, e As EventArgs) Handles btnFilialAdd.Click
         '
         '--- Abre o frmFilial
         Dim fFil As New frmFilial()
@@ -367,16 +367,45 @@ Error_Handler:
         fFil.ShowDialog()
         Me.Opacity = 1
         '
+    End Sub
+    '
+    Private Sub btnContaAdd_Click(sender As Object, e As EventArgs) Handles btnContaAdd.Click
+        '
+        '--- verifica se a Filial já foi escolhida
+        If IsNothing(_IDFilial) Then
+            MessageBox.Show("Favor escolher em primeiro lugar FILIAL PADRÃO", "Escolha Filial", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            btnAlteraFilial.Focus()
+            Exit Sub
+        End If
+        '
+        '--- Abre o frmContas
+        Dim frmConta As New frmContas(Me)
+        '
+        Opacity = 0.6
+        frmConta.ShowDialog()
+        Opacity = 1
+        '
+    End Sub
+    '
+    Private Sub btnAlteraFilial_Click(sender As Object, e As EventArgs) Handles btnAlteraFilial.Click
+        '
+        '--- Abre o frmFilial
+        Dim fFil As New frmFilialEscolher()
+        '
+        Me.Opacity = 0.6
+        fFil.ShowDialog()
+        Me.Opacity = 1
+        '
         If fFil.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        If fFil.IDFilialEscolhida <> _IDFilial Then
+        If fFil.propIdFilial_Escolha <> _IDFilial Then
             Sit = FlagEstado.Alterado
             _IDConta = Nothing
             txtContaPadrao.Clear()
         End If
         '
-        _IDFilial = fFil.IDFilialEscolhida
-        txtFilialPadrao.Text = fFil.FilialEscolhida
+        _IDFilial = fFil.propIdFilial_Escolha
+        txtFilialPadrao.Text = fFil.propFilial_Escolha
         '
     End Sub
     '
@@ -390,7 +419,7 @@ Error_Handler:
         End If
         '
         '--- Abre o frmContas
-        Dim frmConta As New frmContas(True, _IDFilial, Me)
+        Dim frmConta As New frmContaProcurar(Me, _IDFilial, _IDConta)
         '
         Me.Opacity = 0.6
         frmConta.ShowDialog()
@@ -398,14 +427,12 @@ Error_Handler:
         '
         If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        If frmConta.IDContaEscolhida <> _IDConta Then
+        If frmConta.propIdConta_Escolha <> _IDConta Then
             Sit = FlagEstado.Alterado
         End If
         '
-        _IDConta = frmConta.IDContaEscolhida
-        txtContaPadrao.Text = frmConta.ContaEscolhida
-        _IDFilial = frmConta.IDFilialEscolhida
-        txtFilialPadrao.Text = frmConta.FilialEscolhida
+        _IDConta = frmConta.propIdConta_Escolha
+        txtContaPadrao.Text = frmConta.propConta_Escolha
         '
         '--- determina a DataPadrao do Sistema pela conta
         VerficaBloqueioDataConta()

@@ -3,6 +3,7 @@ Imports CamadaBLL
 Imports ComponentOwl.BetterListView
 
 Public Class frmProdutoProcurarCategoria
+    '
     Private dtCategoria As DataTable = Nothing
     Private ItemAtivo As Image = My.Resources.accept
     Private ItemInativo As Image = My.Resources.block

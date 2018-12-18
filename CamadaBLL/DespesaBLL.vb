@@ -219,8 +219,7 @@ Public Class DespesaBLL
             cx.MovData = IIf(IsDBNull(r("MovData")), Nothing, r("MovData"))
             cx.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
             cx.MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
-            cx.IDOperadora = IIf(IsDBNull(r("IDOperadora")), Nothing, r("IDOperadora"))
-            cx.Operadora = IIf(IsDBNull(r("Operadora")), String.Empty, r("Operadora"))
+            cx.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
             cx.Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
             '
             Return cx

@@ -65,7 +65,7 @@ Public Class frmSimplesQuitar
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial(_IDFilialOrigem)
+            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial_DT(_IDFilialOrigem)
             '
             With cmbIDContaOrigem
                 .DataSource = dt
@@ -97,7 +97,7 @@ Public Class frmSimplesQuitar
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial(_IDFilialDestino)
+            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial_DT(_IDFilialDestino)
             '
             With cmbIDContaDestino
                 .DataSource = dt

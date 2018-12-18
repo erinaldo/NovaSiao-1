@@ -3,7 +3,6 @@ Imports CamadaDTO
 
 Public Class frmCaixaInserir
     Private _IDFilial As Integer?
-    Private _Filial As String
     Private _IDConta As Int16?
     Private _Conta As String
     Private _CaixaDiario As Boolean
@@ -35,7 +34,7 @@ Public Class frmCaixaInserir
         txtConta.Text = ObterDefault("ContaDescricao")
         propIDConta = Obter_ContaPadrao()
         _IDFilial = Obter_FilialPadrao()
-        txtFilial.Text = ObterDefault("FilialDescricao")
+        lblFilial.Text = ObterDefault("FilialDescricao")
         '
         controlaAlteracao = True
         '
@@ -59,8 +58,7 @@ Public Class frmCaixaInserir
         _IDConta = myCaixa.IDConta
         _Conta = myCaixa.Conta
         _IDFilial = myCaixa.IDFilial
-        _Filial = myCaixa.ApelidoFilial
-        txtFilial.Text = myCaixa.ApelidoFilial
+        lblFilial.Text = myCaixa.ApelidoFilial
         txtConta.Text = myCaixa.Conta
         '
         obterInfoConta()
@@ -72,7 +70,6 @@ Public Class frmCaixaInserir
         chkDiario.Checked = False
         '
         btnContaEscolher.Enabled = False
-        btnFilialEscolher.Enabled = False
         '
         _formOrigem = formOrigem
         '
@@ -297,7 +294,6 @@ Public Class frmCaixaInserir
         End If
         '
         _Conta = txtConta.Text
-        _Filial = txtFilial.Text
         '
         '--- Verifica se é INSERIR OU ALTERAR
         '---------------------------------------------------------------------------------------
@@ -318,7 +314,7 @@ Public Class frmCaixaInserir
         Dim strP As String = String.Format("Você realmente deseja efetuar o Caixa com os seguintes valores:{4}{4}" &
                                            "Filial: {1}{4}Conta: {0}{4}DE: {2}{4}ATÉ: {3}",
                                            _Conta.ToUpper,
-                                           _Filial.ToUpper,
+                                           lblFilial.Text.ToUpper,
                                            Convert.ToDateTime(minDate).ToShortDateString,
                                            Convert.ToDateTime(maxDate).ToShortDateString,
                                            vbNewLine)
@@ -387,10 +383,9 @@ Public Class frmCaixaInserir
         '
         '--- Verifica os controles
         '---------------------------------------------------------------------------------------
-        If IsNothing(_IDFilial) Or txtFilial.Text.Trim.Length = 0 Then
+        If IsNothing(_IDFilial) Then
             MessageBox.Show("Escolha a FILIAL para a qual você deseja realizar o fechamento do caixa...",
                             "Filial Vazia", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            txtFilial.Focus()
             Return False
         End If
         '
@@ -420,42 +415,18 @@ Public Class frmCaixaInserir
         '
     End Sub
     '
-    Private Sub btnFilialEscolher_Click(sender As Object, e As EventArgs) Handles btnFilialEscolher.Click
-        '
-        '--- Abre o frmFilial
-        Dim fFil As New frmFilial(True, Me)
-        '
-        fFil.ShowDialog()
-        '
-        If fFil.DialogResult = DialogResult.Cancel Then Exit Sub
-        '
-        If fFil.IDFilialEscolhida <> _IDFilial Then
-            _IDConta = Nothing
-            txtConta.Clear()
-        End If
-        '
-        _IDFilial = fFil.IDFilialEscolhida
-        _Filial = fFil.FilialEscolhida
-        txtFilial.Text = fFil.FilialEscolhida
-        '
-    End Sub
-
     Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
         '
         '--- Abre o frmContas
-        Dim frmConta As New frmContas(True, _IDFilial, Me)
+        Dim frmConta As New frmContaProcurar(Me, _IDFilial, _IDConta)
         '
         frmConta.ShowDialog()
         '
-        If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
+        If frmConta.DialogResult <> DialogResult.OK Then Exit Sub
         '
-        _Conta = frmConta.ContaEscolhida
-        txtConta.Text = frmConta.ContaEscolhida
-        propIDConta = frmConta.IDContaEscolhida
-        '
-        _IDFilial = frmConta.IDFilialEscolhida
-        _Filial = frmConta.FilialEscolhida
-        txtFilial.Text = frmConta.FilialEscolhida
+        _Conta = frmConta.propConta_Escolha
+        txtConta.Text = _Conta
+        propIDConta = frmConta.propIdConta_Escolha
         '
     End Sub
     '
@@ -464,17 +435,13 @@ Public Class frmCaixaInserir
 #Region "OUTRAS FUNCOES"
     '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtFilial.KeyDown, txtConta.KeyDown
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtConta.KeyDown
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '
         If e.KeyCode = Keys.Add Then
             e.Handled = True
             Select Case ctr.Name
-                Case "txtFilial"
-                    btnFilialEscolher_Click(New Object, New EventArgs)
-                    txtFilial.Text = txtFilial.Text.Replace("+", "")
-                    txtFilial.SelectAll()
                 Case "txtConta"
                     btnContaEscolher_Click(New Object, New EventArgs)
                     txtConta.Text = txtConta.Text.Replace("+", "")

@@ -246,7 +246,7 @@ Public Class frmDespesaSimples
         Dim Filial As Integer = propDespesa.IDFilial
         '
         Try
-            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial(Filial)
+            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial_DT(Filial)
             '
             With cmbIDConta
                 .DataSource = dt

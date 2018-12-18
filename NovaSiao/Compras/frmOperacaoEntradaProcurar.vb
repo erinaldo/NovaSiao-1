@@ -10,6 +10,9 @@ Public Class frmOperacaoEntradaProcurar
     Private _myMes As Date
     Private _Operacao As Byte
     '
+    '
+#Region "PROPERTYS"
+    '
     Private Property myMes() As DateTime
         '
         Get
@@ -48,6 +51,8 @@ Public Class frmOperacaoEntradaProcurar
         End Set
         '
     End Property
+    '
+#End Region '/ PROPERTYS
     '
 #Region "EVENTO LOAD"
     '

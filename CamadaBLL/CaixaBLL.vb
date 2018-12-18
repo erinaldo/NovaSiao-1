@@ -148,8 +148,7 @@ Public Class CaixaBLL
                 cx.MovData = IIf(IsDBNull(r("MovData")), Nothing, r("MovData"))
                 cx.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
                 cx.MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
-                cx.IDOperadora = IIf(IsDBNull(r("IDOperadora")), Nothing, r("IDOperadora"))
-                cx.Operadora = IIf(IsDBNull(r("Operadora")), String.Empty, r("Operadora"))
+                cx.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
                 cx.Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
                 '
                 listMov.Add(cx)
@@ -211,8 +210,7 @@ Public Class CaixaBLL
             cx.MovData = IIf(IsDBNull(r("MovData")), Nothing, r("MovData"))
             cx.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
             cx.MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
-            cx.IDOperadora = IIf(IsDBNull(r("IDOperadora")), Nothing, r("IDOperadora"))
-            cx.Operadora = IIf(IsDBNull(r("Operadora")), String.Empty, r("Operadora"))
+            cx.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
             cx.Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
             '
             Return cx
@@ -224,14 +222,13 @@ Public Class CaixaBLL
     End Function
     '
     '============================================================================================
-    ' EXCLUIR TODOS NIVELAMENTOS NO CAIXA DE UMA OPERADORA DE CAIXA
+    ' EXCLUIR TODOS NIVELAMENTOS NO CAIXA
     '============================================================================================
-    Public Function ExcluirNivelamentos(IDCaixa As Integer, IDOperadora As Int16) As Boolean
+    Public Function ExcluirNivelamentos(IDCaixa As Integer) As Boolean
         Dim db As New AcessoDados
         '
         db.LimparParametros()
         db.AdicionarParametros("@IDCaixa", IDCaixa)
-        db.AdicionarParametros("@IDOperadora", IDOperadora)
         '
         Try
             db.ExecutarManipulacao(CommandType.StoredProcedure, "uspCaixa_ExcluirNivelamentos")

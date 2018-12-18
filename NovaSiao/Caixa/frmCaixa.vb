@@ -331,17 +331,13 @@ Public Class frmCaixa
                 If IsNothing(saldoFind) Then
                     If c.Descricao.ToString.Contains("Nivelamento") Then
                         dtSaldo.Rows.Add({c.IDMovForma,
-                                         c.MovForma,
-                                         c.IDOperadora,
-                                         c.Operadora,
+                                         c.MovForma, ' c.IDOperadora, c.Operadora,
                                          0,
                                          MovValorReal,
                                          True})
                     Else
                         dtSaldo.Rows.Add({c.IDMovForma,
-                                         c.MovForma,
-                                         c.IDOperadora,
-                                         c.Operadora,
+                                         c.MovForma, ' c.IDOperadora, c.Operadora,
                                          0,
                                          MovValorReal,
                                          False})
@@ -880,7 +876,7 @@ Public Class frmCaixa
         Try
             Dim cxBLL As New CaixaBLL
             '
-            Dim resp As Boolean = cxBLL.ExcluirNivelamentos(_clCaixa.IDCaixa, r("IDOperadora"))
+            Dim resp As Boolean = cxBLL.ExcluirNivelamentos(_clCaixa.IDCaixa)
             '
             '--- retorna os valores e insere na listagem
             If resp = False Then Exit Sub

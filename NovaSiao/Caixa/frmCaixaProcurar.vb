@@ -284,7 +284,7 @@ Public Class frmCaixaProcurar
     Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
         '
         '--- Abre o frmContas
-        Dim frmConta As New frmContas(True, _IDFilial, Me)
+        Dim frmConta As New frmContaProcurar(Me, _IDFilial, _IDConta)
         '
         frmConta.ShowDialog()
         '
@@ -292,11 +292,8 @@ Public Class frmCaixaProcurar
             propIDConta = Nothing
         Else
             '
-            txtConta.Text = frmConta.ContaEscolhida
-            propIDConta = frmConta.IDContaEscolhida
-            '
-            propIDFilial = frmConta.IDFilialEscolhida
-            txtFilial.Text = frmConta.FilialEscolhida
+            txtConta.Text = frmConta.propConta_Escolha
+            propIDConta = frmConta.propIdConta_Escolha
             '
         End If
     End Sub

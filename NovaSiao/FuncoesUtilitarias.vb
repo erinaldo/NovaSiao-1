@@ -92,6 +92,7 @@ Public Class FuncoesUtilitarias
         Else
             '--- RETORNA
             Return True
+            '
         End If
         '
     End Function

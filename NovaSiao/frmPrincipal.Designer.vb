@@ -77,6 +77,7 @@ Partial Class frmPrincipal
         Me.miDespesasPeriodicas = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator7 = New System.Windows.Forms.ToolStripSeparator()
         Me.miAPagarProcurar = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miAPagarMovInterna = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsbCaixa = New System.Windows.Forms.ToolStripSplitButton()
         Me.miProcurarCaixa = New System.Windows.Forms.ToolStripMenuItem()
         Me.miFinalizarCaixa = New System.Windows.Forms.ToolStripMenuItem()
@@ -86,7 +87,6 @@ Partial Class frmPrincipal
         Me.miFormasDeMovimentacao = New System.Windows.Forms.ToolStripMenuItem()
         Me.miControlesMovimentacao = New System.Windows.Forms.ToolStripMenuItem()
         Me.miTiposDeMovimentacao = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miTiposDeOperadora = New System.Windows.Forms.ToolStripMenuItem()
         Me.miTiposDeCartao = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator14 = New System.Windows.Forms.ToolStripSeparator()
         Me.tsbConfig = New System.Windows.Forms.ToolStripSplitButton()
@@ -110,7 +110,6 @@ Partial Class frmPrincipal
         Me.Label2 = New System.Windows.Forms.Label()
         Me.lblHora = New System.Windows.Forms.Label()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.miAPagarMovInterna = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsPrincipal.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SContainerPrincipal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -548,6 +547,14 @@ Partial Class frmPrincipal
         Me.miAPagarProcurar.Size = New System.Drawing.Size(241, 36)
         Me.miAPagarProcurar.Text = "A Pagar Procurar"
         '
+        'miAPagarMovInterna
+        '
+        Me.miAPagarMovInterna.Image = Global.NovaSiao.My.Resources.Resources.APagar_30px
+        Me.miAPagarMovInterna.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miAPagarMovInterna.Name = "miAPagarMovInterna"
+        Me.miAPagarMovInterna.Size = New System.Drawing.Size(241, 36)
+        Me.miAPagarMovInterna.Text = "A Pagar - Mov. Interna"
+        '
         'tsbCaixa
         '
         Me.tsbCaixa.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
@@ -602,7 +609,7 @@ Partial Class frmPrincipal
         '
         'miControlesMovimentacao
         '
-        Me.miControlesMovimentacao.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miTiposDeMovimentacao, Me.miTiposDeOperadora, Me.miTiposDeCartao})
+        Me.miControlesMovimentacao.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miTiposDeMovimentacao, Me.miTiposDeCartao})
         Me.miControlesMovimentacao.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
         Me.miControlesMovimentacao.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miControlesMovimentacao.Name = "miControlesMovimentacao"
@@ -616,14 +623,6 @@ Partial Class frmPrincipal
         Me.miTiposDeMovimentacao.Name = "miTiposDeMovimentacao"
         Me.miTiposDeMovimentacao.Size = New System.Drawing.Size(241, 30)
         Me.miTiposDeMovimentacao.Text = "Tipos de Movimentação"
-        '
-        'miTiposDeOperadora
-        '
-        Me.miTiposDeOperadora.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
-        Me.miTiposDeOperadora.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.miTiposDeOperadora.Name = "miTiposDeOperadora"
-        Me.miTiposDeOperadora.Size = New System.Drawing.Size(241, 30)
-        Me.miTiposDeOperadora.Text = "Tipos de Operadora"
         '
         'miTiposDeCartao
         '
@@ -871,14 +870,6 @@ Partial Class frmPrincipal
         Me.Timer1.Enabled = True
         Me.Timer1.Interval = 600
         '
-        'miAPagarMovInterna
-        '
-        Me.miAPagarMovInterna.Image = Global.NovaSiao.My.Resources.Resources.APagar_30px
-        Me.miAPagarMovInterna.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.miAPagarMovInterna.Name = "miAPagarMovInterna"
-        Me.miAPagarMovInterna.Size = New System.Drawing.Size(241, 36)
-        Me.miAPagarMovInterna.Text = "A Pagar - Mov. Interna"
-        '
         'frmPrincipal
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -972,7 +963,6 @@ Partial Class frmPrincipal
     Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
     Friend WithEvents miControlesMovimentacao As ToolStripMenuItem
     Friend WithEvents miTiposDeMovimentacao As ToolStripMenuItem
-    Friend WithEvents miTiposDeOperadora As ToolStripMenuItem
     Friend WithEvents miTiposDeCartao As ToolStripMenuItem
     Friend WithEvents miNovaDespesaQuitada As ToolStripMenuItem
     Friend WithEvents miProcurarCaixa As ToolStripMenuItem

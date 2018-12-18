@@ -6,6 +6,7 @@ Imports System.Drawing.Drawing2D
 Public Class frmMovFormas
     Private WithEvents listMovFormas As New List(Of clMovForma)
     Private WithEvents bindMovForma As New BindingSource
+    Private _MovForma As clMovForma
     Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     '
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
@@ -110,6 +111,7 @@ Public Class frmMovFormas
         txtMovTipo.DataBindings.Add("Text", bindMovForma, "MovTipo", True, DataSourceUpdateMode.OnPropertyChanged)
         txtCartao.DataBindings.Add("Text", bindMovForma, "Cartao", True, DataSourceUpdateMode.OnPropertyChanged)
         txtConta.DataBindings.Add("Text", bindMovForma, "ContaPadrao", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblFilial.DataBindings.Add("Text", bindMovForma, "ApelidoFilial")
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblIDMovForma.DataBindings("Text").Format, AddressOf idFormatRG
@@ -141,19 +143,20 @@ Public Class frmMovFormas
     '
     Private Sub handler_CurrentChanged()
         '
+        _MovForma = DirectCast(bindMovForma.CurrencyManager.Current, clMovForma)
+        '
         ' ADD HANDLER PARA DATABINGS
-        AddHandler DirectCast(bindMovForma.CurrencyManager.Current, clMovForma).AoAlterar, AddressOf Handler_AoAlterar
+        AddHandler _MovForma.AoAlterar, AddressOf Handler_AoAlterar
         '
         '--- Nesse caso é um novo registro
-        If Not IsNothing(DirectCast(bindMovForma.Current, clMovForma).IDMovForma) Then
+        If Not IsNothing(_MovForma.IDMovForma) Then
             '
             ' LER O ID
             lblIDMovForma.DataBindings.Item("text").ReadValue()
             '
             ' ALTERAR PARA REGISTRO SALVO
             Sit = FlagEstado.RegistroSalvo
-            '
-            DirectCast(bindMovForma.Current, clMovForma).RegistroAlterado = False
+            _MovForma.RegistroAlterado = False
             '
         End If
         '
@@ -167,12 +170,12 @@ Public Class frmMovFormas
     Private Sub PreencheListagem()
         lstFormas.DataSource = bindMovForma
         '
-        With lstFormas.Columns("clnIDMovForma") ' column 0
+        With clnIDMovForma ' column 0
             .Width = 50
             .DisplayMember = "IDMovForma"
         End With
         '
-        With lstFormas.Columns("clnMovForma") ' column 1
+        With clnMovForma ' column 1
             .Width = 220
             .DisplayMember = "MovForma"
         End With
@@ -506,17 +509,38 @@ Public Class frmMovFormas
             btnAtivo.Text = "Forma Ativa"
         End Try
     End Sub
-
-    '--- QUANDO PRESSIONA DELETE APAGA LIMPA O CONTA
-    ????
+    '
+    '
+    '--- BLOQUEIA PRESS A TECLA (+)
+    Private Sub me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
+        '
+        If e.KeyChar = "+" Then
+            '--- cria uma lista de controles que serao impedidos de receber '+'
+            Dim controlesBloqueados As String() = {
+                "txtMovForma",
+                "txtMovTipo",
+                "txtCartao",
+                "txtConta"
+            }
+            '
+            If controlesBloqueados.Contains(ActiveControl.Name) Then
+                e.Handled = True
+            End If
+            '
+        End If
+        '
+    End Sub
     '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtMovTipo.KeyDown, txtCartao.KeyDown, txtConta.KeyDown
+    '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _
+        Handles txtMovTipo.KeyDown, txtCartao.KeyDown, txtConta.KeyDown
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '
         If e.KeyCode = Keys.Add Then
             e.Handled = True
+            '
             Select Case ctr.Name
                 Case "txtConta"
                     btnContaEscolher_Click(New Object, New EventArgs)
@@ -525,23 +549,54 @@ Public Class frmMovFormas
                 Case "txtCartao"
                     btnCartao_Click(New Object, New EventArgs)
             End Select
-        ElseIf e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+            '
+        ElseIf e.KeyCode = Keys.Delete Then
             e.Handled = True
-            'e.SuppressKeyPress = True
-            SendKeys.Send("{Tab}")
+            Select Case ctr.Name
+                Case "txtConta"
+                    If Not IsNothing(_MovForma.IDContaPadrao) Then Sit = FlagEstado.Alterado
+                    txtConta.Clear()
+                    _MovForma.IDContaPadrao = Nothing
+                Case "txtMovTipo"
+                    If Not IsNothing(_MovForma.IDMovTipo) Then Sit = FlagEstado.Alterado
+                    txtMovTipo.Clear()
+                    _MovForma.IDMovTipo = Nothing
+                Case "txtCartao"
+                    If Not IsNothing(_MovForma.IDCartao) Then Sit = FlagEstado.Alterado
+                    txtCartao.Clear()
+                    _MovForma.IDCartao = Nothing
+            End Select
+            '
         Else
-            e.Handled = True
-            e.SuppressKeyPress = True
+            '--- cria uma lista de controles que serão bloqueados de alteracao
+            Dim controlesBloqueados As New List(Of String)
+            controlesBloqueados.AddRange({"txtConta", "txtMovTipo", "txtCartao"})
+            '
+            If controlesBloqueados.Contains(ctr.Name) Then
+                e.Handled = True
+                e.SuppressKeyPress = True
+            End If
         End If
         '
     End Sub
     '
-    '--- BLOQUEIA PRESS A TECLA (+)
-    Private Sub Me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
-        If e.KeyChar = "+" Then
-            e.Handled = True
+    '--- SUBSTITUI A TECLA (ENTER) PELA (TAB)
+    Private Sub txtControl_KeyDown(sender As Object, e As KeyEventArgs) Handles txtMovForma.KeyDown, txtMovTipo.KeyDown,
+            txtCartao.KeyDown, txtConta.KeyDown, txtParcelas.KeyDown, txtComissao.KeyDown, txtNoDias.KeyDown
+        '
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            SendKeys.Send("{Tab}")
         End If
+        '
     End Sub
+
+
+
+
+
+
+
     '
 #End Region
     '
