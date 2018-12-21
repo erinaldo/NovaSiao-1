@@ -30,7 +30,6 @@ Partial Class frmCaixa
         Me.clnMovForma = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.dgvSaldos = New System.Windows.Forms.DataGridView()
-        Me.clnOperadora = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnForma = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnSaldoAnterior = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnSaldoFinal = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -66,6 +65,8 @@ Partial Class frmCaixa
         Me.txtObservacao = New System.Windows.Forms.TextBox()
         Me.btnExcluirCaixa = New System.Windows.Forms.Button()
         Me.btnSalvarObservacao = New System.Windows.Forms.Button()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.lblTTransf = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvListagem, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvSaldos, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -175,7 +176,7 @@ Partial Class frmCaixa
         Me.dgvSaldos.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvSaldos.ColumnHeadersHeight = 27
         Me.dgvSaldos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.dgvSaldos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnOperadora, Me.clnForma, Me.clnSaldoAnterior, Me.clnSaldoFinal})
+        Me.dgvSaldos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnForma, Me.clnSaldoAnterior, Me.clnSaldoFinal})
         DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window
         DataGridViewCellStyle3.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -196,12 +197,6 @@ Partial Class frmCaixa
         Me.dgvSaldos.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvSaldos.Size = New System.Drawing.Size(510, 140)
         Me.dgvSaldos.TabIndex = 8
-        '
-        'clnOperadora
-        '
-        Me.clnOperadora.HeaderText = "Operadora"
-        Me.clnOperadora.Name = "clnOperadora"
-        Me.clnOperadora.ReadOnly = True
         '
         'clnForma
         '
@@ -387,7 +382,7 @@ Partial Class frmCaixa
         'Label5
         '
         Me.Label5.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(587, 483)
+        Me.Label5.Location = New System.Drawing.Point(587, 475)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(85, 24)
         Me.Label5.TabIndex = 11
@@ -397,7 +392,7 @@ Partial Class frmCaixa
         'lblTEntradas
         '
         Me.lblTEntradas.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTEntradas.Location = New System.Drawing.Point(674, 483)
+        Me.lblTEntradas.Location = New System.Drawing.Point(674, 475)
         Me.lblTEntradas.Name = "lblTEntradas"
         Me.lblTEntradas.Size = New System.Drawing.Size(121, 24)
         Me.lblTEntradas.TabIndex = 12
@@ -407,7 +402,7 @@ Partial Class frmCaixa
         'Label7
         '
         Me.Label7.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(587, 520)
+        Me.Label7.Location = New System.Drawing.Point(587, 504)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(85, 24)
         Me.Label7.TabIndex = 13
@@ -417,7 +412,7 @@ Partial Class frmCaixa
         'lblTSaidas
         '
         Me.lblTSaidas.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTSaidas.Location = New System.Drawing.Point(674, 520)
+        Me.lblTSaidas.Location = New System.Drawing.Point(674, 504)
         Me.lblTSaidas.Name = "lblTSaidas"
         Me.lblTSaidas.Size = New System.Drawing.Size(121, 24)
         Me.lblTSaidas.TabIndex = 14
@@ -447,7 +442,7 @@ Partial Class frmCaixa
         'lblSaldoFinal
         '
         Me.lblSaldoFinal.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSaldoFinal.Location = New System.Drawing.Point(674, 557)
+        Me.lblSaldoFinal.Location = New System.Drawing.Point(674, 562)
         Me.lblSaldoFinal.Name = "lblSaldoFinal"
         Me.lblSaldoFinal.Size = New System.Drawing.Size(121, 24)
         Me.lblSaldoFinal.TabIndex = 16
@@ -457,7 +452,7 @@ Partial Class frmCaixa
         'Label10
         '
         Me.Label10.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label10.Location = New System.Drawing.Point(534, 557)
+        Me.Label10.Location = New System.Drawing.Point(534, 562)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(138, 24)
         Me.Label10.TabIndex = 15
@@ -584,6 +579,26 @@ Partial Class frmCaixa
         Me.btnSalvarObservacao.UseVisualStyleBackColor = True
         Me.btnSalvarObservacao.Visible = False
         '
+        'Label11
+        '
+        Me.Label11.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label11.Location = New System.Drawing.Point(534, 533)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(138, 24)
+        Me.Label11.TabIndex = 15
+        Me.Label11.Text = "Transferências:"
+        Me.Label11.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'lblTTransf
+        '
+        Me.lblTTransf.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblTTransf.Location = New System.Drawing.Point(674, 533)
+        Me.lblTTransf.Name = "lblTTransf"
+        Me.lblTTransf.Size = New System.Drawing.Size(121, 24)
+        Me.lblTTransf.TabIndex = 16
+        Me.lblTTransf.Text = "R$ 0,00"
+        Me.lblTTransf.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
         'frmCaixa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
@@ -596,6 +611,8 @@ Partial Class frmCaixa
         Me.Controls.Add(Me.btnFinalizar)
         Me.Controls.Add(Me.btnAlterar)
         Me.Controls.Add(Me.btnInserirDespesa)
+        Me.Controls.Add(Me.lblTTransf)
+        Me.Controls.Add(Me.Label11)
         Me.Controls.Add(Me.lblSaldoFinal)
         Me.Controls.Add(Me.Label10)
         Me.Controls.Add(Me.lblTSaidas)
@@ -630,6 +647,8 @@ Partial Class frmCaixa
         Me.Controls.SetChildIndex(Me.lblTSaidas, 0)
         Me.Controls.SetChildIndex(Me.Label10, 0)
         Me.Controls.SetChildIndex(Me.lblSaldoFinal, 0)
+        Me.Controls.SetChildIndex(Me.Label11, 0)
+        Me.Controls.SetChildIndex(Me.lblTTransf, 0)
         Me.Controls.SetChildIndex(Me.btnInserirDespesa, 0)
         Me.Controls.SetChildIndex(Me.btnAlterar, 0)
         Me.Controls.SetChildIndex(Me.btnFinalizar, 0)
@@ -684,12 +703,13 @@ Partial Class frmCaixa
     Friend WithEvents MenuSaldos As ContextMenuStrip
     Friend WithEvents miInserirNivelamento As ToolStripMenuItem
     Friend WithEvents miExcluirNivelamento As ToolStripMenuItem
-    Friend WithEvents clnOperadora As DataGridViewTextBoxColumn
-    Friend WithEvents clnForma As DataGridViewTextBoxColumn
-    Friend WithEvents clnSaldoAnterior As DataGridViewTextBoxColumn
-    Friend WithEvents clnSaldoFinal As DataGridViewTextBoxColumn
     Friend WithEvents Label9 As Label
     Friend WithEvents txtObservacao As TextBox
     Friend WithEvents btnExcluirCaixa As Button
     Friend WithEvents btnSalvarObservacao As Button
+    Friend WithEvents clnForma As DataGridViewTextBoxColumn
+    Friend WithEvents clnSaldoAnterior As DataGridViewTextBoxColumn
+    Friend WithEvents clnSaldoFinal As DataGridViewTextBoxColumn
+    Friend WithEvents Label11 As Label
+    Friend WithEvents lblTTransf As Label
 End Class

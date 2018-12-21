@@ -32,6 +32,7 @@ Public Class frmCaixaInserir
         '
         '--- verifica a conta padrao
         txtConta.Text = ObterDefault("ContaDescricao")
+        _Conta = txtConta.Text
         propIDConta = Obter_ContaPadrao()
         _IDFilial = Obter_FilialPadrao()
         lblFilial.Text = ObterDefault("FilialDescricao")
@@ -102,6 +103,7 @@ Public Class frmCaixaInserir
             End If
             '
         End Set
+
     End Property
     '
     Public Property propIDConta() As Int16?
@@ -126,6 +128,7 @@ Public Class frmCaixaInserir
             End If
             '
         End Set
+        '
     End Property
     '
     Public Property propCaixaDiario() As Boolean
@@ -267,8 +270,11 @@ Public Class frmCaixaInserir
         If IsNothing(propMinDate) Then
             '
             MessageBox.Show("A Conta Escolhida: " & _Conta.ToUpper &
-                            " não apresenta movimentações pendentes de Fechamento de Caixa...",
-                            "Conta", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                            " não apresenta movimentações pendentes de Fechamento de Caixa..." &
+                            vbNewLine & vbNewLine & "Favor Escolher outra conta...",
+                            "Conta sem Movimentação",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation)
             Return False
             '
         Else

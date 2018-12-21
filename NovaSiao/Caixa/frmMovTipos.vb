@@ -64,8 +64,12 @@ Public Class frmMovTipos
             Select Case value
                 Case DadosOrigem.MovTipo
                     lblTitulo.Text = "Tipos de Movimentação"
+                    AtivarToolStripMenuItem.Text = "Ativar Tipo"
+                    DesativarToolStripMenuItem.Text = "Desativar Tipo"
                 Case DadosOrigem.Cartao
                     lblTitulo.Text = "Tipos de Cartao"
+                    AtivarToolStripMenuItem.Text = "Ativar Cartão"
+                    DesativarToolStripMenuItem.Text = "Desativar Cartão"
             End Select
             '
         End Set
@@ -161,7 +165,7 @@ Public Class frmMovTipos
                 Case DadosOrigem.MovTipo
                     .DataPropertyName = "IDMovTipo"
                 Case DadosOrigem.Cartao
-                    .DataPropertyName = "IDCartao"
+                    .DataPropertyName = "IDCartaoTipo"
             End Select
             '
             .Width = 50
@@ -227,9 +231,10 @@ Public Class frmMovTipos
 #End Region
     '
 #Region "MENUSTRIP"
-
+    '
     ' CONTROLE DO TOOLSTRIPMENU
     Private Sub dgvListagem_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvListagem.MouseDown
+        '
         If e.Button = MouseButtons.Right Then
             Dim c As Control = DirectCast(sender, Control)
             Dim hit As DataGridView.HitTestInfo = dgvListagem.HitTest(e.X, e.Y)
@@ -250,8 +255,10 @@ Public Class frmMovTipos
                     AtivarToolStripMenuItem.Enabled = True
                     DesativarToolStripMenuItem.Enabled = False
                 End If
+                '
                 ' revela menu
                 MenuListagem.Show(c.PointToScreen(e.Location))
+                '
             End If
         End If
     End Sub
@@ -262,9 +269,10 @@ Public Class frmMovTipos
         If IsDBNull(dgvListagem.CurrentRow.Cells(0).Value) Then Exit Sub
         '
         '--- altera o valor
-        Dim r As DataRow = dgvListagem.Rows(dgvListagem.CurrentCell.RowIndex).DataBoundItem
+        Dim r As DataRow = DirectCast(dgvListagem.Rows(dgvListagem.CurrentCell.RowIndex).DataBoundItem, DataRowView).Row
         '
         r("Ativo") = True
+        dgvListagem.Rows(dgvListagem.CurrentCell.RowIndex).Cells(2).Value = ImgAtivo
         If r.RowState = DataRowState.Unchanged Then
             r.SetModified()
         End If
@@ -275,6 +283,7 @@ Public Class frmMovTipos
     End Sub
     '
     Private Sub DesativarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DesativarToolStripMenuItem.Click
+        '
         '--- verifica se existe alguma cell 
         If IsDBNull(dgvListagem.CurrentRow.Cells(0).Value) Then Exit Sub
         '
@@ -289,8 +298,9 @@ Public Class frmMovTipos
         End If
         '
         '--- altera o valor
-        Dim r As DataRow = dgvListagem.Rows(dgvListagem.CurrentCell.RowIndex).DataBoundItem
+        Dim r As DataRow = DirectCast(dgvListagem.Rows(dgvListagem.CurrentCell.RowIndex).DataBoundItem, DataRowView).Row
         '
+        dgvListagem.Rows(dgvListagem.CurrentCell.RowIndex).Cells(2).Value = ImgInativo
         r("Ativo") = False
         If r.RowState = DataRowState.Unchanged Then
             r.SetModified()
@@ -373,7 +383,7 @@ Public Class frmMovTipos
                 Exit Sub
             End If
             '
-            IDOrigem_Escolhido = dgvListagem.Rows(dgvListagem.SelectedCells(0).RowIndex).DataBoundItem(0)
+            IDOrigem_Escolhido = CShort(dgvListagem.Rows(dgvListagem.SelectedCells(0).RowIndex).DataBoundItem(0))
             OrigemDesc_Escolhido = dgvListagem.Rows(dgvListagem.SelectedCells(0).RowIndex).DataBoundItem(1)
             '
             DialogResult = DialogResult.OK

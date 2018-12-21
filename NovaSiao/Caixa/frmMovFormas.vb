@@ -28,7 +28,6 @@ Public Class frmMovFormas
                 btnNovo.Enabled = True
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = False
-                AtivoButtonImage()
                 lstFormas.ReadOnly = False
                 '
             ElseIf _Sit = FlagEstado.Alterado Then
@@ -36,7 +35,6 @@ Public Class frmMovFormas
                 btnNovo.Enabled = False
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = True
-                AtivoButtonImage()
                 lstFormas.ReadOnly = True
                 '
             ElseIf _Sit = FlagEstado.NovoRegistro Then
@@ -45,7 +43,6 @@ Public Class frmMovFormas
                 btnNovo.Enabled = False
                 btnExcluir.Enabled = False
                 btnCancelar.Enabled = True
-                AtivoButtonImage()
                 lstFormas.ReadOnly = True
                 '
             End If
@@ -68,14 +65,7 @@ Public Class frmMovFormas
     ' EVENTO LOAD
     Private Sub frmPagamentoFormas_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
-        Dim fBLL As New MovimentacaoBLL
-        '
-        Try
-            ListMovFormas = fBLL.MovForma_GET_List
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao obter lista da Formas...", "Obter Lista", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        '
+        ObterDados()
         bindMovForma.DataSource = listMovFormas
         '
         If listMovFormas.Count > 0 Then
@@ -85,13 +75,32 @@ Public Class frmMovFormas
             '
         Else
             bindMovForma.AddNew()
+            DirectCast(bindMovForma.Current, clMovForma).IDFilial = _IDFilial
             Sit = FlagEstado.NovoRegistro
             PreencheDataBindings()
         End If
         '
+        _MovForma = bindMovForma.Current
         PreencheListagem()
         '
+        ' HABILITA OU DESABILITA CONTROLES DO CARTAO
+        VerificaCartaoTipo()
+        '
         DirectCast(bindMovForma.Current, clMovForma).RegistroAlterado = False
+        '
+    End Sub
+    '
+    Private Sub ObterDados()
+        '
+        Dim fBLL As New MovimentacaoBLL
+        '
+        Try
+            listMovFormas = fBLL.MovForma_GET_List
+        Catch ex As Exception
+            '
+            MessageBox.Show("Uma exceção ocorreu ao obter a lista das Formas de Pagamento..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
         '
     End Sub
     '
@@ -148,6 +157,9 @@ Public Class frmMovFormas
         ' ADD HANDLER PARA DATABINGS
         AddHandler _MovForma.AoAlterar, AddressOf Handler_AoAlterar
         '
+        '--- Clear the Error Provider
+        epValida.Clear()
+        '
         '--- Nesse caso é um novo registro
         If Not IsNothing(_MovForma.IDMovForma) Then
             '
@@ -157,6 +169,12 @@ Public Class frmMovFormas
             ' ALTERAR PARA REGISTRO SALVO
             Sit = FlagEstado.RegistroSalvo
             _MovForma.RegistroAlterado = False
+            '
+            ' VERIFICA O ATIVO BUTTON
+            AtivoButtonImage()
+            '
+            ' HABILITA OU DESABILITA CONTROLES DO CARTAO
+            VerificaCartaoTipo()
             '
         End If
         '
@@ -206,15 +224,17 @@ Public Class frmMovFormas
     '
     ' ESCREVE OS TEXTOS DE TIPO DE ACESSO NA LISTAGEM
     Private Sub lstFormas_DrawItem(sender As Object, eventArgs As BetterListViewDrawItemEventArgs) Handles lstFormas.DrawItem
+        '
         If IsNumeric(eventArgs.Item.Text) Then
             eventArgs.Item.Text = Format(CInt(eventArgs.Item.Text), "00")
         End If
+        '
     End Sub
 #End Region
     '
 #Region "ACAO DOS BOTOES"
     '
-    ' ATIVAR OU DESATIVAR USUARIO BOTÃO
+    ' ATIVAR OU DESATIVAR FORMA BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
         '
         If Sit = FlagEstado.NovoRegistro Then
@@ -223,20 +243,18 @@ Public Class frmMovFormas
             Exit Sub
         End If
         '
-        Dim r As clMovForma = DirectCast(bindMovForma.Current, clMovForma)
-        '
-        If r.Ativo = True Then '---usuario ativo
+        If _MovForma.Ativo = True Then '---usuario ativo
             If MessageBox.Show("Você deseja realmente DESATIVAR a Forma de Entrada:" & vbNewLine &
             txtMovForma.Text.ToUpper, "Desativar Forma", MessageBoxButtons.YesNo,
             MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
         Else '---Usuário Inativo
             If MessageBox.Show("Você deseja realmente ATIVAR a Forma de Entrada:" & vbNewLine &
-            txtMovForma.Text.ToUpper, "Desativar Forma", MessageBoxButtons.YesNo,
+            txtMovForma.Text.ToUpper, "Ativar Forma", MessageBoxButtons.YesNo,
             MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
         End If
         '
         DirectCast(bindMovForma.Current, clMovForma).BeginEdit()
-        r.Ativo = Not r.Ativo
+        _MovForma.Ativo = Not _MovForma.Ativo
         '
         If Sit = FlagEstado.RegistroSalvo Then
             Sit = FlagEstado.Alterado
@@ -260,7 +278,7 @@ Public Class frmMovFormas
                 '
             End If
         ElseIf Sit = FlagEstado.NovoRegistro Then ' REGISTRO NOVO
-            If lstFormas.Items.Count = 1 Then
+            If lstFormas.Items.Count = 0 Then
                 MessageBox.Show("Não é possível cancelar porque não existe outro registro." & vbNewLine &
                                 "Se deseja sair apenas feche a janela!", "Cancelar Edição", MessageBoxButtons.OK,
                                 MessageBoxIcon.Information)
@@ -285,6 +303,8 @@ Public Class frmMovFormas
         row.Parcelas = 0
         row.Comissao = Format(0, "0.00")
         row.NoDias = Format(0, "00")
+        row.IDFilial = _IDFilial
+        row.ApelidoFilial = ObterDefault("FilialDescricao")
         '
         '---adiciona o NewROW
         listMovFormas.Add(row)
@@ -292,6 +312,7 @@ Public Class frmMovFormas
         '
         '---altera o SIT
         Sit = FlagEstado.NovoRegistro
+        txtMovForma.Focus()
         '
     End Sub
     '
@@ -309,10 +330,8 @@ Public Class frmMovFormas
     ' BUTON ABRIR FORMA TIPOS
     Private Sub btnMovTipos_Click(sender As Object, e As EventArgs) Handles btnMovTipos.Click
         '
-        Dim clF As clMovForma = DirectCast(bindMovForma.CurrencyManager.Current, clMovForma)
-        '    
         '---abre o formTipos
-        Dim frmTipo As New frmMovTipos(frmMovTipos.DadosOrigem.MovTipo, True, Me, IIf(IsNothing(clF.IDMovTipo), Nothing, clF.IDMovTipo))
+        Dim frmTipo As New frmMovTipos(frmMovTipos.DadosOrigem.MovTipo, True, Me, _MovForma.IDMovTipo)
         frmTipo.ShowDialog()
         '
         '---verifica os valores
@@ -323,7 +342,7 @@ Public Class frmMovFormas
         '
         '--- grava os novos valores
         txtMovTipo.Text = frmTipo.OrigemDesc_Escolhido
-        clF.IDMovTipo = frmTipo.IDOrigem_Escolhido
+        _MovForma.IDMovTipo = frmTipo.IDOrigem_Escolhido
         txtMovTipo.Focus()
         txtMovTipo.SelectAll()
         '
@@ -349,6 +368,39 @@ Public Class frmMovFormas
         clF.IDCartao = frmTipo.IDOrigem_Escolhido
         txtCartao.Focus()
         txtCartao.SelectAll()
+        '
+        '--- habilita os controles caso desabilitados
+        VerificaCartaoTipo()
+        '
+    End Sub
+    '
+    '--- VERIFICA SE E MOV CARTAO PARA HABILITAR OS CONTROLES
+    Private Sub VerificaCartaoTipo(Optional AnulaPropriedades As Boolean = False)
+        '
+        If IsNothing(_MovForma.IDCartao) Then
+            txtConta.Enabled = False
+            txtParcelas.Enabled = False
+            txtNoDias.Enabled = False
+            txtComissao.Enabled = False
+            btnContaEscolher.Enabled = False
+            '
+            If AnulaPropriedades Then
+                With _MovForma
+                    .ContaPadrao = Nothing
+                    .Parcelas = Nothing
+                    .NoDias = Nothing
+                    .Comissao = Nothing
+                End With
+            End If
+            '
+        Else
+            txtConta.Enabled = True
+            txtParcelas.Enabled = True
+            txtNoDias.Enabled = True
+            txtComissao.Enabled = True
+            btnContaEscolher.Enabled = True
+
+        End If
         '
     End Sub
     '
@@ -385,16 +437,16 @@ Public Class frmMovFormas
     '
     '--- BTN SALVAR REGISTRO
     Private Sub btnSalvar_Click(sender As Object, e As EventArgs) Handles btnSalvar.Click
+        '
         If VerificaDados() = False Then Exit Sub
         '
-        Dim clF As clMovForma = DirectCast(bindMovForma.CurrencyManager.Current, clMovForma)
         Dim movBLL As New MovimentacaoBLL
         '
         If Sit = FlagEstado.NovoRegistro Then
             Try
-                Dim newID As Int16 = movBLL.MovForma_Inserir(clF)
+                Dim newID As Int16 = movBLL.MovForma_Inserir(_MovForma)
                 '
-                clF.IDMovForma = newID
+                _MovForma.IDMovForma = newID
                 lblIDMovForma.DataBindings("Text").ReadValue()
                 '
                 Sit = FlagEstado.RegistroSalvo
@@ -413,7 +465,7 @@ Public Class frmMovFormas
             '
         ElseIf Sit = FlagEstado.Alterado Then
             Try
-                movBLL.MovForma_Update(clF)
+                movBLL.MovForma_Update(_MovForma)
                 '
                 Sit = FlagEstado.RegistroSalvo
                 bindMovForma.EndEdit()
@@ -435,45 +487,44 @@ Public Class frmMovFormas
     Private Function VerificaDados() As Boolean
         '
         Dim f As New FuncoesUtilitarias
-        Dim clF As clMovForma = DirectCast(bindMovForma.CurrencyManager.Current, clMovForma)
         '
-        If Not f.VerificaDadosClasse(txtMovForma, "Descrição da Forma de Movimento", clF, epValida) Then
+        If Not f.VerificaDadosClasse(txtMovForma, "Descrição da Forma de Movimento", _MovForma, epValida) Then
             Return False
         End If
         '
-        If Not f.VerificaDadosClasse(txtMovTipo, "Tipo da Forma de Pagamento", clF, epValida) Then
+        If Not f.VerificaDadosClasse(txtMovTipo, "Tipo da Forma de Pagamento", _MovForma, epValida) Then
             Return False
         End If
         '
-        If Not IsNothing(clF.IDCartao) Then
+        If Not IsNothing(_MovForma.IDCartao) Then
             '
-            If Not f.VerificaDadosClasse(txtNoDias, "Intervalo/Prazo de pagamento do Cartão", clF, epValida) Then
+            If Not f.VerificaDadosClasse(txtNoDias, "Intervalo/Prazo de pagamento do Cartão", _MovForma, epValida) Then
                 Return False
             End If
             '
-            If clF.NoDias <= 0 Then
+            If _MovForma.NoDias <= 0 Then
                 MessageBox.Show("O número de dias não pode ser igual ou menor que Zero...", "Aviso",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information)
                 txtNoDias.Focus()
                 Return False
             End If
             '
-            If Not f.VerificaDadosClasse(txtParcelas, "Quantidade de Parcelas de pagamento", clF, epValida) Then
+            If Not f.VerificaDadosClasse(txtParcelas, "Quantidade de Parcelas de pagamento", _MovForma, epValida) Then
                 Return False
             End If
             '
-            If clF.Parcelas < 0 Then
+            If _MovForma.Parcelas < 0 Then
                 MessageBox.Show("O número de parcelas não pode ser menor que Zero...", "Aviso",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information)
                 txtParcelas.Focus()
                 Return False
             End If
             '
-            If Not f.VerificaDadosClasse(txtComissao, "Comissão da Operadora de Cartão", clF, epValida) Then
+            If Not f.VerificaDadosClasse(txtComissao, "Comissão da Operadora de Cartão", _MovForma, epValida) Then
                 Return False
             End If
             '
-            If clF.Comissao < 0 Or clF.Comissao > 99 Then
+            If _MovForma.Comissao < 0 Or _MovForma.Comissao > 99 Then
                 MessageBox.Show("A taxa de comissão não pode ser menor que Zero ou maior que 100%", "Aviso",
                                 MessageBoxButtons.OK, MessageBoxIcon.Information)
                 txtComissao.Focus()
@@ -481,9 +532,7 @@ Public Class frmMovFormas
             End If
             '
         Else
-            clF.NoDias = Nothing
-            clF.Comissao = Nothing
-            clF.Parcelas = Nothing
+            VerificaCartaoTipo(True)
         End If
         '
         Return True
@@ -496,11 +545,12 @@ Public Class frmMovFormas
     '
     ' ALTERA A IMAGEM E O TEXTO DO BOTÃO ATIVO E DESATIVO
     Private Sub AtivoButtonImage()
+        '
         Try
-            If DirectCast(bindMovForma.Current, clMovForma).Ativo = True Then ' Nesse caso é Forma Ativo
+            If _MovForma.Ativo = True Then ' Nesse caso é Forma Ativo
                 btnAtivo.Image = AtivarImage
                 btnAtivo.Text = "Forma Ativa"
-            ElseIf DirectCast(bindMovForma.Current, clMovForma).Ativo = False Then ' Nesse caso é Forma Inativo
+            ElseIf _MovForma.Ativo = False Then ' Nesse caso é Forma Inativo
                 btnAtivo.Image = DesativarImage
                 btnAtivo.Text = "Forma Inativa"
             End If
@@ -508,6 +558,7 @@ Public Class frmMovFormas
             btnAtivo.Image = AtivarImage
             btnAtivo.Text = "Forma Ativa"
         End Try
+        '
     End Sub
     '
     '
@@ -565,6 +616,7 @@ Public Class frmMovFormas
                     If Not IsNothing(_MovForma.IDCartao) Then Sit = FlagEstado.Alterado
                     txtCartao.Clear()
                     _MovForma.IDCartao = Nothing
+                    VerificaCartaoTipo()
             End Select
             '
         Else
@@ -590,13 +642,6 @@ Public Class frmMovFormas
         End If
         '
     End Sub
-
-
-
-
-
-
-
     '
 #End Region
     '

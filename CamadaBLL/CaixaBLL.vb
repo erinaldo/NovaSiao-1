@@ -120,60 +120,16 @@ Public Class CaixaBLL
     End Function
     '
     '============================================================================================
-    ' GET MOVIMENTACOES DE CAIXA PELO ID CAIXA
+    ' GET SALDO DAS CONTAS DO CAIXA ANTERIOR PELO IDCAIXA
     '============================================================================================
-    Public Function GetMovimentos_IDCaixa(myIDCaixa) As List(Of clCaixaMovimentacao)
-        '
+    Public Function GetSaldo_ContaFormas_IDCaixa(myIDCaixa As Integer) As DataTable
         Dim db As New AcessoDados
         '
         db.LimparParametros()
         db.AdicionarParametros("@IDCaixa", myIDCaixa)
         '
         Try
-            Dim listMov As New List(Of clCaixaMovimentacao)
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspCaixa_GetMovimentos_IDCaixa")
-            '
-            If dt.Rows.Count = 0 Then
-                Return listMov
-            End If
-            '
-            For Each r As DataRow In dt.Rows
-                Dim cx As New clCaixaMovimentacao
-                '
-                cx.IDMov = IIf(IsDBNull(r("ID")), Nothing, r("ID"))
-                cx.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
-                cx.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
-                cx.Movimentacao = IIf(IsDBNull(r("Mov")), String.Empty, r("Mov"))
-                cx.MovValor = IIf(IsDBNull(r("MovValor")), Nothing, r("MovValor"))
-                cx.MovData = IIf(IsDBNull(r("MovData")), Nothing, r("MovData"))
-                cx.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
-                cx.MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
-                cx.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
-                cx.Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
-                '
-                listMov.Add(cx)
-                '
-            Next
-            '
-            Return listMov
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
-    '============================================================================================
-    ' GET SALDO DAS OPERADORAS DO CAIXA ANTERIOR PELO IDCONTA
-    '============================================================================================
-    Public Function GetSaldo_FormaOperadoras_IDCaixa(myIDCaixa As Int16) As DataTable
-        Dim db As New AcessoDados
-        '
-        db.LimparParametros()
-        db.AdicionarParametros("@IDCaixa", myIDCaixa)
-        '
-        Try
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspCaixa_GetSaldoFormasOperadoras")
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspCaixa_GetSaldoContaFormas")
             Return dt
         Catch ex As Exception
             Throw ex
@@ -184,7 +140,7 @@ Public Class CaixaBLL
     '============================================================================================
     ' INSERE NIVELAMENTO NO CAIXA E RETORNA UMA NOVA MOVIMENTACAO DE CAIXA
     '============================================================================================
-    Public Function InserirNivelamento(IDCaixa As Integer, IDMovForma As Int16, myValor As Decimal) As clCaixaMovimentacao
+    Public Function InserirNivelamento(IDCaixa As Integer, IDMovForma As Int16, myValor As Decimal) As clMovimentacao
         Dim db As New AcessoDados
         '
         db.LimparParametros()
@@ -200,12 +156,12 @@ Public Class CaixaBLL
             End If
             '
             Dim r As DataRow = dt.Rows(dt.Rows.Count - 1)
-            Dim cx As New clCaixaMovimentacao
+            Dim cx As New clMovimentacao
             '
-            cx.IDMov = IIf(IsDBNull(r("ID")), Nothing, r("ID"))
+            cx.IDMovimentacao = IIf(IsDBNull(r("IDMovimentacao")), Nothing, r("IDMovimentacao"))
             cx.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
             cx.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
-            cx.Movimentacao = IIf(IsDBNull(r("Mov")), String.Empty, r("Mov"))
+            cx.Mov = IIf(IsDBNull(r("Mov")), String.Empty, r("Mov"))
             cx.MovValor = IIf(IsDBNull(r("MovValor")), Nothing, r("MovValor"))
             cx.MovData = IIf(IsDBNull(r("MovData")), Nothing, r("MovData"))
             cx.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))

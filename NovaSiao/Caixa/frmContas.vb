@@ -9,8 +9,8 @@ Public Class frmContas
     Private bindConta As New BindingSource
     Private _conta As clConta
     '
-    Private ImgInativo As Image = My.Resources.block
-    Private ImgAtivo As Image = My.Resources.accept
+    Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
+    Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
     '
     Private _formOrigem As Form
     Private _IDFilialPadrao As Integer
@@ -34,22 +34,25 @@ Public Class frmContas
                     btnSalvar.Text = "&Salvar"
                     btnSalvar.Image = My.Resources.save
                     btnFechar.Text = "&Fechar"
+                    lstItens.ReadOnly = False
                     '
                 Case FlagEstado.Alterado
                     '
-                    btnNovo.Enabled = True
+                    btnNovo.Enabled = False
                     btnSalvar.Enabled = True
                     btnSalvar.Text = "&Salvar"
                     btnSalvar.Image = My.Resources.save
                     btnFechar.Text = "&Cancelar"
-                    '
+                    lstItens.ReadOnly = True
+                                        '
                 Case FlagEstado.NovoRegistro
                     '
-                    btnNovo.Enabled = True
+                    btnNovo.Enabled = False
                     btnSalvar.Enabled = True
                     btnSalvar.Text = "&Salvar"
                     btnSalvar.Image = My.Resources.save
                     btnFechar.Text = "&Cancelar"
+                    lstItens.ReadOnly = True
                     '
             End Select
         End Set
@@ -86,6 +89,7 @@ Public Class frmContas
             PreencheDataBindings()
         End If
         '
+        _conta = bindConta.Current
         VerAlteracao = True
         '
     End Sub
@@ -155,6 +159,9 @@ Public Class frmContas
             ' ALTERAR PARA REGISTRO SALVO
             Sit = FlagEstado.RegistroSalvo
             '
+            ' VERIFICA O ATIVO BUTTON
+            AtivoButtonImage()
+            '
         End If
         '
     End Sub
@@ -174,7 +181,7 @@ Public Class frmContas
         End With
         '
         With clnConta
-            .Width = 220
+            .Width = 250
             .DisplayMember = "Conta"
         End With
         '
@@ -219,39 +226,118 @@ Public Class frmContas
         lstItens.SelectedItems.Clear()
         '
         '---cria um novo DataRow com valores padrão
-        Dim row As New clConta
+        Dim newConta As New clConta
+        newConta.IDFilial = _IDFilialPadrao
+        newConta.ApelidoFilial = lblFilial.Text
         '
         '---adiciona o NewROW
-        listConta.Add(row)
+        listConta.Add(newConta)
         bindConta.MoveLast()
         '
         '---altera o SIT
         Sit = FlagEstado.NovoRegistro
+        '
+        '---focus
+        txtConta.Focus()
         '
     End Sub
     '
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
         If Sit = FlagEstado.RegistroSalvo Then
+            '
             Close()
+            '
+            If IsNothing(_formOrigem) Then
+                MostraMenuPrincipal()
+            End If
+            '
         ElseIf Sit = FlagEstado.NovoRegistro Then
+            '
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
+            '
             bindConta.CancelEdit()
+            bindConta.MoveFirst()
+            '
             Sit = FlagEstado.RegistroSalvo
+            '
         ElseIf Sit = FlagEstado.Alterado Then
+            '
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
+            '
             bindConta.CancelEdit()
+            AtivoButtonImage()
+            '
             Sit = FlagEstado.RegistroSalvo
+            '
         End If
         '
     End Sub
     '
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
         btnFechar_Click(sender, e)
+    End Sub
+    '
+    ' ATIVAR OU DESATIVAR USUARIO BOTÃO
+    Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
+        '
+        If Sit = FlagEstado.NovoRegistro Then
+            MessageBox.Show("Você não pode DESATIVAR uma Nova Conta", "Desativar Conta",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Exit Sub
+        End If
+        '
+        If _conta.Ativo = True Then '--- ATIVA
+            '
+            If MessageBox.Show("Você deseja realmente DESATIVAR a Forma de Entrada:" &
+                               vbNewLine &
+                               txtConta.Text.ToUpper,
+                               "Desativar Conta",
+                               MessageBoxButtons.YesNo,
+                               MessageBoxIcon.Question,
+                               MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
+            '
+        Else '--- INATIVO
+            If MessageBox.Show("Você deseja realmente ATIVAR a Forma de Entrada:" &
+                               vbNewLine &
+                               txtConta.Text.ToUpper,
+                               "Ativar Conta",
+                               MessageBoxButtons.YesNo,
+                               MessageBoxIcon.Question,
+                               MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
+        End If
+        '
+        _conta.BeginEdit()
+        _conta.Ativo = Not _conta.Ativo
+        '
+        If Sit = FlagEstado.RegistroSalvo Then
+            Sit = FlagEstado.Alterado
+        End If
+        '
+        AtivoButtonImage()
+        '
+    End Sub
+    '
+    ' ALTERA A IMAGEM E O TEXTO DO BOTÃO ATIVO E DESATIVO
+    Private Sub AtivoButtonImage()
+        '
+        Try
+            If _conta.Ativo = True Then ' Nesse caso é Forma Ativo
+                btnAtivo.Image = AtivarImage
+                btnAtivo.Text = "Forma Ativa"
+            ElseIf _conta.Ativo = False Then ' Nesse caso é Forma Inativo
+                btnAtivo.Image = DesativarImage
+                btnAtivo.Text = "Forma Inativa"
+            End If
+        Catch ex As System.IndexOutOfRangeException
+            btnAtivo.Image = AtivarImage
+            btnAtivo.Text = "Forma Ativa"
+        End Try
+        '
     End Sub
     '
 #End Region
@@ -263,7 +349,7 @@ Public Class frmContas
         '
         If Sit = FlagEstado.NovoRegistro Then
             ' verifica preenchimento
-            If VerificaControles() Then Return
+            If Not VerificaControles() Then Return
             '
             ' verfica se já existe valor igual
             If VerificaDuplicado() Then Return
@@ -273,7 +359,7 @@ Public Class frmContas
             '
         ElseIf Sit = FlagEstado.Alterado Then
             ' verifica preenchimento
-            If VerificaControles() Then Return
+            If Not VerificaControles() Then Return
             '
             ' verfica se já existe valor igual
             If VerificaDuplicado() Then Return
@@ -298,6 +384,8 @@ Public Class frmContas
             Dim newID As Integer = mBLL.Conta_Insert(_conta)
             _conta.IDConta = newID
             bindConta.EndEdit()
+            bindConta.ResetBindings(False)
+            '
             Sit = FlagEstado.RegistroSalvo
             '
             MessageBox.Show("Sucesso ao salvar registro de Nova Conta",
@@ -344,15 +432,15 @@ Public Class frmContas
     Private Function VerificaControles() As Boolean
         Dim f As New FuncoesUtilitarias
         '
-        If f.VerificaDadosClasse(txtConta, "Descrição da Conta", _conta) Then
-            Return True
+        If Not f.VerificaDadosClasse(txtConta, "Descrição da Conta", _conta) Then
+            Return False
         End If
         '
-        If f.VerificaDadosClasse(cmbContaTipo, "Tipo da Conta", _conta) Then
-            Return True
+        If Not f.VerificaDadosClasse(cmbContaTipo, "Tipo da Conta", _conta) Then
+            Return False
         End If
         '
-        Return False
+        Return True
         '
     End Function
     '
@@ -447,6 +535,10 @@ Public Class frmContas
         Dim pnl As Panel = _formOrigem.Controls("Panel1")
         pnl.BackColor = Color.SlateGray
     End Sub
+
+
+
+
     '
 #End Region
     '

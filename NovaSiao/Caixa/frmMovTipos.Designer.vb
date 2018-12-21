@@ -20,8 +20,8 @@ Partial Class frmMovTipos
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.dgvListagem = New System.Windows.Forms.DataGridView()
         Me.IDFabricante = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnFechar = New System.Windows.Forms.Button()
@@ -45,23 +45,24 @@ Partial Class frmMovTipos
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(192, 0)
+        Me.lblTitulo.Dock = System.Windows.Forms.DockStyle.None
+        Me.lblTitulo.Location = New System.Drawing.Point(158, 6)
         Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblTitulo.Size = New System.Drawing.Size(263, 50)
+        Me.lblTitulo.Size = New System.Drawing.Size(263, 40)
         Me.lblTitulo.Text = "Tipos de Movimentação"
         '
         'dgvListagem
         '
         Me.dgvListagem.AllowUserToAddRows = False
         Me.dgvListagem.AllowUserToDeleteRows = False
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvListagem.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle11.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle11.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle11.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle11.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvListagem.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle11
         Me.dgvListagem.ColumnHeadersHeight = 27
         Me.dgvListagem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
         Me.dgvListagem.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.IDFabricante})
@@ -70,14 +71,14 @@ Partial Class frmMovTipos
         Me.dgvListagem.MultiSelect = False
         Me.dgvListagem.Name = "dgvListagem"
         Me.dgvListagem.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.Color.AliceBlue
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvListagem.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle12.BackColor = System.Drawing.Color.AliceBlue
+        DataGridViewCellStyle12.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvListagem.RowHeadersDefaultCellStyle = DataGridViewCellStyle12
         Me.dgvListagem.RowHeadersWidth = 36
         Me.dgvListagem.RowTemplate.Height = 30
         Me.dgvListagem.Size = New System.Drawing.Size(434, 345)
@@ -95,7 +96,7 @@ Partial Class frmMovTipos
         Me.btnFechar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_24x24
         Me.btnFechar.Location = New System.Drawing.Point(317, 413)
         Me.btnFechar.Name = "btnFechar"
-        Me.btnFechar.Size = New System.Drawing.Size(127, 52)
+        Me.btnFechar.Size = New System.Drawing.Size(127, 41)
         Me.btnFechar.TabIndex = 12
         Me.btnFechar.Text = "&Fechar"
         Me.btnFechar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -107,7 +108,7 @@ Partial Class frmMovTipos
         Me.btnNovo.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
         Me.btnNovo.Location = New System.Drawing.Point(10, 413)
         Me.btnNovo.Name = "btnNovo"
-        Me.btnNovo.Size = New System.Drawing.Size(127, 52)
+        Me.btnNovo.Size = New System.Drawing.Size(127, 41)
         Me.btnNovo.TabIndex = 10
         Me.btnNovo.Text = "&Novo"
         Me.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -120,7 +121,7 @@ Partial Class frmMovTipos
         Me.btnSalvar.Image = Global.NovaSiao.My.Resources.Resources.save
         Me.btnSalvar.Location = New System.Drawing.Point(143, 413)
         Me.btnSalvar.Name = "btnSalvar"
-        Me.btnSalvar.Size = New System.Drawing.Size(127, 52)
+        Me.btnSalvar.Size = New System.Drawing.Size(127, 41)
         Me.btnSalvar.TabIndex = 11
         Me.btnSalvar.Text = "&Salvar"
         Me.btnSalvar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -154,7 +155,7 @@ Partial Class frmMovTipos
         Me.btnClose.BorderStyle = VIBlend.WinForms.Controls.ButtonBorderStyle.NONE
         Me.btnClose.ButtonType = VIBlend.WinForms.Controls.vFormButtonType.CloseButton
         Me.btnClose.CausesValidation = False
-        Me.btnClose.Location = New System.Drawing.Point(12, 15)
+        Me.btnClose.Location = New System.Drawing.Point(425, 14)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.RibbonStyle = False
         Me.btnClose.RoundedCornersMask = CType(15, Byte)
@@ -168,7 +169,7 @@ Partial Class frmMovTipos
         'frmMovTipos
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(455, 474)
+        Me.ClientSize = New System.Drawing.Size(455, 462)
         Me.Controls.Add(Me.btnFechar)
         Me.Controls.Add(Me.btnNovo)
         Me.Controls.Add(Me.btnSalvar)

@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 
 Public Class clDespesa : Implements IEditableObject
+    '
 #Region "ESTRUTURA DOS DADOS"
     Structure DespesaStructure ' alguns usam FRIEND em vez de DIM
         '--- Itens da tblDespesa

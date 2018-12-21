@@ -6,7 +6,7 @@ Public Class frmAReceberQuitar
     Private bindEntrada As New BindingSource
     Private _vlMax As Decimal = 0
     Private _VerAlteracao As Boolean = False
-    Property propEntrada As clEntradas
+    Property propMovEntrada As clMovimentacao
     Property prop_vlPagoDoValor As Double '--- retorna o valor pago sem o acrescimo
     Property prop_vlPagoJuros As Double '--- retorna o valor pago do Acrescimo / Juros
     '
@@ -18,15 +18,16 @@ Public Class frmAReceberQuitar
         ' Add any initialization after the InitializeComponent() call.
         _formOrigem = formOrigem
         _vlMax = vlMax
-        propEntrada = New clEntradas
-        bindEntrada.DataSource = propEntrada
+        propMovEntrada = New clMovimentacao(EnumMovimentacaoOrigem.AReceberParcela, EnumMovimento.Entrada)
+        bindEntrada.DataSource = propMovEntrada
         PreencheDataBinding()
         '
-        propEntrada.EntradaData = Obter_DataPadrao()
-        propEntrada.IDConta = Obter_ContaPadrao()
-        propEntrada.Origem = 2 '--- ORIGEM PARCELAMENTO
-        propEntrada.IDOrigem = IDOrigem
-        propEntrada.Creditar = False
+        propMovEntrada.MovData = Obter_DataPadrao()
+        propMovEntrada.IDConta = Obter_ContaPadrao()
+        propMovEntrada.Origem = 2 '--- ORIGEM PARCELAMENTO
+        propMovEntrada.IDOrigem = IDOrigem
+        propMovEntrada.Creditar = False
+        propMovEntrada.Movimento = 1 '--- ORIGEM ENTRADA
         txtDoValor.Text = FormatCurrency(vlMax, 2)
         txtAcrescimo.Text = FormatCurrency(Acrescimo, 2)
         CalculaValorPago()
@@ -40,8 +41,8 @@ Public Class frmAReceberQuitar
     '------------------------------------------------------------------------------------------
     Private Sub PreencheDataBinding()
         '
-        lblEntradaValor.DataBindings.Add("Text", bindEntrada, "EntradaValor", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtEntradaData.DataBindings.Add("Text", bindEntrada, "EntradaData", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblEntradaValor.DataBindings.Add("Text", bindEntrada, "MovValor", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtEntradaData.DataBindings.Add("Text", bindEntrada, "MovData", True, DataSourceUpdateMode.OnPropertyChanged)
         txtObservacao.DataBindings.Add("Text", bindEntrada, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' CARREGA OS COMBOBOX
@@ -67,27 +68,54 @@ Public Class frmAReceberQuitar
     '------------------------------------------------------------------------------------------
     Private Sub CarregaCmbTipo()
         Dim TipoBLL As New MovimentacaoBLL
-        Dim dtTipo As DataTable = TipoBLL.MovTipo_GET
         '
-        With cmbIDMovTipo
-            .DataSource = dtTipo
-            .DisplayMember = "MovTipo"
-            .ValueMember = "IDMovTipo"
-            .DataBindings.Add("SelectedValue", bindEntrada, "IDMovTipo", True, DataSourceUpdateMode.OnPropertyChanged)
-        End With
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim dtTipo As DataTable = TipoBLL.MovTipo_GET
+            '
+            With cmbIDMovTipo
+                .DataSource = dtTipo
+                .DisplayMember = "MovTipo"
+                .ValueMember = "IDMovTipo"
+                .DataBindings.Add("SelectedValue", bindEntrada, "IDMovTipo", True, DataSourceUpdateMode.OnPropertyChanged)
+            End With
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Obter os Tipo de Pagamento..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
     End Sub
     '
     Private Sub CarregaCmbForma()
-        Dim TipoBLL As New MovimentacaoBLL
-        Dim dtForma As DataTable = TipoBLL.MovTipo_GET_Dt
         '
-        With cmbIDMovForma
-            .DataSource = dtForma
-            .DisplayMember = "MovForma"
-            .ValueMember = "IDMovForma"
-            .DataBindings.Add("SelectedValue", bindEntrada, "IDMovForma", True, DataSourceUpdateMode.OnPropertyChanged)
-        End With
+        Dim TipoBLL As New MovimentacaoBLL
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim dtForma As DataTable = TipoBLL.MovForma_GET_DT
+            '
+            With cmbIDMovForma
+                .DataSource = dtForma
+                .DisplayMember = "MovForma"
+                .ValueMember = "IDMovForma"
+                .DataBindings.Add("SelectedValue", bindEntrada, "IDMovForma", True, DataSourceUpdateMode.OnPropertyChanged)
+            End With
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao obter lista de Tipos de Movimentacao..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
     End Sub
     '
@@ -135,23 +163,23 @@ Public Class frmAReceberQuitar
         End If
         '
         '--- Verifica se a DATA DA ENTRADA é permitida pelo sistema
-        If DataBloqueada(propEntrada.EntradaData, propEntrada.IDConta) Then
+        If DataBloqueada(propMovEntrada.MovData, propMovEntrada.IDConta) Then
             Exit Sub
         End If
         '
         '--- Insere a Entrada
-        Dim eBLL As New EntradaBLL
+        Dim eBLL As New MovimentacaoBLL
         Dim newID As Integer?
         '
         Try
-            newID = eBLL.Entrada_Inserir(propEntrada)
+            newID = eBLL.Movimentacao_Inserir(propMovEntrada)
             '
             If Not IsNumeric(newID) Then
                 Throw New Exception(newID.ToString)
             Else
-                propEntrada.IDEntrada = newID
-                propEntrada.Conta = cmbIDConta.Text
-                propEntrada.MovForma = cmbIDMovForma.Text
+                propMovEntrada.IDMovimentacao = newID
+                propMovEntrada.Conta = cmbIDConta.Text
+                propMovEntrada.MovForma = cmbIDMovForma.Text
             End If
             '
             prop_vlPagoDoValor = CDbl(txtDoValor.Text)
@@ -235,7 +263,7 @@ Public Class frmAReceberQuitar
             If item <= rCount And item > 0 Then
                 Dim Valor As Integer = dt.Rows(e.KeyChar.ToString - 1)("IDMovTipo")
                 '
-                propEntrada.IDMovTipo = Valor
+                propMovEntrada.IDMovTipo = Valor
                 cmbIDMovTipo.SelectedValue = Valor
                 '
             End If
@@ -256,7 +284,7 @@ Public Class frmAReceberQuitar
             For Each r As DataRow In dtF.Rows
                 If r("IDMovTipo") = cmbIDMovTipo.SelectedValue Then
                     If num = i Then
-                        propEntrada.IDMovForma = r("IDMovForma")
+                        propMovEntrada.IDMovForma = r("IDMovForma")
                         cmbIDMovForma.DataBindings("SelectedValue").ReadValue()
                         Exit For
                     Else
@@ -323,7 +351,7 @@ Public Class frmAReceberQuitar
             Acresc = CDec(txtAcrescimo.Text)
         End If
         '
-        propEntrada.EntradaValor = DoValor + Acresc
+        propMovEntrada.MovValor = DoValor + Acresc
         lblEntradaValor.DataBindings("text").ReadValue()
         '
     End Sub
@@ -348,7 +376,7 @@ Public Class frmAReceberQuitar
         _VerAlteracao = False
         If cmbIDMovForma.Items.Count = 1 Then
             cmbIDMovForma.SelectedIndex = 0
-            propEntrada.IDMovForma = dtForma.Rows(0).Item("IDMovForma")
+            propMovEntrada.IDMovForma = dtForma.Rows(0).Item("IDMovForma")
         Else
             cmbIDMovForma.SelectedIndex = -1
         End If
@@ -365,7 +393,7 @@ Public Class frmAReceberQuitar
         If _VerAlteracao = False Then Exit Sub
         '
         If rbtEntrada.Checked = True Then
-            propEntrada.Creditar = False
+            propMovEntrada.Creditar = False
         ElseIf rbtCreditar.Checked = True Then
             '--- Verifica a autoridade do usuário
             If UsuarioAcesso(1) <> 1 Then '--- Se não for ADMINISTRADOR
@@ -374,7 +402,7 @@ Public Class frmAReceberQuitar
                                 "Permissão de Usuário", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 rbtCreditar.Checked = False
             Else
-                propEntrada.Creditar = True
+                propMovEntrada.Creditar = True
             End If
         End If
     End Sub

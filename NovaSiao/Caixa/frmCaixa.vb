@@ -2,11 +2,12 @@
 Imports CamadaDTO
 
 Public Class frmCaixa
-    Private lstMov As List(Of clCaixaMovimentacao)
+    Private lstMov As List(Of clMovimentacao)
     Private dtSaldo As New DataTable
     Private _clCaixa As clCaixa
-    Private _TEntradas As Decimal
-    Private _TSaidas As Decimal
+    Private _TEntradas As Double
+    Private _TSaidas As Double
+    Private _TTransf As Double
     Private WithEvents bindCaixa As New BindingSource
 
 #Region "SUB NEW | PROPERTIES"
@@ -123,16 +124,16 @@ Public Class frmCaixa
     '
     Private Sub obterMovimentacoes()
         '
-        Dim db As New CaixaBLL
+        Dim movBLL As New MovimentacaoBLL
         '
         Try
             '--- GET Lista de Movimentacoes
-            lstMov = db.GetMovimentos_IDCaixa(propCaixa.IDCaixa)
+            lstMov = movBLL.GetMovimentos_IDCaixa(propCaixa.IDCaixa)
             '
             dgvListagem.DataSource = lstMov
             '
         Catch ex As Exception
-            MessageBox.Show("Um exceção ocorreu ao tentar obter os Entradas|Saídas dessa Conta ..." & vbNewLine &
+            MessageBox.Show("Um exceção ocorreu ao tentar obter os Entradas | Saídas dessa Conta ..." & vbNewLine &
                             ex.Message, "Exceção Inesperada", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         '
@@ -240,23 +241,37 @@ Public Class frmCaixa
         '
     End Sub
     '
+    '--- CONTROLA AS CORES DA LISTAGEM
+    '=====================================================================================================
     Private Sub dgvListagem_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvListagem.CellFormatting
         '
         If e.ColumnIndex = 3 Then
-            If DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clCaixaMovimentacao).Movimentacao = "S" Then
-
-                dgvListagem.Rows(e.RowIndex).DefaultCellStyle.BackColor = Color.MistyRose
-                dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionBackColor = Color.Firebrick
-
-
-                e.CellStyle.ForeColor = Color.Red
-            Else
-
-                dgvListagem.Rows(e.RowIndex).DefaultCellStyle.BackColor = Color.Azure
-                dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionBackColor = SystemColors.Highlight
-
-                e.CellStyle.ForeColor = Color.Black
-            End If
+            '
+            Dim M As String = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clMovimentacao).Mov
+            '
+            Select Case M
+                '
+                Case "S"
+                    '
+                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.BackColor = Color.MistyRose
+                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionBackColor = Color.Firebrick
+                    '
+                    e.CellStyle.ForeColor = Color.Red
+                Case "E"
+                    '
+                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.BackColor = Color.Azure
+                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionBackColor = SystemColors.Highlight
+                    '
+                    e.CellStyle.ForeColor = Color.Black
+                Case "T"
+                    '
+                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.BackColor = Color.LawnGreen
+                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionBackColor = SystemColors.Highlight
+                    '
+                    e.CellStyle.ForeColor = Color.Blue
+                    '
+            End Select
+            '
         End If
         '
     End Sub
@@ -270,6 +285,7 @@ Public Class frmCaixa
         '--- Adiciona as COLUNAS da DataTable: dtSaldos
         '--------------------------------------------------------------
         Dim IDMovForma As New DataColumn
+        '
         With IDMovForma
             .ColumnName = "IDMovForma"
             .DataType = GetType(Short)
@@ -284,8 +300,8 @@ Public Class frmCaixa
         dtSaldo.PrimaryKey = Keys
         '
         dtSaldo.Columns.Add("MovForma", GetType(String))
-        dtSaldo.Columns.Add("IDOperadora", GetType(Short))
-        dtSaldo.Columns.Add("Operadora", GetType(String))
+        dtSaldo.Columns.Add("IDConta", GetType(Short))
+        dtSaldo.Columns.Add("Conta", GetType(String))
         dtSaldo.Columns.Add("SaldoAnterior", GetType(Decimal))
         dtSaldo.Columns.Add("SaldoFinal", GetType(Decimal))
         dtSaldo.Columns.Add("Nivelamento", GetType(Boolean))
@@ -302,30 +318,27 @@ Public Class frmCaixa
         '--------------------------------------------------------------
         Try
             '--- Adiciona os DADOS do SALDOANTERIOR
-            Dim dtSaldoAnterior As DataTable = cxBLL.GetSaldo_FormaOperadoras_IDCaixa(_clCaixa.IDCaixa)
+            Dim dtSaldoAnterior As DataTable = cxBLL.GetSaldo_ContaFormas_IDCaixa(_clCaixa.IDCaixa)
             '
             If dtSaldoAnterior.Rows.Count > 0 Then
+                '
                 For Each r As DataRow In dtSaldoAnterior.Rows
                     dtSaldo.Rows.Add({r("IDMovForma"),
-                                     r("MovForma"),
-                                     r("IDOperadora"),
-                                     r("Operadora"),
-                                     r("MovValor"),
-                                     r("MovValor")})
+                                      r("MovForma"),
+                                      r("IDConta"),
+                                      r("Conta"),
+                                      r("MovValor"),
+                                      r("MovValor")})
                 Next
+                '
             End If
             '
             '--- Calcula os DADOS do SALDOATUAL
-            For Each c As clCaixaMovimentacao In lstMov
+            For Each c As clMovimentacao In lstMov
                 Dim saldoFind As DataRow = dtSaldo.Rows.Find(c.IDMovForma)
                 '
                 '--- Calcula valor real positivo para entrada e negativo para saída
-                Dim MovValorReal As Decimal
-                If c.Movimentacao = "E" Then '--- ENTRADA CRÉDITO
-                    MovValorReal = c.MovValor
-                Else '--- SAIDA DÉBITO
-                    MovValorReal = c.MovValor * (-1)
-                End If
+                Dim MovValorReal As Double = c.MovValorReal
                 '
                 '--- adiciona os valores
                 If IsNothing(saldoFind) Then
@@ -392,19 +405,6 @@ Public Class frmCaixa
     '
     Private Sub FormataDgvSaldos()
         '
-        ' (0) COLUNA OPERADORA
-        With clnOperadora
-            .HeaderText = "Operadora"
-            .DataPropertyName = "Operadora"
-            .Width = 100
-            .Resizable = DataGridViewTriState.False
-            .Visible = True
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft
-        End With
-        '
         ' (1) COLUNA MOVFORMA
         With clnForma
             .HeaderText = "Forma"
@@ -449,8 +449,7 @@ Public Class frmCaixa
         End With
         '
         '
-        Me.dgvSaldos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {
-                                      Me.clnOperadora,
+        Me.dgvSaldos.Columns.AddRange(New DataGridViewColumn() {
                                       Me.clnForma,
                                       Me.clnSaldoAnterior,
                                       Me.clnSaldoFinal})
@@ -495,7 +494,7 @@ Public Class frmCaixa
         '--- se a resultado for cancel então exit
         If f.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        Dim newMov As clCaixaMovimentacao = f.Prop_NewclCaixaMov
+        Dim newMov As clMovimentacao = f.propMovSaida
         '
         '--- retorna os valores e insere na listagem
         lstMov.Add(newMov)
@@ -653,24 +652,29 @@ Public Class frmCaixa
     '
     Private Sub CalculaTotais()
         '
-        Dim E As Decimal = 0
-        Dim S As Decimal = 0
+        Dim E As Double = 0
+        Dim S As Double = 0
+        Dim Transf As Double = 0
         '
-        For Each cl As clCaixaMovimentacao In lstMov
+        For Each cl As clMovimentacao In lstMov
             '
-            If cl.Movimentacao = "E" Then
+            If cl.Mov = "E" Then
                 E = E + cl.MovValor
-            Else
+            ElseIf cl.Mov = "S" Then
                 S = S + cl.MovValor
+            Else
+                Transf = Transf + cl.MovValorReal
             End If
             '
             _TEntradas = E
             lblTEntradas.Text = Format(E, "C")
             _TSaidas = S
             lblTSaidas.Text = Format(S, "C")
+            _TTransf = Transf
+            lblTTransf.Text = Format(Transf, "C")
             '
             '--- Calcula SALDOS
-            _clCaixa.SaldoFinal = _TEntradas - _TSaidas
+            _clCaixa.SaldoFinal = _TEntradas + _TTransf - _TSaidas
             lblSaldoFinal.Text = Format(_clCaixa.SaldoFinal, "C")
             '
             If _clCaixa.SaldoFinal >= 0 Then
@@ -811,7 +815,7 @@ Public Class frmCaixa
         If r("Nivelamento") = True Then
             '
             '--- percorre pela lista de movimentacoes do caixa
-            For Each c As clCaixaMovimentacao In lstMov
+            For Each c As clMovimentacao In lstMov
                 If c.Descricao.ToString.Contains("Nivelamento") Then
                     If c.IDMovForma = r("IDMovForma") Then
                         MessageBox.Show("Já existe um Nivelamento efetuado nessa mesma Forma de Movimentação." & vbNewLine &
@@ -833,7 +837,7 @@ Public Class frmCaixa
         Try
             Dim cxBLL As New CaixaBLL
             '
-            Dim newMov As clCaixaMovimentacao = cxBLL.InserirNivelamento(_clCaixa.IDCaixa, r("IDMovForma"), myNivValor)
+            Dim newMov As clMovimentacao = cxBLL.InserirNivelamento(_clCaixa.IDCaixa, r("IDMovForma"), myNivValor)
             '
             '--- retorna os valores e insere na listagem
             lstMov.Add(newMov)

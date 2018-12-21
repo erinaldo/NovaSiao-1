@@ -161,6 +161,7 @@ Public Module GlobalPrincipal
     '
     '--- OBTER O VALOR DA CONTA PADRAO DO SISTEMA
     Public Function Obter_ContaPadrao() As Integer?
+        '
         Dim myCt As String = String.Empty
         '
         myCt = ObterDefault("ContaPadrao")

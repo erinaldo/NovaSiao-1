@@ -1,9 +1,170 @@
 ﻿Imports CamadaDAL
 Imports CamadaDTO
-
+'
 Public Class MovimentacaoBLL
     '
     Dim SQL As New SQLControl
+    '
+#Region "MOVIMENTACAO: ENTRADAS E SAIDAS"
+    '
+    '===================================================================================================
+    ' OBTER LISTA DE TODAS MOVIMENTACOES INFORMANDO O TIPO DE ORIGEM E PELO IDORIGEM 
+    '===================================================================================================
+    Public Function Movimentacao_GET_PorOrigemID(Origem As EnumMovimentacaoOrigem,
+                                                 IDOrigem As Integer) As List(Of clMovimentacao)
+        Dim db As New AcessoDados
+        '
+        '--- limpa os paramentros
+        db.LimparParametros()
+        '
+        '--- adiciona os parametros
+        db.AdicionarParametros("@Origem", CByte(Origem)) ' ORIGEM TRANSACAO/VENDA
+        db.AdicionarParametros("@IDOrigem", IDOrigem)
+        '
+        Try
+            '
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspMovimentacao_GET_PorOrigemID")
+            '
+            '--- RETURN
+            Return Convert_DT_ListOF_Movimentacao(dt)
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' SALVA NOVA ENTRADA/PAGAMENTO NO BD
+    '===================================================================================================
+    Public Function Movimentacao_Inserir(Movimentacao As clMovimentacao) As Integer
+        Dim db As New AcessoDados
+        '
+        '--- limpa os parametros
+        db.LimparParametros()
+        '
+        '--- adiciona o parametros
+        db.AdicionarParametros("@Origem", Movimentacao.Origem)
+        db.AdicionarParametros("@IDOrigem", Movimentacao.IDOrigem)
+        db.AdicionarParametros("@IDConta", Movimentacao.IDConta)
+        db.AdicionarParametros("@MovData", Movimentacao.MovData)
+        db.AdicionarParametros("@MovValor", Movimentacao.MovValor)
+        db.AdicionarParametros("@IDMovForma", Movimentacao.IDMovForma)
+        db.AdicionarParametros("@Creditar", Movimentacao.Creditar)
+        db.AdicionarParametros("@Observacao", Movimentacao.Observacao)
+        db.AdicionarParametros("@Descricao", Movimentacao.Descricao)
+        '
+        Try
+            Return db.ExecutarManipulacao(CommandType.StoredProcedure, "uspMovimentacao_Inserir")
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' LIMPA/EXCLUI TODOS OS REGISTROS DE PAGAMENTOS/ENTRADAS DA TRANSACAO
+    '===================================================================================================
+    Public Function Entrada_ExcluirTodas_PorTransacao(IDTransacao As Integer) As Boolean
+        '
+        SQL.ClearParams()
+        SQL.AddParam("@IDTransacao", IDTransacao)
+        '
+        Dim myQuery As String = "DELETE FROM tblCaixaMovimentacao WHERE Origem = 1 AND IDOrigem = @IDTransacao"
+        Try
+            SQL.ExecQuery(myQuery)
+            '
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+            Else
+                Return True
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '============================================================================================
+    ' GET MOVIMENTACOES DE CAIXA PELO ID CAIXA
+    '============================================================================================
+    Public Function GetMovimentos_IDCaixa(myIDCaixa) As List(Of clMovimentacao)
+        '
+        Dim db As New AcessoDados
+        '
+        db.LimparParametros()
+        db.AdicionarParametros("@IDCaixa", myIDCaixa)
+        '
+        Try
+            '
+            '---GET MOVIMENTACOES
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspCaixa_GetMovimentos_IDCaixa")
+            '
+            '--- SE NAO HA REGISTRO ENTAO RETORNA VAZIO
+            If dt.Rows.Count = 0 Then Return New List(Of clMovimentacao)
+            '
+            '--- CONVERT E RETURN
+            Return Convert_DT_ListOF_Movimentacao(dt)
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' CONVERTE DATATABLE EM LIST OF CLMOVIMENTACAO
+    '===================================================================================================
+    Private Function Convert_DT_ListOF_Movimentacao(myDT As DataTable) As List(Of clMovimentacao)
+        '
+        '--- CREATE A NEW LIST
+        Dim listMov As New List(Of clMovimentacao)
+        '
+        '--- ADD ROW IN LIST
+        If myDT.Rows.Count > 0 Then
+            '
+            For Each r As DataRow In myDT.Rows
+                '
+                '--- CREATE A NEW CLASS
+                Dim clM As New clMovimentacao()
+                '
+                With clM
+                    .IDMovimentacao = IIf(IsDBNull(r("IDMovimentacao")), Nothing, r("IDMovimentacao"))
+                    .IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
+                    .Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
+                    .IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
+                    .Conta = IIf(IsDBNull(r("Conta")), String.Empty, r("Conta"))
+                    .IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
+                    .MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
+                    .IDMovTipo = IIf(IsDBNull(r("IDMovTipo")), Nothing, r("IDMovTipo"))
+                    .MovTipo = IIf(IsDBNull(r("MovTipo")), String.Empty, r("MovTipo"))
+                    .IDCartaoTipo = IIf(IsDBNull(r("IDCartaoTipo")), Nothing, r("IDCartaoTipo"))
+                    .Cartao = IIf(IsDBNull(r("Cartao")), String.Empty, r("Cartao"))
+                    .MovData = IIf(IsDBNull(r("MovData")), Nothing, r("MovData"))
+                    .MovValor = IIf(IsDBNull(r("MovValor")), 0, r("MovValor"))
+                    .Creditar = IIf(IsDBNull(r("Creditar")), Nothing, r("Creditar"))
+                    .IDCaixa = IIf(IsDBNull(r("IDCaixa")), Nothing, r("IDCaixa"))
+                    .Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
+                    .IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
+                    .ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
+                    .Movimento = If(IsDBNull(r("Movimento")), Nothing, r("Movimento"))
+                End With
+                '
+                '--- Adiciona o ROW na listagem
+                listMov.Add(clM)
+                '
+            Next
+            '
+        Else
+            Return listMov
+        End If
+        '
+        Return listMov
+        '
+    End Function
+    '
+#End Region '/ MOVIMENTACAO: ENTRADAS E SAIDAS
     '
 #Region "CONTAS"
     '
@@ -174,7 +335,7 @@ Public Class MovimentacaoBLL
         SQL.AddParam("@IDFilial", myConta.IDFilial)
         SQL.AddParam("@SaldoAtual", 0)
         '
-        Dim strSQL As String = "UPDATE tblContas SET " &
+        Dim strSQL As String = "UPDATE tblCaixaContas SET " &
                                "Conta = @Conta, Ativo = @Ativo, ContaTipo = @ContaTipo, " &
                                "IDFilial = @IDFilial, SaldoAtual = @SaldoAtual " &
                                "WHERE IDConta = @IDConta"
@@ -208,13 +369,19 @@ Public Class MovimentacaoBLL
         Dim db As New AcessoDados
         Dim dtFormas As DataTable
         '
-        If IsNothing(Ativo) Then
-            dtFormas = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM tblMovForma")
-        Else
-            dtFormas = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM tblMovForma WHERE Ativo = '" & Ativo & "'")
-        End If
-        '
-        Return dtFormas
+        Try
+            '
+            If IsNothing(Ativo) Then
+                dtFormas = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM qryMovForma")
+            Else
+                dtFormas = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM qryMovForma WHERE Ativo = '" & Ativo & "'")
+            End If
+            '
+            Return dtFormas
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
         '
     End Function
     '
@@ -225,33 +392,39 @@ Public Class MovimentacaoBLL
     ' --- OBTER LISTA
     Public Function MovForma_GET_List(Optional Ativo As Boolean? = Nothing) As List(Of clMovForma)
         '
-        Dim dt As DataTable = MovForma_GET_DT(Ativo)
-        '
-        Dim list As New List(Of clMovForma)
-        '
-        If dt.Rows.Count = 0 Then Return list
-        '
-        For Each r As DataRow In dt.Rows
-            Dim clF As New clMovForma
+        Try
+            Dim dt As DataTable = MovForma_GET_DT(Ativo)
             '
-            clF.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
-            clF.MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
-            clF.IDMovTipo = IIf(IsDBNull(r("IDMovTipo")), Nothing, r("IDMovTipo"))
-            clF.MovTipo = IIf(IsDBNull(r("MovTipo")), String.Empty, r("MovTipo"))
-            clF.IDCartao = IIf(IsDBNull(r("IDCartao")), Nothing, r("IDCartao"))
-            clF.Cartao = IIf(IsDBNull(r("Cartao")), String.Empty, r("Cartao"))
-            clF.Parcelas = IIf(IsDBNull(r("Parcelas")), Nothing, r("Parcelas"))
-            clF.Comissao = IIf(IsDBNull(r("Comissao")), Nothing, r("Comissao"))
-            clF.NoDias = IIf(IsDBNull(r("NoDias")), Nothing, r("NoDias"))
-            clF.Ativo = IIf(IsDBNull(r("Ativo")), Nothing, r("Ativo"))
-            clF.IDContaPadrao = IIf(IsDBNull(r("IDContaPadrao")), Nothing, r("IDContaPadrao"))
-            clF.ContaPadrao = IIf(IsDBNull(r("ContaPadrao")), String.Empty, r("ContaPadrao"))
+            Dim list As New List(Of clMovForma)
             '
-            list.Add(clF)
+            If dt.Rows.Count = 0 Then Return list
             '
-        Next
-        '
-        Return list
+            For Each r As DataRow In dt.Rows
+                Dim clF As New clMovForma
+                '
+                clF.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
+                clF.MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
+                clF.IDMovTipo = IIf(IsDBNull(r("IDMovTipo")), Nothing, r("IDMovTipo"))
+                clF.MovTipo = IIf(IsDBNull(r("MovTipo")), String.Empty, r("MovTipo"))
+                clF.IDCartao = IIf(IsDBNull(r("IDCartaoTipo")), Nothing, r("IDCartaoTipo"))
+                clF.Cartao = IIf(IsDBNull(r("Cartao")), String.Empty, r("Cartao"))
+                clF.Parcelas = IIf(IsDBNull(r("Parcelas")), Nothing, r("Parcelas"))
+                clF.Comissao = IIf(IsDBNull(r("Comissao")), Nothing, r("Comissao"))
+                clF.NoDias = IIf(IsDBNull(r("NoDias")), Nothing, r("NoDias"))
+                clF.Ativo = IIf(IsDBNull(r("Ativo")), Nothing, r("Ativo"))
+                clF.IDContaPadrao = IIf(IsDBNull(r("IDContaPadrao")), Nothing, r("IDContaPadrao"))
+                clF.ContaPadrao = IIf(IsDBNull(r("ContaPadrao")), String.Empty, r("ContaPadrao"))
+                clF.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
+                clF.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial")) '
+                list.Add(clF)
+                '
+            Next
+            '
+            Return list
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
         '
     End Function
     '
@@ -274,7 +447,7 @@ Public Class MovimentacaoBLL
         Try
             '---salva o NOVO registro
             mySQL.ExecQuery("INSERT INTO tblCaixaMovForma " &
-                            "(IDMovTipo, MovForma, IDContaPadrao, IDFilial, IDCartao, Parcelas, Comissao, NoDias, Ativo) " &
+                            "(IDMovTipo, MovForma, IDContaPadrao, IDFilial, IDCartaoTipo, Parcelas, Comissao, NoDias, Ativo) " &
                             "VALUES (@IDMovTipo, @MovForma, @IDContaPadrao, @IDFilial, @IDCartao, @Parcelas, @Comissao, @NoDias, @Ativo);", True)
             '
             If mySQL.HasException() Then Throw New Exception(mySQL.Exception)
@@ -310,7 +483,7 @@ Public Class MovimentacaoBLL
             '---atualiza o registro ALTERADO
             mySQL.ExecQuery("UPDATE tblCaixaMovForma " &
                             "SET IDMovTipo=@IDMovTipo, MovForma=@MovForma, IDContaPadrao=@IDContaPadrao, IDFilial=@IDFilial, " &
-                            "IDCartao=@IDCartao, Parcelas=@Parcelas, Comissao=@Comissao, NoDias=@NoDias, Ativo=@Ativo " &
+                            "IDCartaoTipo=@IDCartao, Parcelas=@Parcelas, Comissao=@Comissao, NoDias=@NoDias, Ativo=@Ativo " &
                             "WHERE IDMovForma=@IDMovForma;")
             '
             If mySQL.HasException() Then Throw New Exception(mySQL.Exception)
@@ -366,7 +539,7 @@ Public Class MovimentacaoBLL
         End If
         '
         Dim SQL As New SQLControl
-        Dim strSQL As String = String.Format("INSERT INTO tblMovTipo (MovTipo, Ativo) VALUES ('{0}', 'TRUE')", MovTipo)
+        Dim strSQL As String = String.Format("INSERT INTO tblCaixaMovFormaTipo (MovTipo, Ativo) VALUES ('{0}', 'TRUE')", MovTipo)
         '
         Try
             '
@@ -392,7 +565,7 @@ Public Class MovimentacaoBLL
     Public Function MovTipo_Update(IDMovTipo As Integer, MovTipo As String, Ativo As Boolean) As Integer
         '
         Dim SQL As New SQLControl
-        Dim strSQL As String = String.Format("UPDATE tblMovTipo SET MovTipo = '{1}', Ativo = '{2}' WHERE IDMovTipo = {0}",
+        Dim strSQL As String = String.Format("UPDATE tblCaixaMovFormaTipo SET MovTipo = '{1}', Ativo = '{2}' WHERE IDMovTipo = {0}",
                                              IDMovTipo, MovTipo, Ativo.ToString)
         '
         Try
@@ -419,9 +592,9 @@ Public Class MovimentacaoBLL
         Dim dtTipos As DataTable
         '
         If IsNothing(Ativo) Then
-            dtTipos = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM tblMovTipo")
+            dtTipos = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM tblCaixaMovFormaTipo")
         Else
-            dtTipos = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM tblMovTipo WHERE Ativo = '" & Ativo & "'")
+            dtTipos = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM tblCaixaMovFormaTipo WHERE Ativo = '" & Ativo & "'")
         End If
         '
         Return dtTipos
@@ -435,7 +608,7 @@ Public Class MovimentacaoBLL
         '
         Try
             '
-            mySQL.ExecQuery("SELECT COUNT(IDMovTipo) AS numReg FROM tblMovForma WHERE IDMovTipo = " & IDMovTipo)
+            mySQL.ExecQuery("SELECT COUNT(IDMovTipo) AS numReg FROM tblCaixaMovForma WHERE IDMovTipo = " & IDMovTipo)
             '
             If mySQL.HasException Then Throw New Exception(mySQL.Exception)
             '

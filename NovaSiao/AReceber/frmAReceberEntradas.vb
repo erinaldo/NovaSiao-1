@@ -2,8 +2,9 @@
 Imports CamadaBLL
 
 Public Class frmAReceberEntradas
+    '
     Private _Parcela As clAReceberParcela
-    Private EntradaList As List(Of clEntradas)
+    Private EntradaList As List(Of clMovimentacao)
     Private EntradaBind As New BindingSource
     Private _formOrigem As Form
     Private _DataPadrao As Date?
@@ -74,10 +75,13 @@ Public Class frmAReceberEntradas
 #Region "CARREGA ITENS"
     '
     Private Sub ObterEntradas()
-        Dim eBLL As New EntradaBLL
+        '
+        Dim eBLL As New MovimentacaoBLL
         '
         Try
-            EntradaList = eBLL.Entrada_GET_PorOrigemID(EntradaOrigem.AReceberParcela, _Parcela.IDAReceberParcela)
+            '
+            EntradaList = eBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.AReceberParcela,
+                                                            _Parcela.IDAReceberParcela)
             EntradaBind.DataSource = EntradaList
             '
             PreencheItens()
@@ -193,7 +197,7 @@ Public Class frmAReceberEntradas
         If e.KeyCode = Keys.Escape Then
             e.Handled = True
             '
-            btnFechar_click(New Object, New EventArgs)
+            btnFechar_Click(New Object, New EventArgs)
         End If
     End Sub
     '
@@ -244,7 +248,7 @@ Public Class frmAReceberEntradas
                 ID = p.Quitar_Parcela(_Parcela.IDAReceberParcela,
                                       fEntrada.prop_vlPagoDoValor,
                                       fEntrada.prop_vlPagoJuros,
-                                      fEntrada.propEntrada.EntradaData)
+                                      fEntrada.propMovEntrada.MovData)
             Catch ex As Exception
                 MessageBox.Show("Ocorreu uma exceção inesperada ao Quitar a Parcela..." & vbNewLine &
                                 ex.Message, "Exceção Insperada", MessageBoxButtons.OK)
@@ -299,12 +303,12 @@ Public Class frmAReceberEntradas
             Exit Sub
         End If
         '
-        Dim clEnt As clEntradas = DirectCast(dgvListagem.SelectedRows(0).DataBoundItem, clEntradas)
+        Dim clEnt As clMovimentacao = DirectCast(dgvListagem.SelectedRows(0).DataBoundItem, clMovimentacao)
         '
         '--- Pergunta ao usuário
         If MessageBox.Show("Você realmente deseja realizar o ESTORNO da entrada?" & vbNewLine &
-                           "VALOR: " & FormatCurrency(clEnt.EntradaValor) & vbNewLine &
-                           "DATA: " & clEnt.EntradaData, "Estornar Entrada",
+                           "VALOR: " & FormatCurrency(clEnt.MovValor) & vbNewLine &
+                           "DATA: " & clEnt.MovData, "Estornar Entrada",
                            MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                            MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
         '
@@ -313,7 +317,7 @@ Public Class frmAReceberEntradas
         Dim newPar As clAReceberParcela
         '
         Try
-            newPar = p.EstornarEntradaParcela(_Parcela.IDAReceberParcela, clEnt.IDEntrada)
+            newPar = p.EstornarEntradaParcela(_Parcela.IDAReceberParcela, clEnt.IDMovimentacao)
             '
             '--- Preenche os controles com a nova clParcela recebida
             propParcela = newPar

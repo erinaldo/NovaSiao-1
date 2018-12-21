@@ -473,7 +473,7 @@ Public Class APagarBLL
             db.LimparParametros()
             '
             db.AdicionarParametros("@IDAPagar", IDAPagar)
-            db.AdicionarParametros("@ValorPago", ValorPago)
+            db.AdicionarParametros("@ValorPago", If(ValorPago > 0, ValorPago * -1, ValorPago))
             db.AdicionarParametros("@Acrescimo", Acrescimo)
             db.AdicionarParametros("@SaidaData", SaidaData)
             db.AdicionarParametros("@IDConta", IDConta)
@@ -516,7 +516,7 @@ Public Class APagarBLL
     '===================================================================================================
     ' ESTORNAR SAIDA APAGAR TRANSACAO | DESPESA
     '===================================================================================================
-    Public Function Estornar_APagar(myIDAPagar As Integer, myIDSaida As Integer) As clAPagar
+    Public Function Estornar_APagar(myIDAPagar As Integer, myIDMovimentacao As Integer) As clAPagar
         '
         Dim db As New AcessoDados
         Dim dtPag As DataTable
@@ -525,7 +525,7 @@ Public Class APagarBLL
             db.LimparParametros()
             '
             db.AdicionarParametros("@IDAPagar", myIDAPagar)
-            db.AdicionarParametros("@IDSaida", myIDSaida)
+            db.AdicionarParametros("@IDMovimentacao", myIDMovimentacao)
             '
             dtPag = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAPagar_Estornar")
             '

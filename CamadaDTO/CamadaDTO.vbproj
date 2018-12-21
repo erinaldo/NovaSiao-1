@@ -75,16 +75,15 @@
     <Compile Include="clConta.vb" />
     <Compile Include="clCredor.vb" />
     <Compile Include="clDespesa.vb" />
-    <Compile Include="clEntradas.vb" />
     <Compile Include="clFornecedor.vb" />
     <Compile Include="clFuncionario.vb" />
     <Compile Include="clMovForma.vb" />
+    <Compile Include="clMovimentacao.vb" />
     <Compile Include="clNotaFiscal.vb" />
     <Compile Include="clPedido.vb" />
     <Compile Include="clPessoa.vb" />
     <Compile Include="clProduto.vb" />
     <Compile Include="clReserva.vb" />
-    <Compile Include="clSaidas.vb" />
     <Compile Include="clTransacao.vb" />
     <Compile Include="clTransportadora.vb" />
     <Compile Include="clTroca.vb" />

@@ -224,7 +224,7 @@ Partial Class frmMovFormas
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.btnFechar)
         Me.SplitContainer1.Size = New System.Drawing.Size(740, 48)
-        Me.SplitContainer1.SplitterDistance = 632
+        Me.SplitContainer1.SplitterDistance = 625
         Me.SplitContainer1.TabIndex = 9
         Me.SplitContainer1.TabStop = False
         '
@@ -239,7 +239,7 @@ Partial Class frmMovFormas
         Me.tsMenu.Location = New System.Drawing.Point(0, 0)
         Me.tsMenu.Name = "tsMenu"
         Me.tsMenu.Padding = New System.Windows.Forms.Padding(5, 0, 0, 0)
-        Me.tsMenu.Size = New System.Drawing.Size(632, 48)
+        Me.tsMenu.Size = New System.Drawing.Size(625, 48)
         Me.tsMenu.TabIndex = 0
         Me.tsMenu.TabStop = True
         Me.tsMenu.Text = "Menu Cliente PF"
@@ -317,10 +317,10 @@ Partial Class frmMovFormas
         Me.btnFechar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightBlue
         Me.btnFechar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnFechar.Image = Global.NovaSiao.My.Resources.Resources.Fechar
-        Me.btnFechar.Location = New System.Drawing.Point(4, 0)
+        Me.btnFechar.Location = New System.Drawing.Point(4, 4)
         Me.btnFechar.Margin = New System.Windows.Forms.Padding(0)
         Me.btnFechar.Name = "btnFechar"
-        Me.btnFechar.Size = New System.Drawing.Size(97, 48)
+        Me.btnFechar.Size = New System.Drawing.Size(97, 40)
         Me.btnFechar.TabIndex = 0
         Me.btnFechar.Text = "&Fechar"
         Me.btnFechar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -370,7 +370,7 @@ Partial Class frmMovFormas
         Me.btnClose.BorderStyle = VIBlend.WinForms.Controls.ButtonBorderStyle.NONE
         Me.btnClose.ButtonType = VIBlend.WinForms.Controls.vFormButtonType.CloseButton
         Me.btnClose.CausesValidation = False
-        Me.btnClose.Location = New System.Drawing.Point(709, 12)
+        Me.btnClose.Location = New System.Drawing.Point(709, 13)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.RibbonStyle = False
         Me.btnClose.RoundedCornersMask = CType(15, Byte)

@@ -77,7 +77,6 @@
     <Compile Include="CompraBLL.vb" />
     <Compile Include="CredorBLL.vb" />
     <Compile Include="DespesaBLL.vb" />
-    <Compile Include="EntradaBLL.vb" />
     <Compile Include="FilialBLL.vb" />
     <Compile Include="FornecedorBLL.vb" />
     <Compile Include="FuncionarioBLL.vb" />
@@ -102,7 +101,6 @@
     <Compile Include="PessoaBLL.vb" />
     <Compile Include="ProdutoBLL.vb" />
     <Compile Include="ReservaBLL.vb" />
-    <Compile Include="SaidaBLL.vb" />
     <Compile Include="SimplesMovimentacaoBLL.vb" />
     <Compile Include="SQLControl.vb" />
     <Compile Include="TransacaoBLL.vb" />

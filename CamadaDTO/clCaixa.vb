@@ -218,23 +218,3 @@ Public Class clCaixa : Implements IEditableObject
 #End Region
     '
 End Class
-'
-'=======================================================================================
-' clCAIXAITENSMOV
-'=======================================================================================
-Public Class clCaixaMovimentacao
-    '
-    Property IDMov As Integer
-    Property IDConta As Int16
-    Property IDOrigem As Integer
-    Property Origem As Int16
-    Property Movimentacao As String '--- E: Entrada | S: Saída | T:Tansferencia
-    Property MovValor As Decimal
-    Property MovData As Date
-    Property IDMovForma As Int16
-    Property MovForma As String
-    'Property IDOperadora As Int16
-    'Property Operadora As String
-    Property Descricao As String
-    '
-End Class

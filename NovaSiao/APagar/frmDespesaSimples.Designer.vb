@@ -65,8 +65,9 @@ Partial Class frmDespesaSimples
         Me.lblSaidaValor = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.Label14 = New System.Windows.Forms.Label()
-        Me.cmbIDConta = New Controles.ComboBox_OnlyValues()
         Me.Label17 = New System.Windows.Forms.Label()
+        Me.txtConta = New System.Windows.Forms.TextBox()
+        Me.btnContaEscolher = New VIBlend.WinForms.Controls.vButton()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.eProvider, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -122,7 +123,7 @@ Partial Class frmDespesaSimples
         Me.lbl_IdTexto.AutoSize = True
         Me.lbl_IdTexto.BackColor = System.Drawing.Color.Transparent
         Me.lbl_IdTexto.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbl_IdTexto.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lbl_IdTexto.ForeColor = System.Drawing.Color.LightGray
         Me.lbl_IdTexto.Location = New System.Drawing.Point(24, 3)
         Me.lbl_IdTexto.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lbl_IdTexto.Name = "lbl_IdTexto"
@@ -159,8 +160,8 @@ Partial Class frmDespesaSimples
         Me.Label18.AutoSize = True
         Me.Label18.BackColor = System.Drawing.Color.Transparent
         Me.Label18.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label18.Location = New System.Drawing.Point(124, 4)
+        Me.Label18.ForeColor = System.Drawing.Color.LightGray
+        Me.Label18.Location = New System.Drawing.Point(169, 4)
         Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(43, 13)
@@ -173,10 +174,10 @@ Partial Class frmDespesaSimples
         Me.lblFilial.BackColor = System.Drawing.Color.Transparent
         Me.lblFilial.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblFilial.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblFilial.Location = New System.Drawing.Point(80, 16)
+        Me.lblFilial.Location = New System.Drawing.Point(95, 16)
         Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblFilial.Name = "lblFilial"
-        Me.lblFilial.Size = New System.Drawing.Size(130, 30)
+        Me.lblFilial.Size = New System.Drawing.Size(191, 30)
         Me.lblFilial.TabIndex = 2
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -229,7 +230,7 @@ Partial Class frmDespesaSimples
         Me.Label6.Location = New System.Drawing.Point(42, 367)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(122, 19)
-        Me.Label6.TabIndex = 21
+        Me.Label6.TabIndex = 22
         Me.Label6.Text = "Valor da Despesa"
         '
         'btnTipo
@@ -294,7 +295,7 @@ Partial Class frmDespesaSimples
         Me.Panel2.Margin = New System.Windows.Forms.Padding(1)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(590, 48)
-        Me.Panel2.TabIndex = 29
+        Me.Panel2.TabIndex = 30
         Me.Panel2.TabStop = True
         '
         'btnFechar
@@ -398,7 +399,7 @@ Partial Class frmDespesaSimples
         Me.txtDespesaValor.MaxLength = 15
         Me.txtDespesaValor.Name = "txtDespesaValor"
         Me.txtDespesaValor.Size = New System.Drawing.Size(113, 27)
-        Me.txtDespesaValor.TabIndex = 22
+        Me.txtDespesaValor.TabIndex = 23
         Me.txtDespesaValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtDespesaData
@@ -478,7 +479,7 @@ Partial Class frmDespesaSimples
         Me.txtObservacao.Multiline = True
         Me.txtObservacao.Name = "txtObservacao"
         Me.txtObservacao.Size = New System.Drawing.Size(234, 54)
-        Me.txtObservacao.TabIndex = 28
+        Me.txtObservacao.TabIndex = 29
         '
         'Label12
         '
@@ -486,7 +487,7 @@ Partial Class frmDespesaSimples
         Me.Label12.Location = New System.Drawing.Point(78, 466)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(86, 19)
-        Me.Label12.TabIndex = 27
+        Me.Label12.TabIndex = 28
         Me.Label12.Text = "Observação"
         '
         'txtAcrescimo
@@ -494,7 +495,7 @@ Partial Class frmDespesaSimples
         Me.txtAcrescimo.Location = New System.Drawing.Point(173, 397)
         Me.txtAcrescimo.Name = "txtAcrescimo"
         Me.txtAcrescimo.Size = New System.Drawing.Size(113, 27)
-        Me.txtAcrescimo.TabIndex = 24
+        Me.txtAcrescimo.TabIndex = 25
         Me.txtAcrescimo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'lblSaidaValor
@@ -504,7 +505,7 @@ Partial Class frmDespesaSimples
         Me.lblSaidaValor.Location = New System.Drawing.Point(169, 428)
         Me.lblSaidaValor.Name = "lblSaidaValor"
         Me.lblSaidaValor.Size = New System.Drawing.Size(122, 25)
-        Me.lblSaidaValor.TabIndex = 26
+        Me.lblSaidaValor.TabIndex = 27
         Me.lblSaidaValor.Text = "R$ 0,00"
         Me.lblSaidaValor.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -514,7 +515,7 @@ Partial Class frmDespesaSimples
         Me.Label13.Location = New System.Drawing.Point(50, 431)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(114, 19)
-        Me.Label13.TabIndex = 25
+        Me.Label13.TabIndex = 26
         Me.Label13.Text = "Valor a ser Pago"
         Me.Label13.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -524,19 +525,8 @@ Partial Class frmDespesaSimples
         Me.Label14.Location = New System.Drawing.Point(88, 400)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(76, 19)
-        Me.Label14.TabIndex = 23
+        Me.Label14.TabIndex = 24
         Me.Label14.Text = "Acréscimo"
-        '
-        'cmbIDConta
-        '
-        Me.cmbIDConta.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDConta.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDConta.FormattingEnabled = True
-        Me.cmbIDConta.Location = New System.Drawing.Point(173, 331)
-        Me.cmbIDConta.Name = "cmbIDConta"
-        Me.cmbIDConta.RestrictContentToListItems = True
-        Me.cmbIDConta.Size = New System.Drawing.Size(187, 27)
-        Me.cmbIDConta.TabIndex = 20
         '
         'Label17
         '
@@ -547,18 +537,44 @@ Partial Class frmDespesaSimples
         Me.Label17.TabIndex = 19
         Me.Label17.Text = "Conta da Saída"
         '
+        'txtConta
+        '
+        Me.txtConta.Location = New System.Drawing.Point(173, 331)
+        Me.txtConta.Name = "txtConta"
+        Me.txtConta.Size = New System.Drawing.Size(205, 27)
+        Me.txtConta.TabIndex = 20
+        '
+        'btnContaEscolher
+        '
+        Me.btnContaEscolher.AllowAnimations = True
+        Me.btnContaEscolher.BackColor = System.Drawing.Color.Transparent
+        Me.btnContaEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
+        Me.btnContaEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnContaEscolher.Location = New System.Drawing.Point(384, 331)
+        Me.btnContaEscolher.Name = "btnContaEscolher"
+        Me.btnContaEscolher.RoundedCornersMask = CType(15, Byte)
+        Me.btnContaEscolher.RoundedCornersRadius = 0
+        Me.btnContaEscolher.Size = New System.Drawing.Size(34, 27)
+        Me.btnContaEscolher.TabIndex = 21
+        Me.btnContaEscolher.TabStop = False
+        Me.btnContaEscolher.Text = "..."
+        Me.btnContaEscolher.UseCompatibleTextRendering = True
+        Me.btnContaEscolher.UseVisualStyleBackColor = False
+        Me.btnContaEscolher.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        '
         'frmDespesaSimples
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.ClientSize = New System.Drawing.Size(594, 583)
+        Me.Controls.Add(Me.txtConta)
+        Me.Controls.Add(Me.btnContaEscolher)
         Me.Controls.Add(Me.txtObservacao)
         Me.Controls.Add(Me.Label12)
         Me.Controls.Add(Me.txtAcrescimo)
         Me.Controls.Add(Me.lblSaidaValor)
         Me.Controls.Add(Me.Label13)
         Me.Controls.Add(Me.Label14)
-        Me.Controls.Add(Me.cmbIDConta)
         Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.cmbIDBanco)
         Me.Controls.Add(Me.cmbCobrancaForma)
@@ -607,13 +623,14 @@ Partial Class frmDespesaSimples
         Me.Controls.SetChildIndex(Me.cmbCobrancaForma, 0)
         Me.Controls.SetChildIndex(Me.cmbIDBanco, 0)
         Me.Controls.SetChildIndex(Me.Label17, 0)
-        Me.Controls.SetChildIndex(Me.cmbIDConta, 0)
         Me.Controls.SetChildIndex(Me.Label14, 0)
         Me.Controls.SetChildIndex(Me.Label13, 0)
         Me.Controls.SetChildIndex(Me.lblSaidaValor, 0)
         Me.Controls.SetChildIndex(Me.txtAcrescimo, 0)
         Me.Controls.SetChildIndex(Me.Label12, 0)
         Me.Controls.SetChildIndex(Me.txtObservacao, 0)
+        Me.Controls.SetChildIndex(Me.btnContaEscolher, 0)
+        Me.Controls.SetChildIndex(Me.txtConta, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
@@ -663,6 +680,7 @@ Partial Class frmDespesaSimples
     Friend WithEvents lblSaidaValor As Label
     Friend WithEvents Label13 As Label
     Friend WithEvents Label14 As Label
-    Friend WithEvents cmbIDConta As Controles.ComboBox_OnlyValues
     Friend WithEvents Label17 As Label
+    Friend WithEvents txtConta As TextBox
+    Friend WithEvents btnContaEscolher As VIBlend.WinForms.Controls.vButton
 End Class

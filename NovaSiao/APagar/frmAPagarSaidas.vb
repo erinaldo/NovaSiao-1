@@ -2,8 +2,9 @@
 Imports CamadaBLL
 
 Public Class frmAPagarSaidas
+    '
     Private _APagar As clAPagar
-    Private SaidasList As List(Of clSaidas)
+    Private SaidasMovList As List(Of clMovimentacao)
     Private SaidaBind As New BindingSource
     Private _formOrigem As Form
     Private _DataPadrao As Date?
@@ -91,11 +92,11 @@ Public Class frmAPagarSaidas
             Exit Sub
         End If
         '
-        Dim sBLL As New SaidaBLL
+        Dim sBLL As New MovimentacaoBLL
         '
         Try
-            SaidasList = sBLL.Saida_GET_PorOrigemID(SaidaOrigem.APagar, _APagar.IDAPagar)
-            SaidaBind.DataSource = SaidasList
+            SaidasMovList = sBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.APagar, _APagar.IDAPagar)
+            SaidaBind.DataSource = SaidasMovList
             '
             PreencheItens()
             '
@@ -137,7 +138,7 @@ Public Class frmAPagarSaidas
         ' (0) COLUNA PAGAMENTO DATA
         With clnEntradaData
             .HeaderText = "Data"
-            .DataPropertyName = "SaidaData"
+            .DataPropertyName = "MovData"
             .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -150,7 +151,7 @@ Public Class frmAPagarSaidas
         ' (1) COLUNA PAGAMENTO VALOR
         With clnEntradaValor
             .HeaderText = "Valor"
-            .DataPropertyName = "SaidaValor"
+            .DataPropertyName = "MovValor"
             .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -190,48 +191,6 @@ Public Class frmAPagarSaidas
         '
         Me.dgvListagem.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnEntradaData, Me.clnEntradaValor, Me.clnIDConta, Me.clnObservacao})
         '
-    End Sub
-    '
-#End Region
-    '
-#Region "EFEITOS SUB FORMULARIO PADRAO"
-    '
-    '-------------------------------------------------------------------------------------------------
-    ' CONSTRUIR UMA BORDA NO FORMULÁRIO
-    '-------------------------------------------------------------------------------------------------
-    Protected Overrides Sub OnPaintBackground(ByVal e As PaintEventArgs)
-        MyBase.OnPaintBackground(e)
-
-        Dim rect As New Rectangle(0, 0, Me.ClientSize.Width - 1, Me.ClientSize.Height - 1)
-        Dim pen As New Pen(Color.DarkSlateGray, 3)
-
-        e.Graphics.DrawRectangle(pen, rect)
-    End Sub
-    '
-    '-- CONVERTE A TECLA ESC EM CANCELAR
-    Private Sub frm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        If e.KeyCode = Keys.Escape Then
-            e.Handled = True
-            '
-            btnFechar_Click(New Object, New EventArgs)
-        End If
-    End Sub
-    '
-    '-------------------------------------------------------------------------------------------------
-    ' CRIAR EFEITO VISUAL DE FORM SELECIONADO
-    '-------------------------------------------------------------------------------------------------
-    Private Sub frmAPagarItem_Activated(sender As Object, e As EventArgs) Handles Me.Activated
-        If Not IsNothing(_formOrigem) Then
-            Dim pnl As Panel = _formOrigem.Controls("Panel1")
-            pnl.BackColor = Color.Silver
-        End If
-    End Sub
-    '
-    Private Sub frmAPagarSaidas_Closed(sender As Object, e As EventArgs) Handles Me.Closed
-        If Not IsNothing(_formOrigem) Then
-            Dim pnl As Panel = _formOrigem.Controls("Panel1")
-            pnl.BackColor = Color.SlateGray
-        End If
     End Sub
     '
 #End Region
@@ -321,12 +280,12 @@ Public Class frmAPagarSaidas
             Exit Sub
         End If
         '
-        Dim clS As clSaidas = DirectCast(dgvListagem.SelectedRows(0).DataBoundItem, clSaidas)
+        Dim clS As clMovimentacao = DirectCast(dgvListagem.SelectedRows(0).DataBoundItem, clMovimentacao)
         '
         '--- Pergunta ao usuário
         If MessageBox.Show("Você realmente deseja realizar o ESTORNO do Pagamento?" & vbNewLine &
-                           "VALOR: " & FormatCurrency(clS.SaidaValor) & vbNewLine &
-                           "DATA: " & clS.SaidaData, "Estornar Pagamento",
+                           "VALOR: " & FormatCurrency(clS.MovValor) & vbNewLine &
+                           "DATA: " & clS.MovData, "Estornar Pagamento",
                            MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                            MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
 
@@ -335,7 +294,7 @@ Public Class frmAPagarSaidas
         Dim newPag As clAPagar
 
         Try
-            newPag = p.Estornar_APagar(_APagar.IDAPagar, clS.IDSaida)
+            newPag = p.Estornar_APagar(_APagar.IDAPagar, clS.IDMovimentacao)
             '
             '--- Preenche os controles com a nova clParcela recebida
             propAPagar = newPag
@@ -400,4 +359,47 @@ Public Class frmAPagarSaidas
 
     '
 #End Region
+    '
+#Region "EFEITOS SUB FORMULARIO PADRAO"
+    '
+    '-------------------------------------------------------------------------------------------------
+    ' CONSTRUIR UMA BORDA NO FORMULÁRIO
+    '-------------------------------------------------------------------------------------------------
+    Protected Overrides Sub OnPaintBackground(ByVal e As PaintEventArgs)
+        MyBase.OnPaintBackground(e)
+
+        Dim rect As New Rectangle(0, 0, Me.ClientSize.Width - 1, Me.ClientSize.Height - 1)
+        Dim pen As New Pen(Color.DarkSlateGray, 3)
+
+        e.Graphics.DrawRectangle(pen, rect)
+    End Sub
+    '
+    '-- CONVERTE A TECLA ESC EM CANCELAR
+    Private Sub frm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.Escape Then
+            e.Handled = True
+            '
+            btnFechar_Click(New Object, New EventArgs)
+        End If
+    End Sub
+    '
+    '-------------------------------------------------------------------------------------------------
+    ' CRIAR EFEITO VISUAL DE FORM SELECIONADO
+    '-------------------------------------------------------------------------------------------------
+    Private Sub frmAPagarItem_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        If Not IsNothing(_formOrigem) Then
+            Dim pnl As Panel = _formOrigem.Controls("Panel1")
+            pnl.BackColor = Color.Silver
+        End If
+    End Sub
+    '
+    Private Sub frmAPagarSaidas_Closed(sender As Object, e As EventArgs) Handles Me.Closed
+        If Not IsNothing(_formOrigem) Then
+            Dim pnl As Panel = _formOrigem.Controls("Panel1")
+            pnl.BackColor = Color.SlateGray
+        End If
+    End Sub
+    '
+#End Region
+    '
 End Class

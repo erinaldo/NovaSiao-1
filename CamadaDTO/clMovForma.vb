@@ -11,7 +11,7 @@ Public Class clMovForma : Implements IEditableObject
         Dim _MovForma As String
         Dim _IDMovTipo As Int16?
         Dim _MovTipo As String
-        Dim _IDCartao As Int16?
+        Dim _IDCartao As Byte?
         Dim _Cartao As String
         Dim _Parcelas As Byte?
         Dim _Comissao As Decimal?
@@ -20,7 +20,7 @@ Public Class clMovForma : Implements IEditableObject
         '--- Adicionados
         Dim _IDFilial As Integer
         Dim _ApelidoFilial As String
-        Dim _IDContaPadrao As Byte?
+        Dim _IDContaPadrao As Int16?
         Dim _ContaPadrao As String
     End Structure
 #End Region
@@ -117,9 +117,11 @@ Public Class clMovForma : Implements IEditableObject
             Return FData._IDMovTipo
         End Get
         Set(ByVal value As Int16?)
-            If value <> FData._IDMovTipo Then
+            '
+            If Not value.Equals(FData._IDMovTipo) Then
                 RaiseEvent AoAlterar()
             End If
+            '
             FData._IDMovTipo = value
         End Set
     End Property
@@ -138,12 +140,12 @@ Public Class clMovForma : Implements IEditableObject
     End Property
     '
     '--- Propriedade IDCartao
-    Public Property IDCartao() As Int16?
+    Public Property IDCartao() As Byte?
         Get
             Return FData._IDCartao
         End Get
-        Set(ByVal value As Int16?)
-            If value <> FData._IDCartao Then
+        Set(ByVal value As Byte?)
+            If Not value.Equals(FData._IDCartao) Then
                 RaiseEvent AoAlterar()
             End If
             FData._IDCartao = value
@@ -169,7 +171,7 @@ Public Class clMovForma : Implements IEditableObject
             Return FData._Parcelas
         End Get
         Set(ByVal value As Byte?)
-            If value <> IIf(IsNothing(FData._Parcelas), -1, FData._Parcelas) Then
+            If Not value.Equals(FData._Parcelas) Then
                 RaiseEvent AoAlterar()
             End If
             FData._Parcelas = value
@@ -182,7 +184,7 @@ Public Class clMovForma : Implements IEditableObject
             Return FData._Comissao
         End Get
         Set(ByVal value As Decimal?)
-            If value <> IIf(IsNothing(FData._Comissao), -1, FData._Comissao) Then
+            If Not value.Equals(FData._Comissao) Then
                 RaiseEvent AoAlterar()
             End If
             FData._Comissao = value
@@ -195,7 +197,7 @@ Public Class clMovForma : Implements IEditableObject
             Return FData._NoDias
         End Get
         Set(ByVal value As Byte?)
-            If value <> IIf(IsNothing(FData._NoDias), -1, FData._NoDias) Then
+            If Not value.Equals(FData._NoDias) Then
                 RaiseEvent AoAlterar()
             End If
             FData._NoDias = value
@@ -245,12 +247,12 @@ Public Class clMovForma : Implements IEditableObject
     '
     '--- Propriedade IDContaPadrao
     '------------------------------------------------------
-    Public Property IDContaPadrao() As Byte?
+    Public Property IDContaPadrao() As Int16?
         Get
             Return FData._IDContaPadrao
         End Get
-        Set(ByVal value As Byte?)
-            If value <> FData._IDContaPadrao Then
+        Set(ByVal value As Int16?)
+            If Not value.Equals(FData._IDContaPadrao) Then
                 RaiseEvent AoAlterar()
             End If
             FData._IDContaPadrao = value

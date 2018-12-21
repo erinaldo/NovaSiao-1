@@ -112,7 +112,7 @@ Partial Class frmContas
         Me.clnConta.Name = "clnConta"
         Me.clnConta.Text = "Conta Descrição"
         Me.clnConta.ValueMember = "Conta"
-        Me.clnConta.Width = 220
+        Me.clnConta.Width = 250
         '
         'btnClose
         '
@@ -150,7 +150,7 @@ Partial Class frmContas
         '
         Me.SplitContainer1.Panel2.Controls.Add(Me.btnFechar)
         Me.SplitContainer1.Size = New System.Drawing.Size(773, 48)
-        Me.SplitContainer1.SplitterDistance = 659
+        Me.SplitContainer1.SplitterDistance = 650
         Me.SplitContainer1.TabIndex = 10
         Me.SplitContainer1.TabStop = False
         '
@@ -165,7 +165,7 @@ Partial Class frmContas
         Me.tsMenu.Location = New System.Drawing.Point(0, 0)
         Me.tsMenu.Name = "tsMenu"
         Me.tsMenu.Padding = New System.Windows.Forms.Padding(5, 0, 0, 0)
-        Me.tsMenu.Size = New System.Drawing.Size(659, 48)
+        Me.tsMenu.Size = New System.Drawing.Size(650, 48)
         Me.tsMenu.TabIndex = 0
         Me.tsMenu.TabStop = True
         Me.tsMenu.Text = "Menu Cliente PF"
@@ -246,7 +246,7 @@ Partial Class frmContas
         Me.btnFechar.Location = New System.Drawing.Point(4, 0)
         Me.btnFechar.Margin = New System.Windows.Forms.Padding(0)
         Me.btnFechar.Name = "btnFechar"
-        Me.btnFechar.Size = New System.Drawing.Size(97, 48)
+        Me.btnFechar.Size = New System.Drawing.Size(115, 48)
         Me.btnFechar.TabIndex = 0
         Me.btnFechar.Text = "&Fechar"
         Me.btnFechar.TextAlign = System.Drawing.ContentAlignment.MiddleRight

@@ -67,7 +67,7 @@ Partial Class frmAReceberQuitar
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(61, 137)
+        Me.Label1.Location = New System.Drawing.Point(65, 137)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(98, 19)
         Me.Label1.TabIndex = 3
@@ -76,7 +76,7 @@ Partial Class frmAReceberQuitar
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(34, 104)
+        Me.Label3.Location = New System.Drawing.Point(38, 104)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(125, 19)
         Me.Label3.TabIndex = 3

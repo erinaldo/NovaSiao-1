@@ -7,7 +7,7 @@ Public Class frmVendaVista
     Private _Venda As clVenda
     Private _Troca As clTroca
     Private _ItensList As New List(Of clTransacaoItem)
-    Private _EntradaList As New List(Of clEntradas)
+    Private _MovEntradaList As New List(Of clMovimentacao)
     Private bindVenda As New BindingSource
     Private bindItem As New BindingSource
     Private bindEnt As New BindingSource
@@ -87,7 +87,7 @@ Public Class frmVendaVista
             obterItens()
             obterPagamentos()
             bindItem.DataSource = _ItensList
-            bindEnt.DataSource = _EntradaList
+            bindEnt.DataSource = _MovEntradaList
             dgvItens.DataSource = bindItem
             '
             '--- Verifica se existe TROCA anexada a venda e preenche o _troca (clTroca)
@@ -200,6 +200,7 @@ Public Class frmVendaVista
 #End Region ' / DATABINDINGS
     '
 #Region "CARREGA/INSERE ITENS"
+    '
     Private Sub PreencheItens()
         '
         '--- limpa as colunas do datagrid
@@ -350,7 +351,6 @@ Public Class frmVendaVista
         End Try
         '
     End Sub
-    '
     '
     '--- INSERE UM NOVO ITEM NA LISTA DE PRODUTOS
     '---------------------------------------------------------------------------------------------
@@ -645,7 +645,7 @@ Public Class frmVendaVista
         If RegistroBloqueado() Then Exit Sub
         '
         '--- Verifica se ha entrada para limpar
-        If _EntradaList.Count = 0 Then
+        If _MovEntradaList.Count = 0 Then
             MessageBox.Show("Não existem pagamentos de Entrada nessa Venda para serem removidos...",
                             "Limpar Pagamentos", MessageBoxButtons.OK,
                             MessageBoxIcon.Information)
@@ -696,9 +696,9 @@ Public Class frmVendaVista
     '
     '--- RETORNA TODOS OS PAGAMENTOS
     Private Sub obterPagamentos()
-        Dim pBLL As New EntradaBLL
+        Dim pBLL As New MovimentacaoBLL
         Try
-            _EntradaList = pBLL.Entrada_GET_PorOrigemID(EntradaOrigem.Transacao, _Venda.IDVenda)
+            _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Transacao, _Venda.IDVenda)
             '--- Atualiza o label TOTAL PAGO
             AtualizaTotalPago()
         Catch ex As Exception
@@ -748,7 +748,7 @@ Public Class frmVendaVista
         ' (1) COLUNA IDEntrada
         dgvPagamentos.Columns.Add("clnID", "ID")
         With dgvPagamentos.Columns("clnID")
-            .DataPropertyName = "IDEntrada"
+            .DataPropertyName = "IDMovimentacao"
             .Width = 90
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -775,7 +775,7 @@ Public Class frmVendaVista
         dgvPagamentos.Columns.Add("clnValor", "Valor")
         With dgvPagamentos.Columns("clnValor")
             .DefaultCellStyle = cellStyleCur
-            .DataPropertyName = "EntradaValor"
+            .DataPropertyName = "MovValor"
             .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -819,13 +819,13 @@ Public Class frmVendaVista
         End If
     End Sub
     '
-    Public Sub Pagamentos_Manipulacao(clPag As clEntradas, Acao As FlagAcao)
+    Public Sub Pagamentos_Manipulacao(clPag As clMovimentacao, Acao As FlagAcao)
         '
         If Acao = FlagAcao.INSERIR Then
             ' SE ACAO FOR INSERIR
             '----------------------------------------------------------------------------------------------
             '--- Insere o ITEM na lista
-            _EntradaList.Add(clPag)
+            _MovEntradaList.Add(clPag)
             bindEnt.ResetBindings(False)
             '--- Atualiza o DataGrid
             dgvPagamentos.DataSource = bindEnt
@@ -864,15 +864,15 @@ Public Class frmVendaVista
         pos = New Point(pos.X + dgvPagamentos.Width - 10, pos.Y)
         '
         '--- cria nova Entrada
-        Dim clPag As New clEntradas
-        Dim vlMax As Double = vl - _EntradaList.Sum(Function(x) x.EntradaValor)
+        Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Transacao, EnumMovimento.Entrada)
+        Dim vlMax As Double = vl - _MovEntradaList.Sum(Function(x) x.MovValor)
         '
-        clPag.EntradaValor = vlMax
+        clPag.MovValor = vlMax
         clPag.Origem = 1
         clPag.IDOrigem = _Venda.IDVenda
-        clPag.EntradaData = _Venda.TransacaoData
+        clPag.MovData = _Venda.TransacaoData
         clPag.IDConta = Obter_ContaPadrao()
-        clPag.IDEntrada = _EntradaList.Count + 1
+        clPag.IDMovimentacao = _MovEntradaList.Count + 1
         '
         '--- abre o form frmPagamentos
         Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, FlagAcao.INSERIR, pos)
@@ -895,7 +895,7 @@ Public Class frmVendaVista
         '--- GET Pagamentos do DataGrid
         If dgvPagamentos.SelectedRows.Count = 0 Then Exit Sub
         '
-        Dim PagAtual As clEntradas = dgvPagamentos.SelectedRows(0).DataBoundItem
+        Dim PagAtual As clMovimentacao = dgvPagamentos.SelectedRows(0).DataBoundItem
         '
         Dim fPag As New frmVendaEntrada(Me, AtualizaTotalGeral(), PagAtual, FlagAcao.EDITAR, pos)
         fPag.ShowDialog()
@@ -910,7 +910,7 @@ Public Class frmVendaVista
         If dgvPagamentos.SelectedRows.Count = 0 Then Exit Sub
         '
         '--- seleciona a parcela
-        Dim PagAtual As clEntradas
+        Dim PagAtual As clMovimentacao
         PagAtual = dgvPagamentos.SelectedRows(0).DataBoundItem
         '
         '--- pergunta ao usuário se deseja excluir o item
@@ -926,13 +926,13 @@ Public Class frmVendaVista
         Dim i As Integer = dgvPagamentos.SelectedRows(0).Index
         '
         '--- Atualiza o ITEM da lista
-        _EntradaList.RemoveAt(i)
+        _MovEntradaList.RemoveAt(i)
         '
         '--- Atualiza a contagem dos itens
         i = 1
         '
-        For Each pg As clEntradas In _EntradaList
-            pg.IDEntrada = i
+        For Each pg As clMovimentacao In _MovEntradaList
+            pg.IDMovimentacao = i
             i += 1
         Next
         '
@@ -1086,7 +1086,7 @@ Public Class frmVendaVista
     Private Function Salvar_Pagamentos() As Boolean
         '
         '--- verifica se existem pagamentos
-        If _EntradaList.Count = 0 Then Return False
+        If _MovEntradaList.Count = 0 Then Return False
         '
         Dim recBLL As New AReceberBLL
         '
@@ -1114,7 +1114,7 @@ Public Class frmVendaVista
         '
         '--- Excluir todas as entradas da Venda Atual
         Try
-            Dim entBLL As New EntradaBLL
+            Dim entBLL As New MovimentacaoBLL
             '
             entBLL.Entrada_ExcluirTodas_PorTransacao(_Venda.IDVenda)
             '
@@ -1128,18 +1128,18 @@ Public Class frmVendaVista
             '--- INSERE AS ENTRADAS NO BD
             '--- Agrupa as Entradas pelo IDMovForma (soma seus valores)
             '--- Cria uma nova lista de Entradas pelo agrupamento
-            Dim PagGroupList As New List(Of clEntradas)
+            Dim PagGroupList As New List(Of clMovimentacao)
             Dim ContaPadrao As Integer = Obter_ContaPadrao()
             '
-            For Each pagItem As clEntradas In _EntradaList
+            For Each pagItem As clMovimentacao In _MovEntradaList
                 If Not PagGroupList.Exists(Function(x) x.IDMovForma = pagItem.IDMovForma) Then
                     '--- cria nova Entrada
-                    Dim clPag As New clEntradas
+                    Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Transacao, EnumMovimento.Entrada)
                     '
-                    clPag.EntradaValor = 0
+                    clPag.MovValor = 0
                     clPag.Origem = 1
                     clPag.IDOrigem = _Venda.IDVenda
-                    clPag.EntradaData = _Venda.TransacaoData
+                    clPag.MovData = _Venda.TransacaoData
                     clPag.IDConta = ContaPadrao
                     clPag.IDMovForma = pagItem.IDMovForma
                     clPag.MovForma = pagItem.MovForma
@@ -1147,27 +1147,26 @@ Public Class frmVendaVista
                     PagGroupList.Add(clPag)
                 End If
                 '
-                Dim pg As clEntradas = PagGroupList.Find(Function(x) x.IDMovForma = pagItem.IDMovForma)
-                pg.EntradaValor = pg.EntradaValor + pagItem.EntradaValor
+                Dim pg As clMovimentacao = PagGroupList.Find(Function(x) x.IDMovForma = pagItem.IDMovForma)
+                pg.MovValor = pg.MovValor + pagItem.MovValor
             Next
             '
             '--- Remove os itens que foram agrupados
-            _EntradaList.Clear()
+            _MovEntradaList.Clear()
             '
             '--- Atualiza a listagem
             bindEnt.ResetBindings(False)
             '--- Atualiza o DataGrid
             dgvPagamentos.DataSource = bindEnt
             '
-            '
             '--- Adiciona a nova lista agrupada ao BD
-            Dim pagBll As New EntradaBLL
+            Dim pagBll As New MovimentacaoBLL
             '
-            For Each pag As clEntradas In PagGroupList
-                pag.IDEntrada = pagBll.Entrada_Inserir(pag)
+            For Each pag As clMovimentacao In PagGroupList
+                pag.IDMovimentacao = pagBll.Movimentacao_Inserir(pag)
                 '
                 '--- Insere a nova lista DataGrid pagamentos
-                _EntradaList.Add(pag)
+                _MovEntradaList.Add(pag)
                 '
                 '--- Atualiza a listagem
                 bindEnt.ResetBindings(False)
@@ -1177,7 +1176,7 @@ Public Class frmVendaVista
             Next
             '
             '--- quita o ARECEBER da Venda
-            recBLL.Quitar_AReceber_AVista(_Venda.IDVenda, PagGroupList.Sum(Function(x) x.EntradaValor))
+            recBLL.Quitar_AReceber_AVista(_Venda.IDVenda, PagGroupList.Sum(Function(x) x.MovValor))
             '
         Catch ex As Exception
             MessageBox.Show("Houve uma exceção inesperada ao SALVAR os pagamentos..." & vbNewLine &
@@ -1195,7 +1194,7 @@ Public Class frmVendaVista
     Private Sub Efetuar_Pagamentos()
         Dim vlTotal As Double = AtualizaTotalGeral()
         Dim vlPago As Double = AtualizaTotalPago()
-        Dim qtdePag As Integer = _EntradaList.Count
+        Dim qtdePag As Integer = _MovEntradaList.Count
         '
         Do While Math.Abs(vlTotal - vlPago) >= 1
             '
@@ -1204,30 +1203,30 @@ Public Class frmVendaVista
             pos = New Point(pos.X + dgvPagamentos.Width - 10, pos.Y)
             '
             '--- cria nova Entrada/Pagamento
-            Dim clPag As New clEntradas
-            Dim vlMax As Double = vlTotal - _EntradaList.Sum(Function(x) x.EntradaValor)
+            Dim clPag As New clMovimentacao
+            Dim vlMax As Double = vlTotal - _MovEntradaList.Sum(Function(x) x.MovValor)
             '
-            clPag.EntradaValor = vlMax
+            clPag.MovValor = vlMax
             clPag.Origem = 1
             clPag.IDOrigem = _Venda.IDVenda
-            clPag.EntradaData = _Venda.TransacaoData
+            clPag.MovData = _Venda.TransacaoData
             clPag.IDConta = Obter_ContaPadrao()
-            clPag.IDEntrada = _EntradaList.Count + 1
+            clPag.IDMovimentacao = _MovEntradaList.Count + 1
             '
             '--- abre o form frmPagamentos
             Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, FlagAcao.INSERIR, pos)
             fPag.ShowDialog()
             '
             '--- Verifica se foi adiciona algum novo pagamento
-            If _EntradaList.Count - qtdePag = 0 Then ' nesse caso não foi adicionado nenhum pagamento
+            If _MovEntradaList.Count - qtdePag = 0 Then ' nesse caso não foi adicionado nenhum pagamento
                 Exit Do
             Else ' refaz o calculo da nova quantidade de pagamento
-                qtdePag = _EntradaList.Count
+                qtdePag = _MovEntradaList.Count
             End If
             '
             '--- AtualizaTotalPago
             AtualizaTotalPago()
-            vlPago = _EntradaList.Sum(Function(x) x.EntradaValor)
+            vlPago = _MovEntradaList.Sum(Function(x) x.MovValor)
             '
         Loop
     End Sub
@@ -1237,13 +1236,13 @@ Public Class frmVendaVista
         '
         '--- LIMPA TODOS OS PAGAMENTOS DA VENDA
         '----------------------------------------------------------------
-        Dim eBLL As New EntradaBLL
+        Dim eBLL As New MovimentacaoBLL
         '
         Try
             eBLL.Entrada_ExcluirTodas_PorTransacao(_Venda.IDVenda)
             '
-            For i = 0 To _EntradaList.Count - 1
-                If _EntradaList.Item(i).IDEntrada <> 0 Then _EntradaList.RemoveAt(i)
+            For i = 0 To _MovEntradaList.Count - 1
+                If _MovEntradaList.Item(i).IDMovimentacao <> 0 Then _MovEntradaList.RemoveAt(i)
             Next
             '
             '--- Atualiza a listagem
@@ -1294,11 +1293,11 @@ Public Class frmVendaVista
     ' ATUALIZA O TOTAL DOS PAGAMENTOS
     '-----------------------------------------------------------------------------------------------------
     Private Function AtualizaTotalPago() As Double
-        If _EntradaList.Count > 0 Then
+        If _MovEntradaList.Count > 0 Then
             Dim T As Double = 0
             '
-            For Each p As clEntradas In _EntradaList
-                T = T + p.EntradaValor
+            For Each p As clMovimentacao In _MovEntradaList
+                T = T + p.MovValor
             Next
             '
             lblTotalPago.Text = Format(T, "c")

@@ -2,23 +2,32 @@
 Imports CamadaBLL
 
 Public Class frmDespesaSimples
+    '
     Private _clDespesa As clDespesa
     Private _clAPagar As clAPagar
-    Private _clSaidas As clSaidas
+    Private _clMovSaida As clMovimentacao
     Private BindDespesa As New BindingSource
     Private BindAPagar As New BindingSource
-    Private BindSaidas As New BindingSource
+    Private BindMovSaida As New BindingSource
     '
-    Private _dtInicial As Date? = Nothing
-    Private _dtFinal As Date? = Nothing
-    Private _IDCaixa As Integer? = Nothing
-    Private _formOrigem As Form = Nothing
-    '
-    Property Prop_NewclCaixaMov As clCaixaMovimentacao
+    Private _dtInicial As Date?
+    Private _dtFinal As Date?
+    Private _formOrigem As Form
     '
 #Region "LOAD | PROPERTY"
     '
-    Property propDespesa As clDespesa
+    '--- PROPRIEDADE PUBLICA RETURN
+    Public Property propMovSaida() As clMovimentacao
+        Get
+            Return _clMovSaida
+        End Get
+        Set(ByVal value As clMovimentacao)
+            _clMovSaida = value
+            BindMovSaida.DataSource = value
+        End Set
+    End Property
+    '
+    Private Property propDespesa As clDespesa
         Get
             Return _clDespesa
         End Get
@@ -36,7 +45,7 @@ Public Class frmDespesaSimples
         End Set
     End Property
     '
-    Public Property propAPagar() As clAPagar
+    Private Property propAPagar() As clAPagar
         Get
             Return _clAPagar
         End Get
@@ -47,14 +56,29 @@ Public Class frmDespesaSimples
         End Set
     End Property
     '
-    Public Property propSaidas() As clSaidas
+    Private Property propIDFilial() As Integer?
+        '
         Get
-            Return _clSaidas
+            Return _clDespesa.IDFilial
         End Get
-        Set(ByVal value As clSaidas)
-            _clSaidas = value
-            BindSaidas.DataSource = value
+        Set(ByVal value As Integer?)
+            _clDespesa.IDFilial = value
+            _clMovSaida.IDFilial = value
+            _clAPagar.IDFilial = value
         End Set
+        '
+    End Property
+    '
+    Private Property propApelidoFilial() As String
+        '
+        Get
+            Return _clDespesa.ApelidoFilial
+        End Get
+        Set(ByVal value As String)
+            _clDespesa.ApelidoFilial = value
+            _clMovSaida.ApelidoFilial = value
+        End Set
+        '
     End Property
     '
     Sub New(dtInicial As Date,
@@ -76,11 +100,11 @@ Public Class frmDespesaSimples
         _dtInicial = dtInicial
         _dtFinal = dtFinal
         _clDespesa.DespesaData = dtFinal
-        _clSaidas.IDConta = IDConta
-        _clDespesa.IDFilial = IDFilial
-        _clDespesa.ApelidoFilial = ApelidoFilial
+        propIDFilial = IDFilial
+        propApelidoFilial = ApelidoFilial
+        _clMovSaida.IDConta = IDConta
+        _clMovSaida.IDCaixa = IDCaixa
         lblFilial.Text = ApelidoFilial
-        _IDCaixa = IDCaixa
         _formOrigem = formOrigem
         '
         Handler_MouseDown()
@@ -90,10 +114,10 @@ Public Class frmDespesaSimples
     End Sub
     '
     Sub New()
-
+        '
         ' This call is required by the designer.
         InitializeComponent()
-
+        '
         ' Add any initialization after the InitializeComponent() call.
         DefineDataBinding()
         PreencheDataBinding()
@@ -114,13 +138,13 @@ Public Class frmDespesaSimples
         '------------------------------------------------------------------------------------
         propDespesa = New clDespesa
         propAPagar = New clAPagar
-        propSaidas = New clSaidas
+        propMovSaida = New clMovimentacao(EnumMovimentacaoOrigem.APagar, EnumMovimento.Saida)
         '
         ' DEFINE OS DATABINDINGS
         '------------------------------------------------------------------------------------
         BindDespesa.DataSource = _clDespesa
         BindAPagar.DataSource = _clAPagar
-        BindSaidas.DataSource = _clSaidas
+        BindMovSaida.DataSource = _clMovSaida
         '
     End Sub
     '
@@ -142,15 +166,15 @@ Public Class frmDespesaSimples
         txtIdentificador.DataBindings.Add("Text", BindAPagar, "Identificador", True, DataSourceUpdateMode.OnPropertyChanged)
         txtAcrescimo.DataBindings.Add("Text", BindAPagar, "Acrescimo", True, DataSourceUpdateMode.OnPropertyChanged)
         '
-        '--- BIND SAIDAS
-        txtObservacao.DataBindings.Add("Text", BindSaidas, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
-        lblSaidaValor.DataBindings.Add("Text", BindSaidas, "SaidaValor", True, DataSourceUpdateMode.OnPropertyChanged)
+        '--- BIND MOVIMENTACAO SAIDAS
+        txtObservacao.DataBindings.Add("Text", BindMovSaida, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblSaidaValor.DataBindings.Add("Text", BindMovSaida, "MovValor", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtConta.DataBindings.Add("Text", BindMovSaida, "Conta", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' CARREGA OS COMBOBOX
         '------------------------------------------------------------------------------------
         CarregaCmbCobrancaForma()
         CarregaCmbBancos()
-        CarregaCmbConta()
         '
         ' FORMATA OS VALORES DO DATABINDING
         '------------------------------------------------------------------------------------
@@ -165,7 +189,7 @@ Public Class frmDespesaSimples
         ' ADD HANDLER PARA DATABINGS
         AddHandler _clDespesa.AoAlterar, AddressOf HandlerAoAlterar
         AddHandler _clAPagar.AoAlterar, AddressOf HandlerAoAlterar
-        AddHandler _clSaidas.AoAlterar, AddressOf HandlerAoAlterar
+        AddHandler _clMovSaida.AoAlterar, AddressOf HandlerAoAlterar
         '
     End Sub
     '
@@ -241,46 +265,6 @@ Public Class frmDespesaSimples
         '
     End Sub
     '
-    Private Sub CarregaCmbConta()
-        Dim EntBLL As New MovimentacaoBLL
-        Dim Filial As Integer = propDespesa.IDFilial
-        '
-        Try
-            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial_DT(Filial)
-            '
-            With cmbIDConta
-                .DataSource = dt
-                .DisplayMember = "Conta"
-                .ValueMember = "IDConta"
-                .DataBindings.Add("SelectedValue", BindSaidas, "IDConta", True, DataSourceUpdateMode.OnPropertyChanged)
-            End With
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma exceção inesperada ao obter as lista de contas:" & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        '
-    End Sub
-    '
-    ' PROIBE EDICAO NO COMBOBOX IDCONTA QUANDO ESTA PADRONIZADO - ORIGEM CAIXA
-    '-----------------------------------------------------------------------------------------------------
-    Private Sub ComboBox_SelectedValueChanged(sender As Object, e As EventArgs) _
-        Handles cmbIDConta.SelectedValueChanged
-        '
-        Dim cmb As ComboBox = DirectCast(sender, ComboBox)
-        '
-        Select Case cmb.Name
-            Case "cmbIDConta"
-                If Not IsNumeric(cmbIDConta.SelectedValue) Then Exit Sub
-                '
-                If Me.CanFocus AndAlso cmbIDConta.SelectedValue <> _clSaidas.IDConta Then
-                    cmbIDConta.SelectedValue = IIf(IsNothing(_clSaidas.IDConta), -1, _clSaidas.IDConta)
-                    MessageBox.Show("A Conta de Saída deve ser a mesma conta do Caixa...", "Conta de Saída", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                End If
-                '
-        End Select
-        '
-    End Sub
-    '
 #End Region
     '
 #Region "FUNCOES NECESSARIAS"
@@ -297,7 +281,6 @@ Public Class frmDespesaSimples
         '
     End Sub
     '
-    '
     '--- BLOQUEIA PRESS A TECLA (+)
     Private Sub frmDespesaSimples_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
         If e.KeyChar = "+" Then
@@ -305,6 +288,7 @@ Public Class frmDespesaSimples
         End If
     End Sub
     '
+    '--- VERIFICA A VALIDADE DA DATA
     Private Sub txtDespesaData_Validated(sender As Object, e As EventArgs) Handles txtDespesaData.Validated
         VerificaDataValida()
     End Sub
@@ -316,7 +300,7 @@ Public Class frmDespesaSimples
                 If CDate(txtDespesaData.Text) > _dtFinal OrElse CDate(txtDespesaData.Text) < _dtInicial Then
                     '
                     MessageBox.Show("A Data da Despesa precisa estar entre:" & vbNewLine &
-                                    "Data Inicial: " & _dtinicial & vbNewLine &
+                                    "Data Inicial: " & _dtInicial & vbNewLine &
                                     "Data Final: " & _dtFinal & vbNewLine &
                                     "Insira uma data válida no campo Data da Despesa", "Data da Despesa",
                                     MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -357,6 +341,26 @@ Public Class frmDespesaSimples
     '
 #Region "BUTTONS"
     '
+    ' ESCOLHER CONTA
+    '-----------------------------------------------------------------------------------------------------
+    Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
+        '
+        '--- Abre o frmContas
+        Dim frmConta As New frmContaProcurar(Me, propIDFilial, propMovSaida.IDConta)
+        '
+        frmConta.ShowDialog()
+        '
+        If frmConta.DialogResult = DialogResult.Cancel Then
+            _clMovSaida.IDConta = Nothing
+            txtConta.Clear()
+        Else
+            '
+            txtConta.Text = frmConta.propConta_Escolha
+            _clMovSaida.IDConta = frmConta.propIdConta_Escolha
+            '
+        End If
+    End Sub
+    '
     ' PROCURA DESPESA
     '-----------------------------------------------------------------------------------------------------
     Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
@@ -373,7 +377,7 @@ Public Class frmDespesaSimples
         '
         propDespesa = New clDespesa
         propAPagar = New clAPagar
-        propSaidas = New clSaidas
+        propMovSaida = New clMovimentacao(EnumMovimentacaoOrigem.APagar, EnumMovimento.Saida)
         '
         txtCredor.Focus()
         '
@@ -392,7 +396,8 @@ Public Class frmDespesaSimples
     End Sub
     '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtCredor.KeyDown, txtDespesaTipo.KeyDown
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles _
+        txtCredor.KeyDown, txtDespesaTipo.KeyDown, txtConta.KeyDown
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '
@@ -400,9 +405,11 @@ Public Class frmDespesaSimples
             e.Handled = True
             Select Case ctr.Name
                 Case "txtCredor"
-                    btnCredor_Click(New Object, New EventArgs)
+                    btnCredor_Click(sender, e)
                 Case "txtDespesaTipo"
-                    btnTipo_Click(New Object, New EventArgs)
+                    btnTipo_Click(sender, e)
+                Case "txtConta"
+                    btnContaEscolher_Click(sender, e)
             End Select
         ElseIf e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
             e.Handled = True
@@ -467,7 +474,7 @@ Public Class frmDespesaSimples
         Dim dBLL As New DespesaBLL
         '
         Try
-            Prop_NewclCaixaMov = dBLL.DespesaSimples_InserirQuitar(_clDespesa, _clAPagar, _clSaidas, _IDCaixa)
+            propMovSaida = dBLL.DespesaSimples_InserirQuitar(_clDespesa, _clAPagar, _clMovSaida)
             '
         Catch ex As Exception
             MessageBox.Show("Uma exceção ocorreu ao inserir nova despesa:" & vbNewLine &
@@ -478,7 +485,7 @@ Public Class frmDespesaSimples
         '
         '--- Finaliza
         '----------------------------------------------------------------------
-        If IsNothing(_IDCaixa) Then
+        If IsNothing(_clMovSaida.IDCaixa) Then
             '
             If MessageBox.Show("Registro de Despesa Simples Salvo com sucesso!" & vbNewLine & vbNewLine &
                                "Deseja inserir outra Despesa Simples?",
@@ -543,7 +550,7 @@ Public Class frmDespesaSimples
         If VerificaDataValida() = False Then Return False
         '
         '--- Verifica o campo CONTA DA SAÍDA
-        If f.VerificaDadosClasse(cmbIDConta, "Conta do Débito/Saída", _clSaidas, eProvider) = False Then
+        If f.VerificaDadosClasse(txtConta, "Conta do Débito/Saída", _clMovSaida, eProvider) = False Then
             Return False
         End If
         '

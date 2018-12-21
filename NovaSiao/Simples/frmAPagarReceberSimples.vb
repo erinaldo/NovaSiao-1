@@ -85,7 +85,7 @@ Public Class frmAPagarReceberSimples
         '--- Add Handlers
         AddHandler rbtAPagar.CheckedChanged, AddressOf Butons_CheckedChanged
         AddHandler dtMes.DateChanged, AddressOf dtMes_DateChanged
-        AddHandler cmbSituacao.SelectedIndexChanged, AddressOf cmbSituacao_SelectedIndexChanged
+        'AddHandler cmbSituacao.SelectedIndexChanged, AddressOf cmbSituacao_SelectedIndexChanged
         '
     End Sub
     '
@@ -580,18 +580,6 @@ Public Class frmAPagarReceberSimples
         End If
     End Sub
     '
-    Private Sub txtFilial_TextChanged(sender As Object, e As EventArgs) Handles txtFilialDestino.TextChanged
-        '
-
-        '
-    End Sub
-    '
-    Private Sub cmbSituacao_SelectedIndexChanged(sender As Object, e As EventArgs)
-        '
-
-        '
-    End Sub
-    '    '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
     '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
     Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _

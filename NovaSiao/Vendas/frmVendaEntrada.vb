@@ -5,7 +5,7 @@ Public Class frmVendaEntrada
     Private _formOrigem As Form
     Private _vlMaximo As Double
     Private _VerAlteracao As Boolean
-    Private _Pag As clEntradas
+    Private _Pag As clMovimentacao
     Private _Acao As FlagAcao
     Private bindPag As New BindingSource
     '
@@ -13,7 +13,7 @@ Public Class frmVendaEntrada
     ' SUB NEW
     '-------------------------------------------------------------------------------------------------
     Sub New(fOrigem As Form, TranVlTotal As Double,
-            Pag As clEntradas, Acao As FlagAcao, Optional Posicao As Point = Nothing)
+            Pag As clMovimentacao, Acao As FlagAcao, Optional Posicao As Point = Nothing)
         '
         ' This call is required by the designer.
         InitializeComponent()
@@ -193,7 +193,7 @@ Public Class frmVendaEntrada
             Exit Sub
         End If
         '
-        If IsNothing(_Pag.EntradaValor) OrElse _Pag.EntradaValor <= 0 OrElse _Pag.EntradaValor > _vlMaximo Then
+        If IsNothing(_Pag.MovValor) OrElse _Pag.MovValor <= 0 OrElse _Pag.MovValor > _vlMaximo Then
             MessageBox.Show("O VALOR da Entrada não pode ser igual ou menor que Zero..." & vbNewLine &
                             "bem como também não pode ser maior que o total da venda..." & vbNewLine &
                             "Favor escolher um valor para esse campo.", "Campo Vazio",

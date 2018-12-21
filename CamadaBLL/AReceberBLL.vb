@@ -480,6 +480,7 @@ Public Class ParcelaBLL
     ' ESTORNAR ENTRADA PARCELA TRANSACAO | VENDA
     '===================================================================================================
     Public Function EstornarEntradaParcela(myIDParcela As Integer, myIDEntrada As Integer) As clAReceberParcela
+        '
         Dim db As New AcessoDados
         Dim dtPar As DataTable
         '
@@ -487,7 +488,7 @@ Public Class ParcelaBLL
             db.LimparParametros()
             '
             db.AdicionarParametros("@IDAReceberParcela", myIDParcela)
-            db.AdicionarParametros("@IDEntrada", myIDEntrada)
+            db.AdicionarParametros("@IDMovimentacao", myIDEntrada)
             '
             dtPar = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAReceberParcela_Estornar")
             '

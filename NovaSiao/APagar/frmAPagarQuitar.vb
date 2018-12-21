@@ -3,10 +3,11 @@ Imports CamadaDTO
 
 Public Class frmAPagarQuitar
     Private _formOrigem As Form
-    Private bindSaida As New BindingSource
     Private _vlMax As Decimal = 0
     Private _VerAlteracao As Boolean = False
-    Property propSaida As clSaidas
+    '
+    Private bindSaida As New BindingSource
+    Property propMovSaida As clMovimentacao
     Property propPagOrigem As clAPagar
     '
 #Region "OPEN | LOAD | PROPRIEDADES"
@@ -22,13 +23,16 @@ Public Class frmAPagarQuitar
         _vlMax = _PagOrigem.APagarValor - _PagOrigem.ValorPago - _PagOrigem.Desconto
         '
         '--- PREENCHE A OBJETO CLSAIDAS
-        propSaida = New clSaidas
-        bindSaida.DataSource = propSaida
-        propSaida.IDOrigem = propPagOrigem.IDAPagar
-        propSaida.SaidaData = Obter_DataPadrao()
-        propSaida.IDConta = Obter_ContaPadrao()
-        propSaida.Origem = 1 '--- ORIGEM IDAPAGAR
-        propSaida.Creditar = False
+        propMovSaida = New clMovimentacao(EnumMovimentacaoOrigem.APagar, EnumMovimento.Saida)
+        bindSaida.DataSource = propMovSaida
+        propMovSaida.IDOrigem = propPagOrigem.IDAPagar
+        propMovSaida.MovData = Obter_DataPadrao()
+        propMovSaida.IDConta = Obter_ContaPadrao()
+        propMovSaida.Conta = ObterDefault("ContaDescricao")
+        txtConta.Text = propMovSaida.Conta
+        propMovSaida.IDFilial = Obter_FilialPadrao()
+        propMovSaida.Origem = 1 '--- ORIGEM IDAPAGAR
+        propMovSaida.Creditar = False
         PreencheDataBinding()
         '
         '--- PREENCHE OS CAMPOS DOS CONTROLES
@@ -48,62 +52,42 @@ Public Class frmAPagarQuitar
     '------------------------------------------------------------------------------------------
     Private Sub PreencheDataBinding()
         '
-        lblSaidaValor.DataBindings.Add("Text", bindSaida, "SaidaValor", True, DataSourceUpdateMode.OnPropertyChanged)
-        txtSaidaData.DataBindings.Add("Text", bindSaida, "SaidaData", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblSaidaValor.DataBindings.Add("Text", bindSaida, "MovValor", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtSaidaData.DataBindings.Add("Text", bindSaida, "MovData", True, DataSourceUpdateMode.OnPropertyChanged)
         txtObservacao.DataBindings.Add("Text", bindSaida, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
-        '
-        ' CARREGA OS COMBOBOX
-        CarregaCmbConta()
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblSaidaValor.DataBindings("Text").Format, AddressOf FormatCUR
         '
     End Sub
     '
-    Private Sub FormatCUR(sender As Object, e As System.Windows.Forms.ConvertEventArgs)
+    Private Sub FormatCUR(sender As Object, e As ConvertEventArgs)
         e.Value = FormatCurrency(e.Value, 2)
     End Sub
     '
 #End Region
     '
-#Region "PREENCHE COMBOS"
-    '
-    '------------------------------------------------------------------------------------------
-    ' CARREGAR OS COMBOBOX
-    '------------------------------------------------------------------------------------------
-    '
-    Private Sub CarregaCmbConta()
-        '
-        Dim EntBLL As New MovimentacaoBLL
-        Dim Filial As Integer
-        '
-        Try
-            Filial = Obter_FilialPadrao()
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma exceção inesperada ao obter a Filial Padrão:" & vbNewLine &
-                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
-        '
-        Try
-            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial_DT(Filial)
-            '
-            With cmbIDConta
-                .DataSource = dt
-                .DisplayMember = "Conta"
-                .ValueMember = "IDConta"
-                .DataBindings.Add("SelectedValue", bindSaida, "IDConta", True, DataSourceUpdateMode.OnPropertyChanged)
-            End With
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma exceção inesperada ao obter as lista de contas:" & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-        '
-    End Sub
-    '
-#End Region
-    '
 #Region "BUTONS FUNCTION"
+    '
+    ' ESCOLHER CONTA
+    '-----------------------------------------------------------------------------------------------------
+    Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
+        '
+        '--- Abre o frmContas
+        Dim frmConta As New frmContaProcurar(Me, propMovSaida.IDFilial, propMovSaida.IDConta)
+        '
+        frmConta.ShowDialog()
+        '
+        If frmConta.DialogResult = DialogResult.Cancel Then
+            propMovSaida.IDConta = Nothing
+            txtConta.Clear()
+        Else
+            '
+            txtConta.Text = frmConta.propConta_Escolha
+            propMovSaida.IDConta = frmConta.propIdConta_Escolha
+            '
+        End If
+    End Sub
     '
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         Me.DialogResult = DialogResult.Cancel
@@ -117,7 +101,7 @@ Public Class frmAPagarQuitar
         End If
         '
         '--- Verifica se a DATA DA ENTRADA é permitida pelo sistema
-        If DataBloqueada(propSaida.SaidaData, propSaida.IDConta) Then
+        If DataBloqueada(propMovSaida.MovData, propMovSaida.IDConta) Then
             Exit Sub
         End If
         '
@@ -129,7 +113,7 @@ Public Class frmAPagarQuitar
             '
             Try
                 propPagOrigem.IDAPagar = dBLL.DespesaPeriodica_TornarReal(propPagOrigem)
-                propSaida.IDOrigem = propPagOrigem.IDAPagar
+                propMovSaida.IDOrigem = propPagOrigem.IDAPagar
             Catch ex As Exception
                 MessageBox.Show("Houve uma exceção ao TORNAR REAL o APagar Periodico:" & vbNewLine &
                                 ex.Message, "Exceção Inesperada",
@@ -144,22 +128,22 @@ Public Class frmAPagarQuitar
         Dim newID As Integer?
         '
         Try
-            newID = pBLL.Quitar_APagar(propSaida.IDOrigem, propSaida.SaidaValor,
+            newID = pBLL.Quitar_APagar(propMovSaida.IDOrigem, propMovSaida.MovValor,
                                        IIf(IsNumeric(txtAcrescimo.Text), CDbl(txtAcrescimo.Text), 0),
-                                       propSaida.SaidaData, propSaida.IDConta, propSaida.Observacao)
+                                       propMovSaida.MovData, propMovSaida.IDConta, propMovSaida.Observacao)
 
             '
             If Not IsNumeric(newID) Then
                 Throw New Exception(newID.ToString)
             Else
-                propSaida.IDSaida = newID
-                propSaida.Conta = cmbIDConta.Text
+                propMovSaida.IDMovimentacao = newID
+                propMovSaida.Conta = txtConta.Text
             End If
             '
             DialogResult = DialogResult.OK
             '
         Catch ex As Exception
-            MessageBox.Show("Houve uma exceção ao QUITAR o APagaR:" & vbNewLine &
+            MessageBox.Show("Houve uma exceção ao QUITAR o APagar:" & vbNewLine &
                             ex.Message, "Exceção Inesperada",
                             MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
@@ -174,7 +158,14 @@ Public Class frmAPagarQuitar
         Dim f As New FuncoesUtilitarias
         '
         '--- Campo Conta de Entrada
-        If f.VerificaControlesForm(cmbIDConta, "Conta da Entrada") = False Then
+        If IsNothing(propMovSaida.IDConta) OrElse propMovSaida.IDConta = 0 Then
+
+            MsgBox("O campo Conta de Saída não pode ficar vazio;" & vbCrLf &
+                   "Preencha esse campo antes de Salvar o registro por favor...", vbInformation, "Campo Vazio")
+            '
+            Dim EP As New ErrorProvider
+            EP.SetError(txtConta, "Preencha o valor desse campo!")
+            '
             Return False
         End If
         '
@@ -212,27 +203,6 @@ Public Class frmAPagarQuitar
 #Region "ATALHOS - NAVEGAÇÃO"
     '
     '------------------------------------------------------------------------------------------
-    ' CRIA UM ATALHO PARA OS COMBO BOX
-    '------------------------------------------------------------------------------------------
-    Private Sub cmbFormaTipo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles cmbIDConta.KeyPress
-        If Char.IsNumber(e.KeyChar) Then
-            e.Handled = True
-            '
-            Dim dt As DataTable = cmbIDConta.DataSource
-            Dim rCount As Integer = dt.Rows.Count
-            Dim item As Integer = e.KeyChar.ToString
-            '
-            If item <= rCount And item > 0 Then
-                Dim Valor As Integer = dt.Rows(e.KeyChar.ToString - 1)("IDConta")
-                '
-                propSaida.IDConta = Valor
-                cmbIDConta.SelectedValue = Valor
-                '
-            End If
-        End If
-    End Sub
-    '
-    '------------------------------------------------------------------------------------------
     ' USAR TAB AO KEYPRESS ENTER
     '------------------------------------------------------------------------------------------
     Private Sub txtValor_KeyDown(sender As Object, e As KeyEventArgs) Handles rbtTotal.KeyDown,
@@ -252,6 +222,39 @@ Public Class frmAPagarQuitar
             '
             btnCancelar_Click(New Object, New EventArgs)
         End If
+    End Sub
+    '
+    '    '
+    '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
+    '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _
+        Handles txtConta.KeyDown
+        '
+        Dim ctr As Control = DirectCast(sender, Control)
+        '
+        If e.KeyCode = Keys.Add Then
+            e.Handled = True
+            btnContaEscolher_Click(sender, New EventArgs)
+            '
+        ElseIf e.KeyCode = Keys.Delete Then
+            e.Handled = True
+            txtConta.Clear()
+            '
+            If Not IsNothing(propMovSaida.IDFilial) Then
+                propMovSaida.IDFilial = Nothing
+            End If
+            '
+        Else
+            '--- cria uma lista de controles que serão bloqueados de alteracao
+            Dim controlesBloqueados As New List(Of String)
+            controlesBloqueados.AddRange({"txtFilial"})
+            '
+            If controlesBloqueados.Contains(ctr.Name) Then
+                e.Handled = True
+                e.SuppressKeyPress = True
+            End If
+        End If
+        '
     End Sub
     '
 #End Region
@@ -308,7 +311,7 @@ Public Class frmAPagarQuitar
         End If
         '
         '--- RETORNA O VALOR TOTAL
-        propSaida.SaidaValor = DoValor + Acresc - Desc
+        propMovSaida.MovValor = DoValor + Acresc - Desc
         lblSaidaValor.DataBindings("text").ReadValue()
         '
     End Sub

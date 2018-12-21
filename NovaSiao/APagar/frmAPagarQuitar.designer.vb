@@ -21,8 +21,6 @@ Partial Class frmAPagarQuitar
     Private Sub InitializeComponent()
         Me.txtSaidaData = New Controles.MaskText_Data()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.Label3 = New System.Windows.Forms.Label()
-        Me.cmbIDConta = New Controles.ComboBox_OnlyValues()
         Me.txtValorPago = New Controles.Text_Monetario()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.btnCancelar = New System.Windows.Forms.Button()
@@ -36,20 +34,31 @@ Partial Class frmAPagarQuitar
         Me.btnQuitar = New System.Windows.Forms.Button()
         Me.txtObservacao = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
+        Me.txtConta = New System.Windows.Forms.TextBox()
+        Me.btnContaEscolher = New VIBlend.WinForms.Controls.vButton()
+        Me.Label17 = New System.Windows.Forms.Label()
+        Me.lblFilial = New System.Windows.Forms.Label()
+        Me.Label18 = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.lblFilial)
+        Me.Panel1.Controls.Add(Me.Label18)
         Me.Panel1.Size = New System.Drawing.Size(428, 50)
         Me.Panel1.TabIndex = 0
+        Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.Label18, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblFilial, 0)
         '
         'lblTitulo
         '
         Me.lblTitulo.Location = New System.Drawing.Point(257, 0)
         Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
         Me.lblTitulo.Size = New System.Drawing.Size(171, 50)
+        Me.lblTitulo.TabIndex = 0
         Me.lblTitulo.Text = "A Pagar - Quitar"
         '
         'txtSaidaData
@@ -58,53 +67,33 @@ Partial Class frmAPagarQuitar
         Me.txtSaidaData.Mask = "00/00/0000"
         Me.txtSaidaData.Name = "txtSaidaData"
         Me.txtSaidaData.Size = New System.Drawing.Size(109, 27)
-        Me.txtSaidaData.TabIndex = 5
+        Me.txtSaidaData.TabIndex = 6
         Me.txtSaidaData.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(52, 137)
+        Me.Label1.Location = New System.Drawing.Point(53, 137)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(111, 19)
-        Me.Label1.TabIndex = 4
+        Me.Label1.TabIndex = 5
         Me.Label1.Text = "Data do Débito:"
-        '
-        'Label3
-        '
-        Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(53, 104)
-        Me.Label3.Name = "Label3"
-        Me.Label3.Size = New System.Drawing.Size(110, 19)
-        Me.Label3.TabIndex = 2
-        Me.Label3.Text = "Conta da Saída:"
-        '
-        'cmbIDConta
-        '
-        Me.cmbIDConta.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDConta.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDConta.FormattingEnabled = True
-        Me.cmbIDConta.Location = New System.Drawing.Point(170, 101)
-        Me.cmbIDConta.Name = "cmbIDConta"
-        Me.cmbIDConta.RestrictContentToListItems = True
-        Me.cmbIDConta.Size = New System.Drawing.Size(234, 27)
-        Me.cmbIDConta.TabIndex = 3
         '
         'txtValorPago
         '
         Me.txtValorPago.Location = New System.Drawing.Point(170, 167)
         Me.txtValorPago.Name = "txtValorPago"
         Me.txtValorPago.Size = New System.Drawing.Size(109, 27)
-        Me.txtValorPago.TabIndex = 7
+        Me.txtValorPago.TabIndex = 8
         Me.txtValorPago.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(95, 170)
+        Me.Label4.Location = New System.Drawing.Point(96, 170)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(68, 19)
-        Me.Label4.TabIndex = 6
+        Me.Label4.TabIndex = 7
         Me.Label4.Text = "Do Valor:"
         '
         'btnCancelar
@@ -113,7 +102,7 @@ Partial Class frmAPagarQuitar
         Me.btnCancelar.Location = New System.Drawing.Point(222, 350)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(120, 48)
-        Me.btnCancelar.TabIndex = 17
+        Me.btnCancelar.TabIndex = 16
         Me.btnCancelar.Text = "&Fechar"
         Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -156,10 +145,10 @@ Partial Class frmAPagarQuitar
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(83, 203)
+        Me.Label5.Location = New System.Drawing.Point(84, 203)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(80, 19)
-        Me.Label5.TabIndex = 8
+        Me.Label5.TabIndex = 9
         Me.Label5.Text = "Acréscimo:"
         '
         'txtAcrescimo
@@ -167,16 +156,16 @@ Partial Class frmAPagarQuitar
         Me.txtAcrescimo.Location = New System.Drawing.Point(170, 200)
         Me.txtAcrescimo.Name = "txtAcrescimo"
         Me.txtAcrescimo.Size = New System.Drawing.Size(109, 27)
-        Me.txtAcrescimo.TabIndex = 9
+        Me.txtAcrescimo.TabIndex = 10
         Me.txtAcrescimo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(45, 240)
+        Me.Label6.Location = New System.Drawing.Point(46, 240)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(118, 19)
-        Me.Label6.TabIndex = 12
+        Me.Label6.TabIndex = 11
         Me.Label6.Text = "Valor a ser Pago:"
         '
         'lblSaidaValor
@@ -186,7 +175,7 @@ Partial Class frmAPagarQuitar
         Me.lblSaidaValor.Location = New System.Drawing.Point(169, 236)
         Me.lblSaidaValor.Name = "lblSaidaValor"
         Me.lblSaidaValor.Size = New System.Drawing.Size(109, 25)
-        Me.lblSaidaValor.TabIndex = 13
+        Me.lblSaidaValor.TabIndex = 12
         Me.lblSaidaValor.Text = "R$ 0,00"
         Me.lblSaidaValor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
@@ -196,7 +185,7 @@ Partial Class frmAPagarQuitar
         Me.btnQuitar.Location = New System.Drawing.Point(92, 350)
         Me.btnQuitar.Name = "btnQuitar"
         Me.btnQuitar.Size = New System.Drawing.Size(120, 48)
-        Me.btnQuitar.TabIndex = 16
+        Me.btnQuitar.TabIndex = 15
         Me.btnQuitar.Text = "&Quitar"
         Me.btnQuitar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnQuitar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -208,21 +197,85 @@ Partial Class frmAPagarQuitar
         Me.txtObservacao.Multiline = True
         Me.txtObservacao.Name = "txtObservacao"
         Me.txtObservacao.Size = New System.Drawing.Size(234, 54)
-        Me.txtObservacao.TabIndex = 15
+        Me.txtObservacao.TabIndex = 14
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(73, 277)
+        Me.Label2.Location = New System.Drawing.Point(74, 277)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(90, 19)
-        Me.Label2.TabIndex = 14
+        Me.Label2.TabIndex = 13
         Me.Label2.Text = "Observação:"
+        '
+        'txtConta
+        '
+        Me.txtConta.Location = New System.Drawing.Point(170, 101)
+        Me.txtConta.Name = "txtConta"
+        Me.txtConta.Size = New System.Drawing.Size(205, 27)
+        Me.txtConta.TabIndex = 3
+        '
+        'btnContaEscolher
+        '
+        Me.btnContaEscolher.AllowAnimations = True
+        Me.btnContaEscolher.BackColor = System.Drawing.Color.Transparent
+        Me.btnContaEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
+        Me.btnContaEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnContaEscolher.Location = New System.Drawing.Point(381, 101)
+        Me.btnContaEscolher.Name = "btnContaEscolher"
+        Me.btnContaEscolher.RoundedCornersMask = CType(15, Byte)
+        Me.btnContaEscolher.RoundedCornersRadius = 0
+        Me.btnContaEscolher.Size = New System.Drawing.Size(34, 27)
+        Me.btnContaEscolher.TabIndex = 4
+        Me.btnContaEscolher.TabStop = False
+        Me.btnContaEscolher.Text = "..."
+        Me.btnContaEscolher.UseCompatibleTextRendering = True
+        Me.btnContaEscolher.UseVisualStyleBackColor = False
+        Me.btnContaEscolher.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        '
+        'Label17
+        '
+        Me.Label17.AutoSize = True
+        Me.Label17.Location = New System.Drawing.Point(54, 104)
+        Me.Label17.Name = "Label17"
+        Me.Label17.Size = New System.Drawing.Size(110, 19)
+        Me.Label17.TabIndex = 2
+        Me.Label17.Text = "Conta da Saída:"
+        '
+        'lblFilial
+        '
+        Me.lblFilial.BackColor = System.Drawing.Color.Transparent
+        Me.lblFilial.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblFilial.ForeColor = System.Drawing.Color.AliceBlue
+        Me.lblFilial.Location = New System.Drawing.Point(9, 16)
+        Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
+        Me.lblFilial.Name = "lblFilial"
+        Me.lblFilial.Size = New System.Drawing.Size(191, 30)
+        Me.lblFilial.TabIndex = 4
+        Me.lblFilial.Text = "Filial"
+        Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label18
+        '
+        Me.Label18.AutoSize = True
+        Me.Label18.BackColor = System.Drawing.Color.Transparent
+        Me.Label18.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label18.ForeColor = System.Drawing.Color.LightGray
+        Me.Label18.Location = New System.Drawing.Point(83, 4)
+        Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label18.Name = "Label18"
+        Me.Label18.Size = New System.Drawing.Size(43, 13)
+        Me.Label18.TabIndex = 5
+        Me.Label18.Text = "Filial:"
+        Me.Label18.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'frmAPagarQuitar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(428, 417)
+        Me.ClientSize = New System.Drawing.Size(428, 416)
+        Me.Controls.Add(Me.txtConta)
+        Me.Controls.Add(Me.btnContaEscolher)
+        Me.Controls.Add(Me.Label17)
         Me.Controls.Add(Me.txtObservacao)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.Panel2)
@@ -233,9 +286,7 @@ Partial Class frmAPagarQuitar
         Me.Controls.Add(Me.lblSaidaValor)
         Me.Controls.Add(Me.Label6)
         Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.cmbIDConta)
         Me.Controls.Add(Me.Label4)
-        Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.txtSaidaData)
         Me.KeyPreview = True
@@ -243,9 +294,7 @@ Partial Class frmAPagarQuitar
         Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Controls.SetChildIndex(Me.txtSaidaData, 0)
         Me.Controls.SetChildIndex(Me.Label1, 0)
-        Me.Controls.SetChildIndex(Me.Label3, 0)
         Me.Controls.SetChildIndex(Me.Label4, 0)
-        Me.Controls.SetChildIndex(Me.cmbIDConta, 0)
         Me.Controls.SetChildIndex(Me.Label5, 0)
         Me.Controls.SetChildIndex(Me.Label6, 0)
         Me.Controls.SetChildIndex(Me.lblSaidaValor, 0)
@@ -256,7 +305,11 @@ Partial Class frmAPagarQuitar
         Me.Controls.SetChildIndex(Me.Panel2, 0)
         Me.Controls.SetChildIndex(Me.Label2, 0)
         Me.Controls.SetChildIndex(Me.txtObservacao, 0)
+        Me.Controls.SetChildIndex(Me.Label17, 0)
+        Me.Controls.SetChildIndex(Me.btnContaEscolher, 0)
+        Me.Controls.SetChildIndex(Me.txtConta, 0)
         Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         Me.ResumeLayout(False)
@@ -266,8 +319,6 @@ Partial Class frmAPagarQuitar
 
     Friend WithEvents txtSaidaData As Controles.MaskText_Data
     Friend WithEvents Label1 As Label
-    Friend WithEvents Label3 As Label
-    Friend WithEvents cmbIDConta As Controles.ComboBox_OnlyValues
     Friend WithEvents txtValorPago As Controles.Text_Monetario
     Friend WithEvents Label4 As Label
     Friend WithEvents btnCancelar As Button
@@ -281,4 +332,9 @@ Partial Class frmAPagarQuitar
     Friend WithEvents btnQuitar As Button
     Friend WithEvents txtObservacao As TextBox
     Friend WithEvents Label2 As Label
+    Friend WithEvents txtConta As TextBox
+    Friend WithEvents btnContaEscolher As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents Label17 As Label
+    Friend WithEvents lblFilial As Label
+    Friend WithEvents Label18 As Label
 End Class

@@ -174,8 +174,7 @@ Public Class DespesaBLL
     '===================================================================================================
     Public Function DespesaSimples_InserirQuitar(myDespesa As clDespesa,
                                                  myAPagar As clAPagar,
-                                                 mySaida As clSaidas,
-                                                 Optional IDCaixa As Integer? = Nothing) As clCaixaMovimentacao
+                                                 myMovSaida As clMovimentacao) As clMovimentacao
         Dim db As New AcessoDados
         '
         '--- Adicionar os paramentros
@@ -193,11 +192,11 @@ Public Class DespesaBLL
         db.AdicionarParametros("@RGBanco", myAPagar.RGBanco)
         db.AdicionarParametros("@Acrescimo", myAPagar.Acrescimo)
         '
-        db.AdicionarParametros("@IDConta", mySaida.IDConta)
-        db.AdicionarParametros("@Observacao", mySaida.Observacao)
+        db.AdicionarParametros("@IDConta", myMovSaida.IDConta)
+        db.AdicionarParametros("@Observacao", myMovSaida.Observacao)
         '
-        If Not IsNothing(IDCaixa) Then
-            db.AdicionarParametros("@IDCaixa", IDCaixa)
+        If Not IsNothing(myMovSaida.IDCaixa) Then
+            db.AdicionarParametros("@IDCaixa", myMovSaida.IDCaixa)
         End If
         '
         '---Inserir a despesa
@@ -209,20 +208,19 @@ Public Class DespesaBLL
             End If
             '
             Dim r As DataRow = dt.Rows(dt.Rows.Count - 1)
-            Dim cx As New clCaixaMovimentacao
             '
-            cx.IDMov = IIf(IsDBNull(r("ID")), Nothing, r("ID"))
-            cx.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
-            cx.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
-            cx.Movimentacao = IIf(IsDBNull(r("Mov")), String.Empty, r("Mov"))
-            cx.MovValor = IIf(IsDBNull(r("MovValor")), Nothing, r("MovValor"))
-            cx.MovData = IIf(IsDBNull(r("MovData")), Nothing, r("MovData"))
-            cx.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
-            cx.MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
-            cx.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
-            cx.Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
+            myMovSaida.IDMovimentacao = IIf(IsDBNull(r("ID")), Nothing, r("ID"))
+            myMovSaida.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
+            myMovSaida.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
+            myMovSaida.Mov = IIf(IsDBNull(r("Mov")), String.Empty, r("Mov"))
+            myMovSaida.MovValor = IIf(IsDBNull(r("MovValor")), Nothing, r("MovValor"))
+            myMovSaida.MovData = IIf(IsDBNull(r("MovData")), Nothing, r("MovData"))
+            myMovSaida.IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
+            myMovSaida.MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
+            myMovSaida.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
+            myMovSaida.Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
             '
-            Return cx
+            Return myMovSaida
             '
         Catch ex As Exception
             Throw ex
