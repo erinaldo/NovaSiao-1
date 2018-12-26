@@ -3,7 +3,7 @@ Imports CamadaDTO
 '
 Public Class frmVendaVista
     '
-    Private vBLL As New VendaBLL
+    Private vndBLL As New VendaBLL
     Private _Venda As clVenda
     Private _Troca As clTroca
     Private _ItensList As New List(Of clTransacaoItem)
@@ -12,7 +12,7 @@ Public Class frmVendaVista
     Private bindItem As New BindingSource
     Private bindEnt As New BindingSource
     Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
-    Private _Filial As Integer
+    Private _IDFilial As Integer
     Private VerificaAlteracao As Boolean
     '
 #Region "LOAD"
@@ -36,7 +36,10 @@ Public Class frmVendaVista
                     btnVendedorAlterar.Enabled = True
                     btnData.Enabled = True
                     txtObservacao.ReadOnly = False
-                                        '
+                    '
+                    btnExcluirVenda.Enabled = True
+                    btnDesbloquearVenda.Enabled = False
+                    '                    '
                 Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     lblSituacao.Text = "Alterada"
                     btnFinalizar.Text = "&Finalizar"
@@ -46,6 +49,9 @@ Public Class frmVendaVista
                     btnVendedorAlterar.Enabled = True
                     btnData.Enabled = True
                     txtObservacao.ReadOnly = False
+                    '
+                    btnExcluirVenda.Enabled = True
+                    btnDesbloquearVenda.Enabled = False
                     '
                 Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     lblSituacao.Text = "Em Aberto"
@@ -57,6 +63,9 @@ Public Class frmVendaVista
                     btnData.Enabled = True
                     txtObservacao.ReadOnly = False
                     '
+                    btnExcluirVenda.Enabled = True
+                    btnDesbloquearVenda.Enabled = False
+                    '
                 Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     lblSituacao.Text = "Bloqueada"
                     btnFinalizar.Text = "&Fechar"
@@ -66,6 +75,9 @@ Public Class frmVendaVista
                     btnVendedorAlterar.Enabled = False
                     btnData.Enabled = False
                     txtObservacao.ReadOnly = True
+                    '
+                    btnExcluirVenda.Enabled = False
+                    btnDesbloquearVenda.Enabled = True
                     '
             End Select
             '
@@ -83,7 +95,7 @@ Public Class frmVendaVista
             '
             VerificaAlteracao = False '--- Inibe a verificacao dos campos IDPlano
             _Venda = value
-            _Filial = _Venda.IDPessoaOrigem
+            _IDFilial = _Venda.IDPessoaOrigem
             obterItens()
             obterPagamentos()
             bindItem.DataSource = _ItensList
@@ -347,7 +359,7 @@ Public Class frmVendaVista
         '
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Venda.IDVenda, _Filial)
+            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Venda.IDVenda, _IDFilial)
         Catch ex As Exception
             MessageBox.Show("Um execeção ocorreu ao obter Itens da Venda:" & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -365,7 +377,7 @@ Public Class frmVendaVista
         '
         '--- Abre o frmItem
         '
-        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _Filial, Nothing)
+        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _IDFilial, Nothing)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -421,7 +433,7 @@ Public Class frmVendaVista
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
         '
         '--- Abre o frmItem
-        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _Filial, itmAtual)
+        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _IDFilial, itmAtual)
         fitem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -597,7 +609,7 @@ Public Class frmVendaVista
         Try
             Dim newID As Integer = fFunc.IDEscolhido
             '
-            If vBLL.AtualizaVendaVendedor(_Venda.IDVenda, newID) Then
+            If vndBLL.AtualizaVendaVendedor(_Venda.IDVenda, newID) Then
                 _Venda.IDVendedor = newID
                 _Venda.ApelidoFuncionario = fFunc.NomeEscolhido
                 lblVendedor.DataBindings("Text").ReadValue()
@@ -678,6 +690,83 @@ Public Class frmVendaVista
         AddHandler btnImprimir.ButtonClick, AddressOf tsbButtonClick
         AddHandler btnImprimir.MouseHover, AddressOf tsbButtonClick
         '
+    End Sub
+    '
+    ' MENU ACAO INFERIOR
+    '=====================================
+    '
+    ' PROCURAR
+    Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
+        ProcuraVenda()
+    End Sub
+    '
+    ' ADICIONAR
+    Private Sub btnAdicionar_Click(sender As Object, e As EventArgs) Handles btnAdicionar.Click
+        NovaVenda()
+    End Sub
+    '
+    ' EXCLUIR
+    Private Sub btnExcluirVenda_Click(sender As Object, e As EventArgs) Handles btnExcluirVenda.Click
+        '
+        '--- Verifica bloqueio
+        If RegistroBloqueado() Then Exit Sub
+        '
+        '--- pergunta ao usuario
+        If MessageBox.Show("Você deseja realmente excluir definitivamente essa Venda?",
+                           "Excluir Venda",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question,
+                           MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
+        '
+        '--- Excluir Venda
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            If vndBLL.DeletaVendaPorID(_Venda.IDVenda, _IDFilial) Then
+                '
+                '--- fecha
+                Close()
+                MostraMenuPrincipal()
+                '
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Excluir a Venda..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    ' DESBLOQUEAR VENDA
+    Private Sub btnDesbloquearVenda_Click(sender As Object, e As EventArgs) Handles btnDesbloquearVenda.Click
+        '
+        '--- Verifica se registro esta bloqueado
+        If Sit <> FlagEstado.RegistroBloqueado Then Exit Sub
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            If vndBLL.VendaDesbloquear(_Venda) Then Sit = FlagEstado.RegistroSalvo
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Desbloquear Registro..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    ' IMPRIMIR
+    Private Sub miImprimirEtiquetas_Click(sender As Object, e As EventArgs) Handles miImprimirEtiquetas.Click
+        MessageBox.Show("Ainda não foi implementado...")
     End Sub
     '
 #End Region '/ BOTOES ACAO
@@ -1030,7 +1119,7 @@ Public Class frmVendaVista
                 '--- altera a situacao da transacao atual
                 _Venda.IDSituacao = 2 'CONCLUÍDA
                 '
-                Dim obj As Object = vBLL.AtualizaVenda_Procedure_ID(_Venda)
+                Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
                 '
                 If Not IsNumeric(obj) Then
                     Throw New Exception(obj.ToString)
@@ -1382,7 +1471,7 @@ Public Class frmVendaVista
         _Venda.IDSituacao = 1 '--- Edita o registro e altera a situação
         '
         Try
-            Dim obj As Object = vBLL.AtualizaVenda_Procedure_ID(_Venda)
+            Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
             '
             If Not IsNumeric(obj) Then
                 Throw New Exception(obj.ToString)

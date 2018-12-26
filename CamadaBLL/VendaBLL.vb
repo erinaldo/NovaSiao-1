@@ -294,9 +294,40 @@ Public Class VendaBLL
         End Try
         '
         '--- VERIFICA MOVIMENTACAO ANTES DE EXCLUIR
-        If Not VerificaDeleteVenda(clV) Then
+        If Not VerificaLiberacaoVenda(clV, "EXCLUIR") Then
             Return False
         End If
+        '
+        '--- GET ITEMS VENDA AND TROCA
+        '==================================================================
+        '
+        '--- get produtos | itens da VENDA | itens TROCA
+        Dim ItemBLL As New TransacaoItemBLL
+        Dim lstItens As New List(Of clTransacaoItem)
+        Dim tBLL As New TrocaBLL
+        Dim lstItensTroca As New List(Of clTransacaoItem)
+        Dim Troca As clTroca = Nothing
+        '
+        Try
+            '--- get VENDA ITENS
+            lstItens = ItemBLL.GetVendaItens_IDVenda_List(IDVenda, IDFilial)
+            '
+            '--- get TROCA item
+            Troca = tBLL.GetTroca_PorIDVenda_clTroca(clV.IDVenda)
+            '
+            '--- GET TROCA ITENS
+            If Not IsNothing(Troca) Then
+                '
+                lstItensTroca = ItemBLL.GetVendaItens_IDVenda_List(Troca.IDTransacaoEntrada, IDFilial)
+                '
+            End If
+            '
+        Catch ex As Exception
+            '
+            Throw ex
+            Return False
+            '
+        End Try
         '
         '--- INIT TRANSACTION
         '==================================================================
@@ -306,13 +337,8 @@ Public Class VendaBLL
         '--- DELETE TODOS OS ITENS DA VENDA E RESOLVER O ESTOQUE
         '==================================================================
         '
-        '--- get produtos/itens da Venda
-        Dim ItemBLL As New TransacaoItemBLL
-        Dim lstItens As New List(Of clTransacaoItem)
-        '
         '--- delete all itens of venda
         Try
-            lstItens = ItemBLL.GetVendaItens_IDVenda_List(IDVenda, IDFilial)
             '
             For Each it In lstItens
                 ItemBLL.ExcluirItem(it, TransacaoItemBLL.EnumMovimento.SAIDA, ObjDB)
@@ -409,11 +435,27 @@ Public Class VendaBLL
         '==================================================================
         '
         Try
-            Dim tBLL As New TrocaBLL
-            Dim Troca As clTroca = tBLL.GetTroca_PorIDVenda_clTroca(clV.IDVenda)
             '
             If Not IsNothing(Troca) Then
-                tBLL.DeletaTrocaPorID(Troca.IDTroca)
+                '
+                '--- DELETE ITEMS/PRODUTOS DA TROCA
+                Try
+                    '
+                    For Each it In lstItensTroca
+                        ItemBLL.ExcluirItem(it, TransacaoItemBLL.EnumMovimento.ENTRADA, ObjDB)
+                    Next
+                    '
+                Catch ex As Exception
+                    '
+                    ObjDB.RollBackTransaction()
+                    Throw ex
+                    Return False
+                    '
+                End Try
+                '
+                '--- DELETE TROCA
+                tBLL.DeletaTrocaPorID(Troca.IDTroca, ObjDB)
+                '
             End If
             '
         Catch ex As Exception
@@ -472,7 +514,7 @@ Public Class VendaBLL
     '--------------------------------------------------------------------------------------------
     ' VERIFICA AS LIGACOES ANTES DE EXCLUIR UMA VENDA
     '--------------------------------------------------------------------------------------------
-    Private Function VerificaDeleteVenda(clV As clVenda) As Boolean
+    Private Function VerificaLiberacaoVenda(clV As clVenda, Acao As String) As Boolean
         '
         Dim myQuery As String
         Dim SQL As New SQLControl
@@ -506,7 +548,7 @@ Public Class VendaBLL
             Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
             '
             If quant > 0 Then
-                Throw New Exception("Não é possível excluir uma Venda que possui " &
+                Throw New Exception("Não é possível " & Acao & " uma Venda que possui " &
                                     "entradas/recebimentos que já foram incluídos em um caixa...")
                 Return False
             End If
@@ -544,7 +586,7 @@ Public Class VendaBLL
             Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
             '
             If quant > 0 Then
-                Throw New Exception("Não é possível excluir uma Venda que possui " &
+                Throw New Exception("Não é possível " & Acao & " uma Venda que possui " &
                                     "entradas/recebimentos que já foram incluídos em um caixa...")
                 Return False
             End If
@@ -580,8 +622,8 @@ Public Class VendaBLL
             Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
             '
             If quant > 0 Then
-                Throw New Exception("Não é possível excluir uma Venda que possui " &
-                                    "entradas/recebimentos que já foram incluídos em um caixa...")
+                Throw New Exception("Não é possível " & Acao & " uma Venda que possui " &
+                                    "saidas/pagamentos de FRETE que já foram incluídos em um caixa...")
                 Return False
             End If
             '
@@ -592,6 +634,33 @@ Public Class VendaBLL
         '
         '--- RETORNA
         Return True
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
+    ' DESBLOQUEIA UMA VENDA BLOQUEADA
+    '--------------------------------------------------------------------------------------------
+    Public Function VendaDesbloquear(myVenda As clVenda) As Boolean
+        '
+        If Not VerificaLiberacaoVenda(myVenda, "DESBLOQUEAR") Then Return False
+        '
+        Try
+            '--- altera a situacao da transacao atual
+            myVenda.IDSituacao = 2 'VENDA CONCLUÍDA
+            '
+            Dim obj As Object = AtualizaVenda_Procedure_ID(myVenda)
+            '
+            If Not IsNumeric(obj) Then
+                myVenda.IDSituacao = 3
+                Throw New Exception(obj.ToString)
+            End If
+            '
+            Return True
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
         '
     End Function
     '

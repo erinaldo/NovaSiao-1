@@ -11,7 +11,7 @@ Public Class frmVendaPrazo
     Private bindItem As New BindingSource
     Private bindParc As New BindingSource
     Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
-    Private _Filial As Integer
+    Private _IDFilial As Integer
     Private VerificaAlteracao As Boolean
     Private Taxa As Double?
     '
@@ -39,6 +39,9 @@ Public Class frmVendaPrazo
                     txtValorImpostos.ReadOnly = False
                     txtValorAcrescimos.ReadOnly = False
                     '
+                    btnExcluirVenda.Enabled = True
+                    btnDesbloquearVenda.Enabled = False
+                    '
                 Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     lblSituacao.Text = "Alterada"
                     btnFinalizar.Text = "&Finalizar"
@@ -53,6 +56,9 @@ Public Class frmVendaPrazo
                     txtValorFrete.ReadOnly = False
                     txtValorImpostos.ReadOnly = False
                     txtValorAcrescimos.ReadOnly = False
+                    '
+                    btnExcluirVenda.Enabled = True
+                    btnDesbloquearVenda.Enabled = False
                     '
                 Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     lblSituacao.Text = "Em Aberto"
@@ -69,6 +75,9 @@ Public Class frmVendaPrazo
                     txtValorImpostos.ReadOnly = False
                     txtValorAcrescimos.ReadOnly = False
                     '
+                    btnExcluirVenda.Enabled = True
+                    btnDesbloquearVenda.Enabled = False
+                    '
                 Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     lblSituacao.Text = "Bloqueada"
                     btnFinalizar.Text = "&Fechar"
@@ -84,6 +93,9 @@ Public Class frmVendaPrazo
                     txtValorImpostos.ReadOnly = True
                     txtValorAcrescimos.ReadOnly = True
                     '
+                    btnExcluirVenda.Enabled = False
+                    btnDesbloquearVenda.Enabled = True
+                    '
             End Select
         End Set
     End Property
@@ -98,7 +110,7 @@ Public Class frmVendaPrazo
             '
             VerificaAlteracao = False '--- Inibe a verificacao dos campos IDPlano
             _Venda = value
-            _Filial = _Venda.IDPessoaOrigem
+            _IDFilial = _Venda.IDPessoaOrigem
             obterItens()
             obterParcelas()
             bindItem.DataSource = _ItensList
@@ -495,7 +507,7 @@ Public Class frmVendaPrazo
     Private Sub obterItens()
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Venda.IDVenda, _Filial)
+            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Venda.IDVenda, _IDFilial)
         Catch ex As Exception
             MessageBox.Show("Um execeção ocorreu ao obter Itens da Venda:" & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -514,7 +526,7 @@ Public Class frmVendaPrazo
         '--- Abre o frmItem
         Dim newItem As New clTransacaoItem
         '
-        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _Filial, newItem)
+        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _IDFilial, newItem)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -568,7 +580,7 @@ Public Class frmVendaPrazo
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
         '
         '--- Abre o frmItem
-        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _Filial, itmAtual)
+        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _IDFilial, itmAtual)
         fitem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -712,6 +724,7 @@ Public Class frmVendaPrazo
 #Region "BOTOES DE ACAO"
     '
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
+        '
         If Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado Then
             If MessageBox.Show("ALTERAÇÕES DA VENDA NÃO SERÃO SALVAS!" & vbNewLine & vbNewLine &
                                "Se você fechar agora essa Venda," & vbNewLine &
@@ -819,6 +832,83 @@ Public Class frmVendaPrazo
         AddHandler btnImprimir.ButtonClick, AddressOf tsbButtonClick
         AddHandler btnImprimir.MouseHover, AddressOf tsbButtonClick
         '
+    End Sub
+    '
+    ' MENU ACAO INFERIOR
+    '=====================================
+    '
+    ' PROCURAR
+    Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
+        ProcuraVenda()
+    End Sub
+    '
+    ' ADICIONAR
+    Private Sub btnAdicionar_Click(sender As Object, e As EventArgs) Handles btnAdicionar.Click
+        NovaVenda()
+    End Sub
+    '
+    ' EXCLUIR
+    Private Sub btnExcluirVenda_Click(sender As Object, e As EventArgs) Handles btnExcluirVenda.Click
+        '
+        '--- Verifica bloqueio
+        If RegistroBloqueado() Then Exit Sub
+        '
+        '--- pergunta ao usuario
+        If MessageBox.Show("Você deseja realmente excluir definitivamente essa Venda?",
+                           "Excluir Venda",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question,
+                           MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
+        '
+        '--- Excluir Venda
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            If vndBLL.DeletaVendaPorID(_Venda.IDVenda, _IDFilial) Then
+                '
+                '--- fecha
+                Close()
+                MostraMenuPrincipal()
+                '
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Excluir a Venda..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    ' DESBLOQUEAR VENDA
+    Private Sub btnDesbloquearVenda_Click(sender As Object, e As EventArgs) Handles btnDesbloquearVenda.Click
+        '
+        '--- Verifica se registro esta bloqueado
+        If Sit <> FlagEstado.RegistroBloqueado Then Exit Sub
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            If vndBLL.VendaDesbloquear(_Venda) Then Sit = FlagEstado.RegistroSalvo
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Desbloquear Registro..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    ' IMPRIMIR
+    Private Sub miImprimirEtiquetas_Click(sender As Object, e As EventArgs) Handles miImprimirEtiquetas.Click
+        MessageBox.Show("Ainda não foi implementado...")
     End Sub
     '
 #End Region
@@ -1568,8 +1658,9 @@ Public Class frmVendaPrazo
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroBloqueado() As Boolean
         If Sit = FlagEstado.RegistroBloqueado Then
-            MessageBox.Show("Esse registro de Venda está BLOQUEADO para alterações..." & vbNewLine &
-                            "Não é possível adicionar produtos ou alterar algum dado!",
+            MessageBox.Show("Esse registro de Venda está BLOQUEADO para alterações..." &
+                            vbNewLine & vbNewLine &
+                            "Não é possível adicionar produtos, excluir ou alterar algum dado!",
                             "Registro Bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Information)
             RegistroBloqueado = True
         Else

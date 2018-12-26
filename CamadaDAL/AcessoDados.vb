@@ -173,7 +173,7 @@ Public Class AcessoDados
 
             Dim sqlDA As SqlDataAdapter = New SqlDataAdapter(cmd)
             '
-            Dim dtTable As DataTable = New DataTable()
+            Dim dtTable As New DataTable
             sqlDA.Fill(dtTable)
             Return dtTable
             '
@@ -408,12 +408,19 @@ Public Class AcessoDados
     '
     '--- INICIA TRANSACTION
     Public Sub BeginTransaction()
+        '
         If isTran Then Return
+        '
         If conn.State = ConnectionState.Closed Then
             conn.Open()
         End If
-        trans = conn.BeginTransaction()
+        '
+        '--- isolation READUNCOMMITED level permite fazer SELECT em NOT COMMITED TRANSACTION
+        Dim iso As IsolationLevel = IsolationLevel.ReadUncommitted
+        '
+        trans = conn.BeginTransaction(iso)
         isTran = True
+        '
     End Sub
     '
     '--- COMMIT TRANSACTION

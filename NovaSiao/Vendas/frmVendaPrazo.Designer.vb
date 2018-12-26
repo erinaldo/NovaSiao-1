@@ -26,6 +26,7 @@ Partial Class frmVendaPrazo
         Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.tabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
         Me.vtab1 = New VIBlend.WinForms.Controls.vTabPage()
         Me.dgvItens = New System.Windows.Forms.DataGridView()
@@ -41,21 +42,14 @@ Partial Class frmVendaPrazo
         Me.lblTroca = New System.Windows.Forms.Label()
         Me.btnTroca = New System.Windows.Forms.Button()
         Me.Label19 = New System.Windows.Forms.Label()
-        Me.txtVolumes = New Controles.Text_SoNumeros()
         Me.Label10 = New System.Windows.Forms.Label()
-        Me.txtFreteValor = New Controles.Text_Monetario()
         Me.Label9 = New System.Windows.Forms.Label()
         Me.Label8 = New System.Windows.Forms.Label()
-        Me.cmbIDTransportadora = New Controles.ComboBox_OnlyValues()
         Me.Label7 = New System.Windows.Forms.Label()
-        Me.cmbFreteTipo = New Controles.ComboBox_OnlyValues()
         Me.lblValorProdutos = New System.Windows.Forms.Label()
         Me.Label23 = New System.Windows.Forms.Label()
-        Me.txtValorAcrescimos = New Controles.Text_Monetario()
         Me.Label22 = New System.Windows.Forms.Label()
-        Me.txtValorImpostos = New Controles.Text_Monetario()
         Me.Label21 = New System.Windows.Forms.Label()
-        Me.txtValorFrete = New Controles.Text_Monetario()
         Me.Label20 = New System.Windows.Forms.Label()
         Me.dgvAReceber = New System.Windows.Forms.DataGridView()
         Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
@@ -73,14 +67,21 @@ Partial Class frmVendaPrazo
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.cmbVendaTipo = New Controles.ComboBox_OnlyValues()
-        Me.cmbIDPlano = New Controles.ComboBox_OnlyValues()
-        Me.cmbIDCobrancaForma = New Controles.ComboBox_OnlyValues()
         Me.ShapeContainer2 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
         Me.LineShape4 = New Microsoft.VisualBasic.PowerPacks.LineShape()
         Me.LineShape3 = New Microsoft.VisualBasic.PowerPacks.LineShape()
         Me.LineShape2 = New Microsoft.VisualBasic.PowerPacks.LineShape()
         Me.LineShape1 = New Microsoft.VisualBasic.PowerPacks.LineShape()
+        Me.txtVolumes = New Controles.Text_SoNumeros()
+        Me.txtFreteValor = New Controles.Text_Monetario()
+        Me.cmbIDTransportadora = New Controles.ComboBox_OnlyValues()
+        Me.cmbFreteTipo = New Controles.ComboBox_OnlyValues()
+        Me.txtValorAcrescimos = New Controles.Text_Monetario()
+        Me.txtValorImpostos = New Controles.Text_Monetario()
+        Me.txtValorFrete = New Controles.Text_Monetario()
+        Me.cmbVendaTipo = New Controles.ComboBox_OnlyValues()
+        Me.cmbIDPlano = New Controles.ComboBox_OnlyValues()
+        Me.cmbIDCobrancaForma = New Controles.ComboBox_OnlyValues()
         Me.vtab3 = New VIBlend.WinForms.Controls.vTabPage()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.dgvVendaNotas = New System.Windows.Forms.DataGridView()
@@ -121,9 +122,23 @@ Partial Class frmVendaPrazo
         Me.btnAdicionar = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnExcluirVenda = New System.Windows.Forms.ToolStripButton()
+        Me.btnDesbloquearVenda = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnImprimir = New System.Windows.Forms.ToolStripSplitButton()
         Me.miImprimirEtiquetas = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn5 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn7 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn8 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn9 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn10 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn11 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn12 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn13 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -326,21 +341,14 @@ Partial Class frmVendaPrazo
         Me.vtab2.Controls.Add(Me.lblTroca)
         Me.vtab2.Controls.Add(Me.btnTroca)
         Me.vtab2.Controls.Add(Me.Label19)
-        Me.vtab2.Controls.Add(Me.txtVolumes)
         Me.vtab2.Controls.Add(Me.Label10)
-        Me.vtab2.Controls.Add(Me.txtFreteValor)
         Me.vtab2.Controls.Add(Me.Label9)
         Me.vtab2.Controls.Add(Me.Label8)
-        Me.vtab2.Controls.Add(Me.cmbIDTransportadora)
         Me.vtab2.Controls.Add(Me.Label7)
-        Me.vtab2.Controls.Add(Me.cmbFreteTipo)
         Me.vtab2.Controls.Add(Me.lblValorProdutos)
         Me.vtab2.Controls.Add(Me.Label23)
-        Me.vtab2.Controls.Add(Me.txtValorAcrescimos)
         Me.vtab2.Controls.Add(Me.Label22)
-        Me.vtab2.Controls.Add(Me.txtValorImpostos)
         Me.vtab2.Controls.Add(Me.Label21)
-        Me.vtab2.Controls.Add(Me.txtValorFrete)
         Me.vtab2.Controls.Add(Me.Label20)
         Me.vtab2.Controls.Add(Me.dgvAReceber)
         Me.vtab2.Controls.Add(Me.txtObservacao)
@@ -353,10 +361,17 @@ Partial Class frmVendaPrazo
         Me.vtab2.Controls.Add(Me.Label5)
         Me.vtab2.Controls.Add(Me.Label6)
         Me.vtab2.Controls.Add(Me.Label4)
+        Me.vtab2.Controls.Add(Me.ShapeContainer2)
+        Me.vtab2.Controls.Add(Me.txtVolumes)
+        Me.vtab2.Controls.Add(Me.txtFreteValor)
+        Me.vtab2.Controls.Add(Me.cmbIDTransportadora)
+        Me.vtab2.Controls.Add(Me.cmbFreteTipo)
+        Me.vtab2.Controls.Add(Me.txtValorAcrescimos)
+        Me.vtab2.Controls.Add(Me.txtValorImpostos)
+        Me.vtab2.Controls.Add(Me.txtValorFrete)
         Me.vtab2.Controls.Add(Me.cmbVendaTipo)
         Me.vtab2.Controls.Add(Me.cmbIDPlano)
         Me.vtab2.Controls.Add(Me.cmbIDCobrancaForma)
-        Me.vtab2.Controls.Add(Me.ShapeContainer2)
         Me.vtab2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.vtab2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.vtab2.Location = New System.Drawing.Point(0, 38)
@@ -411,15 +426,6 @@ Partial Class frmVendaPrazo
         Me.Label19.TabIndex = 28
         Me.Label19.Text = "Frete:"
         '
-        'txtVolumes
-        '
-        Me.txtVolumes.Inteiro = True
-        Me.txtVolumes.Location = New System.Drawing.Point(375, 294)
-        Me.txtVolumes.Name = "txtVolumes"
-        Me.txtVolumes.Size = New System.Drawing.Size(49, 27)
-        Me.txtVolumes.TabIndex = 7
-        Me.txtVolumes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
         'Label10
         '
         Me.Label10.AutoSize = True
@@ -429,14 +435,6 @@ Partial Class frmVendaPrazo
         Me.Label10.Size = New System.Drawing.Size(64, 19)
         Me.Label10.TabIndex = 27
         Me.Label10.Text = "Volumes"
-        '
-        'txtFreteValor
-        '
-        Me.txtFreteValor.Location = New System.Drawing.Point(177, 291)
-        Me.txtFreteValor.Name = "txtFreteValor"
-        Me.txtFreteValor.Size = New System.Drawing.Size(112, 27)
-        Me.txtFreteValor.TabIndex = 6
-        Me.txtFreteValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label9
         '
@@ -458,17 +456,6 @@ Partial Class frmVendaPrazo
         Me.Label8.TabIndex = 23
         Me.Label8.Text = "Transportadora"
         '
-        'cmbIDTransportadora
-        '
-        Me.cmbIDTransportadora.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDTransportadora.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDTransportadora.FormattingEnabled = True
-        Me.cmbIDTransportadora.Location = New System.Drawing.Point(177, 258)
-        Me.cmbIDTransportadora.Name = "cmbIDTransportadora"
-        Me.cmbIDTransportadora.RestrictContentToListItems = True
-        Me.cmbIDTransportadora.Size = New System.Drawing.Size(247, 27)
-        Me.cmbIDTransportadora.TabIndex = 5
-        '
         'Label7
         '
         Me.Label7.AutoSize = True
@@ -478,17 +465,6 @@ Partial Class frmVendaPrazo
         Me.Label7.Size = New System.Drawing.Size(94, 19)
         Me.Label7.TabIndex = 21
         Me.Label7.Text = "Tipo de Frete"
-        '
-        'cmbFreteTipo
-        '
-        Me.cmbFreteTipo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbFreteTipo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbFreteTipo.FormattingEnabled = True
-        Me.cmbFreteTipo.Location = New System.Drawing.Point(177, 225)
-        Me.cmbFreteTipo.Name = "cmbFreteTipo"
-        Me.cmbFreteTipo.RestrictContentToListItems = True
-        Me.cmbFreteTipo.Size = New System.Drawing.Size(112, 27)
-        Me.cmbFreteTipo.TabIndex = 4
         '
         'lblValorProdutos
         '
@@ -511,14 +487,6 @@ Partial Class frmVendaPrazo
         Me.Label23.TabIndex = 19
         Me.Label23.Text = "Valor dos Produtos"
         '
-        'txtValorAcrescimos
-        '
-        Me.txtValorAcrescimos.Location = New System.Drawing.Point(177, 148)
-        Me.txtValorAcrescimos.Name = "txtValorAcrescimos"
-        Me.txtValorAcrescimos.Size = New System.Drawing.Size(112, 27)
-        Me.txtValorAcrescimos.TabIndex = 3
-        Me.txtValorAcrescimos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
         'Label22
         '
         Me.Label22.AutoSize = True
@@ -529,14 +497,6 @@ Partial Class frmVendaPrazo
         Me.Label22.TabIndex = 19
         Me.Label22.Text = "Valores Adicionais"
         '
-        'txtValorImpostos
-        '
-        Me.txtValorImpostos.Location = New System.Drawing.Point(177, 115)
-        Me.txtValorImpostos.Name = "txtValorImpostos"
-        Me.txtValorImpostos.Size = New System.Drawing.Size(112, 27)
-        Me.txtValorImpostos.TabIndex = 2
-        Me.txtValorImpostos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
-        '
         'Label21
         '
         Me.Label21.AutoSize = True
@@ -546,14 +506,6 @@ Partial Class frmVendaPrazo
         Me.Label21.Size = New System.Drawing.Size(133, 19)
         Me.Label21.TabIndex = 19
         Me.Label21.Text = "Impostos Cobrados"
-        '
-        'txtValorFrete
-        '
-        Me.txtValorFrete.Location = New System.Drawing.Point(177, 82)
-        Me.txtValorFrete.Name = "txtValorFrete"
-        Me.txtValorFrete.Size = New System.Drawing.Size(112, 27)
-        Me.txtValorFrete.TabIndex = 1
-        Me.txtValorFrete.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label20
         '
@@ -741,39 +693,6 @@ Partial Class frmVendaPrazo
         Me.Label4.TabIndex = 1
         Me.Label4.Text = "Forma de Cobrança"
         '
-        'cmbVendaTipo
-        '
-        Me.cmbVendaTipo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbVendaTipo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbVendaTipo.FormattingEnabled = True
-        Me.cmbVendaTipo.Location = New System.Drawing.Point(743, 48)
-        Me.cmbVendaTipo.Name = "cmbVendaTipo"
-        Me.cmbVendaTipo.RestrictContentToListItems = True
-        Me.cmbVendaTipo.Size = New System.Drawing.Size(181, 27)
-        Me.cmbVendaTipo.TabIndex = 9
-        '
-        'cmbIDPlano
-        '
-        Me.cmbIDPlano.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDPlano.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDPlano.FormattingEnabled = True
-        Me.cmbIDPlano.Location = New System.Drawing.Point(743, 115)
-        Me.cmbIDPlano.Name = "cmbIDPlano"
-        Me.cmbIDPlano.RestrictContentToListItems = True
-        Me.cmbIDPlano.Size = New System.Drawing.Size(234, 27)
-        Me.cmbIDPlano.TabIndex = 11
-        '
-        'cmbIDCobrancaForma
-        '
-        Me.cmbIDCobrancaForma.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDCobrancaForma.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDCobrancaForma.FormattingEnabled = True
-        Me.cmbIDCobrancaForma.Location = New System.Drawing.Point(743, 82)
-        Me.cmbIDCobrancaForma.Name = "cmbIDCobrancaForma"
-        Me.cmbIDCobrancaForma.RestrictContentToListItems = True
-        Me.cmbIDCobrancaForma.Size = New System.Drawing.Size(181, 27)
-        Me.cmbIDCobrancaForma.TabIndex = 10
-        '
         'ShapeContainer2
         '
         Me.ShapeContainer2.Location = New System.Drawing.Point(4, 4)
@@ -823,6 +742,102 @@ Partial Class frmVendaPrazo
         Me.LineShape1.X2 = 990
         Me.LineShape1.Y1 = 26
         Me.LineShape1.Y2 = 26
+        '
+        'txtVolumes
+        '
+        Me.txtVolumes.Inteiro = True
+        Me.txtVolumes.Location = New System.Drawing.Point(375, 294)
+        Me.txtVolumes.Name = "txtVolumes"
+        Me.txtVolumes.Size = New System.Drawing.Size(49, 27)
+        Me.txtVolumes.TabIndex = 7
+        Me.txtVolumes.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtFreteValor
+        '
+        Me.txtFreteValor.Location = New System.Drawing.Point(177, 291)
+        Me.txtFreteValor.Name = "txtFreteValor"
+        Me.txtFreteValor.Size = New System.Drawing.Size(112, 27)
+        Me.txtFreteValor.TabIndex = 6
+        Me.txtFreteValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'cmbIDTransportadora
+        '
+        Me.cmbIDTransportadora.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbIDTransportadora.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbIDTransportadora.FormattingEnabled = True
+        Me.cmbIDTransportadora.Location = New System.Drawing.Point(177, 258)
+        Me.cmbIDTransportadora.Name = "cmbIDTransportadora"
+        Me.cmbIDTransportadora.RestrictContentToListItems = True
+        Me.cmbIDTransportadora.Size = New System.Drawing.Size(247, 27)
+        Me.cmbIDTransportadora.TabIndex = 5
+        '
+        'cmbFreteTipo
+        '
+        Me.cmbFreteTipo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbFreteTipo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbFreteTipo.FormattingEnabled = True
+        Me.cmbFreteTipo.Location = New System.Drawing.Point(177, 225)
+        Me.cmbFreteTipo.Name = "cmbFreteTipo"
+        Me.cmbFreteTipo.RestrictContentToListItems = True
+        Me.cmbFreteTipo.Size = New System.Drawing.Size(112, 27)
+        Me.cmbFreteTipo.TabIndex = 4
+        '
+        'txtValorAcrescimos
+        '
+        Me.txtValorAcrescimos.Location = New System.Drawing.Point(177, 148)
+        Me.txtValorAcrescimos.Name = "txtValorAcrescimos"
+        Me.txtValorAcrescimos.Size = New System.Drawing.Size(112, 27)
+        Me.txtValorAcrescimos.TabIndex = 3
+        Me.txtValorAcrescimos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtValorImpostos
+        '
+        Me.txtValorImpostos.Location = New System.Drawing.Point(177, 115)
+        Me.txtValorImpostos.Name = "txtValorImpostos"
+        Me.txtValorImpostos.Size = New System.Drawing.Size(112, 27)
+        Me.txtValorImpostos.TabIndex = 2
+        Me.txtValorImpostos.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'txtValorFrete
+        '
+        Me.txtValorFrete.Location = New System.Drawing.Point(177, 82)
+        Me.txtValorFrete.Name = "txtValorFrete"
+        Me.txtValorFrete.Size = New System.Drawing.Size(112, 27)
+        Me.txtValorFrete.TabIndex = 1
+        Me.txtValorFrete.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        '
+        'cmbVendaTipo
+        '
+        Me.cmbVendaTipo.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbVendaTipo.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbVendaTipo.FormattingEnabled = True
+        Me.cmbVendaTipo.Location = New System.Drawing.Point(743, 48)
+        Me.cmbVendaTipo.Name = "cmbVendaTipo"
+        Me.cmbVendaTipo.RestrictContentToListItems = True
+        Me.cmbVendaTipo.Size = New System.Drawing.Size(181, 27)
+        Me.cmbVendaTipo.TabIndex = 9
+        '
+        'cmbIDPlano
+        '
+        Me.cmbIDPlano.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbIDPlano.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbIDPlano.FormattingEnabled = True
+        Me.cmbIDPlano.Location = New System.Drawing.Point(743, 115)
+        Me.cmbIDPlano.Name = "cmbIDPlano"
+        Me.cmbIDPlano.RestrictContentToListItems = True
+        Me.cmbIDPlano.Size = New System.Drawing.Size(234, 27)
+        Me.cmbIDPlano.TabIndex = 11
+        '
+        'cmbIDCobrancaForma
+        '
+        Me.cmbIDCobrancaForma.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbIDCobrancaForma.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbIDCobrancaForma.FormattingEnabled = True
+        Me.cmbIDCobrancaForma.Location = New System.Drawing.Point(743, 82)
+        Me.cmbIDCobrancaForma.Name = "cmbIDCobrancaForma"
+        Me.cmbIDCobrancaForma.RestrictContentToListItems = True
+        Me.cmbIDCobrancaForma.Size = New System.Drawing.Size(181, 27)
+        Me.cmbIDCobrancaForma.TabIndex = 10
         '
         'vtab3
         '
@@ -1243,7 +1258,7 @@ Partial Class frmVendaPrazo
         Me.tspMenuAcao.AutoSize = False
         Me.tspMenuAcao.BackColor = System.Drawing.Color.Transparent
         Me.tspMenuAcao.Dock = System.Windows.Forms.DockStyle.None
-        Me.tspMenuAcao.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnProcurar, Me.btnAdicionar, Me.ToolStripSeparator2, Me.btnExcluirVenda, Me.ToolStripSeparator1, Me.btnImprimir})
+        Me.tspMenuAcao.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnProcurar, Me.btnAdicionar, Me.ToolStripSeparator2, Me.btnExcluirVenda, Me.btnDesbloquearVenda, Me.ToolStripSeparator1, Me.btnImprimir})
         Me.tspMenuAcao.Location = New System.Drawing.Point(9, 613)
         Me.tspMenuAcao.Name = "tspMenuAcao"
         Me.tspMenuAcao.Size = New System.Drawing.Size(443, 47)
@@ -1288,6 +1303,16 @@ Partial Class frmVendaPrazo
         Me.btnExcluirVenda.Text = "Excluir Venda"
         Me.btnExcluirVenda.ToolTipText = "Excluir a Venda"
         '
+        'btnDesbloquearVenda
+        '
+        Me.btnDesbloquearVenda.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnDesbloquearVenda.Image = Global.NovaSiao.My.Resources.Resources.refresh1
+        Me.btnDesbloquearVenda.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnDesbloquearVenda.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnDesbloquearVenda.Name = "btnDesbloquearVenda"
+        Me.btnDesbloquearVenda.Size = New System.Drawing.Size(36, 44)
+        Me.btnDesbloquearVenda.Text = "Desbloquear Venda"
+        '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
@@ -1312,6 +1337,89 @@ Partial Class frmVendaPrazo
         Me.miImprimirEtiquetas.Name = "miImprimirEtiquetas"
         Me.miImprimirEtiquetas.Size = New System.Drawing.Size(172, 22)
         Me.miImprimirEtiquetas.Text = "Relatório de Venda"
+        '
+        'DataGridViewTextBoxColumn1
+        '
+        Me.DataGridViewTextBoxColumn1.Frozen = True
+        Me.DataGridViewTextBoxColumn1.HeaderText = "IDItem"
+        Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
+        Me.DataGridViewTextBoxColumn1.Visible = False
+        '
+        'DataGridViewTextBoxColumn2
+        '
+        Me.DataGridViewTextBoxColumn2.Frozen = True
+        Me.DataGridViewTextBoxColumn2.HeaderText = "Reg."
+        Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
+        Me.DataGridViewTextBoxColumn2.Width = 70
+        '
+        'DataGridViewTextBoxColumn3
+        '
+        Me.DataGridViewTextBoxColumn3.Frozen = True
+        Me.DataGridViewTextBoxColumn3.HeaderText = "Produto"
+        Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
+        Me.DataGridViewTextBoxColumn3.Width = 430
+        '
+        'DataGridViewTextBoxColumn4
+        '
+        Me.DataGridViewTextBoxColumn4.Frozen = True
+        Me.DataGridViewTextBoxColumn4.HeaderText = "Qtde"
+        Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
+        Me.DataGridViewTextBoxColumn4.Width = 70
+        '
+        'DataGridViewTextBoxColumn5
+        '
+        Me.DataGridViewTextBoxColumn5.Frozen = True
+        Me.DataGridViewTextBoxColumn5.HeaderText = "Preço"
+        Me.DataGridViewTextBoxColumn5.Name = "DataGridViewTextBoxColumn5"
+        '
+        'DataGridViewTextBoxColumn6
+        '
+        Me.DataGridViewTextBoxColumn6.Frozen = True
+        Me.DataGridViewTextBoxColumn6.HeaderText = "SubTotal"
+        Me.DataGridViewTextBoxColumn6.Name = "DataGridViewTextBoxColumn6"
+        '
+        'DataGridViewTextBoxColumn7
+        '
+        Me.DataGridViewTextBoxColumn7.HeaderText = "Desc."
+        Me.DataGridViewTextBoxColumn7.Name = "DataGridViewTextBoxColumn7"
+        Me.DataGridViewTextBoxColumn7.Width = 80
+        '
+        'DataGridViewTextBoxColumn8
+        '
+        Me.DataGridViewTextBoxColumn8.HeaderText = "Total"
+        Me.DataGridViewTextBoxColumn8.Name = "DataGridViewTextBoxColumn8"
+        '
+        'DataGridViewTextBoxColumn9
+        '
+        Me.DataGridViewTextBoxColumn9.HeaderText = "IDAReceber"
+        Me.DataGridViewTextBoxColumn9.Name = "DataGridViewTextBoxColumn9"
+        Me.DataGridViewTextBoxColumn9.Visible = False
+        '
+        'DataGridViewTextBoxColumn10
+        '
+        Me.DataGridViewTextBoxColumn10.HeaderText = "Reg."
+        Me.DataGridViewTextBoxColumn10.Name = "DataGridViewTextBoxColumn10"
+        Me.DataGridViewTextBoxColumn10.Width = 70
+        '
+        'DataGridViewTextBoxColumn11
+        '
+        Me.DataGridViewTextBoxColumn11.HeaderText = "Vencimento"
+        Me.DataGridViewTextBoxColumn11.Name = "DataGridViewTextBoxColumn11"
+        '
+        'DataGridViewTextBoxColumn12
+        '
+        Me.DataGridViewTextBoxColumn12.HeaderText = "Perm."
+        Me.DataGridViewTextBoxColumn12.Name = "DataGridViewTextBoxColumn12"
+        Me.DataGridViewTextBoxColumn12.Width = 90
+        '
+        'DataGridViewTextBoxColumn13
+        '
+        DataGridViewCellStyle8.Format = "C2"
+        DataGridViewCellStyle8.NullValue = "0"
+        Me.DataGridViewTextBoxColumn13.DefaultCellStyle = DataGridViewCellStyle8
+        Me.DataGridViewTextBoxColumn13.HeaderText = "Valor"
+        Me.DataGridViewTextBoxColumn13.Name = "DataGridViewTextBoxColumn13"
+        Me.DataGridViewTextBoxColumn13.Width = 120
         '
         'frmVendaPrazo
         '
@@ -1460,4 +1568,18 @@ Partial Class frmVendaPrazo
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents btnImprimir As ToolStripSplitButton
     Friend WithEvents miImprimirEtiquetas As ToolStripMenuItem
+    Friend WithEvents DataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn2 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn3 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn4 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn5 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn6 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn7 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn8 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn9 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn10 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn11 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn12 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn13 As DataGridViewTextBoxColumn
+    Friend WithEvents btnDesbloquearVenda As ToolStripButton
 End Class

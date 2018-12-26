@@ -49,7 +49,7 @@ Public Class MovimentacaoBLL
         Dim myQuery As String = "SELECT * FROM qryMovimentacao " &
                                 "WHERE Origem = 2 AND " &
                                 "IDOrigem IN " &
-                                "(SELECT IDAReceberParcela FROM tblAReceberParcela WHERE IDAReceber = @IDAReceber))"
+                                "(SELECT IDAReceberParcela FROM tblAReceberParcela WHERE IDAReceber = @IDAReceber)"
         '
         Try
             '

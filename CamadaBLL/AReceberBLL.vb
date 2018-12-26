@@ -147,6 +147,7 @@ Public Class AReceberBLL
         '
         Dim db As AcessoDados = If(mydb, New AcessoDados)
         '
+        db.LimparParametros()
         db.AdicionarParametros("@IDTransacao", IDTransacao)
         '
         Dim myQuery As String = "DELETE tblAReceber WHERE Origem = 1 AND IDOrigem = @IDTransacao"
