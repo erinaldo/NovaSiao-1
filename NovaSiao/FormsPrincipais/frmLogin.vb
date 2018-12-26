@@ -2,6 +2,7 @@
 Imports System.IO
 Imports System.Xml
 Imports CamadaBLL
+'
 Public Class frmLogin
     Private tentativa As Byte
     Private Logado As Boolean
@@ -52,7 +53,8 @@ Public Class frmLogin
             If SQL.HasException Then
                 Cursor = Cursors.Arrow
                 MessageBox.Show("Não é possível conectar ao Banco de Dados SQL..." & vbNewLine &
-                                "Verique a conexão com o servidor e tente novamente.",
+                                "Verique a conexão com o servidor e tente novamente..." & vbNewLine &
+                                SQL.Exception,
                                 "Erro na Conexão", MessageBoxButtons.OK, MessageBoxIcon.Stop)
                 Logado = False
                 Me.Close()

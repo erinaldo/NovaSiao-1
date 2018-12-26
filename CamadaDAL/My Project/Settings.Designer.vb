@@ -57,8 +57,8 @@ Namespace My
         <Global.System.Configuration.ApplicationScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
          Global.System.Configuration.SpecialSettingAttribute(Global.System.Configuration.SpecialSetting.ConnectionString),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=Tru"& _ 
-            "e;User ID=sa;Password=123456")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=T"& _ 
+            "rue;User ID=sa;Password=123456")>  _
         Public ReadOnly Property NovaSiaoConnectionString() As String
             Get
                 Return CType(Me("NovaSiaoConnectionString"),String)

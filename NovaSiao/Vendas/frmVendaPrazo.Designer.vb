@@ -116,6 +116,14 @@ Partial Class frmVendaPrazo
         Me.Label18 = New System.Windows.Forms.Label()
         Me.lblFilial = New System.Windows.Forms.Label()
         Me.VPanel1 = New VIBlend.WinForms.Controls.vPanel()
+        Me.tspMenuAcao = New System.Windows.Forms.ToolStrip()
+        Me.btnProcurar = New System.Windows.Forms.ToolStripButton()
+        Me.btnAdicionar = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnExcluirVenda = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnImprimir = New System.Windows.Forms.ToolStripSplitButton()
+        Me.miImprimirEtiquetas = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -126,6 +134,7 @@ Partial Class frmVendaPrazo
         CType(Me.dgvVendaNotas, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.VPanel1.Content.SuspendLayout()
         Me.VPanel1.SuspendLayout()
+        Me.tspMenuAcao.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -1229,10 +1238,86 @@ Partial Class frmVendaPrazo
         Me.VPanel1.UsePanelBorderColor = True
         Me.VPanel1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
+        'tspMenuAcao
+        '
+        Me.tspMenuAcao.AutoSize = False
+        Me.tspMenuAcao.BackColor = System.Drawing.Color.Transparent
+        Me.tspMenuAcao.Dock = System.Windows.Forms.DockStyle.None
+        Me.tspMenuAcao.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnProcurar, Me.btnAdicionar, Me.ToolStripSeparator2, Me.btnExcluirVenda, Me.ToolStripSeparator1, Me.btnImprimir})
+        Me.tspMenuAcao.Location = New System.Drawing.Point(9, 613)
+        Me.tspMenuAcao.Name = "tspMenuAcao"
+        Me.tspMenuAcao.Size = New System.Drawing.Size(443, 47)
+        Me.tspMenuAcao.TabIndex = 16
+        Me.tspMenuAcao.Text = "ToolStrip1"
+        '
+        'btnProcurar
+        '
+        Me.btnProcurar.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnProcurar.Image = Global.NovaSiao.My.Resources.Resources.search1
+        Me.btnProcurar.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnProcurar.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnProcurar.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
+        Me.btnProcurar.Name = "btnProcurar"
+        Me.btnProcurar.Size = New System.Drawing.Size(36, 44)
+        Me.btnProcurar.Text = "Procurar Venda"
+        '
+        'btnAdicionar
+        '
+        Me.btnAdicionar.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnAdicionar.Image = Global.NovaSiao.My.Resources.Resources.add_32x32
+        Me.btnAdicionar.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnAdicionar.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnAdicionar.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
+        Me.btnAdicionar.Name = "btnAdicionar"
+        Me.btnAdicionar.Size = New System.Drawing.Size(36, 44)
+        Me.btnAdicionar.Text = "Adicionar Nova Venda"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 47)
+        '
+        'btnExcluirVenda
+        '
+        Me.btnExcluirVenda.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnExcluirVenda.Image = Global.NovaSiao.My.Resources.Resources.Lixeira_PEQ
+        Me.btnExcluirVenda.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnExcluirVenda.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnExcluirVenda.Name = "btnExcluirVenda"
+        Me.btnExcluirVenda.Size = New System.Drawing.Size(45, 44)
+        Me.btnExcluirVenda.Text = "Excluir Venda"
+        Me.btnExcluirVenda.ToolTipText = "Excluir a Venda"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 47)
+        '
+        'btnImprimir
+        '
+        Me.btnImprimir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnImprimir.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miImprimirEtiquetas})
+        Me.btnImprimir.Image = Global.NovaSiao.My.Resources.Resources.Imprimir
+        Me.btnImprimir.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnImprimir.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnImprimir.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
+        Me.btnImprimir.Name = "btnImprimir"
+        Me.btnImprimir.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never
+        Me.btnImprimir.Size = New System.Drawing.Size(56, 44)
+        Me.btnImprimir.Text = "Imprimir"
+        '
+        'miImprimirEtiquetas
+        '
+        Me.miImprimirEtiquetas.Image = Global.NovaSiao.My.Resources.Resources.print
+        Me.miImprimirEtiquetas.Name = "miImprimirEtiquetas"
+        Me.miImprimirEtiquetas.Size = New System.Drawing.Size(172, 22)
+        Me.miImprimirEtiquetas.Text = "Relatório de Venda"
+        '
         'frmVendaPrazo
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(1049, 667)
+        Me.Controls.Add(Me.tspMenuAcao)
         Me.Controls.Add(Me.VPanel1)
         Me.Controls.Add(Me.btnFinalizar)
         Me.Controls.Add(Me.Label13)
@@ -1256,6 +1341,7 @@ Partial Class frmVendaPrazo
         Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Controls.SetChildIndex(Me.btnFinalizar, 0)
         Me.Controls.SetChildIndex(Me.VPanel1, 0)
+        Me.Controls.SetChildIndex(Me.tspMenuAcao, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.tabPrincipal.ResumeLayout(False)
@@ -1269,6 +1355,8 @@ Partial Class frmVendaPrazo
         CType(Me.dgvVendaNotas, System.ComponentModel.ISupportInitialize).EndInit()
         Me.VPanel1.Content.ResumeLayout(False)
         Me.VPanel1.ResumeLayout(False)
+        Me.tspMenuAcao.ResumeLayout(False)
+        Me.tspMenuAcao.PerformLayout()
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1364,4 +1452,12 @@ Partial Class frmVendaPrazo
     Friend WithEvents btnTroca As Button
     Friend WithEvents lblTroca As Label
     Friend WithEvents VPanel1 As VIBlend.WinForms.Controls.vPanel
+    Friend WithEvents tspMenuAcao As ToolStrip
+    Friend WithEvents btnProcurar As ToolStripButton
+    Friend WithEvents btnAdicionar As ToolStripButton
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents btnExcluirVenda As ToolStripButton
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents btnImprimir As ToolStripSplitButton
+    Friend WithEvents miImprimirEtiquetas As ToolStripMenuItem
 End Class

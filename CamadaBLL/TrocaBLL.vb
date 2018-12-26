@@ -199,9 +199,10 @@ Public Class TrocaBLL
     '--------------------------------------------------------------------------------------------
     ' DELETE TROCA POR IDTROCA
     '--------------------------------------------------------------------------------------------
-    Public Function DeletaTrocaPorID(ByVal IDTroca As Integer) As Object
+    Public Function DeletaTrocaPorID(ByVal IDTroca As Integer,
+                                     Optional myDB As Object = Nothing) As Object
         '
-        Dim db As New AcessoDados
+        Dim db As AcessoDados = If(myDB, New AcessoDados)
         '
         db.LimparParametros()
         db.AdicionarParametros("@IDTroca", IDTroca)

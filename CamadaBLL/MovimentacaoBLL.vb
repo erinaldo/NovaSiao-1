@@ -35,6 +35,36 @@ Public Class MovimentacaoBLL
     End Function
     '
     '===================================================================================================
+    ' OBTER LISTA DE TODAS MOVIMENTACOES (ENTRADA) DE UM ARECEBER
+    '===================================================================================================
+    Public Function Movimentacao_GET_PorIDAReceber(IDAReceber As Integer) As List(Of clMovimentacao)
+        Dim db As New AcessoDados
+        '
+        '--- limpa os paramentros
+        db.LimparParametros()
+        '
+        '--- adiciona os parametros
+        db.AdicionarParametros("@IDAReceber", IDAReceber)
+        '
+        Dim myQuery As String = "SELECT * FROM qryMovimentacao " &
+                                "WHERE Origem = 2 AND " &
+                                "IDOrigem IN " &
+                                "(SELECT IDAReceberParcela FROM tblAReceberParcela WHERE IDAReceber = @IDAReceber))"
+        '
+        Try
+            '
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
+            '
+            '--- RETURN
+            Return Convert_DT_ListOF_Movimentacao(dt)
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
     ' SALVA NOVA ENTRADA/PAGAMENTO NO BD
     '===================================================================================================
     Public Function Movimentacao_Inserir(Movimentacao As clMovimentacao) As Integer
@@ -82,6 +112,35 @@ Public Class MovimentacaoBLL
             '
         Catch ex As Exception
             Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' EXCLUI TODOS OS REGISTROS DE MOVIMENTACAO PELO CLMOVIMENTACAO
+    '===================================================================================================
+    Public Function Movimentacao_Excluir(clMov As clMovimentacao,
+                                         Optional myDB As Object = Nothing) As Boolean
+        '
+        If Not IsNothing(clMov.IDCaixa) Then
+            Throw New Exception("Não é possível excluir movimentacões que foram incluídas no Caixa...")
+            Return False
+        End If
+        ' 
+        Dim db As AcessoDados = If(myDB, New AcessoDados)
+        '
+        db.LimparParametros()
+        db.AdicionarParametros("@IDMovimentacao", clMov.IDMovimentacao)
+        '
+        Dim myQuery As String = "DELETE FROM tblCaixaMovimentacao WHERE IDMovimentacao = @IDMovimentacao"
+        Try
+            '
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            Return True
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
         End Try
         '
     End Function

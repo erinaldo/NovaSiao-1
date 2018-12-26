@@ -146,6 +146,9 @@ Public Class frmVendaVista
         ' Add any initialization after the InitializeComponent() call.
         propVenda = myVenda
         '
+        ' Add Handler Menu Acao
+        MenuOpen_AdHandler()
+        '
     End Sub
     '
 #End Region ' / LOAD
@@ -660,6 +663,20 @@ Public Class frmVendaVista
         '
         '--- Faz a limpeza
         Limpa_Pagamentos()
+        '
+    End Sub
+    '
+    '--- CONTROLE DO MENU ACAO INFERIOR
+    Private Sub tsbButtonClick(sender As Object, e As EventArgs)
+        '
+        DirectCast(sender, ToolStripSplitButton).ShowDropDown()
+        '
+    End Sub
+    '
+    Private Sub MenuOpen_AdHandler()
+        '
+        AddHandler btnImprimir.ButtonClick, AddressOf tsbButtonClick
+        AddHandler btnImprimir.MouseHover, AddressOf tsbButtonClick
         '
     End Sub
     '

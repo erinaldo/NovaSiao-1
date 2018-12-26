@@ -11,6 +11,8 @@ Public Class AcessoDados
     Private trans As SqlTransaction
     Public ParamList As New List(Of SqlParameter)
     '
+#Region "GET CONNECTION | OPEN | CLOSE"
+    '
     '-------------------------------------------------------------------------------------------------------
     'SUB NEW
     '-------------------------------------------------------------------------------------------------------
@@ -110,6 +112,10 @@ Public Class AcessoDados
     Public Sub AdicionarParametros(nomeParametro As String, valorParametro As Object)
         ParamList.Add(New SqlParameter(nomeParametro, valorParametro))
     End Sub
+    '
+#End Region '/ GET CONNECTION | OPEN | CLOSE
+    '
+#Region "COMMANDS QUERY | INSERT | UPDATE | DELETE"
     '
     '-------------------------------------------------------------------------------------------------------
     '--- EXECUTAR INSERT, UPDATE, DELETE
@@ -392,6 +398,10 @@ Public Class AcessoDados
         '
     End Function
     '
+#End Region '/ COMMANDS QUERY | INSERT | UPDATE | DELETE
+    '
+#Region "TRANSACTION"
+    '
     '=============================================================
     ' SQL TRANSACTIONS
     '=============================================================
@@ -423,5 +433,7 @@ Public Class AcessoDados
         trans = Nothing
         isTran = False
     End Sub
+    '
+#End Region '/ TRANSACTION
     '
 End Class

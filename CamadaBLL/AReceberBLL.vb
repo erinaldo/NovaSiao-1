@@ -142,41 +142,24 @@ Public Class AReceberBLL
     '===================================================================================================
     ' EXCLUIR TODOS ARECEBER E PARCELAS DE UMA TRANSACAO PELO ID
     '===================================================================================================
-    Public Function Excluir_AReceber_Transacao(IDTransacao As Integer) As Boolean
-        Dim SQL As New SQLControl
+    Public Function Excluir_AReceber_Transacao(IDTransacao As Integer,
+                                               Optional mydb As Object = Nothing) As Boolean
         '
-        SQL.AddParam("@IDTransacao", IDTransacao)
+        Dim db As AcessoDados = If(mydb, New AcessoDados)
+        '
+        db.AdicionarParametros("@IDTransacao", IDTransacao)
         '
         Dim myQuery As String = "DELETE tblAReceber WHERE Origem = 1 AND IDOrigem = @IDTransacao"
         '
         Try
-            SQL.ExecQuery(myQuery)
             '
-            If SQL.HasException Then
-                Throw New Exception(SQL.Exception)
-            End If
-            '
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
             Return True
             '
         Catch ex As Exception
             Throw ex
         End Try
         '
-        'Dim db As New AcessoDados
-        ''
-        ''--- Limpa os paramentros
-        'db.LimparParametros()
-        ''
-        ''--- Adiciona os paramentros
-        'db.AdicionarParametros("IDTransacao", IDTransacao)
-        ''
-        'Try
-        '    Dim obj As Object = db.ExecutarManipulacao(CommandType.StoredProcedure, "uspAReceber_Excluir_PorIDTransacao")
-        '    Return CBool(obj)
-        'Catch ex As Exception
-        '    Throw ex
-        'End Try
-        ''
     End Function
     '
     '===================================================================================================
@@ -333,23 +316,48 @@ Public Class ParcelaBLL
     '===================================================================================================
     ' EXCLUIR TODOS PARCELAS DE UM ARECEBER PELO IDARECEBER
     '===================================================================================================
-    Public Function Excluir_Parcelas_AReceber(IDAReceber As Integer) As Boolean
-        Dim sql As New SQLControl
+    Public Function Excluir_Parcelas_AReceber(IDAReceber As Integer,
+                                              Optional mydb As Object = Nothing) As Boolean
         '
-        sql.AddParam("@IDAReceber", IDAReceber)
-        Dim myQuery As String = "DELETE tblAReceberParcela WHERE IDAReceber = @IDAReceber"
+        Dim db As AcessoDados = If(mydb, New AcessoDados)
+        Dim myQuery As String = ""
+        Dim lstMovs As List(Of clMovimentacao) = Nothing
         '
+        '--- verifica MOVIMENTACAO CAIXA
         Try
-            sql.ExecQuery(myQuery)
+            Dim movBLL As New MovimentacaoBLL
+            lstMovs = movBLL.Movimentacao_GET_PorIDAReceber(IDAReceber)
             '
-            If sql.HasException Then
-                Throw New Exception(sql.Exception)
+            If lstMovs.Count > 0 Then
+                '
+                If lstMovs.Where(Function(a) Not IsNothing(a.IDCaixa)).Count > 0 Then
+                    Throw New Exception("Não é possível excluir parcelas que tem movimentações incluídas no Caixa...")
+                End If
+                '
+                '--- exclui as movimentacoes
+                For Each mov In lstMovs
+                    movBLL.Movimentacao_Excluir(mov, db)
+                Next
+                '
             End If
-            '
-            Return True
             '
         Catch ex As Exception
             Throw ex
+            Return False
+        End Try
+        '
+        '--- exclui as parcelas
+        db.LimparParametros()
+        db.AdicionarParametros("@IDAReceber", IDAReceber)
+        '
+        myQuery = "DELETE tblAReceberParcela WHERE IDAReceber = @IDAReceber"
+        '
+        Try
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            Return True
+        Catch ex As Exception
+            Throw ex
+            Return False
         End Try
         '
     End Function

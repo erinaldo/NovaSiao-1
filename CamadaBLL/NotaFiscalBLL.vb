@@ -144,4 +144,5 @@ Public Class NotaFiscalBLL
         End Try
         '
     End Function
+    '
 End Class

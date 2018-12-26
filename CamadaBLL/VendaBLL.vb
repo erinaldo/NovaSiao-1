@@ -1,7 +1,7 @@
 ﻿Imports CamadaDTO
 Imports CamadaDAL
 Imports System.Data.SqlClient
-
+'
 Public Class VendaBLL
     '
     '--------------------------------------------------------------------------------------------
@@ -64,8 +64,10 @@ Public Class VendaBLL
     ' GET REGISTRO POR ID/RG
     '--------------------------------------------------------------------------------------------
     Public Function GetVenda_PorID_OBJ(ByVal myIDVenda As Integer) As clVenda
+        '
         Dim objdb As New AcessoDados
         Dim strSql As String = ""
+        '
         strSql = "SELECT * FROM qryVenda WHERE IDVenda = " & myIDVenda
         '
         Try
@@ -273,30 +275,324 @@ Public Class VendaBLL
     '--------------------------------------------------------------------------------------------
     ' DELETE VENDA POR IDVENDA
     '--------------------------------------------------------------------------------------------
-    Public Function DeletaVendaPorID(ByVal IDVenda As Integer)
-
-        Dim strSql As String
-        Dim objDB As AcessoDados
-        '--- Verificar se a venda já foi incluída no Caixa Geral
-
-        '--- Apagar todos os itens da Venda
-
-        '--- Apagar todos os AReceber relacionadas à Venda
-
-        '--- Apagar o tblVendaFrete associado
-
-        '--- Apagar a Venda em si
-        strSql = "" '"DELETE FROM tblVenda where IDVenda=" & _IDVenda
+    Public Function DeletaVendaPorID(IDVenda As Integer, IDFilial As Integer) As Boolean
         '
-        objDB = New AcessoDados
+        Dim clV As clVenda = Nothing
+        Dim myQuery As String = ""
+        '
+        '--- OBTEM O CLVENDA
+        '------------------------------------------------------------------
         Try
-            objDB.ExecuteQuery(strSql)
+            Dim vBLL As New VendaBLL
+            clV = vBLL.GetVenda_PorID_OBJ(IDVenda)
+            '
+            If IsNothing(clV) Then Throw New Exception("Registro da Venda não foi encontrado...")
+            '
         Catch ex As Exception
             Throw ex
-            Return Nothing
+            Return False
         End Try
-
+        '
+        '--- VERIFICA MOVIMENTACAO ANTES DE EXCLUIR
+        If Not VerificaDeleteVenda(clV) Then
+            Return False
+        End If
+        '
+        '--- INIT TRANSACTION
+        '==================================================================
+        Dim ObjDB As New AcessoDados
+        ObjDB.BeginTransaction()
+        '
+        '--- DELETE TODOS OS ITENS DA VENDA E RESOLVER O ESTOQUE
+        '==================================================================
+        '
+        '--- get produtos/itens da Venda
+        Dim ItemBLL As New TransacaoItemBLL
+        Dim lstItens As New List(Of clTransacaoItem)
+        '
+        '--- delete all itens of venda
+        Try
+            lstItens = ItemBLL.GetVendaItens_IDVenda_List(IDVenda, IDFilial)
+            '
+            For Each it In lstItens
+                ItemBLL.ExcluirItem(it, TransacaoItemBLL.EnumMovimento.SAIDA, ObjDB)
+            Next
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE TODAS PARCELAS RELACIONADAS À VENDA
+        '==================================================================
+        '
+        '--- GET IDAReceber vinculado a Venda
+        Try
+            '
+            '--- if IDARECEBER NOT NOTHING
+            If Not IsNothing(clV.IDAReceber) Then
+                Dim pBLL As New ParcelaBLL
+                Dim rBLL As New AReceberBLL
+                '
+                '--- DELETA PARCELAS
+                pBLL.Excluir_Parcelas_AReceber(clV.IDAReceber, ObjDB)
+                '
+                '--- DELETA ARECEBER
+                rBLL.Excluir_AReceber_Transacao(IDVenda, ObjDB)
+                '
+            End If
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- APAGAR O TBLVENDAFRETE ASSOCIADO
+        '==================================================================
+        '
+        '--- FRETE -> APAGAR -> MOVIMENTACAO | FRETE -> APAGAR
+        If Not IsNothing(clV.IDApagar) Then
+            '
+            Try
+                '
+                '--- DELETE MOVIMENTACOES DE FRETE
+                ObjDB.LimparParametros()
+                ObjDB.AdicionarParametros("@IDAPagar", clV.IDApagar)
+                '
+                myQuery = "DELETE FROM tblMovimentacoes WHERE Origem = 10 AND IDOrigem = @IDAPagar"
+                '
+                ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+                '
+                '--- DELETE A PAGAR DE FRETE
+                ObjDB.LimparParametros()
+                ObjDB.AdicionarParametros("@IDAPagar", clV.IDApagar)
+                '
+                myQuery = "DELETE FROM tblAPagar WHERE IDAPagar = @IDAPagar"
+                '
+                ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+                '
+            Catch ex As Exception
+                '
+                ObjDB.RollBackTransaction()
+                Throw ex
+                Return False
+                '
+            End Try
+            '
+        End If
+        '
+        '--- DELETE FRETE
+        Try
+            '
+            ObjDB.LimparParametros()
+            ObjDB.AdicionarParametros("@IDVenda", clV.IDVenda)
+            '
+            myQuery = "DELETE tblFrete WHERE IDTransacao = @IDVenda"
+            '
+            ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE TROCA IF NECESSITY
+        '==================================================================
+        '
+        Try
+            Dim tBLL As New TrocaBLL
+            Dim Troca As clTroca = tBLL.GetTroca_PorIDVenda_clTroca(clV.IDVenda)
+            '
+            If Not IsNothing(Troca) Then
+                tBLL.DeletaTrocaPorID(Troca.IDTroca)
+            End If
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '
+        '--- DELETE NOTAS IF NECESSITY
+        '==================================================================
+        Try
+            '
+            ObjDB.LimparParametros()
+            ObjDB.AdicionarParametros("@IDVenda", clV.IDVenda)
+            '
+            myQuery = "DELETE FROM tblTransacaoNotaFiscal WHERE IDTransacao = @IDVenda"
+            '
+            ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE VENDA FINNALY AND COMMIT
+        '==================================================================
+        '
+        Try
+            '
+            ObjDB.LimparParametros()
+            ObjDB.AdicionarParametros("@IDVenda", clV.IDVenda)
+            '
+            myQuery = "DELETE FROM tblVenda where IDVenda = @IDVenda"
+            '
+            ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+            ' COMMIT TRANSACTION
+            ObjDB.CommitTransaction()
+            Return True
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
+    ' VERIFICA AS LIGACOES ANTES DE EXCLUIR UMA VENDA
+    '--------------------------------------------------------------------------------------------
+    Private Function VerificaDeleteVenda(clV As clVenda) As Boolean
+        '
+        Dim myQuery As String
+        Dim SQL As New SQLControl
+        '
+        '--- VERIFY TBLMOVIMENTACAO | ENTRADAS | RECEBIMENTOS
+        '------------------------------------------------------------------
+        '--- 1 - Venda => AReceber => Movimentacoes
+        '--- 2 - Venda => AReceber => AReceberParcelas => Movimentacoes
+        '--- 3 - Venda => Frete => APagar => Movimentacoes
+        '==================================================================
+        '
+        ' 1. --- verifica movimentacao de entrada da Venda antes de excluir
+        ' ORIGEM = 1 ( TBLTRANSACAO | TBLVENDA )
+        Try
+            SQL.ClearParams()
+            SQL.AddParam("@IDVenda", clV.IDVenda)
+            '
+            myQuery = "SELECT COUNT(*) FROM tblCaixaMovimentacao
+                       WHERE Origem = 1 AND IDOrigem = @IDVenda AND NOT IDCaixa IS NULL"
+            '
+            '--- execute query
+            SQL.ExecQuery(myQuery)
+            '
+            '--- verify error
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+                Return False
+            End If
+            '
+            '--- get count of data returned
+            Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
+            '
+            If quant > 0 Then
+                Throw New Exception("Não é possível excluir uma Venda que possui " &
+                                    "entradas/recebimentos que já foram incluídos em um caixa...")
+                Return False
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+        ' 2. --- verifica movimentacao de entrada das Parcelas antes de excluir
+        ' ORIGEM = 2 ( TBLARECEBERPARCELAS )
+        Try
+            SQL.ClearParams()
+            SQL.AddParam("@IDVenda", clV.IDVenda)
+            '
+            myQuery = "SELECT COUNT(*) FROM tblCaixaMovimentacao AS M " &
+                      "INNER JOIN tblAReceberParcela AS P " &
+                      "ON M.IDOrigem = P.IDAReceberParcela AND M.Origem = 2 " &
+                      "INNER JOIN tblAReceber AS R " &
+                      "ON P.IDAReceber = R.IDAReceber " &
+                      "INNER JOIN tblVenda AS V " &
+                      "ON V.IDVenda = R.IDOrigem AND R.Origem = 1 " &
+                      "WHERE V.IDVenda = @IDVenda AND NOT IDCaixa IS NULL"
+            '
+            '--- execute query
+            SQL.ExecQuery(myQuery)
+            '
+            '--- verify error
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+                Return False
+            End If
+            '
+            '--- get count of data returned
+            Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
+            '
+            If quant > 0 Then
+                Throw New Exception("Não é possível excluir uma Venda que possui " &
+                                    "entradas/recebimentos que já foram incluídos em um caixa...")
+                Return False
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+        ' 3. --- verifica movimentacao de saida do frete antes de excluir
+        ' FRETE => TBLAPAGAR => TBLMOVIMENTACAO
+        '
+        If IsNothing(clV.IDApagar) Then Return True
+        '
+        Try
+            '
+            SQL.ClearParams()
+            SQL.AddParam("@IDAPagar", clV.IDApagar)
+            '
+            myQuery = "SELECT COUNT(*) FROM tblCaixaMovimentacao
+                       WHERE Origem = 10 AND IDOrigem = @IDAPagar AND NOT IDCaixa IS NULL"
+            '
+            '--- execute query
+            SQL.ExecQuery(myQuery)
+            '
+            '--- verify error
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+                Return False
+            End If
+            '
+            '--- get count of data returned
+            Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
+            '
+            If quant > 0 Then
+                Throw New Exception("Não é possível excluir uma Venda que possui " &
+                                    "entradas/recebimentos que já foram incluídos em um caixa...")
+                Return False
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+        '--- RETORNA
         Return True
+        '
     End Function
     '
     '--------------------------------------------------------------------------------------------

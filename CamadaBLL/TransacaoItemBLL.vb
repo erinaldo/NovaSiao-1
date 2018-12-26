@@ -220,8 +220,11 @@ Public Class TransacaoItemBLL
     '==========================================================================================
     ' EXCLUI UM ITEM EXISTENTE NA TRANSACAO
     '==========================================================================================
-    Public Function ExcluirItem(Item As clTransacaoItem, Movimento As EnumMovimento) As Long
-        Dim db As New AcessoDados
+    Public Function ExcluirItem(Item As clTransacaoItem,
+                                Movimento As EnumMovimento,
+                                Optional mydb As Object = Nothing) As Long
+        '
+        Dim db As AcessoDados = If(mydb, New AcessoDados)
         '
         '--- limpa os parametros
         db.LimparParametros()
@@ -246,6 +249,7 @@ Public Class TransacaoItemBLL
         Catch ex As Exception
             Throw ex
         End Try
+        '
     End Function
     '
     '==========================================================================================

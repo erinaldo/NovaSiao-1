@@ -163,6 +163,9 @@ Public Class frmVendaPrazo
             Taxa = 0
         End Try
         '
+        '--- hANDLER Menu Acao
+        MenuOpen_AdHandler()
+        '
     End Sub
     '
     Private Sub frmVendaPrazo_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -801,6 +804,20 @@ Public Class frmVendaPrazo
             MessageBox.Show("Uma exceção ocorreu ao alterar a Data da Venda..." & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+        '
+    End Sub
+    '
+    '--- CONTROLE DO MENU ACAO INFERIOR
+    Private Sub tsbButtonClick(sender As Object, e As EventArgs)
+        '
+        DirectCast(sender, ToolStripSplitButton).ShowDropDown()
+        '
+    End Sub
+    '
+    Private Sub MenuOpen_AdHandler()
+        '
+        AddHandler btnImprimir.ButtonClick, AddressOf tsbButtonClick
+        AddHandler btnImprimir.MouseHover, AddressOf tsbButtonClick
         '
     End Sub
     '

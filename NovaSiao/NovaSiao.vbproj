@@ -1034,6 +1034,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Lixeira_PEQ.png" />
     <None Include="Resources\AReceber_30px.png" />
     <None Include="Resources\AReceber_30px.bmp" />
     <None Include="Resources\AReceber1.png" />
