@@ -25,7 +25,7 @@ Public Class clMovimentacao : Implements IEditableObject
         Dim _Origem As Byte
         Dim _IDConta As Byte
         'Conta As String
-        Dim _IDMovForma As Int16
+        Dim _IDMovForma As Int16?
         'MovForma As String
         'IDMovTipo As Int16
         'MovTipo as String

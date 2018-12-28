@@ -9,11 +9,17 @@ Public Class frmVendaEntrada
     Private _Acao As FlagAcao
     Private bindPag As New BindingSource
     '
+    Private dtTipo As DataTable
+    Private dtForma As DataTable
+    '
     '-------------------------------------------------------------------------------------------------
     ' SUB NEW
     '-------------------------------------------------------------------------------------------------
-    Sub New(fOrigem As Form, TranVlTotal As Double,
-            Pag As clMovimentacao, Acao As FlagAcao, Optional Posicao As Point = Nothing)
+    Sub New(fOrigem As Form,
+            TranVlTotal As Double,
+            Pag As clMovimentacao,
+            Acao As FlagAcao,
+            Optional Posicao As Point = Nothing)
         '
         ' This call is required by the designer.
         InitializeComponent()
@@ -25,23 +31,33 @@ Public Class frmVendaEntrada
         _Pag = Pag
         _Acao = Acao
         '
+        '--- Preenche a lsita de Formas e Tipos
+        Dim TipoBLL As New MovimentacaoBLL
+        dtForma = TipoBLL.MovForma_GET_DT(True)
+        dtTipo = TipoBLL.MovTipo_GET_Dt(True)
+        '
         bindPag.DataSource = _Pag
         PreencheDataBinding()
         '
         ' Verifica valor do Combo MovTipo pelo MovForma
         If IsNothing(_Pag.IDMovForma) Then
-            cmbFormaTipo.SelectedValue = -1
+            '
+            txtFormaTipo.Text = ""
+            _Pag.IDMovTipo = Nothing
+            '
         Else
-            Dim dtForma As DataTable = cmbForma.DataSource
+            '
             For Each r As DataRow In dtForma.Rows
                 If r("IDMovForma") = _Pag.IDMovForma Then
-                    cmbFormaTipo.SelectedValue = r("IDMovTipo")
+                    txtFormaTipo.Text = r("MovTipo")
+                    _Pag.IDMovTipo = r("IDMovTipo")
                 End If
             Next
+            '
         End If
         '
-        lblConta.Text = ObterDefault("Conta")
-        lblFilial.Text = ObterDefault("Filial")
+        lblConta.Text = ObterDefault("ContaDescricao")
+        lblFilial.Text = ObterDefault("FilialDescricao")
         '
         '--- Define a posicao do form
         If Not IsNothing(Posicao) Then
@@ -58,10 +74,9 @@ Public Class frmVendaEntrada
     '------------------------------------------------------------------------------------------
     Private Sub PreencheDataBinding()
         '
-        txtValor.DataBindings.Add("Text", bindPag, "EntradaValor", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtValor.DataBindings.Add("Text", bindPag, "MovValor", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' CARREGA OS COMBOBOX
-        CarregaCmbTipo()
         CarregaCmbForma()
         '
         ' FORMATA OS VALORES DO DATABINDING
@@ -76,22 +91,8 @@ Public Class frmVendaEntrada
     '------------------------------------------------------------------------------------------
     ' CARREGAR OS COMBOBOX
     '------------------------------------------------------------------------------------------
-    Private Sub CarregaCmbTipo()
-        Dim TipoBLL As New MovimentacaoBLL
-        Dim dtTipo As DataTable = TipoBLL.MovTipo_GET
-        '
-        With cmbFormaTipo
-            .DataSource = dtTipo
-            .DisplayMember = "MovTipo"
-            .ValueMember = "IDMovTipo"
-            .DataBindings.Add("SelectedValue", bindPag, "IDMovTipo", True, DataSourceUpdateMode.OnPropertyChanged)
-        End With
-        '
-    End Sub
     '
     Private Sub CarregaCmbForma()
-        Dim TipoBLL As New MovimentacaoBLL
-        Dim dtForma As DataTable = TipoBLL.MovForma_GET_DT
         '
         With cmbForma
             .DataSource = dtForma
@@ -105,28 +106,32 @@ Public Class frmVendaEntrada
     '------------------------------------------------------------------------------------------
     ' CRIA UM ATALHO PARA OS COMBO BOX
     '------------------------------------------------------------------------------------------
-    Private Sub cmbFormaTipo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles cmbFormaTipo.KeyPress
+    Private Sub txtFormaTipo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtFormaTipo.KeyPress
+        '
         If Char.IsNumber(e.KeyChar) Then
             e.Handled = True
             '
-            Dim dt As DataTable = cmbFormaTipo.DataSource
-            Dim rCount As Integer = dt.Rows.Count
+            Dim rCount As Integer = dtTipo.Rows.Count
             Dim item As Integer = e.KeyChar.ToString
             '
             If item <= rCount And item > 0 Then
-                Dim Valor As Integer = dt.Rows(e.KeyChar.ToString - 1)("IDMovTipo")
+                Dim Valor As Integer = dtTipo.Rows(e.KeyChar.ToString - 1)("IDMovTipo")
                 '
                 _Pag.IDMovTipo = Valor
-                cmbFormaTipo.SelectedValue = Valor
+                txtFormaTipo.Text = dtTipo.Rows(e.KeyChar.ToString - 1)("MovTipo")
                 '
             End If
+        Else
+            e.Handled = True
         End If
+        '
     End Sub
     '
     '-------------------------------------------------------------------------------------------------
     ' SELECIONA A FORMA DE PAGAMENTO CRIANDO ATALHO NUMERICO
     '-------------------------------------------------------------------------------------------------
     Private Sub cmbForma_KeyPress(sender As Object, e As KeyPressEventArgs) Handles cmbForma.KeyPress
+        '
         If Char.IsNumber(e.KeyChar) Then
             e.Handled = True
             '
@@ -135,7 +140,8 @@ Public Class frmVendaEntrada
             Dim i As Integer = 1
             '
             For Each r As DataRow In dtF.Rows
-                If r("IDMovTipo") = cmbFormaTipo.SelectedValue Then
+                '
+                If r("IDMovTipo") = _Pag.IDMovTipo Then
                     If num = i Then
                         _Pag.IDMovForma = r("IDMovForma")
                         cmbForma.DataBindings("SelectedValue").ReadValue()
@@ -144,6 +150,7 @@ Public Class frmVendaEntrada
                         i += 1
                     End If
                 End If
+                '
             Next
         End If
         '
@@ -179,8 +186,7 @@ Public Class frmVendaEntrada
             MessageBox.Show("O campo TIPO de Entrada não pode ficar vazio..." & vbNewLine &
                             "Favor escolher um valor para esse campo.", "Campo Vazio",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
-            cmbFormaTipo.Focus()
-            cmbFormaTipo.DroppedDown = True
+            txtFormaTipo.Focus()
             Exit Sub
         End If
         '
@@ -206,8 +212,7 @@ Public Class frmVendaEntrada
         '--- Devolve o pagamento para o formOrigem
         Select Case _formOrigem.Name
             Case "frmVendaVista"
-                _Pag.MovForma = cmbFormaTipo.Text
-                _Pag.IDMovTipo = cmbFormaTipo.SelectedValue
+                _Pag.MovForma = txtFormaTipo.Text
                 _Pag.IDMovForma = cmbForma.SelectedValue
                 '
                 If _Acao = FlagAcao.INSERIR Then
@@ -229,20 +234,22 @@ Public Class frmVendaEntrada
     '------------------------------------------------------------------------------------------
     ' ALTERA A FORMA DE PAGAMENTO PELA ALTERACAO DO TIPO DE ENTRADA
     '------------------------------------------------------------------------------------------
-    Private Sub cmbFormaTipo_Validated(sender As Object, e As EventArgs) Handles cmbFormaTipo.Validated
-        If _VerAlteracao = False Then Exit Sub
-        If IsNothing(cmbFormaTipo.SelectedValue) Then Exit Sub
+    Private Sub txtFormaTipo_Validated(sender As Object, e As EventArgs) Handles txtFormaTipo.Validated
         '
-        Dim dtForma As DataTable = cmbForma.DataSource
-        dtForma.DefaultView.RowFilter = "IDMovTipo = " & cmbFormaTipo.SelectedValue
+        If _VerAlteracao = False Then Exit Sub
+        If IsNothing(_Pag.IDMovTipo) OrElse _Pag.IDMovTipo = 0 Then Exit Sub
+        '
+        dtForma.DefaultView.RowFilter = "IDMovTipo = " & _Pag.IDMovTipo
         '
         _VerAlteracao = False
+        '
         If cmbForma.Items.Count = 1 Then
             cmbForma.SelectedIndex = 0
             _Pag.IDMovForma = dtForma.Rows(0).Item("IDMovForma")
         Else
             cmbForma.SelectedIndex = -1
         End If
+        '
         _VerAlteracao = True
         '
     End Sub
@@ -250,11 +257,13 @@ Public Class frmVendaEntrada
     '------------------------------------------------------------------------------------------
     ' USAR TAB AO KEYPRESS ENTER
     '------------------------------------------------------------------------------------------
-    Private Sub txtValor_KeyDown(sender As Object, e As KeyEventArgs) Handles txtValor.KeyDown
+    Private Sub txt_KeyDown(sender As Object, e As KeyEventArgs) Handles txtValor.KeyDown, txtFormaTipo.KeyDown
+        '
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
             SendKeys.Send("{Tab}")
         End If
+        '
     End Sub
     '
     '-------------------------------------------------------------------------------------------------

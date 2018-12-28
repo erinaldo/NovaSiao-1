@@ -73,7 +73,7 @@ Public Class frmAReceberQuitar
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Dim dtTipo As DataTable = TipoBLL.MovTipo_GET
+            Dim dtTipo As DataTable = TipoBLL.MovTipo_GET_Dt
             '
             With cmbIDMovTipo
                 .DataSource = dtTipo

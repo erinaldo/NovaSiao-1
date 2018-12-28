@@ -16,6 +16,7 @@ Public Class ComboBox_OnlyValues
     End Sub
 
     Private Sub ComboBox_OnlyValues_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        '
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
             SendKeys.Send("{Tab}")
@@ -23,6 +24,7 @@ Public Class ComboBox_OnlyValues
             SendKeys.Send("{Tab}")
             SendKeys.Send("{Esc}")
         End If
+        '
     End Sub
     '
     Protected Overrides Sub OnValidating(e As System.ComponentModel.CancelEventArgs)

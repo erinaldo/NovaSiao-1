@@ -22,6 +22,8 @@ Public Class clMovForma : Implements IEditableObject
         Dim _ApelidoFilial As String
         Dim _IDContaPadrao As Int16?
         Dim _ContaPadrao As String
+        Dim _Meio As Byte
+        'Dim _MeioDescricao As String
     End Structure
 #End Region
     '
@@ -271,6 +273,37 @@ Public Class clMovForma : Implements IEditableObject
             End If
             FData._ContaPadrao = value
         End Set
+    End Property
+    '
+    '--- Propriedade Meio
+    '------------------------------------------------------
+    Public Property Meio() As Byte
+        Get
+            Return FData._Meio
+        End Get
+        Set(ByVal value As Byte)
+            If value <> FData._Meio Then
+                RaiseEvent AoAlterar()
+            End If
+            FData._Meio = value
+        End Set
+    End Property
+    '
+    '--- Propriedade MeioDescricao
+    '------------------------------------------------------
+    Public ReadOnly Property MeioDescricao() As String
+        Get
+            Select Case Meio
+                Case 1
+                    Return "Moeda"
+                Case 2
+                    Return "Cheque"
+                Case 3
+                    Return "Cartão"
+                Case Else
+                    Return ""
+            End Select
+        End Get
     End Property
     '
 #End Region

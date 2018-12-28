@@ -225,7 +225,7 @@ Partial Class frmMovFormas
         Me.SplitContainer1.Panel2.Controls.Add(Me.btnFechar)
         Me.SplitContainer1.Size = New System.Drawing.Size(740, 48)
         Me.SplitContainer1.SplitterDistance = 625
-        Me.SplitContainer1.TabIndex = 9
+        Me.SplitContainer1.TabIndex = 21
         Me.SplitContainer1.TabStop = False
         '
         'tsMenu

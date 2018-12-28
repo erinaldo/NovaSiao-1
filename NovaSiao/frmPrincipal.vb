@@ -1116,7 +1116,7 @@ Public Class frmPrincipal
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.MovTipo)
+            Dim frmC As New frmMovTipos()
             OcultaMenuPrincipal()
             frmC.MdiParent = Me
             frmC.Show()
@@ -1140,7 +1140,7 @@ Public Class frmPrincipal
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Dim frmC As New frmMovTipos(frmMovTipos.DadosOrigem.Cartao)
+            Dim frmC As New frmCartaoTipos(False)
             OcultaMenuPrincipal()
             frmC.MdiParent = Me
             frmC.Show()

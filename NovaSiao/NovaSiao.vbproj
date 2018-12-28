@@ -246,6 +246,12 @@
     <Compile Include="Caixa\frmCaixaProcurar.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Caixa\frmCartaoTipos.designer.vb">
+      <DependentUpon>frmCartaoTipos.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Caixa\frmCartaoTipos.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Caixa\frmContaProcurar.designer.vb">
       <DependentUpon>frmContaProcurar.vb</DependentUpon>
     </Compile>
@@ -328,6 +334,12 @@
       <DependentUpon>frmCaixaInserir.vb</DependentUpon>
     </Compile>
     <Compile Include="Caixa\frmCaixaInserir.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Caixa\frmMovTipoProcurar.designer.vb">
+      <DependentUpon>frmMovTipoProcurar.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Caixa\frmMovTipoProcurar.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Caixa\frmNivelamento.designer.vb">
@@ -774,6 +786,9 @@
     <EmbeddedResource Include="Caixa\frmCaixaProcurar.resx">
       <DependentUpon>frmCaixaProcurar.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Caixa\frmCartaoTipos.resx">
+      <DependentUpon>frmCartaoTipos.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Caixa\frmContaProcurar.resx">
       <DependentUpon>frmContaProcurar.vb</DependentUpon>
     </EmbeddedResource>
@@ -815,6 +830,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Caixa\frmCaixaInserir.resx">
       <DependentUpon>frmCaixaInserir.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Caixa\frmMovTipoProcurar.resx">
+      <DependentUpon>frmMovTipoProcurar.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Caixa\frmNivelamento.resx">
       <DependentUpon>frmNivelamento.vb</DependentUpon>

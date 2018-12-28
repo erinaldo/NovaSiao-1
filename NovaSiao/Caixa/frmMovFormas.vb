@@ -4,6 +4,7 @@ Imports ComponentOwl.BetterListView
 Imports System.Drawing.Drawing2D
 '
 Public Class frmMovFormas
+    '
     Private WithEvents listMovFormas As New List(Of clMovForma)
     Private WithEvents bindMovForma As New BindingSource
     Private _MovForma As clMovForma
@@ -22,7 +23,9 @@ Public Class frmMovFormas
             Return _Sit
         End Get
         Set(value As FlagEstado)
+            '
             _Sit = value
+            '
             If _Sit = FlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
@@ -46,7 +49,9 @@ Public Class frmMovFormas
                 lstFormas.ReadOnly = True
                 '
             End If
+            '
         End Set
+        '
     End Property
     '
     Sub New()
@@ -274,6 +279,7 @@ Public Class frmMovFormas
                 '
                 bindMovForma.CancelEdit()
                 txtMovForma.Focus()
+                VerificaCartaoTipo()
                 Sit = FlagEstado.RegistroSalvo
                 '
             End If
@@ -312,6 +318,7 @@ Public Class frmMovFormas
         '
         '---altera o SIT
         Sit = FlagEstado.NovoRegistro
+        VerificaCartaoTipo()
         txtMovForma.Focus()
         '
     End Sub
@@ -331,7 +338,7 @@ Public Class frmMovFormas
     Private Sub btnMovTipos_Click(sender As Object, e As EventArgs) Handles btnMovTipos.Click
         '
         '---abre o formTipos
-        Dim frmTipo As New frmMovTipos(frmMovTipos.DadosOrigem.MovTipo, True, Me, _MovForma.IDMovTipo)
+        Dim frmTipo As New frmMovTipoProcurar(Me)
         frmTipo.ShowDialog()
         '
         '---verifica os valores
@@ -341,10 +348,14 @@ Public Class frmMovFormas
         End If
         '
         '--- grava os novos valores
-        txtMovTipo.Text = frmTipo.OrigemDesc_Escolhido
-        _MovForma.IDMovTipo = frmTipo.IDOrigem_Escolhido
+        txtMovTipo.Text = frmTipo.propMovTipo_Escolha
+        _MovForma.IDMovTipo = frmTipo.propIdMovTipo_Escolha
+        _MovForma.Meio = frmTipo.propMeio_Escolha
         txtMovTipo.Focus()
         txtMovTipo.SelectAll()
+        '
+        '--- habilita os controles caso desabilitados
+        VerificaCartaoTipo()
         '
     End Sub
     '
@@ -354,38 +365,39 @@ Public Class frmMovFormas
         Dim clF As clMovForma = DirectCast(bindMovForma.CurrencyManager.Current, clMovForma)
         '    
         '---abre o formTipos
-        Dim frmTipo As New frmMovTipos(frmMovTipos.DadosOrigem.Cartao, True, Me, IIf(IsNothing(clF.IDCartao), Nothing, clF.IDCartao))
-        frmTipo.ShowDialog()
+        Dim frmCartao As New frmCartaoTipos(True, Me, clF.IDCartao)
+        frmCartao.ShowDialog()
         '
         '---verifica os valores
-        If frmTipo.DialogResult <> DialogResult.OK Then
+        If frmCartao.DialogResult <> DialogResult.OK Then
             txtCartao.Focus()
             Exit Sub
         End If
         '
         '--- grava os novos valores
-        txtCartao.Text = frmTipo.OrigemDesc_Escolhido
-        clF.IDCartao = frmTipo.IDOrigem_Escolhido
+        txtCartao.Text = frmCartao.OrigemDesc_Escolhido
+        clF.IDCartao = frmCartao.IDOrigem_Escolhido
         txtCartao.Focus()
         txtCartao.SelectAll()
-        '
-        '--- habilita os controles caso desabilitados
-        VerificaCartaoTipo()
         '
     End Sub
     '
     '--- VERIFICA SE E MOV CARTAO PARA HABILITAR OS CONTROLES
     Private Sub VerificaCartaoTipo(Optional AnulaPropriedades As Boolean = False)
         '
-        If IsNothing(_MovForma.IDCartao) Then
+        If _MovForma.Meio <> 3 Then ' 1 --> DINHEIRO | 2 --> CHEQUE | 3 --> MEIO CARTAO
+            '
+            txtCartao.Enabled = False
             txtConta.Enabled = False
             txtParcelas.Enabled = False
             txtNoDias.Enabled = False
             txtComissao.Enabled = False
             btnContaEscolher.Enabled = False
+            btnCartao.Enabled = False
             '
             If AnulaPropriedades Then
                 With _MovForma
+                    .IDCartao = Nothing
                     .ContaPadrao = Nothing
                     .Parcelas = Nothing
                     .NoDias = Nothing
@@ -393,13 +405,14 @@ Public Class frmMovFormas
                 End With
             End If
             '
-        Else
+        Else ' NESSE CASO = 3 (MEIO CARTAO)
+            txtCartao.Enabled = True
             txtConta.Enabled = True
             txtParcelas.Enabled = True
             txtNoDias.Enabled = True
             txtComissao.Enabled = True
             btnContaEscolher.Enabled = True
-
+            btnCartao.Enabled = True
         End If
         '
     End Sub

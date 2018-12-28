@@ -2,7 +2,7 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="My" GeneratedClassName="MySettings" UseMySettingsClassName="true">
   <Profiles />
   <Settings>
-    <Setting Name="NovaSiaoConnectionString" Type="(Connection string)" Scope="Application">
+    <Setting Name="TesteConnectionString" Type="(Connection string)" Scope="Application">
       <DesignTimeValue Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;SerializableConnectionString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
   &lt;ConnectionString&gt;Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456&lt;/ConnectionString&gt;
@@ -11,7 +11,7 @@
       <Value Profile="(Default)">Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>
     </Setting>
     <Setting Name="ConexaoString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>
+      <Value Profile="(Default)">Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>
     </Setting>
     <Setting Name="StringNote" Type="System.String" Scope="User">
       <Value Profile="(Default)">Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>

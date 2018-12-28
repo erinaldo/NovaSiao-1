@@ -225,7 +225,7 @@ Public Class MovimentacaoBLL
     '
 #End Region '/ MOVIMENTACAO: ENTRADAS E SAIDAS
     '
-#Region "CONTAS"
+#Region "CONTAS: CaixaContas"
     '
     '===================================================================================================
     ' RETURN LIST OF CONTAS PELO IDFILIAL
@@ -418,7 +418,7 @@ Public Class MovimentacaoBLL
     '
 #End Region '/ CONTAS
     '
-#Region "FORMAS DE PAGAMENTO"
+#Region "FORMAS DE PAGAMENTO: CaixaMovFormas"
     '
     '===================================================================================================
     ' OBTER LISTA DAS FORMAS DE PAGAMENTO
@@ -443,7 +443,6 @@ Public Class MovimentacaoBLL
         End Try
         '
     End Function
-    '
     '
     '=========================================================================================
     ' OBTER LISTA DAS FORMAS DE MOVIMENTACAO
@@ -474,7 +473,9 @@ Public Class MovimentacaoBLL
                 clF.IDContaPadrao = IIf(IsDBNull(r("IDContaPadrao")), Nothing, r("IDContaPadrao"))
                 clF.ContaPadrao = IIf(IsDBNull(r("ContaPadrao")), String.Empty, r("ContaPadrao"))
                 clF.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
-                clF.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial")) '
+                clF.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
+                clF.Meio = IIf(IsDBNull(r("Meio")), Nothing, r("Meio"))
+                '
                 list.Add(clF)
                 '
             Next
@@ -559,18 +560,26 @@ Public Class MovimentacaoBLL
     '
 #End Region '/ FORMAS DE PAGAMENTO
     '
-#Region "TIPOS DE FORMAS DE PAGAMENTO"
+#Region "TIPOS DE FORMAS DE PAGAMENTO: CaixaMovFormaTipo"
     '
     '=========================================================================================
     ' TIPOS DE FORMAS DE MOVIMENTACAO
     '=========================================================================================
     ' --- OBTER LISTA
-    Public Function MovTipo_GET_Dt() As DataTable
+    Public Function MovTipo_GET_Dt(Optional Ativo As Boolean? = Nothing) As DataTable
         Dim SQL As New SQLControl
+        Dim myQuery As String = ""
+
+        If IsNothing(Ativo) Then
+            myQuery = "SELECT * FROM tblCaixaMovFormaTipo"
+        Else
+            SQL.AddParam("@Ativo", Ativo)
+            myQuery = "SELECT * FROM tblCaixaMovFormaTipo WHERE Ativo = @Ativo"
+        End If
         '
         Try
             '
-            SQL.ExecQuery("SELECT * FROM tblCaixaMovFormaTipo")
+            SQL.ExecQuery(myQuery)
             Dim dtTipo As DataTable = SQL.DBDT
             '
             If SQL.HasException Then
@@ -643,23 +652,6 @@ Public Class MovimentacaoBLL
         '
     End Function
     '
-    '===================================================================================================
-    ' OBTER LISTA DOS TIPOS DE FORMAS PAGAMENTO
-    '===================================================================================================
-    Public Function MovTipo_GET(Optional Ativo As Boolean? = Nothing) As DataTable
-        Dim db As New AcessoDados
-        Dim dtTipos As DataTable
-        '
-        If IsNothing(Ativo) Then
-            dtTipos = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM tblCaixaMovFormaTipo")
-        Else
-            dtTipos = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM tblCaixaMovFormaTipo WHERE Ativo = '" & Ativo & "'")
-        End If
-        '
-        Return dtTipos
-        '
-    End Function
-    '
     '--- VERIFICA ATIVIDADE (Se esta sendo utilizado)
     '--- retorna a quantidade de MovForma que se utiliza desse MOVTIPO
     Public Function MovTipo_Atividade(IDMovTipo As Integer) As Integer
@@ -685,7 +677,7 @@ Public Class MovimentacaoBLL
     '
 #End Region '/ TIPOS DE FORMAS DE PAGAMENTO
     '
-#Region "CARTAO TIPOS"
+#Region "CARTAO TIPOS: CaixaCartaoTipo"
     '
     '=========================================================================================
     ' TIPOS DE CARTAO DE CREDITO
