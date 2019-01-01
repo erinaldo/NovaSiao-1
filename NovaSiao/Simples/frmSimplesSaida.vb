@@ -541,6 +541,12 @@ Public Class frmSimplesSaida
         Editar_Item()
     End Sub
     '
+#End Region ' /CARREGA/INSERE ITENS
+    '
+#Region "MENU CONTEXTO"
+    '
+    ' CONTROLA O MENU CONTEXTO NO DATAGRID ITENS
+    '-----------------------------------------------------------------------------------------------------
     Private Sub dgvItens_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvItens.MouseDown
         If e.Button = MouseButtons.Right Then
             'Dim c As Control = DirectCast(sender, Control)
@@ -553,25 +559,65 @@ Public Class frmSimplesSaida
             dgvItens.CurrentCell = dgvItens.Rows(hit.RowIndex).Cells(1)
             dgvItens.Rows(hit.RowIndex).Selected = True
             '
-            'mnuItens.Show(dgvItens, c.PointToScreen(e.Location))
-            mnuItens.Show(dgvItens, e.Location)
+            'mnuContexto.Show(dgvItens, c.PointToScreen(e.Location))
+            mnuContexto.Show(dgvItens, e.Location)
             '
         End If
     End Sub
     '
-    Private Sub MenuItemEditar_Click(sender As Object, e As EventArgs) Handles MenuItemEditar.Click
-        Editar_Item()
+    ' CONTROLA O MENU CONTEXTO NO DATAGRID ARECEBER
+    '-----------------------------------------------------------------------------------------------------
+    Private Sub dgvAReceber_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvAReceber.MouseDown
+        If e.Button = MouseButtons.Right Then
+            'Dim c As Control = DirectCast(sender, Control)
+            Dim hit As DataGridView.HitTestInfo = dgvAReceber.HitTest(e.X, e.Y)
+            dgvAReceber.ClearSelection()
+            '
+            If Not hit.Type = DataGridViewHitTestType.Cell Then Exit Sub
+            '
+            ' seleciona o ROW
+            dgvAReceber.CurrentCell = dgvAReceber.Rows(hit.RowIndex).Cells(1)
+            dgvAReceber.Rows(hit.RowIndex).Selected = True
+            dgvAReceber.Focus()
+            '
+            mnuContexto.Show(dgvAReceber, e.Location)
+            '
+        End If
     End Sub
     '
-    Private Sub MenuItemInserir_Click(sender As Object, e As EventArgs) Handles MenuItemInserir.Click
-        Inserir_Item()
+    ' CONTROLA ACOES DO MENU CONTEXTO
+    '-----------------------------------------------------------------------------------------------------
+    Private Sub MenuItemEditar_Click(sender As Object, e As EventArgs) Handles mnuItemEditar.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Editar_Item()
+        Else
+            Parcela_Editar()
+        End If
+        '
     End Sub
     '
-    Private Sub MenuItemExcluir_Click(sender As Object, e As EventArgs) Handles MenuItemExcluir.Click
-        Excluir_Item()
+    Private Sub MenuItemInserir_Click(sender As Object, e As EventArgs) Handles mnuItemInserir.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Inserir_Item()
+        Else
+            Parcela_Adicionar()
+        End If
+        '
     End Sub
     '
-#End Region ' /CARREGA/INSERE ITENS
+    Private Sub MenuItemExcluir_Click(sender As Object, e As EventArgs) Handles mnuItemExcluir.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Excluir_Item()
+        Else
+            Parcela_Excluir()
+        End If
+        '
+    End Sub
+    '
+#End Region '/ MENU CONTEXTO
     '
 #Region "BOTOES DE ACAO"
     '
@@ -629,6 +675,108 @@ Public Class frmSimplesSaida
     End Sub
     '
 #End Region ' /BOTOES DE ACAO
+    '
+#Region "MENU ACAO INFERIOR"
+    '
+    '--- CONTROLE DO MENU ACAO INFERIOR
+    '=====================================
+    Private Sub tsbButtonClick(sender As Object, e As EventArgs)
+        '
+        DirectCast(sender, ToolStripSplitButton).ShowDropDown()
+        '
+    End Sub
+    '
+    Private Sub MenuOpen_AdHandler()
+        '
+        AddHandler btnImprimir.ButtonClick, AddressOf tsbButtonClick
+        AddHandler btnImprimir.MouseHover, AddressOf tsbButtonClick
+        '
+    End Sub
+    '
+    ' MENU ACAO INFERIOR
+    '=====================================
+    '
+    ' PROCURAR
+    Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
+        ProcuraSimples()
+    End Sub
+    '
+    ' ADICIONAR
+    Private Sub btnAdicionar_Click(sender As Object, e As EventArgs) Handles btnAdicionar.Click
+        NovaSimples()
+    End Sub
+    '
+    ' EXCLUIR
+    Private Sub btnExcluir_Click(sender As Object, e As EventArgs) Handles btnExcluir.Click
+        '
+        '--- Verifica bloqueio
+        If RegistroBloqueado() Then Exit Sub
+        '
+        '--- pergunta ao usuario
+        If MessageBox.Show("Você deseja realmente excluir definitivamente essa Simples Saída?",
+                           "Excluir Venda",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question,
+                           MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
+
+        MsgBox("Ainda não implementado")
+        Return
+        '
+        '--- Excluir Venda
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            'If vndBLL.DeletaVendaPorID(_Venda.IDVenda, _IDFilial) Then
+            '    '
+            '    '--- fecha
+            '    Close()
+            '    MostraMenuPrincipal()
+            '    '
+            'End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Excluir a Venda..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    ' IMPRIMIR
+    Private Sub miImprimirEtiquetas_Click(sender As Object, e As EventArgs) Handles miImprimirRelatorio.Click
+        MessageBox.Show("Ainda não foi implementado...", "Imprimir Relatório")
+    End Sub
+    '
+    ' PROCURA SIMPLES SAÍDA
+    '-----------------------------------------------------------------------------------------------------
+    Public Sub ProcuraSimples()
+        '
+        Me.Close()
+        Dim frmP As New frmOperacaoSaidaProcurar(4)
+        OcultaMenuPrincipal()
+        Dim fPrincipal As Form = Application.OpenForms.OfType(Of frmPrincipal)().First
+        frmP.MdiParent = fPrincipal
+        frmP.Show()
+        '
+    End Sub
+    '
+    ' CRIA UMA NOVA SIMPLES SAIDA
+    '-----------------------------------------------------------------------------------------------------
+    Public Sub NovaSimples()
+        Dim a As New AcaoGlobal
+        Dim newSimples As Object = a.SimplesSaida_Nova
+        '
+        If IsNothing(newSimples) Then Exit Sub
+        '
+        _Simples = newSimples
+        '
+    End Sub
+    '
+#End Region '/ MENU ACAO INFERIOR
     '
 #Region "FORMATACAO E FLUXO"
     '
@@ -1030,26 +1178,8 @@ Public Class frmSimplesSaida
         dgvAReceber.BackgroundColor = c
     End Sub
     '
-    ' CONTROLA O MENU NO DATAGRID ARECEBER
+    ' DOUBLE CLICK NO DATAGRID ARECEBER
     '-----------------------------------------------------------------------------------------------------
-    Private Sub dgvAReceber_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvAReceber.MouseDown
-        If e.Button = MouseButtons.Right Then
-            'Dim c As Control = DirectCast(sender, Control)
-            Dim hit As DataGridView.HitTestInfo = dgvAReceber.HitTest(e.X, e.Y)
-            dgvAReceber.ClearSelection()
-            '
-            If Not hit.Type = DataGridViewHitTestType.Cell Then Exit Sub
-            '
-            ' seleciona o ROW
-            dgvAReceber.CurrentCell = dgvAReceber.Rows(hit.RowIndex).Cells(1)
-            dgvAReceber.Rows(hit.RowIndex).Selected = True
-            dgvAReceber.Focus()
-            '
-            mnuItens.Show(dgvAReceber, e.Location)
-            '
-        End If
-    End Sub
-    '
     Private Sub dgvAReceber_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAReceber.CellDoubleClick
         Parcela_Editar()
     End Sub
@@ -1230,17 +1360,6 @@ Public Class frmSimplesSaida
             Return 0
         End If
     End Function
-    '
-    ' PROCURA SIMPLES SAÍDA
-    '-----------------------------------------------------------------------------------------------------
-    Public Sub ProcuraVenda()
-        Me.Close()
-        Dim frmP As New frmOperacaoSaidaProcurar
-        OcultaMenuPrincipal()
-        Dim fPrincipal As Form = Application.OpenForms.OfType(Of frmPrincipal)().First
-        frmP.MdiParent = fPrincipal
-        frmP.Show()
-    End Sub
     '
 #End Region '/FUNCOES NECESSARIAS
     '

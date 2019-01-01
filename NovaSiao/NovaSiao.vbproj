@@ -1043,6 +1043,7 @@
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
     <None Include="My Project\DataSources\CamadaDTO.clClientePF.datasource" />
+    <None Include="My Project\DataSources\CamadaDTO.clMovForma.datasource" />
     <None Include="My Project\DataSources\CamadaDTO.clProdutoEtiqueta.datasource" />
     <None Include="My Project\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

@@ -441,6 +441,13 @@ Public Class AcessoDados
         isTran = False
     End Sub
     '
+    '--- RETURN IF EXISTS TRANSACTION
+    Public ReadOnly Property isTransaction As Boolean
+        Get
+            Return isTran
+        End Get
+    End Property
+    '
 #End Region '/ TRANSACTION
     '
 End Class

@@ -89,8 +89,10 @@ Public Class VendaBLL
     '--------------------------------------------------------------------------------------------
     ' UPDATE
     '--------------------------------------------------------------------------------------------
-    Public Function AtualizaVenda_Procedure_ID(ByVal _vnd As clVenda) As String
-        Dim objDB As New AcessoDados
+    Public Function AtualizaVenda_Procedure_ID(ByVal _vnd As clVenda,
+                                               Optional myDB As Object = Nothing) As String
+        '
+        Dim objDB As AcessoDados = If(myDB, New AcessoDados)
         Dim Conn As New SqlCommand
         '
         'Limpa os Parâmetros
@@ -334,7 +336,7 @@ Public Class VendaBLL
         Dim ObjDB As New AcessoDados
         ObjDB.BeginTransaction()
         '
-        '--- DELETE TODOS OS ITENS DA VENDA E RESOLVER O ESTOQUE
+        '--- DELETE ALL ITENS OF VENDA AND RESOLVE ESTOQUE
         '==================================================================
         '
         '--- delete all itens of venda
@@ -352,7 +354,7 @@ Public Class VendaBLL
             '
         End Try
         '
-        '--- DELETE TODAS PARCELAS RELACIONADAS À VENDA
+        '--- DELETE ALL ARECEBER | PARCELAS | MOVIMENTACOES OF VENDA
         '==================================================================
         '
         '--- GET IDAReceber vinculado a Venda
@@ -379,7 +381,7 @@ Public Class VendaBLL
             '
         End Try
         '
-        '--- APAGAR O TBLVENDAFRETE ASSOCIADO
+        '--- DELETE APAGAR OF THE TBLVENDAFRETE RELATED
         '==================================================================
         '
         '--- FRETE -> APAGAR -> MOVIMENTACAO | FRETE -> APAGAR

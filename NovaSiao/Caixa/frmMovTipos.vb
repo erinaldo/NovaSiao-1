@@ -1,5 +1,4 @@
 ﻿Imports CamadaBLL
-Imports CamadaDTO
 Imports ComponentOwl.BetterListView
 Imports System.Drawing.Drawing2D
 '
@@ -15,9 +14,11 @@ Public Class frmMovTipos
 #Region "EVENTO LOAD E PROPRIEDADE SIT"
     '
     Private Property Sit As FlagEstado
+        '
         Get
             Return _Sit
         End Get
+        '
         Set(value As FlagEstado)
             '
             _Sit = value
@@ -113,8 +114,8 @@ Public Class frmMovTipos
         AddHandler lblIDMovTipo.DataBindings("Text").Format, AddressOf idFormatRG
         '
         ' ADD HANDLER PARA DATABINGS
-        AddHandler bindTipo.CurrentChanged, AddressOf handler_CurrentChanged
-        AddHandler bindTipo.BindingComplete, AddressOf Handler_AoAlterar
+        AddHandler bindTipo.BindingComplete, AddressOf Handler_AoAlterar '--- quando faz alteração
+        AddHandler bindTipo.CurrentChanged, AddressOf handler_CurrentChanged '---muda de registro
         '
     End Sub
     '
@@ -122,20 +123,21 @@ Public Class frmMovTipos
         e.Value = Format(IIf(IsDBNull(e.Value), Nothing, e.Value), "00")
     End Sub
     '
-    Private Sub Handler_AoAlterar()
+    Private Sub Handler_AoAlterar(ByVal sender As Object,
+                                  ByVal e As BindingCompleteEventArgs)
         '
+
         If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+            '
+            If e.BindingCompleteContext = BindingCompleteContext.DataSourceUpdate Then
+                Sit = FlagEstado.Alterado
+            End If
+            '
         End If
         '
     End Sub
     '
     Private Sub handler_CurrentChanged()
-        '
-        '_MovForma = DirectCast(bindTipo.CurrencyManager.Current, clMovForma)
-        '
-        ' ADD HANDLER PARA DATABINGS
-        'AddHandler bindTipo.CurrentItemChanged, AddressOf Handler_AoAlterar
         '
         '--- Clear the Error Provider
         epValida.Clear()
@@ -278,8 +280,8 @@ Public Class frmMovTipos
                 Exit Sub
             End If
             '
-            Sit = FlagEstado.RegistroSalvo
             bindTipo.RemoveCurrent()
+            Sit = FlagEstado.RegistroSalvo
             '
         End If
         '
@@ -294,7 +296,6 @@ Public Class frmMovTipos
         Dim row As DataRow = dtTipos.NewRow
         row("Ativo") = True
         row("MovTipo") = ""
-        row("IDMovTipo") = 0
         '
         '---adiciona o NewROW
         dtTipos.Rows.Add(row)
@@ -323,106 +324,94 @@ Public Class frmMovTipos
     '
     '--- BTN SALVAR REGISTRO
     Private Sub btnSalvar_Click(sender As Object, e As EventArgs) Handles btnSalvar.Click
-        ''
-        'If VerificaDados() = False Then Exit Sub
-        ''
-        'Dim movBLL As New MovimentacaoBLL
-        ''
-        'If Sit = FlagEstado.NovoRegistro Then
-        '    Try
-        '        Dim newID As Int16 = movBLL.MovForma_Inserir(_MovForma)
-        '        '
-        '        _MovForma.IDMovForma = newID
-        '        lblIDMovTipo.DataBindings("Text").ReadValue()
-        '        '
-        '        Sit = FlagEstado.RegistroSalvo
-        '        bindTipo.EndEdit()
-        '        bindTipo.ResetBindings(True)
-        '        '
-        '        '---informa o usuário
-        '        MessageBox.Show("Registro Inserido com sucesso!", "Registro Salvo",
-        '                        MessageBoxButtons.OK, MessageBoxIcon.Information)
-        '        '
-        '    Catch ex As Exception
-        '        MessageBox.Show("Esse Registro NÃO foi salvo com sucesso!" & vbNewLine &
-        '                        ex.Message, "Exceção Inesperada",
-        '                        MessageBoxButtons.OK, MessageBoxIcon.Error)
-        '    End Try
-        '    '
-        'ElseIf Sit = FlagEstado.Alterado Then
-        '    Try
-        '        movBLL.MovForma_Update(_MovForma)
-        '        '
-        '        Sit = FlagEstado.RegistroSalvo
-        '        bindTipo.EndEdit()
-        '        '
-        '        '---informa o usuário
-        '        MessageBox.Show("Registro Atualizado com sucesso!", "Registro Salvo",
-        '                        MessageBoxButtons.OK, MessageBoxIcon.Information)
-        '        '
-        '    Catch ex As Exception
-        '        MessageBox.Show("Esse Registro NÃO foi salvo com sucesso!" & vbNewLine &
-        '                        ex.Message, "Exceção Inesperada",
-        '                        MessageBoxButtons.OK, MessageBoxIcon.Error)
-        '    End Try
-        'End If
-        ''
+        '
+        If VerificaDados() = False Then Exit Sub
+        '
+        Dim movBLL As New MovimentacaoBLL
+        Dim row As DataRow = DirectCast(bindTipo.Current, DataRowView).Row
+        '
+        If Sit = FlagEstado.NovoRegistro Then
+            Try
+                Dim newID As Int16 = movBLL.MovTipo_Inserir(row("MovTipo"), row("Meio"))
+                '
+                row("IDMovTipo") = newID
+                lblIDMovTipo.DataBindings("Text").ReadValue()
+                DirectCast(bindTipo.Current, DataRowView).Row.AcceptChanges()
+                '
+                Sit = FlagEstado.RegistroSalvo
+                '
+                '---informa o usuário
+                MessageBox.Show("Registro Inserido com sucesso!", "Registro Salvo",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information)
+                '
+            Catch ex As Exception
+                MessageBox.Show("Esse Registro NÃO foi salvo com sucesso!" & vbNewLine &
+                                ex.Message, "Exceção Inesperada",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+            '
+        ElseIf Sit = FlagEstado.Alterado Then
+            Try
+                movBLL.MovTipo_Update(row("IDMovTipo"), row("MovTipo"), row("Ativo"), row("Meio"))
+                '
+                DirectCast(bindTipo.Current, DataRowView).Row.AcceptChanges()
+                Sit = FlagEstado.RegistroSalvo
+                '
+                '---informa o usuário
+                MessageBox.Show("Registro Atualizado com sucesso!", "Registro Salvo",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information)
+                '
+            Catch ex As Exception
+                MessageBox.Show("Esse Registro NÃO foi salvo com sucesso!" & vbNewLine &
+                                ex.Message, "Exceção Inesperada",
+                                MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
+        End If
+        '
     End Sub
     '
     ' VERIFICA OS DADOS ANTES DE SALVAR
     Private Function VerificaDados() As Boolean
-        ''
-        'Dim f As New FuncoesUtilitarias
-        ''
-        'If Not f.VerificaDadosClasse(txtMovTipo, "Descrição da Forma de Movimento", _MovForma, epValida) Then
-        '    Return False
-        'End If
-        ''
-        'If Not f.VerificaDadosClasse(txtMovTipo, "Tipo da Forma de Pagamento", _MovForma, epValida) Then
-        '    Return False
-        'End If
-        ''
-        'If Not IsNothing(_MovForma.IDCartao) Then
-        '    '
-        '    If Not f.VerificaDadosClasse(txtNoDias, "Intervalo/Prazo de pagamento do Cartão", _MovForma, epValida) Then
-        '        Return False
-        '    End If
-        '    '
-        '    If _MovForma.NoDias <= 0 Then
-        '        MessageBox.Show("O número de dias não pode ser igual ou menor que Zero...", "Aviso",
-        '                        MessageBoxButtons.OK, MessageBoxIcon.Information)
-        '        txtNoDias.Focus()
-        '        Return False
-        '    End If
-        '    '
-        '    If Not f.VerificaDadosClasse(txtParcelas, "Quantidade de Parcelas de pagamento", _MovForma, epValida) Then
-        '        Return False
-        '    End If
-        '    '
-        '    If _MovForma.Parcelas < 0 Then
-        '        MessageBox.Show("O número de parcelas não pode ser menor que Zero...", "Aviso",
-        '                        MessageBoxButtons.OK, MessageBoxIcon.Information)
-        '        txtParcelas.Focus()
-        '        Return False
-        '    End If
-        '    '
-        '    If Not f.VerificaDadosClasse(txtComissao, "Comissão da Operadora de Cartão", _MovForma, epValida) Then
-        '        Return False
-        '    End If
-        '    '
-        '    If _MovForma.Comissao < 0 Or _MovForma.Comissao > 99 Then
-        '        MessageBox.Show("A taxa de comissão não pode ser menor que Zero ou maior que 100%", "Aviso",
-        '                        MessageBoxButtons.OK, MessageBoxIcon.Information)
-        '        txtComissao.Focus()
-        '        Return False
-        '    End If
-        '    '
-        'Else
-        '    VerificaCartaoTipo(True)
-        'End If
-        ''
-        'Return True
-        ''
+        '
+        Dim r As DataRowView = bindTipo.Current
+        '
+        '--- verifica campo txtMovTipo
+        If IsDBNull(r("MovTipo")) OrElse txtMovTipo.Text.Trim.Length = 0 Then
+            MessageBox.Show("O campo DESCRIÇÃO não pode ficar vazio;" & vbCrLf &
+                            "Favor preencher esse campo antes de Salvar o registro...",
+                            "Campo Vazio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            epValida.SetError(txtMovTipo, "Preencha esse Campo")
+            txtMovTipo.Focus()
+            Return False
+        End If
+        '
+        '--- verifica combo meio de pagamento
+        If IsDBNull(r("Meio")) OrElse cmbMeio.SelectedIndex = -1 Then
+            MessageBox.Show("O campo MEIO DE PAGAMENTO não pode ficar vazio;" & vbCrLf &
+                            "Favor preencher esse campo antes de Salvar o registro...",
+                            "Campo Vazio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            epValida.SetError(cmbMeio, "Preencha esse Campo")
+            cmbMeio.Focus()
+            Return False
+        End If
+        '
+        '--- verifica duplicação de descricao movtipo
+        For Each row In dtTipos.Rows
+            If Not row.Equals(r.Row) Then
+                If r("MovTipo").ToString.ToUpper = row("MovTipo").ToString.ToUpper Then
+                    MessageBox.Show("A descrição do Meio de Pagamento deve ser exclusiva..." & vbCrLf &
+                                    "O campo descrição está DUPLICADO, favor usar uma descrição diferente.",
+                                    "Campo Duplicado", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Exclamation)
+                    epValida.SetError(txtMovTipo, "Valor duplicado")
+                    txtMovTipo.Focus()
+                    Return False
+                End If
+            End If
+        Next
+        '
+        Return True
+        '
     End Function
     '
 #End Region

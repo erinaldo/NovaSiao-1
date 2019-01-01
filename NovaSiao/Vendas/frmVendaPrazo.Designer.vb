@@ -19,6 +19,7 @@ Partial Class frmVendaPrazo
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        Me.components = New System.ComponentModel.Container()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -105,11 +106,6 @@ Partial Class frmVendaPrazo
         Me.Label13 = New System.Windows.Forms.Label()
         Me.lblSituacao = New System.Windows.Forms.Label()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.mnuItens = New VIBlend.WinForms.Controls.vContextMenu()
-        Me.MenuItemEditar = New System.Windows.Forms.MenuItem()
-        Me.MenuItemInserir = New System.Windows.Forms.MenuItem()
-        Me.MenuItem3 = New System.Windows.Forms.MenuItem()
-        Me.MenuItemExcluir = New System.Windows.Forms.MenuItem()
         Me.VApplicationMenuItem2 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
         Me.VApplicationMenuItem3 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
         Me.VApplicationMenuItem4 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
@@ -139,6 +135,11 @@ Partial Class frmVendaPrazo
         Me.DataGridViewTextBoxColumn11 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DataGridViewTextBoxColumn12 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DataGridViewTextBoxColumn13 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.mnuContexto = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.mnuItemEditar = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.mnuItemInserir = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuItemExcluir = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -150,6 +151,7 @@ Partial Class frmVendaPrazo
         Me.VPanel1.Content.SuspendLayout()
         Me.VPanel1.SuspendLayout()
         Me.tspMenuAcao.SuspendLayout()
+        Me.mnuContexto.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -170,13 +172,13 @@ Partial Class frmVendaPrazo
         Me.Panel1.Controls.SetChildIndex(Me.lblIDVenda, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblSituacao, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnData, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lbl_IdTexto, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label15, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label3, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblFilial, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label18, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         '
         'lblTitulo
         '
@@ -259,9 +261,10 @@ Partial Class frmVendaPrazo
         DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlLightLight
         DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvItens.DefaultCellStyle = DataGridViewCellStyle3
+        Me.dgvItens.Dock = System.Windows.Forms.DockStyle.Fill
         Me.dgvItens.EnableHeadersVisualStyles = False
         Me.dgvItens.GridColor = System.Drawing.SystemColors.ActiveCaption
-        Me.dgvItens.Location = New System.Drawing.Point(9, 9)
+        Me.dgvItens.Location = New System.Drawing.Point(4, 4)
         Me.dgvItens.Name = "dgvItens"
         Me.dgvItens.ReadOnly = True
         DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
@@ -274,7 +277,7 @@ Partial Class frmVendaPrazo
         Me.dgvItens.RowHeadersDefaultCellStyle = DataGridViewCellStyle4
         Me.dgvItens.RowHeadersWidth = 35
         Me.dgvItens.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.dgvItens.Size = New System.Drawing.Size(1012, 444)
+        Me.dgvItens.Size = New System.Drawing.Size(1022, 454)
         Me.dgvItens.TabIndex = 0
         '
         'clnIDTransacaoItem
@@ -1001,7 +1004,7 @@ Partial Class frmVendaPrazo
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.ForeColor = System.Drawing.Color.Silver
         Me.Label3.Location = New System.Drawing.Point(166, 4)
         Me.Label3.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label3.Name = "Label3"
@@ -1015,7 +1018,7 @@ Partial Class frmVendaPrazo
         Me.lbl_IdTexto.AutoSize = True
         Me.lbl_IdTexto.BackColor = System.Drawing.Color.Transparent
         Me.lbl_IdTexto.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbl_IdTexto.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lbl_IdTexto.ForeColor = System.Drawing.Color.Silver
         Me.lbl_IdTexto.Location = New System.Drawing.Point(29, 4)
         Me.lbl_IdTexto.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lbl_IdTexto.Name = "lbl_IdTexto"
@@ -1092,7 +1095,7 @@ Partial Class frmVendaPrazo
         Me.lblSituacao.BackColor = System.Drawing.Color.Transparent
         Me.lblSituacao.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblSituacao.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblSituacao.Location = New System.Drawing.Point(320, 16)
+        Me.lblSituacao.Location = New System.Drawing.Point(512, 16)
         Me.lblSituacao.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblSituacao.Name = "lblSituacao"
         Me.lblSituacao.Size = New System.Drawing.Size(145, 30)
@@ -1105,38 +1108,14 @@ Partial Class frmVendaPrazo
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label15.Location = New System.Drawing.Point(357, 4)
+        Me.Label15.ForeColor = System.Drawing.Color.Silver
+        Me.Label15.Location = New System.Drawing.Point(549, 4)
         Me.Label15.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(67, 13)
         Me.Label15.TabIndex = 51
         Me.Label15.Text = "Situação:"
         Me.Label15.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        '
-        'mnuItens
-        '
-        Me.mnuItens.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.MenuItemEditar, Me.MenuItemInserir, Me.MenuItem3, Me.MenuItemExcluir})
-        '
-        'MenuItemEditar
-        '
-        Me.MenuItemEditar.Index = 0
-        Me.MenuItemEditar.Text = "Editar Item"
-        '
-        'MenuItemInserir
-        '
-        Me.MenuItemInserir.Index = 1
-        Me.MenuItemInserir.Text = "Inserir Novo Item"
-        '
-        'MenuItem3
-        '
-        Me.MenuItem3.Index = 2
-        Me.MenuItem3.Text = "-"
-        '
-        'MenuItemExcluir
-        '
-        Me.MenuItemExcluir.Index = 3
-        Me.MenuItemExcluir.Text = "Excluir Item"
         '
         'VApplicationMenuItem2
         '
@@ -1206,8 +1185,8 @@ Partial Class frmVendaPrazo
         Me.Label18.AutoSize = True
         Me.Label18.BackColor = System.Drawing.Color.Transparent
         Me.Label18.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label18.Location = New System.Drawing.Point(522, 4)
+        Me.Label18.ForeColor = System.Drawing.Color.Silver
+        Me.Label18.Location = New System.Drawing.Point(372, 4)
         Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(43, 13)
@@ -1220,10 +1199,10 @@ Partial Class frmVendaPrazo
         Me.lblFilial.BackColor = System.Drawing.Color.Transparent
         Me.lblFilial.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblFilial.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblFilial.Location = New System.Drawing.Point(473, 16)
+        Me.lblFilial.Location = New System.Drawing.Point(301, 16)
         Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblFilial.Name = "lblFilial"
-        Me.lblFilial.Size = New System.Drawing.Size(145, 30)
+        Me.lblFilial.Size = New System.Drawing.Size(193, 30)
         Me.lblFilial.TabIndex = 55
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1421,6 +1400,38 @@ Partial Class frmVendaPrazo
         Me.DataGridViewTextBoxColumn13.Name = "DataGridViewTextBoxColumn13"
         Me.DataGridViewTextBoxColumn13.Width = 120
         '
+        'mnuContexto
+        '
+        Me.mnuContexto.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuItemEditar, Me.ToolStripSeparator3, Me.mnuItemInserir, Me.mnuItemExcluir})
+        Me.mnuContexto.Name = "mnuContexto"
+        Me.mnuContexto.Size = New System.Drawing.Size(136, 76)
+        '
+        'mnuItemEditar
+        '
+        Me.mnuItemEditar.Image = Global.NovaSiao.My.Resources.Resources.editar
+        Me.mnuItemEditar.Name = "mnuItemEditar"
+        Me.mnuItemEditar.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemEditar.Text = "Editar Item"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(132, 6)
+        '
+        'mnuItemInserir
+        '
+        Me.mnuItemInserir.Image = Global.NovaSiao.My.Resources.Resources.add
+        Me.mnuItemInserir.Name = "mnuItemInserir"
+        Me.mnuItemInserir.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemInserir.Text = "Inserir Item"
+        '
+        'mnuItemExcluir
+        '
+        Me.mnuItemExcluir.Image = Global.NovaSiao.My.Resources.Resources.delete
+        Me.mnuItemExcluir.Name = "mnuItemExcluir"
+        Me.mnuItemExcluir.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemExcluir.Text = "Excluir Item"
+        '
         'frmVendaPrazo
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
@@ -1465,6 +1476,7 @@ Partial Class frmVendaPrazo
         Me.VPanel1.ResumeLayout(False)
         Me.tspMenuAcao.ResumeLayout(False)
         Me.tspMenuAcao.PerformLayout()
+        Me.mnuContexto.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1511,11 +1523,6 @@ Partial Class frmVendaPrazo
     Friend WithEvents clnTotal As DataGridViewTextBoxColumn
     Friend WithEvents Label15 As Label
     Friend WithEvents lblSituacao As Label
-    Friend WithEvents mnuItens As VIBlend.WinForms.Controls.vContextMenu
-    Friend WithEvents MenuItemEditar As MenuItem
-    Friend WithEvents MenuItemInserir As MenuItem
-    Friend WithEvents MenuItem3 As MenuItem
-    Friend WithEvents MenuItemExcluir As MenuItem
     Friend WithEvents VApplicationMenuItem2 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem3 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem4 As VIBlend.WinForms.Controls.vApplicationMenuItem
@@ -1582,4 +1589,9 @@ Partial Class frmVendaPrazo
     Friend WithEvents DataGridViewTextBoxColumn12 As DataGridViewTextBoxColumn
     Friend WithEvents DataGridViewTextBoxColumn13 As DataGridViewTextBoxColumn
     Friend WithEvents btnDesbloquearVenda As ToolStripButton
+    Friend WithEvents mnuContexto As ContextMenuStrip
+    Friend WithEvents mnuItemEditar As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
+    Friend WithEvents mnuItemInserir As ToolStripMenuItem
+    Friend WithEvents mnuItemExcluir As ToolStripMenuItem
 End Class

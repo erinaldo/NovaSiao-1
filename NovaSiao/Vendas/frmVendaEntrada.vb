@@ -4,13 +4,15 @@ Imports CamadaDTO
 Public Class frmVendaEntrada
     Private _formOrigem As Form
     Private _vlMaximo As Double
-    Private _VerAlteracao As Boolean
     Private _Pag As clMovimentacao
     Private _Acao As FlagAcao
     Private bindPag As New BindingSource
     '
     Private dtTipo As DataTable
-    Private dtForma As DataTable
+    'Private dtForma As DataTable
+    Private lstForma As List(Of clMovForma)
+    '
+#Region "NEW | BINDING | COMBOBOX"
     '
     '-------------------------------------------------------------------------------------------------
     ' SUB NEW
@@ -26,20 +28,34 @@ Public Class frmVendaEntrada
         '
         ' Add any initialization after the InitializeComponent() call.
         _formOrigem = fOrigem
-        _VerAlteracao = False
         _vlMaximo = TranVlTotal
         _Pag = Pag
         _Acao = Acao
         '
         '--- Preenche a lsita de Formas e Tipos
         Dim TipoBLL As New MovimentacaoBLL
-        dtForma = TipoBLL.MovForma_GET_DT(True)
-        dtTipo = TipoBLL.MovTipo_GET_Dt(True)
         '
+        '--- Get DataTable Tipos e Formas
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            lstForma = TipoBLL.MovForma_GET_List(True)
+            dtTipo = TipoBLL.MovTipo_GET_Dt(True)
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Evento..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+        PreencheListagem()
         bindPag.DataSource = _Pag
         PreencheDataBinding()
         '
-        ' Verifica valor do Combo MovTipo pelo MovForma
+        ' Verifica valor do IDMovTipo pelo MovForma
         If IsNothing(_Pag.IDMovForma) Then
             '
             txtFormaTipo.Text = ""
@@ -47,12 +63,9 @@ Public Class frmVendaEntrada
             '
         Else
             '
-            For Each r As DataRow In dtForma.Rows
-                If r("IDMovForma") = _Pag.IDMovForma Then
-                    txtFormaTipo.Text = r("MovTipo")
-                    _Pag.IDMovTipo = r("IDMovTipo")
-                End If
-            Next
+            Dim f = lstForma.Single(Function(x) x.IDMovForma = _Pag.IDMovForma)
+            txtFormaTipo.Text = f.MovTipo
+            _Pag.IDMovTipo = f.IDMovTipo
             '
         End If
         '
@@ -65,8 +78,6 @@ Public Class frmVendaEntrada
             Location = Posicao
         End If
         '
-        _VerAlteracao = True
-        '
     End Sub
     '
     '------------------------------------------------------------------------------------------
@@ -75,9 +86,7 @@ Public Class frmVendaEntrada
     Private Sub PreencheDataBinding()
         '
         txtValor.DataBindings.Add("Text", bindPag, "MovValor", True, DataSourceUpdateMode.OnPropertyChanged)
-        '
-        ' CARREGA OS COMBOBOX
-        CarregaCmbForma()
+        lstItens.DataBindings.Add("Text", bindPag, "IDMovForma", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler txtValor.DataBindings("Text").Format, AddressOf FormatCUR
@@ -88,25 +97,157 @@ Public Class frmVendaEntrada
         e.Value = FormatCurrency(e.Value, 2)
     End Sub
     '
-    '------------------------------------------------------------------------------------------
-    ' CARREGAR OS COMBOBOX
-    '------------------------------------------------------------------------------------------
+#End Region '/ NEW | BINDING | COMBOBOX
     '
-    Private Sub CarregaCmbForma()
+#Region "LISTAGEM"
+    '
+    '--- PREENCHE LISTAGEM
+    Private Sub PreencheListagem()
+        lstItens.DataSource = lstForma '.OrderBy(Function(x) x.MovForma).ToList
+        FormataListagem()
+        HabilitaPesquisa()
+    End Sub
+    '
+    '--- FORMATA LISTAGEM DE CLIENTE
+    Private Sub FormataListagem()
         '
-        With cmbForma
-            .DataSource = dtForma
-            .DisplayMember = "MovForma"
-            .ValueMember = "IDMovForma"
-            .DataBindings.Add("SelectedValue", bindPag, "IDMovForma", True, DataSourceUpdateMode.OnPropertyChanged)
-        End With
+        lstItens.MultiSelect = False
+        lstItens.HideSelection = False
+        '
+        clnForma.ValueMember = "IDMovForma"
+        clnForma.DisplayMember = "MovForma"
+        '
+    End Sub
+    '
+#End Region '/ LISTAGEM
+    '
+#Region "ATALHOS | FUNCOES UTILITARIAS"
+    '
+    '------------------------------------------------------------------------------------------
+    ' USAR TAB AO KEYPRESS ENTER
+    '------------------------------------------------------------------------------------------
+    Private Sub txt_KeyDown(sender As Object, e As KeyEventArgs) _
+        Handles txtValor.KeyDown, txtFormaTipo.KeyDown,
+        lstItens.KeyDown, txtPesquisa.KeyDown
+        '
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            SendKeys.Send("{Tab}")
+        End If
+        '
+    End Sub
+    '
+    '---------------------------------------------------------------------------------------
+    '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
+    '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
+    '---------------------------------------------------------------------------------------
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _
+        Handles txtFormaTipo.KeyDown, txtPesquisa.KeyDown
+        '
+        Dim ctr As Control = DirectCast(sender, Control)
+        '
+        If e.KeyCode = Keys.Add Then
+            e.Handled = True
+            '
+            Select Case ctr.Name
+                Case "txtFormaTipo"
+                    btnProcurarTipo_Click(New Object, New EventArgs)
+            End Select
+            '
+        ElseIf e.KeyCode = Keys.Delete Then
+            e.Handled = True
+            Select Case ctr.Name
+                Case "txtFormaTipo"
+                    txtFormaTipo.Clear()
+                    _Pag.IDMovTipo = Nothing
+                    FiltrarListagem()
+                Case "txtPesquisa"
+                    txtPesquisa.Clear()
+                    FiltrarListagem()
+            End Select
+            '
+        End If
         '
     End Sub
     '
     '------------------------------------------------------------------------------------------
-    ' CRIA UM ATALHO PARA OS COMBO BOX
+    '--- QUANDO PRESSIONA A TECLA ESC FECHA O FORMULARIO
+    '--- QUANDO A TECLA CIMA E BAIXO NAVEGA ENTRE OS ITENS DA LISTAGEM
     '------------------------------------------------------------------------------------------
-    Private Sub txtFormaTipo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtFormaTipo.KeyPress
+    Private Sub Me_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        If e.KeyCode = Keys.Escape Then
+            e.Handled = True
+            btnCancelar_Click(New Object, New EventArgs)
+            '
+        ElseIf e.KeyCode = Keys.Up Then
+            e.Handled = True
+            '
+            If lstItens.Items.Count > 0 Then
+                If lstItens.SelectedItems.Count > 0 Then
+                    Dim i As Integer = lstItens.SelectedItems(0).Index
+                    '
+                    lstItens.Items(i).Selected = False
+                    '
+                    If i = 0 Then
+                        i = lstItens.Items.Count
+                    End If
+                    '
+                    lstItens.Items(i - 1).Selected = True
+                    lstItens.EnsureVisible(i - 1)
+                Else
+                    lstItens.Items(0).Selected = True
+                    lstItens.EnsureVisible(0)
+                End If
+            End If
+            '
+        ElseIf e.KeyCode = Keys.Down Then
+            e.Handled = True
+            '
+            If lstItens.Items.Count > 0 Then
+                If lstItens.SelectedItems.Count > 0 Then
+                    Dim i As Integer = lstItens.SelectedItems(0).Index
+                    '
+                    lstItens.Items(i).Selected = False
+                    '
+                    If i = lstItens.Items.Count - 1 Then
+                        i = -1
+                    End If
+                    '
+                    lstItens.Items(i + 1).Selected = True
+                    lstItens.EnsureVisible(i + 1)
+                Else
+                    lstItens.Items(0).Selected = True
+                End If
+            End If
+            '
+        End If
+    End Sub
+
+    '
+    '------------------------------------------------------------------------------------------
+    '--- BLOQUEIA PRESS A TECLA (+)
+    '---------------------------------------------------------------------------------------
+    Private Sub me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
+        '
+        If e.KeyChar = "+" Then
+            '--- cria uma lista de controles que serao impedidos de receber '+'
+            Dim controlesBloqueados As String() = {
+                "txtFormaTipo"
+            }
+            '
+            If controlesBloqueados.Contains(ActiveControl.Name) Then
+                e.Handled = True
+            End If
+            '
+        End If
+        '
+    End Sub
+    '
+    '------------------------------------------------------------------------------------------
+    ' CRIA UM ATALHO NUMERICO PARA o CONTROLE
+    '------------------------------------------------------------------------------------------
+    Private Sub txtFormaTipo_KeyPress(sender As Object, e As KeyPressEventArgs) _
+        Handles txtFormaTipo.KeyPress
         '
         If Char.IsNumber(e.KeyChar) Then
             e.Handled = True
@@ -119,6 +260,9 @@ Public Class frmVendaEntrada
                 '
                 _Pag.IDMovTipo = Valor
                 txtFormaTipo.Text = dtTipo.Rows(e.KeyChar.ToString - 1)("MovTipo")
+                FiltrarListagem()
+                '
+                HabilitaPesquisa()
                 '
             End If
         Else
@@ -127,54 +271,58 @@ Public Class frmVendaEntrada
         '
     End Sub
     '
-    '-------------------------------------------------------------------------------------------------
-    ' SELECIONA A FORMA DE PAGAMENTO CRIANDO ATALHO NUMERICO
-    '-------------------------------------------------------------------------------------------------
-    Private Sub cmbForma_KeyPress(sender As Object, e As KeyPressEventArgs) Handles cmbForma.KeyPress
+#End Region '/ ATALHOS | FUNCOES UTILITARIAS
+    '
+#Region "PESQUISA"
+    '
+    '------------------------------------------------------------------------------------------
+    ' ALTERA A FORMA DE PAGAMENTO PELA ALTERACAO DO TIPO DE PAGAMENTO
+    '------------------------------------------------------------------------------------------
+    '
+    '--- FILTAR LISTAGEM PELO TIPO E PESQUISA TEXTO
+    Private Sub FiltrarListagem()
         '
-        If Char.IsNumber(e.KeyChar) Then
-            e.Handled = True
-            '
-            Dim num As Integer = e.KeyChar.ToString
-            Dim dtF As DataTable = cmbForma.DataSource
-            Dim i As Integer = 1
-            '
-            For Each r As DataRow In dtF.Rows
-                '
-                If r("IDMovTipo") = _Pag.IDMovTipo Then
-                    If num = i Then
-                        _Pag.IDMovForma = r("IDMovForma")
-                        cmbForma.DataBindings("SelectedValue").ReadValue()
-                        Exit For
-                    Else
-                        i += 1
-                    End If
-                End If
-                '
-            Next
+        lstItens.DataSource = lstForma.FindAll(AddressOf FindProduto).OrderBy(Function(x) x.MovForma).ToList
+        '
+        If lstItens.Items.Count = 1 Then
+            lstItens.SelectedIndices(0) = 0
+            _Pag.IDMovForma = lstItens.SelectedItems(0).Value
         End If
         '
     End Sub
     '
-    '-------------------------------------------------------------------------------------------------
-    ' CONSTRUIR UMA BORDA NO FORMULÁRIO
-    '-------------------------------------------------------------------------------------------------
-    Protected Overrides Sub OnPaintBackground(ByVal e As PaintEventArgs)
-        MyBase.OnPaintBackground(e)
-
-        Dim rect As New Rectangle(0, 0, Me.ClientSize.Width - 1, Me.ClientSize.Height - 1)
-        Dim pen As New Pen(Color.SlateGray, 3)
-
-        e.Graphics.DrawRectangle(pen, rect)
+    Private Function FindProduto(ByVal f As clMovForma) As Boolean
+        '
+        If (f.MovForma.ToLower Like "*" & txtPesquisa.Text.ToLower & "*") AndAlso
+           If(_Pag.IDMovTipo = 0, True, (_Pag.IDMovTipo = f.IDMovTipo)) Then
+            Return True
+        Else
+            Return False
+        End If
+        '
+    End Function
+    '
+    '--- TORNA VISIVEL O TXTPESQUISA PARA PROCURA
+    Private Sub HabilitaPesquisa()
+        '
+        If lstItens.Items.Count > 5 Then
+            txtPesquisa.Visible = True
+            lblPesquisa.Visible = True
+        Else
+            txtPesquisa.Clear()
+            txtPesquisa.Visible = False
+            lblPesquisa.Visible = False
+        End If
+        '
     End Sub
     '
-    Private Sub Me_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
-        If e.KeyCode = Keys.Escape Then
-            e.Handled = True
-            '
-            btnCancelar_Click(New Object, New EventArgs)
-        End If
+    Private Sub txtPesquisa_TextChanged(sender As Object, e As EventArgs) Handles txtPesquisa.TextChanged
+        FiltrarListagem()
     End Sub
+    '
+#End Region '/ PESQUISA
+    '
+#Region "BUTONS ACTIONS"
     '
     '------------------------------------------------------------------------------------------
     ' ACAO DOS BOTOES
@@ -190,12 +338,13 @@ Public Class frmVendaEntrada
             Exit Sub
         End If
         '
-        If IsNothing(_Pag.IDMovForma) Then
+        If lstItens.SelectedItems.Count > 0 Then
+            _Pag.IDMovForma = lstItens.SelectedItems(0).Value
+        Else
             MessageBox.Show("O campo FORMA de Entrada não pode ficar vazio..." & vbNewLine &
                             "Favor escolher um valor para esse campo.", "Campo Vazio",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
-            cmbForma.Focus()
-            cmbForma.DroppedDown = True
+            lstItens.Focus()
             Exit Sub
         End If
         '
@@ -212,8 +361,8 @@ Public Class frmVendaEntrada
         '--- Devolve o pagamento para o formOrigem
         Select Case _formOrigem.Name
             Case "frmVendaVista"
-                _Pag.MovForma = txtFormaTipo.Text
-                _Pag.IDMovForma = cmbForma.SelectedValue
+                _Pag.MovForma = lstItens.SelectedItems(0).Text
+                _Pag.IDMovForma = lstItens.SelectedItems(0).Value
                 '
                 If _Acao = FlagAcao.INSERIR Then
                     DirectCast(_formOrigem, frmVendaVista).Pagamentos_Manipulacao(_Pag, FlagAcao.INSERIR)
@@ -227,43 +376,47 @@ Public Class frmVendaEntrada
         Close()
     End Sub
     '
+    '--- BTN FECHAR | CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         Close()
     End Sub
     '
-    '------------------------------------------------------------------------------------------
-    ' ALTERA A FORMA DE PAGAMENTO PELA ALTERACAO DO TIPO DE ENTRADA
-    '------------------------------------------------------------------------------------------
-    Private Sub txtFormaTipo_Validated(sender As Object, e As EventArgs) Handles txtFormaTipo.Validated
+    '--- BTN PROCURAR TIPO
+    Private Sub btnProcurarTipo_Click(sender As Object, e As EventArgs) Handles btnProcurarTipo.Click
         '
-        If _VerAlteracao = False Then Exit Sub
-        If IsNothing(_Pag.IDMovTipo) OrElse _Pag.IDMovTipo = 0 Then Exit Sub
+        '---abre o formTipos
+        Dim frmTipo As New frmMovTipoProcurar(Me)
+        frmTipo.ShowDialog()
         '
-        dtForma.DefaultView.RowFilter = "IDMovTipo = " & _Pag.IDMovTipo
-        '
-        _VerAlteracao = False
-        '
-        If cmbForma.Items.Count = 1 Then
-            cmbForma.SelectedIndex = 0
-            _Pag.IDMovForma = dtForma.Rows(0).Item("IDMovForma")
-        Else
-            cmbForma.SelectedIndex = -1
+        '---verifica os valores
+        If frmTipo.DialogResult <> DialogResult.OK Then
+            txtFormaTipo.Focus()
+            Exit Sub
         End If
         '
-        _VerAlteracao = True
+        '--- grava os novos valores
+        txtFormaTipo.Text = frmTipo.propMovTipo_Escolha
+        _Pag.IDMovTipo = frmTipo.propIdMovTipo_Escolha
+        FiltrarListagem()
+        txtFormaTipo.Focus()
+        txtFormaTipo.SelectAll()
         '
     End Sub
     '
-    '------------------------------------------------------------------------------------------
-    ' USAR TAB AO KEYPRESS ENTER
-    '------------------------------------------------------------------------------------------
-    Private Sub txt_KeyDown(sender As Object, e As KeyEventArgs) Handles txtValor.KeyDown, txtFormaTipo.KeyDown
-        '
-        If e.KeyCode = Keys.Enter Then
-            e.SuppressKeyPress = True
-            SendKeys.Send("{Tab}")
-        End If
-        '
+#End Region '/ BUTONS ACTIONS
+    '
+#Region "EFEITO VISUAL"
+    '
+    '-------------------------------------------------------------------------------------------------
+    ' CONSTRUIR UMA BORDA NO FORMULÁRIO
+    '-------------------------------------------------------------------------------------------------
+    Protected Overrides Sub OnPaintBackground(ByVal e As PaintEventArgs)
+        MyBase.OnPaintBackground(e)
+
+        Dim rect As New Rectangle(0, 0, Me.ClientSize.Width - 1, Me.ClientSize.Height - 1)
+        Dim pen As New Pen(Color.SlateGray, 3)
+
+        e.Graphics.DrawRectangle(pen, rect)
     End Sub
     '
     '-------------------------------------------------------------------------------------------------
@@ -288,5 +441,7 @@ Public Class frmVendaEntrada
             End If
         Next
     End Sub
+    '
+#End Region '/ EFEITO VISUAL
     '
 End Class

@@ -689,7 +689,14 @@ Public Class frmVendaPrazo
         Editar_Item()
     End Sub
     '
+#End Region
+    '
+#Region "MENU CONTEXTO"
+    '
+    ' CONTROLA O MENU CONTEXTO NO DATAGRID ITENS
+    '-----------------------------------------------------------------------------------------------------
     Private Sub dgvItens_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvItens.MouseDown
+        '
         If e.Button = MouseButtons.Right Then
             'Dim c As Control = DirectCast(sender, Control)
             Dim hit As DataGridView.HitTestInfo = dgvItens.HitTest(e.X, e.Y)
@@ -702,27 +709,69 @@ Public Class frmVendaPrazo
             dgvItens.Rows(hit.RowIndex).Selected = True
             '
             'mnuItens.Show(dgvItens, c.PointToScreen(e.Location))
-            mnuItens.Show(dgvItens, e.Location)
+            mnuContexto.Show(dgvItens, e.Location)
+            '
+        End If
+        '
+    End Sub
+    '
+    ' CONTROLA O MENU CONTEXTO NO DATAGRID ARECEBER
+    '-----------------------------------------------------------------------------------------------------
+    Private Sub dgvAReceber_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvAReceber.MouseDown
+        If e.Button = MouseButtons.Right Then
+            'Dim c As Control = DirectCast(sender, Control)
+            Dim hit As DataGridView.HitTestInfo = dgvAReceber.HitTest(e.X, e.Y)
+            dgvAReceber.ClearSelection()
+            '
+            If Not hit.Type = DataGridViewHitTestType.Cell Then Exit Sub
+            '
+            ' seleciona o ROW
+            dgvAReceber.CurrentCell = dgvAReceber.Rows(hit.RowIndex).Cells(1)
+            dgvAReceber.Rows(hit.RowIndex).Selected = True
+            dgvAReceber.Focus()
+            '
+            mnuContexto.Show(dgvAReceber, e.Location)
             '
         End If
     End Sub
     '
-    Private Sub MenuItemEditar_Click(sender As Object, e As EventArgs) Handles MenuItemEditar.Click
-        Editar_Item()
+    ' CONTROLA ACOES DO MENU CONTEXTO
+    '-----------------------------------------------------------------------------------------------------
+    Private Sub MenuItemEditar_Click(sender As Object, e As EventArgs) Handles mnuItemEditar.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Editar_Item()
+        Else
+            Parcela_Editar()
+        End If
+        '
     End Sub
     '
-    Private Sub MenuItemInserir_Click(sender As Object, e As EventArgs) Handles MenuItemInserir.Click
-        Inserir_Item()
+    Private Sub MenuItemInserir_Click(sender As Object, e As EventArgs) Handles mnuItemInserir.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Inserir_Item()
+        Else
+            Parcela_Adicionar()
+        End If
+        '
     End Sub
     '
-    Private Sub MenuItemExcluir_Click(sender As Object, e As EventArgs) Handles MenuItemExcluir.Click
-        Excluir_Item()
+    Private Sub MenuItemExcluir_Click(sender As Object, e As EventArgs) Handles mnuItemExcluir.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Excluir_Item()
+        Else
+            Parcela_Excluir()
+        End If
+        '
     End Sub
     '
-#End Region
+#End Region '/ MENU CONTEXTO
     '
 #Region "BOTOES DE ACAO"
     '
+    '--- FECHAR | CLOSE
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
         '
         If Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado Then
@@ -820,7 +869,12 @@ Public Class frmVendaPrazo
         '
     End Sub
     '
+#End Region
+    '
+#Region "MENU ACAO INFERIOR"
+    '
     '--- CONTROLE DO MENU ACAO INFERIOR
+    '=====================================
     Private Sub tsbButtonClick(sender As Object, e As EventArgs)
         '
         DirectCast(sender, ToolStripSplitButton).ShowDropDown()
@@ -911,7 +965,30 @@ Public Class frmVendaPrazo
         MessageBox.Show("Ainda não foi implementado...")
     End Sub
     '
-#End Region
+    ' CRIA UMA NOVA VENDA
+    '-----------------------------------------------------------------------------------------------------
+    Public Sub NovaVenda()
+        Dim v As New AcaoGlobal
+        Dim newVenda As Object = v.VendaPrazo_Nova
+        '
+        If IsNothing(newVenda) Then Exit Sub
+        '
+        _Venda = newVenda
+        '
+    End Sub
+    '
+    ' PROCURA VENDA
+    '-----------------------------------------------------------------------------------------------------
+    Public Sub ProcuraVenda()
+        Me.Close()
+        Dim frmP As New frmOperacaoSaidaProcurar
+        OcultaMenuPrincipal()
+        Dim fPrincipal As Form = Application.OpenForms.OfType(Of frmPrincipal)().First
+        frmP.MdiParent = fPrincipal
+        frmP.Show()
+    End Sub
+    '
+#End Region '/ MENU ACAO INFERIOR
     '
 #Region "FORMATACAO E FLUXO"
     '
@@ -1147,13 +1224,25 @@ Public Class frmVendaPrazo
     End Sub
     '
     Private Sub Parcela_Adicionar()
+        '
         '--- Atualiza o Valor do Total Geral
         Dim vl As Double = AtualizaTotalGeral()
+        Dim totalParcelas As Double = AtualizaTotalAReceber()
+        '
         '--- Verifica se o valor dos itens é maior que zero
         If vl = 0 Then
-            MessageBox.Show("Não é possivel adicionar Parcelas de A Receber" & vbNewLine &
-                            "Quando o valor da Venda ainda é igual a Zero..." & vbNewLine &
+            MessageBox.Show("Não é possivel adicionar Parcelas de A Receber." & vbNewLine &
+                            "O valor da Venda ainda é igual a Zero..." & vbNewLine &
                             "Adicione produtos primeiro e depois tente novamente.", "Nova Parcela",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Exit Sub
+        End If
+        '
+        '--- Verifica se o valor das parcelas é maior que o total da venda
+        If totalParcelas >= vl Then
+            MessageBox.Show("Não é possivel adicionar Parcelas de A Receber..." & vbNewLine &
+                            "O valor das Parcelas já é igual ou maior ao Total da Venda.",
+                            "Nova Parcela",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
         End If
@@ -1214,9 +1303,11 @@ Public Class frmVendaPrazo
         '--- AtualizaTotalAReceber
         AtualizaTotalAReceber()
         Sit = FlagEstado.Alterado
+        '
     End Sub
     '
     Private Sub Parcela_Excluir()
+        '    
         '--- verifica se existe alguma parcela selecionada
         If dgvAReceber.SelectedRows.Count = 0 Then Exit Sub
         '
@@ -1245,6 +1336,7 @@ Public Class frmVendaPrazo
         '--- AtualizaTotalAReceber
         AtualizaTotalAReceber()
         Sit = FlagEstado.Alterado
+        '
     End Sub
     '
     Private Sub cmbIDPlano_SelectedValueChanged(sender As Object, e As EventArgs) Handles cmbIDPlano.SelectedValueChanged
@@ -1278,7 +1370,7 @@ Public Class frmVendaPrazo
         If Not IsNothing(_Venda.IDPlano) Then 'AndAlso cmbIDPlano.SelectedValue <> _Venda.IDPlano Then
             Dim a As DialogResult
             a = MessageBox.Show("Você deseja realmente alterar a forma de parcelamento dessa venda?",
-                            "Alterar Parcelamento", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                "Alterar Parcelamento", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
             If a = DialogResult.No Then
                 VerificaAlteracao = False
                 cmbIDPlano.SelectedValue = IIf(IsNothing(_Venda.IDPlano), -1, _Venda.IDPlano)
@@ -1350,26 +1442,8 @@ Public Class frmVendaPrazo
         dgvAReceber.BackgroundColor = c
     End Sub
     '
-    ' CONTROLA O MENU NO DATAGRID ARECEBER
+    ' DOUBLE CLICK DGV ARECEBER
     '-----------------------------------------------------------------------------------------------------
-    Private Sub dgvAReceber_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvAReceber.MouseDown
-        If e.Button = MouseButtons.Right Then
-            'Dim c As Control = DirectCast(sender, Control)
-            Dim hit As DataGridView.HitTestInfo = dgvAReceber.HitTest(e.X, e.Y)
-            dgvAReceber.ClearSelection()
-            '
-            If Not hit.Type = DataGridViewHitTestType.Cell Then Exit Sub
-            '
-            ' seleciona o ROW
-            dgvAReceber.CurrentCell = dgvAReceber.Rows(hit.RowIndex).Cells(1)
-            dgvAReceber.Rows(hit.RowIndex).Selected = True
-            dgvAReceber.Focus()
-            '
-            mnuItens.Show(dgvAReceber, e.Location)
-            '
-        End If
-    End Sub
-    '
     Private Sub dgvAReceber_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvAReceber.CellDoubleClick
         Parcela_Editar()
     End Sub
@@ -1581,29 +1655,6 @@ Public Class frmVendaPrazo
         End If
     End Function
     '
-    ' CRIA UMA NOVA VENDA
-    '-----------------------------------------------------------------------------------------------------
-    Public Sub NovaVenda()
-        Dim v As New AcaoGlobal
-        Dim newVenda As Object = v.VendaPrazo_Nova
-        '
-        If IsNothing(newVenda) Then Exit Sub
-        '
-        _Venda = newVenda
-        '
-    End Sub
-    '
-    ' PROCURA VENDA
-    '-----------------------------------------------------------------------------------------------------
-    Public Sub ProcuraVenda()
-        Me.Close()
-        Dim frmP As New frmOperacaoSaidaProcurar
-        OcultaMenuPrincipal()
-        Dim fPrincipal As Form = Application.OpenForms.OfType(Of frmPrincipal)().First
-        frmP.MdiParent = fPrincipal
-        frmP.Show()
-    End Sub
-    '
     ' RECALCULA VALORES QUANDO ALTERA CONTROLES VALOR
     '-----------------------------------------------------------------------------------------------------
     Private Sub ValorText_Validated(sender As Object, e As EventArgs) Handles txtValorFrete.Validated,
@@ -1657,6 +1708,7 @@ Public Class frmVendaPrazo
     ' FUNCAO QUE CONFERE REGISTRO BLOQUEADO E EMITE MENSAGEM PADRAO
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroBloqueado() As Boolean
+        '
         If Sit = FlagEstado.RegistroBloqueado Then
             MessageBox.Show("Esse registro de Venda está BLOQUEADO para alterações..." &
                             vbNewLine & vbNewLine &
@@ -1666,11 +1718,13 @@ Public Class frmVendaPrazo
         Else
             RegistroBloqueado = False
         End If
+        '
     End Function
     '
     ' FUNCAO QUE CONFERE REGISTRO FINALIZADO E PERGUNTA SE DESEJA ALTERAR
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroFinalizado() As Boolean
+        '
         If Sit = FlagEstado.RegistroSalvo Then
             If MessageBox.Show("Esse registro de Venda já se encontra FINALIZADO..." & vbNewLine &
                                "Deseja realmente fazer alterações nesse registro?",
@@ -1698,6 +1752,7 @@ Public Class frmVendaPrazo
         Else
             RegistroFinalizado = False
         End If
+        '
     End Function
     '
 #End Region

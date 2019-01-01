@@ -1067,6 +1067,7 @@ Public Class frmProduto
     End Sub
     '
     Private Sub frmProduto_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        '
         If e.KeyCode = Keys.Escape AndAlso pnlCalculo.Visible = False Then
             e.Handled = True
             '
@@ -1080,6 +1081,7 @@ Public Class frmProduto
                 End If
             End If
         End If
+        '
     End Sub
     '
 #End Region '// BOTOES FUNCAO

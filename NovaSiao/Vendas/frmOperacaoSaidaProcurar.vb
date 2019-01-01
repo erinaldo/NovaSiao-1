@@ -3,6 +3,7 @@ Imports CamadaDTO
 Imports System.Drawing.Drawing2D
 '
 Public Class frmOperacaoSaidaProcurar
+    '
     Private SourceList As Object
     Private ImgVndAtivo As Image = My.Resources.accept
     Private ImgVndInativo As Image = My.Resources.block
@@ -45,17 +46,25 @@ Public Class frmOperacaoSaidaProcurar
     '
 #Region "EVENTO LOAD"
     '
+    Sub New(Optional Operacao As Byte = 1)
+
+        ' This call is required by the designer.
+        InitializeComponent()
+
+        ' Add any initialization after the InitializeComponent() call.
+        PreencheComboOperacao(Operacao)
+        myMes = ObterDefault("DataPadrao")
+        lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
+        FormataListagem()
+        propOperacao = Operacao '--- 1:Operacao de Venda
+        '
+    End Sub
+    '
     '--- EVENTO LOAD
     Private Sub frmOperacaoSaidaProcurar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
         '--- define a posicao do pnlMes
         pnlMes.Location = New Point(636, 130)
-        '
-        PreencheComboOperacao()
-        myMes = ObterDefault("DataPadrao")
-        lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
-        FormataListagem()
-        propOperacao = 1 '--- Operacao de Venda
         '
         AddHandler cmbOperacao.SelectedIndexChanged, AddressOf Handler_GetList
         AddHandler dtMes.DateChanged, AddressOf dtMes_DateChanged
@@ -63,7 +72,7 @@ Public Class frmOperacaoSaidaProcurar
     End Sub
     '
     '--- PREECHE COMBO OPERACAO
-    Private Sub PreencheComboOperacao()
+    Private Sub PreencheComboOperacao(Optional myDefault As Byte = 1)
         '
         Dim db As New TransacaoBLL
         Dim dtOp As New DataTable
@@ -78,6 +87,7 @@ Public Class frmOperacaoSaidaProcurar
             .DataSource = dtOp
             .ValueMember = "IdOperacao"
             .DisplayMember = "Operacao"
+            .SelectedValue = myDefault
         End With
         '
     End Sub

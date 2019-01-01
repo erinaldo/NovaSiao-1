@@ -19,31 +19,20 @@ Partial Class frmSimplesSaida
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Me.components = New System.ComponentModel.Container()
+        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.tabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
         Me.vtab1 = New VIBlend.WinForms.Controls.vTabPage()
         Me.dgvItens = New System.Windows.Forms.DataGridView()
-        Me.clnIDTransacaoItem = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnRGProduto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnProduto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnQuantidade = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnPreco = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnSubTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnDesconto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.vtab2 = New VIBlend.WinForms.Controls.vTabPage()
         Me.dgvAReceber = New System.Windows.Forms.DataGridView()
-        Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnReg = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnVencimento = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnPermanencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.txtObservacao = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.lblTotalCobrado = New System.Windows.Forms.Label()
@@ -51,7 +40,6 @@ Partial Class frmSimplesSaida
         Me.Label14 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.cmbIDPlano = New Controles.ComboBox_OnlyValues()
         Me.ShapeContainer2 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
         Me.LineShape3 = New Microsoft.VisualBasic.PowerPacks.LineShape()
         Me.LineShape1 = New Microsoft.VisualBasic.PowerPacks.LineShape()
@@ -72,11 +60,6 @@ Partial Class frmSimplesSaida
         Me.Label13 = New System.Windows.Forms.Label()
         Me.lblSituacao = New System.Windows.Forms.Label()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.mnuItens = New VIBlend.WinForms.Controls.vContextMenu()
-        Me.MenuItemEditar = New System.Windows.Forms.MenuItem()
-        Me.MenuItemInserir = New System.Windows.Forms.MenuItem()
-        Me.MenuItem3 = New System.Windows.Forms.MenuItem()
-        Me.MenuItemExcluir = New System.Windows.Forms.MenuItem()
         Me.VApplicationMenuItem2 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
         Me.VApplicationMenuItem3 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
         Me.VApplicationMenuItem4 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
@@ -85,6 +68,46 @@ Partial Class frmSimplesSaida
         Me.lblFilial = New System.Windows.Forms.Label()
         Me.VPanel1 = New VIBlend.WinForms.Controls.vPanel()
         Me.VPanel2 = New VIBlend.WinForms.Controls.vPanel()
+        Me.tspMenuAcao = New System.Windows.Forms.ToolStrip()
+        Me.btnProcurar = New System.Windows.Forms.ToolStripButton()
+        Me.btnAdicionar = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnExcluir = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnImprimir = New System.Windows.Forms.ToolStripSplitButton()
+        Me.miImprimirRelatorio = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuContexto = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.mnuItemEditar = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.mnuItemInserir = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuItemExcluir = New System.Windows.Forms.ToolStripMenuItem()
+        Me.DataGridViewTextBoxColumn1 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn5 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn6 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn7 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn8 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn9 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn10 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn11 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn12 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.DataGridViewTextBoxColumn13 = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnIDTransacaoItem = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnRGProduto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnProduto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnQuantidade = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnPreco = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnSubTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnDesconto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnReg = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnVencimento = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnPermanencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.cmbIDPlano = New Controles.ComboBox_OnlyValues()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -97,6 +120,8 @@ Partial Class frmSimplesSaida
         Me.VPanel1.SuspendLayout()
         Me.VPanel2.Content.SuspendLayout()
         Me.VPanel2.SuspendLayout()
+        Me.tspMenuAcao.SuspendLayout()
+        Me.mnuContexto.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -182,106 +207,47 @@ Partial Class frmSimplesSaida
         '
         Me.dgvItens.AllowUserToAddRows = False
         Me.dgvItens.AllowUserToDeleteRows = False
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.Azure
-        Me.dgvItens.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle9.BackColor = System.Drawing.Color.Azure
+        Me.dgvItens.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle9
         Me.dgvItens.BackgroundColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(243, Byte), Integer))
         Me.dgvItens.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvItens.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal
         Me.dgvItens.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.Color.LightSteelBlue
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvItens.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle10.BackColor = System.Drawing.Color.LightSteelBlue
+        DataGridViewCellStyle10.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle10.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvItens.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle10
         Me.dgvItens.ColumnHeadersHeight = 30
         Me.dgvItens.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnIDTransacaoItem, Me.clnRGProduto, Me.clnProduto, Me.clnQuantidade, Me.clnPreco, Me.clnSubTotal, Me.clnDesconto, Me.clnTotal})
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle3.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle3.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.ControlLightLight
-        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvItens.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle11.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle11.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle11.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle11.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle11.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle11.SelectionForeColor = System.Drawing.SystemColors.ControlLightLight
+        DataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvItens.DefaultCellStyle = DataGridViewCellStyle11
         Me.dgvItens.EnableHeadersVisualStyles = False
         Me.dgvItens.GridColor = System.Drawing.SystemColors.ActiveCaption
         Me.dgvItens.Location = New System.Drawing.Point(9, 9)
         Me.dgvItens.Name = "dgvItens"
         Me.dgvItens.ReadOnly = True
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvItens.RowHeadersDefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle12.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle12.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle12.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvItens.RowHeadersDefaultCellStyle = DataGridViewCellStyle12
         Me.dgvItens.RowHeadersWidth = 35
         Me.dgvItens.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvItens.Size = New System.Drawing.Size(1012, 444)
         Me.dgvItens.TabIndex = 0
-        '
-        'clnIDTransacaoItem
-        '
-        Me.clnIDTransacaoItem.Frozen = True
-        Me.clnIDTransacaoItem.HeaderText = "IDItem"
-        Me.clnIDTransacaoItem.Name = "clnIDTransacaoItem"
-        Me.clnIDTransacaoItem.ReadOnly = True
-        Me.clnIDTransacaoItem.Visible = False
-        '
-        'clnRGProduto
-        '
-        Me.clnRGProduto.Frozen = True
-        Me.clnRGProduto.HeaderText = "Reg."
-        Me.clnRGProduto.Name = "clnRGProduto"
-        Me.clnRGProduto.ReadOnly = True
-        Me.clnRGProduto.Width = 70
-        '
-        'clnProduto
-        '
-        Me.clnProduto.Frozen = True
-        Me.clnProduto.HeaderText = "Produto"
-        Me.clnProduto.Name = "clnProduto"
-        Me.clnProduto.ReadOnly = True
-        Me.clnProduto.Width = 430
-        '
-        'clnQuantidade
-        '
-        Me.clnQuantidade.Frozen = True
-        Me.clnQuantidade.HeaderText = "Qtde"
-        Me.clnQuantidade.Name = "clnQuantidade"
-        Me.clnQuantidade.ReadOnly = True
-        Me.clnQuantidade.Width = 70
-        '
-        'clnPreco
-        '
-        Me.clnPreco.Frozen = True
-        Me.clnPreco.HeaderText = "Preço"
-        Me.clnPreco.Name = "clnPreco"
-        Me.clnPreco.ReadOnly = True
-        '
-        'clnSubTotal
-        '
-        Me.clnSubTotal.Frozen = True
-        Me.clnSubTotal.HeaderText = "SubTotal"
-        Me.clnSubTotal.Name = "clnSubTotal"
-        Me.clnSubTotal.ReadOnly = True
-        '
-        'clnDesconto
-        '
-        Me.clnDesconto.HeaderText = "Desc."
-        Me.clnDesconto.Name = "clnDesconto"
-        Me.clnDesconto.ReadOnly = True
-        Me.clnDesconto.Width = 80
-        '
-        'clnTotal
-        '
-        Me.clnTotal.HeaderText = "Total"
-        Me.clnTotal.Name = "clnTotal"
-        Me.clnTotal.ReadOnly = True
         '
         'vtab2
         '
@@ -293,8 +259,8 @@ Partial Class frmSimplesSaida
         Me.vtab2.Controls.Add(Me.Label14)
         Me.vtab2.Controls.Add(Me.Label5)
         Me.vtab2.Controls.Add(Me.Label6)
-        Me.vtab2.Controls.Add(Me.cmbIDPlano)
         Me.vtab2.Controls.Add(Me.ShapeContainer2)
+        Me.vtab2.Controls.Add(Me.cmbIDPlano)
         Me.vtab2.Dock = System.Windows.Forms.DockStyle.Fill
         Me.vtab2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.vtab2.Location = New System.Drawing.Point(0, 38)
@@ -318,70 +284,33 @@ Partial Class frmSimplesSaida
         Me.dgvAReceber.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvAReceber.ColumnHeadersHeight = 30
         Me.dgvAReceber.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnID, Me.clnReg, Me.clnVencimento, Me.clnPermanencia, Me.clnValor})
-        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle6.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle6.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
-        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvAReceber.DefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle14.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle14.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvAReceber.DefaultCellStyle = DataGridViewCellStyle14
         Me.dgvAReceber.EnableHeadersVisualStyles = False
         Me.dgvAReceber.Location = New System.Drawing.Point(30, 141)
         Me.dgvAReceber.MultiSelect = False
         Me.dgvAReceber.Name = "dgvAReceber"
         Me.dgvAReceber.ReadOnly = True
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle7.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle7.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle7.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
-        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvAReceber.RowHeadersDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle15.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle15.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle15.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle15.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle15.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle15.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvAReceber.RowHeadersDefaultCellStyle = DataGridViewCellStyle15
         Me.dgvAReceber.RowHeadersWidth = 30
         Me.dgvAReceber.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.dgvAReceber.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvAReceber.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvAReceber.Size = New System.Drawing.Size(447, 210)
         Me.dgvAReceber.TabIndex = 9
-        '
-        'clnID
-        '
-        Me.clnID.HeaderText = "IDAReceber"
-        Me.clnID.Name = "clnID"
-        Me.clnID.ReadOnly = True
-        Me.clnID.Visible = False
-        '
-        'clnReg
-        '
-        Me.clnReg.HeaderText = "Reg."
-        Me.clnReg.Name = "clnReg"
-        Me.clnReg.ReadOnly = True
-        Me.clnReg.Width = 70
-        '
-        'clnVencimento
-        '
-        Me.clnVencimento.HeaderText = "Vencimento"
-        Me.clnVencimento.Name = "clnVencimento"
-        Me.clnVencimento.ReadOnly = True
-        '
-        'clnPermanencia
-        '
-        Me.clnPermanencia.HeaderText = "Perm."
-        Me.clnPermanencia.Name = "clnPermanencia"
-        Me.clnPermanencia.ReadOnly = True
-        Me.clnPermanencia.Width = 90
-        '
-        'clnValor
-        '
-        DataGridViewCellStyle5.Format = "C2"
-        DataGridViewCellStyle5.NullValue = "0"
-        Me.clnValor.DefaultCellStyle = DataGridViewCellStyle5
-        Me.clnValor.HeaderText = "Valor"
-        Me.clnValor.Name = "clnValor"
-        Me.clnValor.ReadOnly = True
-        Me.clnValor.Width = 120
         '
         'txtObservacao
         '
@@ -454,17 +383,6 @@ Partial Class frmSimplesSaida
         Me.Label6.Size = New System.Drawing.Size(202, 19)
         Me.Label6.TabIndex = 8
         Me.Label6.Text = "Desbobramento das Parcelas:"
-        '
-        'cmbIDPlano
-        '
-        Me.cmbIDPlano.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDPlano.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDPlano.FormattingEnabled = True
-        Me.cmbIDPlano.Location = New System.Drawing.Point(160, 63)
-        Me.cmbIDPlano.Name = "cmbIDPlano"
-        Me.cmbIDPlano.RestrictContentToListItems = True
-        Me.cmbIDPlano.Size = New System.Drawing.Size(234, 27)
-        Me.cmbIDPlano.TabIndex = 7
         '
         'ShapeContainer2
         '
@@ -685,7 +603,7 @@ Partial Class frmSimplesSaida
         Me.lblSituacao.BackColor = System.Drawing.Color.Transparent
         Me.lblSituacao.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblSituacao.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblSituacao.Location = New System.Drawing.Point(320, 16)
+        Me.lblSituacao.Location = New System.Drawing.Point(514, 16)
         Me.lblSituacao.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblSituacao.Name = "lblSituacao"
         Me.lblSituacao.Size = New System.Drawing.Size(145, 30)
@@ -699,37 +617,13 @@ Partial Class frmSimplesSaida
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label15.ForeColor = System.Drawing.Color.Gainsboro
-        Me.Label15.Location = New System.Drawing.Point(357, 4)
+        Me.Label15.Location = New System.Drawing.Point(551, 4)
         Me.Label15.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(67, 13)
         Me.Label15.TabIndex = 51
         Me.Label15.Text = "Situação:"
         Me.Label15.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        '
-        'mnuItens
-        '
-        Me.mnuItens.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.MenuItemEditar, Me.MenuItemInserir, Me.MenuItem3, Me.MenuItemExcluir})
-        '
-        'MenuItemEditar
-        '
-        Me.MenuItemEditar.Index = 0
-        Me.MenuItemEditar.Text = "Editar Item"
-        '
-        'MenuItemInserir
-        '
-        Me.MenuItemInserir.Index = 1
-        Me.MenuItemInserir.Text = "Inserir Novo Item"
-        '
-        'MenuItem3
-        '
-        Me.MenuItem3.Index = 2
-        Me.MenuItem3.Text = "-"
-        '
-        'MenuItemExcluir
-        '
-        Me.MenuItemExcluir.Index = 3
-        Me.MenuItemExcluir.Text = "Excluir Item"
         '
         'VApplicationMenuItem2
         '
@@ -800,7 +694,7 @@ Partial Class frmSimplesSaida
         Me.Label18.BackColor = System.Drawing.Color.Transparent
         Me.Label18.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label18.ForeColor = System.Drawing.Color.Gainsboro
-        Me.Label18.Location = New System.Drawing.Point(522, 4)
+        Me.Label18.Location = New System.Drawing.Point(376, 4)
         Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(43, 13)
@@ -813,10 +707,10 @@ Partial Class frmSimplesSaida
         Me.lblFilial.BackColor = System.Drawing.Color.Transparent
         Me.lblFilial.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblFilial.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblFilial.Location = New System.Drawing.Point(473, 16)
+        Me.lblFilial.Location = New System.Drawing.Point(305, 16)
         Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblFilial.Name = "lblFilial"
-        Me.lblFilial.Size = New System.Drawing.Size(145, 30)
+        Me.lblFilial.Size = New System.Drawing.Size(188, 30)
         Me.lblFilial.TabIndex = 55
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -871,10 +765,308 @@ Partial Class frmSimplesSaida
         Me.VPanel2.UsePanelBorderColor = True
         Me.VPanel2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
+        'tspMenuAcao
+        '
+        Me.tspMenuAcao.AutoSize = False
+        Me.tspMenuAcao.BackColor = System.Drawing.Color.Transparent
+        Me.tspMenuAcao.Dock = System.Windows.Forms.DockStyle.None
+        Me.tspMenuAcao.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnProcurar, Me.btnAdicionar, Me.ToolStripSeparator2, Me.btnExcluir, Me.ToolStripSeparator1, Me.btnImprimir})
+        Me.tspMenuAcao.Location = New System.Drawing.Point(9, 615)
+        Me.tspMenuAcao.Name = "tspMenuAcao"
+        Me.tspMenuAcao.Size = New System.Drawing.Size(443, 47)
+        Me.tspMenuAcao.TabIndex = 16
+        Me.tspMenuAcao.Text = "ToolStrip1"
+        '
+        'btnProcurar
+        '
+        Me.btnProcurar.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnProcurar.Image = Global.NovaSiao.My.Resources.Resources.search1
+        Me.btnProcurar.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnProcurar.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnProcurar.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
+        Me.btnProcurar.Name = "btnProcurar"
+        Me.btnProcurar.Size = New System.Drawing.Size(36, 44)
+        Me.btnProcurar.Text = "Procurar Simples Saída"
+        '
+        'btnAdicionar
+        '
+        Me.btnAdicionar.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnAdicionar.Image = Global.NovaSiao.My.Resources.Resources.add_32x32
+        Me.btnAdicionar.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnAdicionar.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnAdicionar.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
+        Me.btnAdicionar.Name = "btnAdicionar"
+        Me.btnAdicionar.Size = New System.Drawing.Size(36, 44)
+        Me.btnAdicionar.Text = "Adicionar Simples Saída"
+        '
+        'ToolStripSeparator2
+        '
+        Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 47)
+        '
+        'btnExcluir
+        '
+        Me.btnExcluir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnExcluir.Image = Global.NovaSiao.My.Resources.Resources.Lixeira_PEQ
+        Me.btnExcluir.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnExcluir.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnExcluir.Name = "btnExcluir"
+        Me.btnExcluir.Size = New System.Drawing.Size(45, 44)
+        Me.btnExcluir.Text = "Excluir Simples Saída"
+        Me.btnExcluir.ToolTipText = "Excluir a Venda"
+        '
+        'ToolStripSeparator1
+        '
+        Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
+        Me.ToolStripSeparator1.Size = New System.Drawing.Size(6, 47)
+        '
+        'btnImprimir
+        '
+        Me.btnImprimir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnImprimir.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miImprimirRelatorio})
+        Me.btnImprimir.Image = Global.NovaSiao.My.Resources.Resources.Imprimir
+        Me.btnImprimir.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnImprimir.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnImprimir.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
+        Me.btnImprimir.Name = "btnImprimir"
+        Me.btnImprimir.Overflow = System.Windows.Forms.ToolStripItemOverflow.Never
+        Me.btnImprimir.Size = New System.Drawing.Size(56, 44)
+        Me.btnImprimir.Text = "Imprimir"
+        '
+        'miImprimirRelatorio
+        '
+        Me.miImprimirRelatorio.Image = Global.NovaSiao.My.Resources.Resources.print
+        Me.miImprimirRelatorio.Name = "miImprimirRelatorio"
+        Me.miImprimirRelatorio.Size = New System.Drawing.Size(212, 22)
+        Me.miImprimirRelatorio.Text = "Relatório da Simples Saída"
+        '
+        'mnuContexto
+        '
+        Me.mnuContexto.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuItemEditar, Me.ToolStripSeparator3, Me.mnuItemInserir, Me.mnuItemExcluir})
+        Me.mnuContexto.Name = "mnuContexto"
+        Me.mnuContexto.Size = New System.Drawing.Size(136, 76)
+        '
+        'mnuItemEditar
+        '
+        Me.mnuItemEditar.Image = Global.NovaSiao.My.Resources.Resources.editar
+        Me.mnuItemEditar.Name = "mnuItemEditar"
+        Me.mnuItemEditar.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemEditar.Text = "Editar Item"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(132, 6)
+        '
+        'mnuItemInserir
+        '
+        Me.mnuItemInserir.Image = Global.NovaSiao.My.Resources.Resources.add
+        Me.mnuItemInserir.Name = "mnuItemInserir"
+        Me.mnuItemInserir.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemInserir.Text = "Inserir Item"
+        '
+        'mnuItemExcluir
+        '
+        Me.mnuItemExcluir.Image = Global.NovaSiao.My.Resources.Resources.delete
+        Me.mnuItemExcluir.Name = "mnuItemExcluir"
+        Me.mnuItemExcluir.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemExcluir.Text = "Excluir Item"
+        '
+        'DataGridViewTextBoxColumn1
+        '
+        Me.DataGridViewTextBoxColumn1.Frozen = True
+        Me.DataGridViewTextBoxColumn1.HeaderText = "IDItem"
+        Me.DataGridViewTextBoxColumn1.Name = "DataGridViewTextBoxColumn1"
+        Me.DataGridViewTextBoxColumn1.Visible = False
+        '
+        'DataGridViewTextBoxColumn2
+        '
+        Me.DataGridViewTextBoxColumn2.Frozen = True
+        Me.DataGridViewTextBoxColumn2.HeaderText = "Reg."
+        Me.DataGridViewTextBoxColumn2.Name = "DataGridViewTextBoxColumn2"
+        Me.DataGridViewTextBoxColumn2.Width = 70
+        '
+        'DataGridViewTextBoxColumn3
+        '
+        Me.DataGridViewTextBoxColumn3.Frozen = True
+        Me.DataGridViewTextBoxColumn3.HeaderText = "Produto"
+        Me.DataGridViewTextBoxColumn3.Name = "DataGridViewTextBoxColumn3"
+        Me.DataGridViewTextBoxColumn3.Width = 430
+        '
+        'DataGridViewTextBoxColumn4
+        '
+        Me.DataGridViewTextBoxColumn4.Frozen = True
+        Me.DataGridViewTextBoxColumn4.HeaderText = "Qtde"
+        Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
+        Me.DataGridViewTextBoxColumn4.Width = 70
+        '
+        'DataGridViewTextBoxColumn5
+        '
+        Me.DataGridViewTextBoxColumn5.Frozen = True
+        Me.DataGridViewTextBoxColumn5.HeaderText = "Preço"
+        Me.DataGridViewTextBoxColumn5.Name = "DataGridViewTextBoxColumn5"
+        '
+        'DataGridViewTextBoxColumn6
+        '
+        Me.DataGridViewTextBoxColumn6.Frozen = True
+        Me.DataGridViewTextBoxColumn6.HeaderText = "SubTotal"
+        Me.DataGridViewTextBoxColumn6.Name = "DataGridViewTextBoxColumn6"
+        '
+        'DataGridViewTextBoxColumn7
+        '
+        Me.DataGridViewTextBoxColumn7.HeaderText = "Desc."
+        Me.DataGridViewTextBoxColumn7.Name = "DataGridViewTextBoxColumn7"
+        Me.DataGridViewTextBoxColumn7.Width = 80
+        '
+        'DataGridViewTextBoxColumn8
+        '
+        Me.DataGridViewTextBoxColumn8.HeaderText = "Total"
+        Me.DataGridViewTextBoxColumn8.Name = "DataGridViewTextBoxColumn8"
+        '
+        'DataGridViewTextBoxColumn9
+        '
+        Me.DataGridViewTextBoxColumn9.HeaderText = "IDAReceber"
+        Me.DataGridViewTextBoxColumn9.Name = "DataGridViewTextBoxColumn9"
+        Me.DataGridViewTextBoxColumn9.Visible = False
+        '
+        'DataGridViewTextBoxColumn10
+        '
+        Me.DataGridViewTextBoxColumn10.HeaderText = "Reg."
+        Me.DataGridViewTextBoxColumn10.Name = "DataGridViewTextBoxColumn10"
+        Me.DataGridViewTextBoxColumn10.Width = 70
+        '
+        'DataGridViewTextBoxColumn11
+        '
+        Me.DataGridViewTextBoxColumn11.HeaderText = "Vencimento"
+        Me.DataGridViewTextBoxColumn11.Name = "DataGridViewTextBoxColumn11"
+        '
+        'DataGridViewTextBoxColumn12
+        '
+        Me.DataGridViewTextBoxColumn12.HeaderText = "Perm."
+        Me.DataGridViewTextBoxColumn12.Name = "DataGridViewTextBoxColumn12"
+        Me.DataGridViewTextBoxColumn12.Width = 90
+        '
+        'DataGridViewTextBoxColumn13
+        '
+        DataGridViewCellStyle16.Format = "C2"
+        DataGridViewCellStyle16.NullValue = "0"
+        Me.DataGridViewTextBoxColumn13.DefaultCellStyle = DataGridViewCellStyle16
+        Me.DataGridViewTextBoxColumn13.HeaderText = "Valor"
+        Me.DataGridViewTextBoxColumn13.Name = "DataGridViewTextBoxColumn13"
+        Me.DataGridViewTextBoxColumn13.Width = 120
+        '
+        'clnIDTransacaoItem
+        '
+        Me.clnIDTransacaoItem.Frozen = True
+        Me.clnIDTransacaoItem.HeaderText = "IDItem"
+        Me.clnIDTransacaoItem.Name = "clnIDTransacaoItem"
+        Me.clnIDTransacaoItem.ReadOnly = True
+        Me.clnIDTransacaoItem.Visible = False
+        '
+        'clnRGProduto
+        '
+        Me.clnRGProduto.Frozen = True
+        Me.clnRGProduto.HeaderText = "Reg."
+        Me.clnRGProduto.Name = "clnRGProduto"
+        Me.clnRGProduto.ReadOnly = True
+        Me.clnRGProduto.Width = 70
+        '
+        'clnProduto
+        '
+        Me.clnProduto.Frozen = True
+        Me.clnProduto.HeaderText = "Produto"
+        Me.clnProduto.Name = "clnProduto"
+        Me.clnProduto.ReadOnly = True
+        Me.clnProduto.Width = 430
+        '
+        'clnQuantidade
+        '
+        Me.clnQuantidade.Frozen = True
+        Me.clnQuantidade.HeaderText = "Qtde"
+        Me.clnQuantidade.Name = "clnQuantidade"
+        Me.clnQuantidade.ReadOnly = True
+        Me.clnQuantidade.Width = 70
+        '
+        'clnPreco
+        '
+        Me.clnPreco.Frozen = True
+        Me.clnPreco.HeaderText = "Preço"
+        Me.clnPreco.Name = "clnPreco"
+        Me.clnPreco.ReadOnly = True
+        '
+        'clnSubTotal
+        '
+        Me.clnSubTotal.Frozen = True
+        Me.clnSubTotal.HeaderText = "SubTotal"
+        Me.clnSubTotal.Name = "clnSubTotal"
+        Me.clnSubTotal.ReadOnly = True
+        '
+        'clnDesconto
+        '
+        Me.clnDesconto.HeaderText = "Desc."
+        Me.clnDesconto.Name = "clnDesconto"
+        Me.clnDesconto.ReadOnly = True
+        Me.clnDesconto.Width = 80
+        '
+        'clnTotal
+        '
+        Me.clnTotal.HeaderText = "Total"
+        Me.clnTotal.Name = "clnTotal"
+        Me.clnTotal.ReadOnly = True
+        '
+        'clnID
+        '
+        Me.clnID.HeaderText = "IDAReceber"
+        Me.clnID.Name = "clnID"
+        Me.clnID.ReadOnly = True
+        Me.clnID.Visible = False
+        '
+        'clnReg
+        '
+        Me.clnReg.HeaderText = "Reg."
+        Me.clnReg.Name = "clnReg"
+        Me.clnReg.ReadOnly = True
+        Me.clnReg.Width = 70
+        '
+        'clnVencimento
+        '
+        Me.clnVencimento.HeaderText = "Vencimento"
+        Me.clnVencimento.Name = "clnVencimento"
+        Me.clnVencimento.ReadOnly = True
+        '
+        'clnPermanencia
+        '
+        Me.clnPermanencia.HeaderText = "Perm."
+        Me.clnPermanencia.Name = "clnPermanencia"
+        Me.clnPermanencia.ReadOnly = True
+        Me.clnPermanencia.Width = 90
+        '
+        'clnValor
+        '
+        DataGridViewCellStyle13.Format = "C2"
+        DataGridViewCellStyle13.NullValue = "0"
+        Me.clnValor.DefaultCellStyle = DataGridViewCellStyle13
+        Me.clnValor.HeaderText = "Valor"
+        Me.clnValor.Name = "clnValor"
+        Me.clnValor.ReadOnly = True
+        Me.clnValor.Width = 120
+        '
+        'cmbIDPlano
+        '
+        Me.cmbIDPlano.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbIDPlano.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbIDPlano.FormattingEnabled = True
+        Me.cmbIDPlano.Location = New System.Drawing.Point(160, 63)
+        Me.cmbIDPlano.Name = "cmbIDPlano"
+        Me.cmbIDPlano.RestrictContentToListItems = True
+        Me.cmbIDPlano.Size = New System.Drawing.Size(234, 27)
+        Me.cmbIDPlano.TabIndex = 7
+        '
         'frmSimplesSaida
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(1049, 667)
+        Me.Controls.Add(Me.tspMenuAcao)
         Me.Controls.Add(Me.VPanel2)
         Me.Controls.Add(Me.VPanel1)
         Me.Controls.Add(Me.btnFinalizar)
@@ -890,6 +1082,7 @@ Partial Class frmSimplesSaida
         Me.Controls.SetChildIndex(Me.VPanel1, 0)
         Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Controls.SetChildIndex(Me.VPanel2, 0)
+        Me.Controls.SetChildIndex(Me.tspMenuAcao, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.tabPrincipal.ResumeLayout(False)
@@ -905,6 +1098,9 @@ Partial Class frmSimplesSaida
         Me.VPanel1.ResumeLayout(False)
         Me.VPanel2.Content.ResumeLayout(False)
         Me.VPanel2.ResumeLayout(False)
+        Me.tspMenuAcao.ResumeLayout(False)
+        Me.tspMenuAcao.PerformLayout()
+        Me.mnuContexto.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -941,11 +1137,6 @@ Partial Class frmSimplesSaida
     Friend WithEvents clnTotal As DataGridViewTextBoxColumn
     Friend WithEvents Label15 As Label
     Friend WithEvents lblSituacao As Label
-    Friend WithEvents mnuItens As VIBlend.WinForms.Controls.vContextMenu
-    Friend WithEvents MenuItemEditar As MenuItem
-    Friend WithEvents MenuItemInserir As MenuItem
-    Friend WithEvents MenuItem3 As MenuItem
-    Friend WithEvents MenuItemExcluir As MenuItem
     Friend WithEvents VApplicationMenuItem2 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem3 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem4 As VIBlend.WinForms.Controls.vApplicationMenuItem
@@ -969,4 +1160,30 @@ Partial Class frmSimplesSaida
     Friend WithEvents clnValor As DataGridViewTextBoxColumn
     Friend WithEvents VPanel1 As VIBlend.WinForms.Controls.vPanel
     Friend WithEvents VPanel2 As VIBlend.WinForms.Controls.vPanel
+    Friend WithEvents tspMenuAcao As ToolStrip
+    Friend WithEvents btnProcurar As ToolStripButton
+    Friend WithEvents btnAdicionar As ToolStripButton
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents btnExcluir As ToolStripButton
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents btnImprimir As ToolStripSplitButton
+    Friend WithEvents miImprimirRelatorio As ToolStripMenuItem
+    Friend WithEvents mnuContexto As ContextMenuStrip
+    Friend WithEvents mnuItemEditar As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
+    Friend WithEvents mnuItemInserir As ToolStripMenuItem
+    Friend WithEvents mnuItemExcluir As ToolStripMenuItem
+    Friend WithEvents DataGridViewTextBoxColumn1 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn2 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn3 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn4 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn5 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn6 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn7 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn8 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn9 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn10 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn11 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn12 As DataGridViewTextBoxColumn
+    Friend WithEvents DataGridViewTextBoxColumn13 As DataGridViewTextBoxColumn
 End Class

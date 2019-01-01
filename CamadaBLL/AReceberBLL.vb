@@ -46,8 +46,10 @@ Public Class AReceberBLL
     '===================================================================================================
     ' SALVAR ITEM ARECEBER DA TRANSACAO OU REFINANCIAMENTO
     '===================================================================================================
-    Public Function InserirNovo_AReceber(clAReceber As clAReceber) As Integer
-        Dim db As New AcessoDados
+    Public Function InserirNovo_AReceber(clAReceber As clAReceber,
+                                         Optional myDB As Object = Nothing) As Integer
+        '
+        Dim db As AcessoDados = If(myDB, New AcessoDados)
         Dim obj As Object = Nothing
         '
         Try
@@ -78,32 +80,32 @@ Public Class AReceberBLL
     '===================================================================================================
     ' UPDATE ARECEBER DA TRANSACAO OU REFINANCIAMENTO
     '===================================================================================================
-    Public Function Update_AReceber(clAReceber As clAReceber) As Boolean
-        Dim sql As New SQLControl
-
-        sql.AddParam("@IDAReceber", clAReceber.IDAReceber)
-        sql.AddParam("@AReceberValor", clAReceber.AReceberValor)
-        sql.AddParam("@IDPessoa", clAReceber.IDPessoa)
-        sql.AddParam("@IDCobrancaForma", clAReceber.IDCobrancaForma)
-        sql.AddParam("@IDPlano", clAReceber.IDPlano)
-        sql.AddParam("@ValorPagoTotal", clAReceber.ValorPagoTotal)
-        sql.AddParam("@SituacaoAReceber", clAReceber.SituacaoAReceber)
-
+    Public Function Update_AReceber(clAReceber As clAReceber,
+                                    Optional myDB As Object = Nothing) As Boolean
+        '
+        Dim db As AcessoDados = If(myDB, New AcessoDados)
+        '
+        db.LimparParametros()
+        db.AdicionarParametros("@IDAReceber", clAReceber.IDAReceber)
+        db.AdicionarParametros("@AReceberValor", clAReceber.AReceberValor)
+        db.AdicionarParametros("@IDPessoa", clAReceber.IDPessoa)
+        db.AdicionarParametros("@IDCobrancaForma", If(clAReceber.IDCobrancaForma, DBNull.Value))
+        db.AdicionarParametros("@IDPlano", If(clAReceber.IDPlano, DBNull.Value))
+        db.AdicionarParametros("@ValorPagoTotal", clAReceber.ValorPagoTotal)
+        db.AdicionarParametros("@SituacaoAReceber", clAReceber.SituacaoAReceber)
+        '
         Dim myQuery As String = "UPDATE tblAReceber SET " &
-            "AReceberValor = @AReceberValor, " &
-            "IDPessoa = @IDPessoa, " &
-            "ValorPagoTotal = @ValorPagoTotal, " &
-            "SituacaoAReceber = @SituacaoAReceber, " &
-            "IDCobrancaForma = @IDCobrancaForma, " &
-            "IDPlano = @IDPlano " &
-            "WHERE IDAReceber = @IDAReceber"
+                                "AReceberValor = @AReceberValor, " &
+                                "IDPessoa = @IDPessoa, " &
+                                "ValorPagoTotal = @ValorPagoTotal, " &
+                                "SituacaoAReceber = @SituacaoAReceber, " &
+                                "IDCobrancaForma = @IDCobrancaForma, " &
+                                "IDPlano = @IDPlano " &
+                                "WHERE IDAReceber = @IDAReceber"
         '
         Try
-            sql.ExecQuery(myQuery)
-            '
-            If sql.HasException Then
-                Throw New Exception(sql.Exception)
-            End If
+            '--- execute Query
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
             '
             Return True
             '
@@ -116,50 +118,81 @@ Public Class AReceberBLL
     '===================================================================================================
     ' QUITAR ARECEBER DA VENDA A VISTA
     '===================================================================================================
-    Public Function Quitar_AReceber_AVista(IDTransacao As Integer, vlPago As Decimal) As Boolean
-        Dim sql As New SQLControl
-        '
-        Dim myQry As String = String.Format(New Globalization.CultureInfo("en-US"),
-                                            "UPDATE tblAReceber SET ValorPagoTotal = {0:#.####}, SituacaoAReceber = 1 WHERE Origem = 1 AND IDOrigem = {1}",
-                                            vlPago, IDTransacao)
-        '
-        Try
-            sql.ExecQuery(myQry)
-            '
-            If sql.HasException Then
-                Throw New Exception(sql.Exception)
-                Return False
-            End If
-            '
-            Return True
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
+    'DELETE ===> Public Function Quitar_AReceber_AVista(IDTransacao As Integer,
+    '                                       vlPago As Decimal,
+    '                                       Optional myDB As Object = Nothing) As Boolean
+    '    '
+    '    Dim db As AcessoDados = If(myDB, New AcessoDados)
+    '    '
+    '    db.LimparParametros()
+    '    db.AdicionarParametros("@IDOrigem", IDTransacao)
+    '    db.AdicionarParametros("@ValorPagoTotal", vlPago)
+    '    '
+    '    Dim myQuery As String = "UPDATE tblAReceber SET ValorPagoTotal = @ValorPagoTotal, SituacaoAReceber = 1 " &
+    '                            "WHERE Origem = 1 AND IDOrigem = @IDOrigem"
+    '    '
+    '    Try
+    '        db.ExecutarManipulacao(CommandType.Text, myQuery)
+    '        '
+    '        Return True
+    '        '
+    '    Catch ex As Exception
+    '        Throw ex
+    '    End Try
+    '    '
+    'End Function
     '
     '===================================================================================================
-    ' EXCLUIR TODOS ARECEBER E PARCELAS DE UMA TRANSACAO PELO ID
+    ' EXCLUIR TODOS ARECEBER E MOVIMENTACAO DE UMA TRANSACAO PELO ID
     '===================================================================================================
     Public Function Excluir_AReceber_Transacao(IDTransacao As Integer,
                                                Optional mydb As Object = Nothing) As Boolean
         '
         Dim db As AcessoDados = If(mydb, New AcessoDados)
+        Dim tranLocal As Boolean = False '--- informa se foi iniciada uma transaction local
         '
+        ' VERIFY IF EXISTS TRANSACTION
+        If Not db.isTransaction Then
+            db.BeginTransaction()
+            tranLocal = True
+        End If
+        '
+        Dim myQuery As String = ""
+        '
+        '1. DELETE MOVIMENTACAO
         db.LimparParametros()
-        db.AdicionarParametros("@IDTransacao", IDTransacao)
+        db.AdicionarParametros("@IDVenda", IDTransacao)
         '
-        Dim myQuery As String = "DELETE tblAReceber WHERE Origem = 1 AND IDOrigem = @IDTransacao"
+        myQuery = "DELETE tblCaixaMovimentacao " &
+                  "WHERE Origem = 1 AND IDOrigem = @IDVenda"
         '
         Try
-            '
+            '--- execute query
             db.ExecutarManipulacao(CommandType.Text, myQuery)
-            Return True
             '
         Catch ex As Exception
             Throw ex
+            Return False
         End Try
+        '
+        '2. DELETE ARECEBER
+        db.LimparParametros()
+        db.AdicionarParametros("@IDTransacao", IDTransacao)
+        '
+        myQuery = "DELETE tblAReceber WHERE Origem = 1 AND IDOrigem = @IDTransacao"
+        '
+        Try
+            '
+            '--- execute query
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+        If tranLocal Then db.CommitTransaction()
+        Return True
         '
     End Function
     '

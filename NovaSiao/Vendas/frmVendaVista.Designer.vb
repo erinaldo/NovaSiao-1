@@ -19,11 +19,12 @@ Partial Class frmVendaVista
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Me.components = New System.ComponentModel.Container()
+        Dim DataGridViewCellStyle11 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.tabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
         Me.vtab1 = New VIBlend.WinForms.Controls.vTabPage()
         Me.dgvItens = New System.Windows.Forms.DataGridView()
@@ -71,11 +72,6 @@ Partial Class frmVendaVista
         Me.Label13 = New System.Windows.Forms.Label()
         Me.lblSituacao = New System.Windows.Forms.Label()
         Me.Label15 = New System.Windows.Forms.Label()
-        Me.mnuItens = New VIBlend.WinForms.Controls.vContextMenu()
-        Me.MenuItemEditar = New System.Windows.Forms.MenuItem()
-        Me.MenuItemInserir = New System.Windows.Forms.MenuItem()
-        Me.MenuItem3 = New System.Windows.Forms.MenuItem()
-        Me.MenuItemExcluir = New System.Windows.Forms.MenuItem()
         Me.VApplicationMenuItem2 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
         Me.VApplicationMenuItem3 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
         Me.VApplicationMenuItem4 = New VIBlend.WinForms.Controls.vApplicationMenuItem()
@@ -88,10 +84,15 @@ Partial Class frmVendaVista
         Me.btnAdicionar = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnExcluirVenda = New System.Windows.Forms.ToolStripButton()
+        Me.btnDesbloquearVenda = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnImprimir = New System.Windows.Forms.ToolStripSplitButton()
         Me.miImprimirEtiquetas = New System.Windows.Forms.ToolStripMenuItem()
-        Me.btnDesbloquearVenda = New System.Windows.Forms.ToolStripButton()
+        Me.mnuContexto = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.mnuItemEditar = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
+        Me.mnuItemInserir = New System.Windows.Forms.ToolStripMenuItem()
+        Me.mnuItemExcluir = New System.Windows.Forms.ToolStripMenuItem()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -107,6 +108,7 @@ Partial Class frmVendaVista
         Me.VPanel1.Content.SuspendLayout()
         Me.VPanel1.SuspendLayout()
         Me.tspMenuAcao.SuspendLayout()
+        Me.mnuContexto.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -190,43 +192,43 @@ Partial Class frmVendaVista
         '
         Me.dgvItens.AllowUserToAddRows = False
         Me.dgvItens.AllowUserToDeleteRows = False
-        DataGridViewCellStyle6.BackColor = System.Drawing.Color.Azure
-        Me.dgvItens.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle11.BackColor = System.Drawing.Color.Azure
+        Me.dgvItens.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle11
         Me.dgvItens.BackgroundColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(243, Byte), Integer))
         Me.dgvItens.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvItens.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal
         Me.dgvItens.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle7.BackColor = System.Drawing.Color.LightSteelBlue
-        DataGridViewCellStyle7.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle7.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvItens.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle12.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle12.BackColor = System.Drawing.Color.LightSteelBlue
+        DataGridViewCellStyle12.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle12.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle12.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle12.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvItens.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle12
         Me.dgvItens.ColumnHeadersHeight = 30
         Me.dgvItens.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnIDTransacaoItem, Me.clnRGProduto, Me.clnProduto, Me.clnQuantidade, Me.clnPreco, Me.clnSubTotal, Me.clnDesconto, Me.clnTotal})
-        DataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle8.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle8.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle8.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle8.SelectionBackColor = System.Drawing.Color.SteelBlue
-        DataGridViewCellStyle8.SelectionForeColor = System.Drawing.SystemColors.ControlLightLight
-        DataGridViewCellStyle8.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvItens.DefaultCellStyle = DataGridViewCellStyle8
+        DataGridViewCellStyle13.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle13.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle13.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle13.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle13.SelectionBackColor = System.Drawing.Color.SteelBlue
+        DataGridViewCellStyle13.SelectionForeColor = System.Drawing.SystemColors.ControlLightLight
+        DataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvItens.DefaultCellStyle = DataGridViewCellStyle13
         Me.dgvItens.EnableHeadersVisualStyles = False
         Me.dgvItens.GridColor = System.Drawing.SystemColors.ActiveCaption
         Me.dgvItens.Location = New System.Drawing.Point(9, 9)
         Me.dgvItens.Name = "dgvItens"
         Me.dgvItens.ReadOnly = True
-        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.Control
-        DataGridViewCellStyle9.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
-        DataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvItens.RowHeadersDefaultCellStyle = DataGridViewCellStyle9
+        DataGridViewCellStyle14.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle14.BackColor = System.Drawing.SystemColors.Control
+        DataGridViewCellStyle14.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle14.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle14.SelectionBackColor = System.Drawing.SystemColors.GradientActiveCaption
+        DataGridViewCellStyle14.SelectionForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvItens.RowHeadersDefaultCellStyle = DataGridViewCellStyle14
         Me.dgvItens.RowHeadersWidth = 35
         Me.dgvItens.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
         Me.dgvItens.Size = New System.Drawing.Size(1012, 444)
@@ -489,7 +491,7 @@ Partial Class frmVendaVista
         Me.btnTroca.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnTroca.Location = New System.Drawing.Point(635, 412)
         Me.btnTroca.Name = "btnTroca"
-        Me.btnTroca.Size = New System.Drawing.Size(168, 39)
+        Me.btnTroca.Size = New System.Drawing.Size(168, 41)
         Me.btnTroca.TabIndex = 6
         Me.btnTroca.TabStop = False
         Me.btnTroca.Text = "Inserir &Troca"
@@ -550,9 +552,9 @@ Partial Class frmVendaVista
         '
         'clnValor
         '
-        DataGridViewCellStyle10.Format = "C2"
-        DataGridViewCellStyle10.NullValue = "0"
-        Me.clnValor.DefaultCellStyle = DataGridViewCellStyle10
+        DataGridViewCellStyle15.Format = "C2"
+        DataGridViewCellStyle15.NullValue = "0"
+        Me.clnValor.DefaultCellStyle = DataGridViewCellStyle15
         Me.clnValor.HeaderText = "Valor"
         Me.clnValor.Name = "clnValor"
         Me.clnValor.ReadOnly = True
@@ -659,7 +661,7 @@ Partial Class frmVendaVista
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.ForeColor = System.Drawing.Color.Silver
         Me.Label3.Location = New System.Drawing.Point(166, 4)
         Me.Label3.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label3.Name = "Label3"
@@ -673,7 +675,7 @@ Partial Class frmVendaVista
         Me.lbl_IdTexto.AutoSize = True
         Me.lbl_IdTexto.BackColor = System.Drawing.Color.Transparent
         Me.lbl_IdTexto.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbl_IdTexto.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lbl_IdTexto.ForeColor = System.Drawing.Color.Silver
         Me.lbl_IdTexto.Location = New System.Drawing.Point(29, 4)
         Me.lbl_IdTexto.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lbl_IdTexto.Name = "lbl_IdTexto"
@@ -749,7 +751,7 @@ Partial Class frmVendaVista
         Me.lblSituacao.BackColor = System.Drawing.Color.Transparent
         Me.lblSituacao.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblSituacao.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblSituacao.Location = New System.Drawing.Point(320, 16)
+        Me.lblSituacao.Location = New System.Drawing.Point(514, 16)
         Me.lblSituacao.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblSituacao.Name = "lblSituacao"
         Me.lblSituacao.Size = New System.Drawing.Size(145, 30)
@@ -762,38 +764,14 @@ Partial Class frmVendaVista
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label15.Location = New System.Drawing.Point(357, 4)
+        Me.Label15.ForeColor = System.Drawing.Color.Silver
+        Me.Label15.Location = New System.Drawing.Point(551, 4)
         Me.Label15.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(67, 13)
         Me.Label15.TabIndex = 51
         Me.Label15.Text = "Situação:"
         Me.Label15.TextAlign = System.Drawing.ContentAlignment.TopCenter
-        '
-        'mnuItens
-        '
-        Me.mnuItens.MenuItems.AddRange(New System.Windows.Forms.MenuItem() {Me.MenuItemEditar, Me.MenuItemInserir, Me.MenuItem3, Me.MenuItemExcluir})
-        '
-        'MenuItemEditar
-        '
-        Me.MenuItemEditar.Index = 0
-        Me.MenuItemEditar.Text = "Editar Item"
-        '
-        'MenuItemInserir
-        '
-        Me.MenuItemInserir.Index = 1
-        Me.MenuItemInserir.Text = "Inserir Novo Item"
-        '
-        'MenuItem3
-        '
-        Me.MenuItem3.Index = 2
-        Me.MenuItem3.Text = "-"
-        '
-        'MenuItemExcluir
-        '
-        Me.MenuItemExcluir.Index = 3
-        Me.MenuItemExcluir.Text = "Excluir Item"
         '
         'VApplicationMenuItem2
         '
@@ -863,10 +841,10 @@ Partial Class frmVendaVista
         Me.lblFilial.BackColor = System.Drawing.Color.Transparent
         Me.lblFilial.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblFilial.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblFilial.Location = New System.Drawing.Point(486, 16)
+        Me.lblFilial.Location = New System.Drawing.Point(305, 16)
         Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblFilial.Name = "lblFilial"
-        Me.lblFilial.Size = New System.Drawing.Size(145, 30)
+        Me.lblFilial.Size = New System.Drawing.Size(188, 30)
         Me.lblFilial.TabIndex = 49
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -876,8 +854,8 @@ Partial Class frmVendaVista
         Me.Label4.AutoSize = True
         Me.Label4.BackColor = System.Drawing.Color.Transparent
         Me.Label4.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label4.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label4.Location = New System.Drawing.Point(535, 4)
+        Me.Label4.ForeColor = System.Drawing.Color.Silver
+        Me.Label4.Location = New System.Drawing.Point(376, 4)
         Me.Label4.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(43, 13)
@@ -961,6 +939,16 @@ Partial Class frmVendaVista
         Me.btnExcluirVenda.Text = "Excluir Venda"
         Me.btnExcluirVenda.ToolTipText = "Excluir a Venda"
         '
+        'btnDesbloquearVenda
+        '
+        Me.btnDesbloquearVenda.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnDesbloquearVenda.Image = Global.NovaSiao.My.Resources.Resources.refresh1
+        Me.btnDesbloquearVenda.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnDesbloquearVenda.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnDesbloquearVenda.Name = "btnDesbloquearVenda"
+        Me.btnDesbloquearVenda.Size = New System.Drawing.Size(36, 44)
+        Me.btnDesbloquearVenda.Text = "Desbloquear Venda"
+        '
         'ToolStripSeparator1
         '
         Me.ToolStripSeparator1.Name = "ToolStripSeparator1"
@@ -983,18 +971,40 @@ Partial Class frmVendaVista
         '
         Me.miImprimirEtiquetas.Image = Global.NovaSiao.My.Resources.Resources.print
         Me.miImprimirEtiquetas.Name = "miImprimirEtiquetas"
-        Me.miImprimirEtiquetas.Size = New System.Drawing.Size(180, 22)
+        Me.miImprimirEtiquetas.Size = New System.Drawing.Size(172, 22)
         Me.miImprimirEtiquetas.Text = "Relatório de Venda"
         '
-        'btnDesbloquearVenda
+        'mnuContexto
         '
-        Me.btnDesbloquearVenda.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.btnDesbloquearVenda.Image = Global.NovaSiao.My.Resources.Resources.refresh1
-        Me.btnDesbloquearVenda.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.btnDesbloquearVenda.ImageTransparentColor = System.Drawing.Color.Magenta
-        Me.btnDesbloquearVenda.Name = "btnDesbloquearVenda"
-        Me.btnDesbloquearVenda.Size = New System.Drawing.Size(36, 44)
-        Me.btnDesbloquearVenda.Text = "Desbloquear Venda"
+        Me.mnuContexto.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.mnuItemEditar, Me.ToolStripSeparator3, Me.mnuItemInserir, Me.mnuItemExcluir})
+        Me.mnuContexto.Name = "mnuContexto"
+        Me.mnuContexto.Size = New System.Drawing.Size(136, 76)
+        '
+        'mnuItemEditar
+        '
+        Me.mnuItemEditar.Image = Global.NovaSiao.My.Resources.Resources.editar
+        Me.mnuItemEditar.Name = "mnuItemEditar"
+        Me.mnuItemEditar.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemEditar.Text = "Editar Item"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(132, 6)
+        '
+        'mnuItemInserir
+        '
+        Me.mnuItemInserir.Image = Global.NovaSiao.My.Resources.Resources.add
+        Me.mnuItemInserir.Name = "mnuItemInserir"
+        Me.mnuItemInserir.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemInserir.Text = "Inserir Item"
+        '
+        'mnuItemExcluir
+        '
+        Me.mnuItemExcluir.Image = Global.NovaSiao.My.Resources.Resources.delete
+        Me.mnuItemExcluir.Name = "mnuItemExcluir"
+        Me.mnuItemExcluir.Size = New System.Drawing.Size(135, 22)
+        Me.mnuItemExcluir.Text = "Excluir Item"
         '
         'frmVendaVista
         '
@@ -1040,6 +1050,7 @@ Partial Class frmVendaVista
         Me.VPanel1.ResumeLayout(False)
         Me.tspMenuAcao.ResumeLayout(False)
         Me.tspMenuAcao.PerformLayout()
+        Me.mnuContexto.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -1074,11 +1085,6 @@ Partial Class frmVendaVista
     Friend WithEvents clnTotal As DataGridViewTextBoxColumn
     Friend WithEvents Label15 As Label
     Friend WithEvents lblSituacao As Label
-    Friend WithEvents mnuItens As VIBlend.WinForms.Controls.vContextMenu
-    Friend WithEvents MenuItemEditar As MenuItem
-    Friend WithEvents MenuItemInserir As MenuItem
-    Friend WithEvents MenuItem3 As MenuItem
-    Friend WithEvents MenuItemExcluir As MenuItem
     Friend WithEvents VApplicationMenuItem2 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem3 As VIBlend.WinForms.Controls.vApplicationMenuItem
     Friend WithEvents VApplicationMenuItem4 As VIBlend.WinForms.Controls.vApplicationMenuItem
@@ -1113,4 +1119,9 @@ Partial Class frmVendaVista
     Friend WithEvents btnExcluirVenda As ToolStripButton
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents btnDesbloquearVenda As ToolStripButton
+    Friend WithEvents mnuContexto As ContextMenuStrip
+    Friend WithEvents mnuItemEditar As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
+    Friend WithEvents mnuItemInserir As ToolStripMenuItem
+    Friend WithEvents mnuItemExcluir As ToolStripMenuItem
 End Class

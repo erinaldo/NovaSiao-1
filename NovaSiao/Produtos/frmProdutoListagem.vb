@@ -325,11 +325,9 @@ Public Class frmProdutoListagem
         If e.KeyChar = "+" Then
             '--- cria uma lista de controles que serao impedidos de receber '+'
             Dim controlesBloqueados As String() = {
-                "txtProdutoTipo",
-                "txtProdutoSubTipo",
-                "txtProdutoCategoria",
-                "txtAutor",
-                "cmbIDFabricante"
+                "txtFormaTipo",
+                "txtPesquisa",
+                "txtValor"
             }
 
             If controlesBloqueados.Contains(ActiveControl.Name) Then

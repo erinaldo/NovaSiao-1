@@ -543,6 +543,10 @@ Public Class frmVendaVista
         Editar_Item()
     End Sub
     '
+#End Region '/ CARREGA/INSERE ITENS
+    '
+#Region "MENU CONTEXTO"
+    '
     Private Sub dgvItens_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvItens.MouseDown
         If e.Button = MouseButtons.Right Then
             'Dim c As Control = DirectCast(sender, Control)
@@ -555,25 +559,43 @@ Public Class frmVendaVista
             dgvItens.CurrentCell = dgvItens.Rows(hit.RowIndex).Cells(1)
             dgvItens.Rows(hit.RowIndex).Selected = True
             '
-            'mnuItens.Show(dgvItens, c.PointToScreen(e.Location))
-            mnuItens.Show(dgvItens, e.Location)
+            'mnuContexto.Show(dgvItens, c.PointToScreen(e.Location))
+            mnuContexto.Show(dgvItens, e.Location)
             '
         End If
     End Sub
     '
-    Private Sub MenuItemEditar_Click(sender As Object, e As EventArgs) Handles MenuItemEditar.Click
-        Editar_Item()
+    Private Sub MenuItemEditar_Click(sender As Object, e As EventArgs) Handles mnuItemEditar.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Editar_Item()
+        Else
+            Pagamentos_Editar()
+        End If
+        '
     End Sub
     '
-    Private Sub MenuItemInserir_Click(sender As Object, e As EventArgs) Handles MenuItemInserir.Click
-        Inserir_Item()
+    Private Sub MenuItemInserir_Click(sender As Object, e As EventArgs) Handles mnuItemInserir.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Inserir_Item()
+        Else
+            Pagamentos_Adicionar()
+        End If
+        '
     End Sub
     '
-    Private Sub MenuItemExcluir_Click(sender As Object, e As EventArgs) Handles MenuItemExcluir.Click
-        Excluir_Item()
+    Private Sub MenuItemExcluir_Click(sender As Object, e As EventArgs) Handles mnuItemExcluir.Click
+        '
+        If mnuContexto.SourceControl.Name = "dgvItens" Then
+            Excluir_Item()
+        Else
+            Pagamentos_Excluir()
+        End If
+        '
     End Sub
     '
-#End Region '/ CARREGA/INSERE ITENS
+#End Region '/ MENU CONTEXTO
     '
 #Region "BOTOES DE ACAO"
     '
@@ -1083,7 +1105,7 @@ Public Class frmVendaVista
             dgvPagamentos.Rows(hit.RowIndex).Selected = True
             dgvPagamentos.Focus()
             '
-            mnuItens.Show(dgvPagamentos, e.Location)
+            mnuContexto.Show(dgvPagamentos, e.Location)
             '
         End If
     End Sub
@@ -1111,26 +1133,68 @@ Public Class frmVendaVista
                 Exit Sub
             End If
             '
+            '--- CREATE NEW ACESSO WITH TRANSACTION
+            Dim tBLL As New TransactionControlBLL
+            '
+            Dim myDBTran As Object = tBLL.GetNewAcessoWithTransaction
+            '
             '--- SALVA OS PAGAMENTOS NO BD
-            If Salvar_Pagamentos() = False Then Exit Sub
+            Try
+                '--- Ampulheta ON
+                Cursor = Cursors.WaitCursor
+                '
+                Salvar_Pagamentos(myDBTran)
+                '
+            Catch ex As Exception
+                '
+                '--- ROOLBACK TRANSACTION
+                tBLL.RollbackAcessoWithTransaction(myDBTran)
+                '
+                MessageBox.Show("Uma exceção ocorreu ao Salvar as Movimentações de Entrada..." & vbNewLine &
+                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return
+                '
+            Finally
+                '--- Ampulheta OFF
+                Cursor = Cursors.Default
+            End Try
             '
             '--- SALVA A TRANSACAO/VENDA NO BD
             Try
+                '--- Ampulheta ON
+                Cursor = Cursors.WaitCursor
+                '
                 '--- altera a situacao da transacao atual
                 _Venda.IDSituacao = 2 'CONCLUÍDA
                 '
-                Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
+                Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda, myDBTran)
                 '
                 If Not IsNumeric(obj) Then
                     Throw New Exception(obj.ToString)
                 End If
                 '
+                '--- COMMIT TRANSACTION
+                tBLL.CommitAcessoWithTransaction(myDBTran)
+                '
+                '--- ALTERA A SITUACAO DO REGISTRO ATUAL
+                Sit = FlagEstado.RegistroSalvo
+                '
             Catch ex As Exception
-                MessageBox.Show(ex.Message)
+                '
+                '--- ROOLBACK TRANSACTION
+                tBLL.RollbackAcessoWithTransaction(myDBTran)
+                '
+                '--- MESSAGE
+                MessageBox.Show("Uma exceção ocorreu ao Salvar a Venda..." & vbNewLine &
+                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                '
+                '--- RETURN
+                Return
+                '
+            Finally
+                '--- Ampulheta OFF
+                Cursor = Cursors.Default
             End Try
-            '
-            '--- ALTERA A SITUACAO DO REGISTRO ATUAL
-            Sit = FlagEstado.RegistroSalvo
             '
         End If
         '
@@ -1189,87 +1253,117 @@ Public Class frmVendaVista
         '
     End Function
     '
-    Private Function Salvar_Pagamentos() As Boolean
+    Private Function Salvar_Pagamentos(myDBTran As Object) As Boolean
         '
         '--- verifica se existem pagamentos
         If _MovEntradaList.Count = 0 Then Return False
         '
+        '==========================================================================
+        '--- 1. Excluir todas as MOVIMENTACOES DE ENTRADA da Venda Atual
+        '--- 2. UPDATE AReceber da Venda atual
+        '--- 3. INSERE AS MOVIMENTACOES DE ENTRADA NO BD
+        '==========================================================================
+        '
         Dim recBLL As New AReceberBLL
         '
-        '--- Exclui todos os registros de AReceber da Venda atual
-        Try
-            '
-            recBLL.Excluir_AReceber_Transacao(_Venda.IDVenda)
-            '
-            '--- Insere um AReceber no BD
-            Dim rec As New clAReceber
-            '
-            rec.IDOrigem = _Venda.IDVenda
-            rec.Origem = clAReceber.AReceberOrigem.Transacao
-            rec.IDPessoa = _Venda.IDPessoaDestino
-            rec.AReceberValor = _Venda.TotalVenda
-            rec.IDFilial = _Venda.IDPessoaOrigem
-            '
-            recBLL.InserirNovo_AReceber(rec)
-            '
-        Catch ex As Exception
-            MessageBox.Show("Houve uma exceção inesperada ao SALVAR Registros de AReceber..." & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Return False
-        End Try
-        '
-        '--- Excluir todas as entradas da Venda Atual
+        '--- PASSO 1
+        '----------------------------------------
         Try
             Dim entBLL As New MovimentacaoBLL
             '
-            entBLL.Entrada_ExcluirTodas_PorTransacao(_Venda.IDVenda)
+            '--- 1. Excluir todas as MOVIMENTACOES DE ENTRADA da Venda Atual
+            entBLL.MovEntrada_Delete_PorTransacao(_Venda.IDVenda, myDBTran)
             '
         Catch ex As Exception
-            MessageBox.Show("Houve uma exceção inesperada ao LIMPAR Registros de Entrada..." & vbNewLine &
-                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Throw ex
             Return False
         End Try
         '
+        '--- PASSO 2
+        '----------------------------------------
         Try
-            '--- INSERE AS ENTRADAS NO BD
-            '--- Agrupa as Entradas pelo IDMovForma (soma seus valores)
-            '--- Cria uma nova lista de Entradas pelo agrupamento
-            Dim PagGroupList As New List(Of clMovimentacao)
-            Dim ContaPadrao As Integer = Obter_ContaPadrao()
             '
-            For Each pagItem As clMovimentacao In _MovEntradaList
-                If Not PagGroupList.Exists(Function(x) x.IDMovForma = pagItem.IDMovForma) Then
-                    '--- cria nova Entrada
-                    Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Transacao, EnumMovimento.Entrada)
-                    '
-                    clPag.MovValor = 0
-                    clPag.Origem = 1
-                    clPag.IDOrigem = _Venda.IDVenda
-                    clPag.MovData = _Venda.TransacaoData
-                    clPag.IDConta = ContaPadrao
-                    clPag.IDMovForma = pagItem.IDMovForma
-                    clPag.MovForma = pagItem.MovForma
-                    '
-                    PagGroupList.Add(clPag)
-                End If
+            Dim rec As New clAReceber
+            '
+            rec.IDAReceber = _Venda.IDAReceber
+            rec.AReceberValor = _Venda.TotalVenda
+            rec.IDPessoa = _Venda.IDPessoaDestino
+            rec.IDCobrancaForma = Nothing
+            rec.IDPlano = Nothing
+            rec.ValorPagoTotal = AtualizaTotalGeral()
+            rec.SituacaoAReceber = 1 '--- QUITADO/PAGO
+            '
+            '--- 2. UPDATE um AReceber no BD
+            recBLL.Update_AReceber(rec, myDBTran)
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+        '--- PASSO 3. insere as movimentacoes de entrada no BD
+        '------------------------------------------------------
+        Try
+            Return AgrupaAndSalvaMovimentacoesEntrada(myDBTran)
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------
+    ' INSERE A MOVIMENTACOES DE ENTRADA
+    '---------------------------------------------------------------------------------------------
+    Private Function AgrupaAndSalvaMovimentacoesEntrada(myDBTran As Object) As Boolean
+        '
+        '--- INSERE AS MOVIMENTACOES DE ENTRADA NO BD
+        '--- Agrupa as Entradas pelo IDMovForma (soma seus valores)
+        '--- Cria uma nova lista de Entradas pelo agrupamento
+        '
+        Dim PagGroupList As New List(Of clMovimentacao)
+        Dim ContaPadrao As Integer = Obter_ContaPadrao()
+        '
+        For Each pagItem As clMovimentacao In _MovEntradaList
+            '
+            If Not PagGroupList.Exists(Function(x) x.IDMovForma = pagItem.IDMovForma) Then
+                '--- cria nova Entrada
+                Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Transacao, EnumMovimento.Entrada)
                 '
-                Dim pg As clMovimentacao = PagGroupList.Find(Function(x) x.IDMovForma = pagItem.IDMovForma)
-                pg.MovValor = pg.MovValor + pagItem.MovValor
-            Next
+                clPag.MovValor = 0
+                clPag.Origem = 1
+                clPag.IDOrigem = _Venda.IDVenda
+                clPag.MovData = _Venda.TransacaoData
+                clPag.IDConta = ContaPadrao
+                clPag.IDMovForma = pagItem.IDMovForma
+                clPag.MovForma = pagItem.MovForma
+                '
+                PagGroupList.Add(clPag)
+            End If
             '
-            '--- Remove os itens que foram agrupados
-            _MovEntradaList.Clear()
+            Dim pg As clMovimentacao = PagGroupList.Find(Function(x) x.IDMovForma = pagItem.IDMovForma)
+            pg.MovValor = pg.MovValor + pagItem.MovValor
             '
-            '--- Atualiza a listagem
-            bindEnt.ResetBindings(False)
-            '--- Atualiza o DataGrid
-            dgvPagamentos.DataSource = bindEnt
-            '
-            '--- Adiciona a nova lista agrupada ao BD
-            Dim pagBll As New MovimentacaoBLL
-            '
+        Next
+        '
+        '--- Remove os itens que foram agrupados
+        _MovEntradaList.Clear()
+        '
+        '--- Atualiza a listagem
+        bindEnt.ResetBindings(False)
+        '
+        '--- Atualiza o DataGrid
+        dgvPagamentos.DataSource = bindEnt
+        '
+        '--- Adiciona a nova lista agrupada ao BD
+        Dim pagBll As New MovimentacaoBLL
+        Dim recBLL As New AReceberBLL
+        '
+        Try
             For Each pag As clMovimentacao In PagGroupList
-                pag.IDMovimentacao = pagBll.Movimentacao_Inserir(pag)
+                '
+                '--- Insere A MOVIMENTACAO DE ENTRADA
+                pag.IDMovimentacao = pagBll.Movimentacao_Inserir(pag, myDBTran)
                 '
                 '--- Insere a nova lista DataGrid pagamentos
                 _MovEntradaList.Add(pag)
@@ -1281,16 +1375,12 @@ Public Class frmVendaVista
                 '
             Next
             '
-            '--- quita o ARECEBER da Venda
-            recBLL.Quitar_AReceber_AVista(_Venda.IDVenda, PagGroupList.Sum(Function(x) x.MovValor))
+            Return True
             '
         Catch ex As Exception
-            MessageBox.Show("Houve uma exceção inesperada ao SALVAR os pagamentos..." & vbNewLine &
-                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Throw ex
             Return False
         End Try
-        '
-        Return True
         '
     End Function
     '
@@ -1298,6 +1388,7 @@ Public Class frmVendaVista
     ' ADICIONA PAGAMENTOS EM LOOP ATE COMPLETAR O VALOR TOTAL DA VENDA
     '---------------------------------------------------------------------------------------------
     Private Sub Efetuar_Pagamentos()
+        '
         Dim vlTotal As Double = AtualizaTotalGeral()
         Dim vlPago As Double = AtualizaTotalPago()
         Dim qtdePag As Integer = _MovEntradaList.Count
@@ -1335,6 +1426,7 @@ Public Class frmVendaVista
             vlPago = _MovEntradaList.Sum(Function(x) x.MovValor)
             '
         Loop
+        '
     End Sub
     '
     '--- LIMPA TODOS OS PAGAMENTOS DA VENDA
@@ -1345,7 +1437,10 @@ Public Class frmVendaVista
         Dim eBLL As New MovimentacaoBLL
         '
         Try
-            eBLL.Entrada_ExcluirTodas_PorTransacao(_Venda.IDVenda)
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            eBLL.MovEntrada_Delete_PorTransacao(_Venda.IDVenda)
             '
             For i = 0 To _MovEntradaList.Count - 1
                 If _MovEntradaList.Item(i).IDMovimentacao <> 0 Then _MovEntradaList.RemoveAt(i)
@@ -1360,13 +1455,17 @@ Public Class frmVendaVista
             '---Atualiza o valor pago
             AtualizaTotalPago()
             '
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma nova exceção ao excluir os pagamentos da venda..." & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '--- return
             Return True
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Limpar as Movimentações de Entrada..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
-        '
-        Return True
         '
     End Function
     '

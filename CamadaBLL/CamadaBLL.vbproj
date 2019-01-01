@@ -104,6 +104,7 @@
     <Compile Include="SimplesMovimentacaoBLL.vb" />
     <Compile Include="SQLControl.vb" />
     <Compile Include="TransacaoBLL.vb" />
+    <Compile Include="TransactionControlBLL.vb" />
     <Compile Include="TransportadoraBLL.vb" />
     <Compile Include="TrocaBLL.vb" />
     <Compile Include="UsuarioBLL.vb" />
