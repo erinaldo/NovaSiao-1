@@ -67,8 +67,9 @@ Namespace My
         
         <Global.System.Configuration.UserScopedSettingAttribute(),  _
          Global.System.Diagnostics.DebuggerNonUserCodeAttribute(),  _
-         Global.System.Configuration.DefaultSettingValueAttribute("Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=Tru"& _ 
-            "e;User ID=sa;Password=123456")>  _
+         Global.System.Configuration.DefaultSettingValueAttribute("Server=tcp:novasiaoserver.database.windows.net,1433;Initial Catalog=ProgramaLoja;"& _ 
+            "Persist Security Info=False;User ID=Daniel;Password=f8ip7Ofr;MultipleActiveResul"& _ 
+            "tSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;")>  _
         Public Property ConexaoString() As String
             Get
                 Return CType(Me("ConexaoString"),String)

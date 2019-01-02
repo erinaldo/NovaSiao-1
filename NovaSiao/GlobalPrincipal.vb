@@ -24,7 +24,7 @@ Public Module GlobalPrincipal
         VISUALIZAR = 3
         EXCLUIR = 4
     End Enum
-
+    '
     ' VARIANTE PUBLICA TIPO DE ACESSO DOS USUÁRIO
     Public Enum AcessoTipo
         Administrador = 1

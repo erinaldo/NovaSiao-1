@@ -104,8 +104,7 @@ Public Class frmContaDataPadrao
         If VerificaCampos() = False Then Exit Sub
         '
         DirectCast(ParentForm, frmPrincipal).propDataPadrao = calDataPadrao.SelectionStart
-        DirectCast(ParentForm, frmPrincipal).propContaPadrao = txtConta.Text
-        DirectCast(ParentForm, frmPrincipal).propFilialPadrao = txtFilial.Text
+        DirectCast(ParentForm, frmPrincipal).propContaPadrao = _Conta
         '
         SetarDefault("DataPadrao", calDataPadrao.SelectionStart)
         SetarDefault("FilialPadrao", _Conta.IDFilial)

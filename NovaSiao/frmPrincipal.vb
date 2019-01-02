@@ -9,8 +9,8 @@ Public Class frmPrincipal
     '========================================================================================================
 #Region "FORM PRINCIPAL"
     Private _DataPadrao As Date
-    Private _ContaPadrao As String
-    Private _FilialPadrao As String
+    Private _ContaPadrao As clConta
+    'Private _FilialPadrao As String
     '
     '========================================================================================================
     ' PROPRIEDADES PUBLICAS
@@ -34,38 +34,40 @@ Public Class frmPrincipal
     End Property
     '
     '--- PROP CONTA: DEFINE O LABEL DA CONTA PADRAO
-    Public Property propContaPadrao() As String
+    Public Property propContaPadrao() As clConta
         Get
             Return _ContaPadrao
         End Get
-        Set(ByVal value As String)
+        Set(ByVal value As clConta)
             _ContaPadrao = value
             '
-            '--- define a data padrao no config
-            SetarDefault("ContaDescricao", value)
+            '--- define a conta no config
+            SetarDefault("ContaDescricao", value.Conta)
+            SetarDefault("FilialDescricao", value.ApelidoFilial)
             '
-            '--- define a label da data padrao
-            lblConta.Text = value
+            '--- define as labels da conta e Filial
+            lblConta.Text = value.Conta
+            lblFilial.Text = value.ApelidoFilial
             '
         End Set
     End Property
     '
-    '--- PROP FILIAL: DEFINE O LABEL DA FILIAL PADRAO
-    Public Property propFilialPadrao() As String
-        Get
-            Return _FilialPadrao
-        End Get
-        Set(ByVal value As String)
-            _FilialPadrao = value
-            '
-            '--- define a data padrao no config
-            SetarDefault("FilialDescricao", value)
-            '
-            '--- define a label da data padrao
-            lblFilial.Text = value
-            '
-        End Set
-    End Property
+    ''--- PROP FILIAL: DEFINE O LABEL DA FILIAL PADRAO
+    'Public Property propFilialPadrao() As String
+    '    Get
+    '        Return _FilialPadrao
+    '    End Get
+    '    Set(ByVal value As String)
+    '        _FilialPadrao = value
+    '        '
+    '        '--- define a data padrao no config
+    '        SetarDefault("FilialDescricao", value)
+    '        '
+    '        '--- define a label da data padrao
+    '        lblFilial.Text = value
+    '        '
+    '    End Set
+    'End Property
     '
     '========================================================================================================
     ' EVENTO LOAD
@@ -111,8 +113,7 @@ Public Class frmPrincipal
             End If
             '
             SetarDefault("FilialPadrao", contaInicial.IDFilial)
-            propContaPadrao = contaInicial.Conta
-            propFilialPadrao = contaInicial.ApelidoFilial
+            propContaPadrao = contaInicial
             '
             '--- configurar DATAPADRAO
             If Not IsNothing(contaInicial.BloqueioData) Then
@@ -217,7 +218,7 @@ Public Class frmPrincipal
         Else
             Try
                 '
-                myConta = mBLL.Conta_GetDados_Inicial(Obter_ContaPadrao)
+                myConta = mBLL.Conta_GET_PorIDConta(Obter_ContaPadrao)
                 '
                 If IsDBNull(myConta.IDConta) Then
                     AbrirConfig = True
@@ -250,7 +251,7 @@ Public Class frmPrincipal
             Else
                 Try
                     '
-                    myConta = mBLL.Conta_GetDados_Inicial(Obter_ContaPadrao)
+                    myConta = mBLL.Conta_GET_PorIDConta(Obter_ContaPadrao)
                     '
                     If IsDBNull(myConta.IDConta) Then
                         AbrirConfig = True

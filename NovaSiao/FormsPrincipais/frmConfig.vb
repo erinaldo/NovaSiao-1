@@ -2,19 +2,23 @@
 Imports System.Xml
 Imports VIBlend.WinForms.Controls
 Imports CamadaBLL
+Imports CamadaDTO
 
 Public Class frmConfig
+    '
     ' VARIÁVEIS E PROPRIEDADES
     Dim Px, Py As Integer
     Dim Mover As Boolean
-    Private _IDConta As Integer?
-    Private _IDFilial As Integer?
+    Private _Conta As clConta
+    Private IDConta_Config As Short?
+    Private IDFilial_Config As Integer?
     Private _Sit As FlagEstado
     Private ImageLogoMono As Image
     Private ImageLogoColor As Image
     Dim _VerAlteracao As Boolean = False
     '
 #Region "LOAD"
+    '
     Private Property Sit As FlagEstado
         Get
             Return _Sit
@@ -48,9 +52,6 @@ Public Class frmConfig
                 Sit = FlagEstado.Alterado
             Else
                 Sit = FlagEstado.RegistroSalvo
-                '
-
-                '
             End If
             '
         Else
@@ -59,13 +60,69 @@ Public Class frmConfig
             '
         End If
         '
+        '-- Get Conta Padrao
+        If Not IsNothing(IDConta_Config) Then
+            GetConta(IDConta_Config)
+        Else
+            _Conta = New clConta
+        End If
+        '
+        '--- Verifica Data de Bloqueio da Conta
+        VerficaBloqueioDataConta()
+        '
         '--- Get Connection String
         Dim bBLL As New BackupBLL
-        '
         txtStringConexao.Text = bBLL.GetConString
         '
+        '--- Add Handlers
         HandlerChangedControles()
         _VerAlteracao = True
+        '
+    End Sub
+    '
+    ' GET OS DADOS DA CONTA PADRAO
+    Private Sub GetConta(IDConta As Byte)
+        Dim mBLL As New MovimentacaoBLL
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            '--- Get Dados da Conta
+            _Conta = mBLL.Conta_GET_PorIDConta(IDConta)
+            VerificaValoresDefault()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Obter a Conta pelo ID..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            _Conta = New clConta
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    '--- VERIFICA INTEGRIDADE DO ARQUIVO DE CONFIG
+    Private Sub VerificaValoresDefault()
+        '
+        '--- Descricao da Conta
+        If Not _Conta.Conta.Equals(txtContaPadrao.Text) Then
+            txtContaPadrao.Text = _Conta.Conta
+            Sit = FlagEstado.Alterado
+        End If
+        '
+        '--- Descricao da Filial
+        If Not _Conta.ApelidoFilial.Equals(txtFilialPadrao.Text) Then
+            txtFilialPadrao.Text = _Conta.ApelidoFilial
+            Sit = FlagEstado.Alterado
+        End If
+        '
+        '-- IDFilial
+        If Not _Conta.IDFilial.Equals(IDFilial_Config) Then
+            IDFilial_Config = _Conta.IDFilial
+            Sit = FlagEstado.Alterado
+        End If
         '
     End Sub
     '
@@ -135,9 +192,9 @@ Public Class frmConfig
             With .SelectSingleNode("ValoresPadrao")
                 '
                 dtpDataPadrao.Value = .SelectSingleNode("DataPadrao").InnerText
-                _IDFilial = .SelectSingleNode("FilialPadrao").InnerText
+                IDFilial_Config = If(String.IsNullOrEmpty(.SelectSingleNode("FilialPadrao").InnerText), Nothing, .SelectSingleNode("FilialPadrao").InnerText)
                 txtFilialPadrao.Text = .SelectSingleNode("FilialDescricao").InnerText
-                _IDConta = .SelectSingleNode("ContaPadrao").InnerText
+                IDConta_Config = If(String.IsNullOrEmpty(.SelectSingleNode("ContaPadrao").InnerText), Nothing, .SelectSingleNode("ContaPadrao").InnerText)
                 txtContaPadrao.Text = .SelectSingleNode("ContaDescricao").InnerText
                 lblDataBloqueio.Text = .SelectSingleNode("DataBloqueada").InnerText
                 txtCidade.Text = .SelectSingleNode("Cidade").InnerText
@@ -209,11 +266,11 @@ Error_Handler:
                 .WriteStartElement("ValoresPadrao")
                 ' Sub Elementos
                 .WriteElementString("DataPadrao", dtpDataPadrao.Value.ToShortDateString)
-                .WriteElementString("FilialPadrao", _IDFilial)
-                .WriteElementString("FilialDescricao", txtFilialPadrao.Text)
-                .WriteElementString("ContaPadrao", _IDConta)
-                .WriteElementString("ContaDescricao", txtContaPadrao.Text)
-                .WriteElementString("DataBloqueada", lblDataBloqueio.Text)
+                .WriteElementString("FilialPadrao", _Conta.IDFilial)
+                .WriteElementString("FilialDescricao", _Conta.ApelidoFilial)
+                .WriteElementString("ContaPadrao", _Conta.IDConta)
+                .WriteElementString("ContaDescricao", _Conta.Conta)
+                .WriteElementString("DataBloqueada", If(_Conta.BloqueioData, ""))
                 .WriteElementString("Cidade", txtCidade.Text)
                 .WriteElementString("UF", txtUF.Text)
                 .WriteElementString("Naturalidade", txtNaturalidade.Text)
@@ -417,7 +474,7 @@ Error_Handler:
     Private Sub btnContaAdd_Click(sender As Object, e As EventArgs) Handles btnContaAdd.Click
         '
         '--- verifica se a Filial já foi escolhida
-        If IsNothing(_IDFilial) Then
+        If IsNothing(_Conta.IDFilial) Then
             MessageBox.Show("Favor escolher em primeiro lugar FILIAL PADRÃO", "Escolha Filial", MessageBoxButtons.OK, MessageBoxIcon.Information)
             btnAlteraFilial.Focus()
             Exit Sub
@@ -443,13 +500,13 @@ Error_Handler:
         '
         If fFil.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        If fFil.propIdFilial_Escolha <> _IDFilial Then
+        If fFil.propIdFilial_Escolha <> _Conta.IDFilial Then
             Sit = FlagEstado.Alterado
-            _IDConta = Nothing
+            _Conta = New clConta '--- clear _Conta as NEW clConta
             txtContaPadrao.Clear()
         End If
         '
-        _IDFilial = fFil.propIdFilial_Escolha
+        _Conta.IDFilial = fFil.propIdFilial_Escolha
         txtFilialPadrao.Text = fFil.propFilial_Escolha
         '
     End Sub
@@ -457,14 +514,14 @@ Error_Handler:
     Private Sub btnAlteraConta_Click(sender As Object, e As EventArgs) Handles btnAlteraConta.Click
         '
         '--- verifica se a Filial já foi escolhida
-        If IsNothing(_IDFilial) Then
+        If IsNothing(_Conta.IDFilial) Then
             MessageBox.Show("Favor escolher em primeiro lugar FILIAL PADRÃO", "Escolha Filial", MessageBoxButtons.OK, MessageBoxIcon.Information)
             btnAlteraFilial.Focus()
             Exit Sub
         End If
         '
         '--- Abre o frmContas
-        Dim frmConta As New frmContaProcurar(Me, _IDFilial, _IDConta)
+        Dim frmConta As New frmContaProcurar(Me, _Conta.IDFilial, _Conta.IDConta)
         '
         Me.Opacity = 0.6
         frmConta.ShowDialog()
@@ -472,11 +529,11 @@ Error_Handler:
         '
         If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        If frmConta.propConta_Escolha.IDConta <> _IDConta Then
+        If frmConta.propConta_Escolha.IDConta <> _Conta.IDConta Then
             Sit = FlagEstado.Alterado
         End If
         '
-        _IDConta = frmConta.propConta_Escolha.IDConta
+        _Conta = frmConta.propConta_Escolha
         txtContaPadrao.Text = frmConta.propConta_Escolha.Conta
         '
         '--- determina a DataPadrao do Sistema pela conta
@@ -515,25 +572,7 @@ Error_Handler:
     'return FALSE se a DataBloqueio não for encontrada
     Private Function VerficaBloqueioDataConta() As Boolean
         '
-        Dim mBLL As New MovimentacaoBLL
-        Dim blData As Date? = Nothing
-        '
-        '--- GET DATA BLOQUEIO
-        '---------------------------------------------------
-        Try
-            '--- Ampulheta ON
-            Cursor = Cursors.WaitCursor
-            '
-            '--- Get databloqueada
-            blData = mBLL.Conta_GetDataBloqueio(_IDConta)
-            '
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma exceção ao obter a Data Padrão da Conta Escolhida..." & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            '--- Ampulheta OFF
-            Cursor = Cursors.Default
-        End Try
+        Dim blData As Date? = _Conta.BloqueioData
         '
         '--- DEFINE OS VALORES
         '---------------------------------------------------
@@ -711,8 +750,7 @@ Error_Handler:
         If CriaConfigXML() Then
             '
             Dim frmP As frmPrincipal = Application.OpenForms().Item("frmPrincipal")
-            frmP.propContaPadrao = txtContaPadrao.Text
-            frmP.propFilialPadrao = txtFilialPadrao.Text
+            frmP.propContaPadrao = _Conta
             frmP.propDataPadrao = dtpDataPadrao.Value
             '
             MessageBox.Show("Arquivo de Configuração SALVO com sucesso!",
@@ -738,17 +776,17 @@ Error_Handler:
             Return False
         End If
         '
-        If IsNothing(_IDFilial) Then
-            MessageBox.Show("A Filial Padrão não pode ficar vazio...", "Filial Padrão",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information)
-            txtFilialPadrao.Focus()
-            Return False
-        End If
-        '   
-        If IsNothing(_IDConta) Then
+        If IsNothing(_Conta) OrElse IsNothing(_Conta.IDConta) Then
             MessageBox.Show("A Conta Padrão não pode ficar vazia...", "Conta Padrão",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             txtContaPadrao.Focus()
+            Return False
+        End If
+        '
+        If IsNothing(_Conta.IDFilial) Then
+            MessageBox.Show("A Filial Padrão não pode ficar vazio...", "Filial Padrão",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information)
+            txtFilialPadrao.Focus()
             Return False
         End If
         '
@@ -998,8 +1036,18 @@ Error_Handler:
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         '
         If _Sit = FlagEstado.Alterado Then
+            '
             LerConfigXML()
+            '
+            '-- Get Conta Padrao
+            If Not IsNothing(IDConta_Config) Then
+                GetConta(IDConta_Config)
+            Else
+                _Conta = New clConta
+            End If
+            '
             Sit = FlagEstado.RegistroSalvo
+            '
         ElseIf _Sit = FlagEstado.NovoRegistro Then
             DialogResult = DialogResult.Cancel
             Close()

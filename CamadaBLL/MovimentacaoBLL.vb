@@ -281,7 +281,7 @@ Public Class MovimentacaoBLL
     '===================================================================================================
     ' RETURN CLCONTA PELO IDCONTA
     '===================================================================================================
-    Public Function Conta_GET_PorIDConta(IDConta As Byte?) As clConta
+    Public Function Conta_GET_PorIDConta(IDConta As Int16) As clConta
         '
         Dim db As New AcessoDados
         Dim dtConta As DataTable
@@ -339,27 +339,6 @@ Public Class MovimentacaoBLL
         Next
         '
         Return list
-        '
-    End Function
-    '
-    '============================================================================================
-    ' GET CONTA DADOS INICIAIS | ABERTURA
-    '============================================================================================
-    Public Function Conta_GetDados_Inicial(IDConta As Int16) As clConta
-        Dim db As New AcessoDados
-        '
-        '--- DETERMINA OS PARAMETROS
-        db.AdicionarParametros("@IDConta", IDConta)
-        '
-        Try
-            '
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspContaPadrao_GET")
-            '
-            Return Conta_Convert_Dt_To_List(dt)(0)
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
         '
     End Function
     '

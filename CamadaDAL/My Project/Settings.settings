@@ -11,7 +11,7 @@
       <Value Profile="(Default)">Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>
     </Setting>
     <Setting Name="ConexaoString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Data Source=VTSERVER\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>
+      <Value Profile="(Default)">Server=tcp:novasiaoserver.database.windows.net,1433;Initial Catalog=ProgramaLoja;Persist Security Info=False;User ID=Daniel;Password=f8ip7Ofr;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;</Value>
     </Setting>
     <Setting Name="StringNote" Type="System.String" Scope="User">
       <Value Profile="(Default)">Data Source=SERVERNOTE\SQLPADRAO;Initial Catalog=NovaSiao;Persist Security Info=True;User ID=sa;Password=123456</Value>
