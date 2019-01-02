@@ -22,7 +22,6 @@ Partial Class frmContaProcurar
         Me.lstItens = New ComponentOwl.BetterListView.BetterListView()
         Me.clnID = New ComponentOwl.BetterListView.BetterListViewColumnHeader()
         Me.clnConta = New ComponentOwl.BetterListView.BetterListViewColumnHeader()
-        Me.clnAtivoImage = New ComponentOwl.BetterListView.BetterListViewColumnHeader()
         Me.clnAtivo = New ComponentOwl.BetterListView.BetterListViewColumnHeader()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnEscolher = New System.Windows.Forms.Button()
@@ -49,7 +48,6 @@ Partial Class frmContaProcurar
         Me.lstItens.ColorSortedColumn = System.Drawing.Color.Transparent
         Me.lstItens.Columns.Add(Me.clnID)
         Me.lstItens.Columns.Add(Me.clnConta)
-        Me.lstItens.Columns.Add(Me.clnAtivoImage)
         Me.lstItens.Columns.Add(Me.clnAtivo)
         Me.lstItens.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lstItens.HeaderStyle = ComponentOwl.BetterListView.BetterListViewHeaderStyle.Nonclickable
@@ -75,19 +73,13 @@ Partial Class frmContaProcurar
         Me.clnConta.Text = "Conta"
         Me.clnConta.Width = 230
         '
-        'clnAtivoImage
-        '
-        Me.clnAtivoImage.AllowResize = False
-        Me.clnAtivoImage.Name = "clnAtivoImage"
-        Me.clnAtivoImage.Text = "Ativa"
-        Me.clnAtivoImage.Width = 60
-        '
         'clnAtivo
         '
+        Me.clnAtivo.AlignHorizontal = ComponentOwl.BetterListView.TextAlignmentHorizontal.Center
         Me.clnAtivo.AllowResize = False
         Me.clnAtivo.Name = "clnAtivo"
         Me.clnAtivo.Text = "Ativa"
-        Me.clnAtivo.Width = 0
+        Me.clnAtivo.Width = 60
         '
         'btnCancelar
         '
@@ -150,6 +142,5 @@ Partial Class frmContaProcurar
     Friend WithEvents btnCancelar As Button
     Friend WithEvents btnEscolher As Button
     Friend WithEvents txtProcura As TextBox
-    Friend WithEvents clnAtivoImage As ComponentOwl.BetterListView.BetterListViewColumnHeader
     Friend WithEvents clnAtivo As ComponentOwl.BetterListView.BetterListViewColumnHeader
 End Class

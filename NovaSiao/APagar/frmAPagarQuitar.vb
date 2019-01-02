@@ -83,8 +83,8 @@ Public Class frmAPagarQuitar
             txtConta.Clear()
         Else
             '
-            txtConta.Text = frmConta.propConta_Escolha
-            propMovSaida.IDConta = frmConta.propIdConta_Escolha
+            txtConta.Text = frmConta.propConta_Escolha.Conta
+            propMovSaida.IDConta = frmConta.propConta_Escolha.IDConta
             '
         End If
     End Sub

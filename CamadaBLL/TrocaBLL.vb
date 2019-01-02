@@ -68,9 +68,10 @@ Public Class TrocaBLL
     '--------------------------------------------------------------------------------------------
     ' UPDATE
     '--------------------------------------------------------------------------------------------
-    Public Function AtualizaTroca_Procedure_ID(ByVal _troca As clTroca) As Object
+    Public Function AtualizaTroca_Procedure_ID(ByVal _troca As clTroca,
+                                               Optional dBTran As Object = Nothing) As Object
         '
-        Dim objDB As New AcessoDados
+        Dim objDB As AcessoDados = If(dBTran, New AcessoDados)
         Dim Conn As New SqlCommand
         '
         'Limpa os Parâmetros

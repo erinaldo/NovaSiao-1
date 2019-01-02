@@ -11,8 +11,7 @@ Public Class frmContaProcurar
     Private _IDFilialPadrao As Integer
     Private _indexContaPadrao As Integer? = Nothing
     '
-    Property propIdConta_Escolha As Integer
-    Property propConta_Escolha As String
+    Property propConta_Escolha As clConta
     '
 #Region "SUB NEW | PROPERTYS"
     '
@@ -94,8 +93,7 @@ Public Class frmContaProcurar
         '
         clnID.DisplayMember = "IDConta"
         clnConta.DisplayMember = "Conta"
-        clnAtivo.DisplayMember = "Ativo"
-        clnAtivo.Width = 0
+        clnAtivo.ValueMember = "Ativo"
         '
         lstItens.SearchSettings = New BetterListViewSearchSettings(BetterListViewSearchMode.PrefixOrSubstring,
                                                                    BetterListViewSearchOptions.UpdateSearchHighlight,
@@ -116,22 +114,24 @@ Public Class frmContaProcurar
         '
     End Sub
     '
+    '--- DESENHA AS IMAGENS
     Private Sub lstItens_DrawItem(sender As Object, eventArgs As BetterListViewDrawItemEventArgs) Handles lstItens.DrawItem
         '
         If IsNumeric(eventArgs.Item.Text) Then
             eventArgs.Item.Text = Format(CInt(eventArgs.Item.Text), "00")
         End If
         '
-        eventArgs.Item.SubItems(3).AlignHorizontalImage = BetterListViewImageAlignmentHorizontal.OverlayCenter
+        eventArgs.Item.SubItems(2).AlignHorizontalImage = BetterListViewImageAlignmentHorizontal.OverlayCenter
         '
-        If eventArgs.Item.SubItems(3).Text = "True" Then
+        If eventArgs.Item.SubItems(2).Value = "True" Then
             eventArgs.Item.SubItems(2).Image = ItemAtivo
-        ElseIf eventArgs.Item.SubItems(3).Text = "False" Then
+        ElseIf eventArgs.Item.SubItems(2).VALUE = "False" Then
             eventArgs.Item.SubItems(2).Image = ItemInativo
         End If
         '
     End Sub
     '
+    '--- AO CLICAR DUAS VEZES SELECIONAR
     Private Sub lstItens_ItemActivate(sender As Object, eventArgs As BetterListViewItemActivateEventArgs) Handles lstItens.ItemActivate
         btnEscolher_Click(New Object, New System.EventArgs)
     End Sub
@@ -150,8 +150,7 @@ Public Class frmContaProcurar
         End If
         '
         ' DEFINIR O VALOR
-        propIdConta_Escolha = CInt(lstItens.SelectedItems(0).Text) ' ID DA CONTA
-        propConta_Escolha = lstItens.SelectedItems(0).SubItems(1).Text ' DESCRICAO DA CONTA
+        propConta_Escolha = listContas.Find(Function(x) x.IDConta = lstItens.SelectedItems(0).Text)
         '
         Me.DialogResult = DialogResult.OK
         Me.Close()

@@ -196,6 +196,7 @@ Public Class VendaBLL
     ' INSERT NOVA VENDA E RETORNA UM DATATABLE
     '--------------------------------------------------------------------------------------------
     Public Function SalvaNovaVenda_Procedure_DT(ByVal _vnd As clVenda) As DataTable
+        '
         Dim objDB As New AcessoDados
         Dim Conn As New SqlCommand
         '
@@ -203,61 +204,21 @@ Public Class VendaBLL
         objDB.LimparParametros()
         '
         '-- PARAMETROS DA TBLTRANSACAO
-        '@IDPessoaDestino AS INT, x
-        objDB.AdicionarParametros("@IDPessoaDestino", _vnd.IDPessoaDestino)
-        '@IDPessoaOrigem AS INT, x
-        objDB.AdicionarParametros("@IDPessoaOrigem", _vnd.IDPessoaOrigem)
-        '@IDOperacao AS BYTE,  x
-        objDB.AdicionarParametros("@IDOperacao", _vnd.IDOperacao)
-        '@IDSituacao AS TINYINT = 0, --0|INSERIDA ; 1|VERIFICADA ; 2|FECHADA  x
-        objDB.AdicionarParametros("@IDSituacao", _vnd.IDSituacao)
-        '@IDUser AS INT, x
-        objDB.AdicionarParametros("@IDUser", _vnd.IDUser)
-        '@CFOP AS INT(16), x
-        objDB.AdicionarParametros("@CFOP", _vnd.CFOP)
-        '@VendaData AS SMALLDATETIME, x
-        objDB.AdicionarParametros("@TransacaoData", _vnd.TransacaoData)
+
+        objDB.AdicionarParametros("@IDPessoaDestino", _vnd.IDPessoaDestino) '@IDPessoaDestino AS INT, x
+        objDB.AdicionarParametros("@IDPessoaOrigem", _vnd.IDPessoaOrigem) '@IDPessoaOrigem AS INT, x
+        objDB.AdicionarParametros("@IDUser", _vnd.IDUser) '@IDUser AS INT, x
+        objDB.AdicionarParametros("@CFOP", _vnd.CFOP) '@CFOP AS INT(16), x
+        objDB.AdicionarParametros("@TransacaoData", _vnd.TransacaoData) '@VendaData AS SMALLDATETIME, x
         '
         '-- PARAMETROS DA TBLVENDA
-        '@IDDepartamento AS SMALLINT = 1, x
-        objDB.AdicionarParametros("@IDDepartamento", _vnd.IDDepartamento)
-        '@IDVendedor AS INT, x
-        objDB.AdicionarParametros("@IDVendedor", _vnd.IDVendedor)
-        '@CobrancaTipo AS TINYINT,  x
-        objDB.AdicionarParametros("@CobrancaTipo", _vnd.CobrancaTipo)
-        '@IDPlano SMALLINT = NULL, x
-        objDB.AdicionarParametros("@IDPlano", _vnd.IDPlano)
-        '@JurosMes AS DECIMAL(6,2), x
-        objDB.AdicionarParametros("@JurosMes", _vnd.JurosMes)
-        '@Observacao AS VARCHAR(max) = null, x
-        objDB.AdicionarParametros("@Observacao", _vnd.Observacao)
-        '@VendaTipo AS TINYINT = 0, --0|VAREJO ; 1|ATACADO x
-        objDB.AdicionarParametros("@IDVendaTipo", _vnd.IDVendaTipo)
-        '@ValorProdutos AS MONEY x
-        objDB.AdicionarParametros("@ValorProdutos", _vnd.ValorProdutos)
-        '@ValorFrete AS MONEY -- Valor do Frete a ser cobrado na Venda x
-        objDB.AdicionarParametros("@ValorFrete", _vnd.ValorFrete)
-        '@ValorImpostos AS MONEY -- Valor dos Impostos a ser cobrados x
-        objDB.AdicionarParametros("@ValorImpostos", _vnd.ValorImpostos)
-        '@ValorAcrescimos AS MONEY -- Valor dos outros acrescimos x
-        objDB.AdicionarParametros("@ValorAcrescimos", _vnd.ValorAcrescimos)
-        '@ValorDevolucao AS MONEY -- Valor da Troca|Devolucao x
-        objDB.AdicionarParametros("@ValorDevolucao", _vnd.ValorDevolucao)
-        '
-        '-- PARAMETROS DA TBLVENDAFRETE
-        '@IDTransportadora AS INT = NULL,
-        objDB.AdicionarParametros("@IDTransportadora", _vnd.IDTransportadora)
-        '@FreteValor AS MONEY = 0,
-        objDB.AdicionarParametros("@FreteValor", _vnd.FreteValor)
-        '@FreteTipo AS TINYINT = 0, -- 1|EMITENTE; 2|DESTINATARIO 
-        objDB.AdicionarParametros("@FreteTipo", _vnd.FreteTipo)
-        '@Volumes AS SMALLINT = 1,
-        objDB.AdicionarParametros("@Volumes", _vnd.Volumes)
-        '@IDAPagar AS INT = NULL
-        objDB.AdicionarParametros("@IDAPagar", _vnd.IDApagar)
+        objDB.AdicionarParametros("@IDDepartamento", _vnd.IDDepartamento) '@IDDepartamento AS SMALLINT = 1, x
+        objDB.AdicionarParametros("@IDVendedor", _vnd.IDVendedor) '@IDVendedor AS INT, x
+        objDB.AdicionarParametros("@CobrancaTipo", _vnd.CobrancaTipo) '@CobrancaTipo AS TINYINT,  x
         '
         Try
             Dim dtV As DataTable = objDB.ExecutarConsulta(CommandType.StoredProcedure, "uspVenda_Inserir")
+            '
             If dtV.Rows.Count = 0 Then
                 Throw New Exception("Um erro ineperado ocorreu na uspVenda_Inserir")
             End If

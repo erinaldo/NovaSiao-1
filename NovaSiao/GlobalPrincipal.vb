@@ -76,9 +76,13 @@ Public Module GlobalPrincipal
                 Return False
             Else
                 If myData < dtBloq Then
-                    MessageBox.Show("Essa data já está bloqueada pelo sistema..." & vbNewLine &
-                                    "Já existe caixa efetuado posterior a essa data." & vbNewLine &
-                                    "Favor utilizar outra data.", "Data Bloqueada",
+                    '--- obter a descricao da Conta Padrao
+                    Dim ContaPadrao As String = ObterDefault("ContaDescricao")
+                    '
+                    MessageBox.Show("A Conta Padrão: " & ContaPadrao.ToUpper & vbNewLine &
+                                    "já está bloqueada nessa DATA, pelo sistema..." & vbNewLine & vbNewLine &
+                                    "Já existe caixa efetuado posterior a essa data." & vbNewLine & vbNewLine &
+                                    "Favor utilizar outra data ou altere a conta padrão.", "Data Bloqueada",
                                     MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Return True
                 Else
@@ -128,7 +132,8 @@ Public Module GlobalPrincipal
     ' SETAR OS VALORES DEFAULT DE CONTROLE
     Public Function SetarDefault(CampoDefault As String, myValor As String) As Boolean
         '
-        Dim MyXMLNode As XmlNode = MyConfig.SelectSingleNode("/Configuracao/ValoresPadrao/" & CampoDefault)
+        Dim xmlConfig As XmlDocument = MyConfig()
+        Dim MyXMLNode As XmlNode = xmlConfig.SelectSingleNode("/Configuracao/ValoresPadrao/" & CampoDefault)
         '
         If MyXMLNode IsNot Nothing Then
             MyXMLNode.InnerText = myValor
@@ -137,7 +142,7 @@ Public Module GlobalPrincipal
             Return False
         End If ' Save the Xml.
         '
-        MyConfig.Save("ConfigFiles\Config.xml")
+        xmlConfig.Save("ConfigFiles\Config.xml")
         Return True
         '
     End Function

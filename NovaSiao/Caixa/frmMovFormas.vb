@@ -438,8 +438,8 @@ Public Class frmMovFormas
         '
         If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        txtConta.Text = frmConta.propConta_Escolha
-        _IDConta = frmConta.propIdConta_Escolha
+        txtConta.Text = frmConta.propConta_Escolha.Conta
+        _IDConta = frmConta.propConta_Escolha.IDConta
         clF.IDContaPadrao = _IDConta
         '
     End Sub

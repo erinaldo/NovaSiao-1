@@ -94,12 +94,17 @@ Public Class AcaoGlobal
         '--- Determina o CLIENTE VAREJO
         Dim IDCli As Integer = 0 '--- Cliente Varejo
         '
+        '--- Define outros Valores
+        Dim VendaData As Date = ObterDefault("DataPadrao")
+        Dim FilialPadrao As String = ObterDefault("FilialDescricao")
+        '
         '--- Pergunta ao Usuário se Deseja inserir nova venda
-        If MessageBox.Show("Você deseja realmente inserir uma NOVA VENDA À VISTA?",
+        If MessageBox.Show("Você deseja realmente inserir uma NOVA VENDA À VISTA?" &
+                           vbNewLine & vbNewLine &
+                           "Data da Venda: " & VendaData & vbNewLine &
+                           "Filial: " & FilialPadrao.ToUpper,
                            "Inserir Nova Venda", MessageBoxButtons.OKCancel,
-                           MessageBoxIcon.Question) = DialogResult.Cancel Then
-            Return Nothing
-        End If
+                           MessageBoxIcon.Question) = DialogResult.Cancel Then Return Nothing
         '
         '--- Insere um novo Registro de Venda
         '---------------------------------------------------------------------------------------
@@ -107,34 +112,37 @@ Public Class AcaoGlobal
         Dim newVenda As New clVenda
         Dim tranBLL As New TransacaoBLL
         '
+        '--- Define os valores iniciais
+        With newVenda
+            .IDPessoaDestino = IDCli
+            .IDPessoaOrigem = Obter_FilialPadrao()
+            .ApelidoFilial = FilialPadrao
+            .IDOperacao = 1
+            .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA
+            .IDUser = UsuarioAcesso(0)
+            .CFOP = tranBLL.ObterCFOP(TransacaoBLL.OperacaoEnum.Venda, TransacaoBLL.CFOPUFDestino.DentroDaUF)
+            .TransacaoData = VendaData
+            .IDDepartamento = 1
+            .IDVendedor = IDFunc
+            .CobrancaTipo = 1 '--- venda à prazo
+            .FreteTipo = 0
+            .ValorProdutos = 0
+            .ValorFrete = 0
+            .ValorImpostos = 0
+            .ValorAcrescimos = 0
+            .JurosMes = 0
+            .IDVendaTipo = 1 '--- varejo
+        End With
+        '
         Try
-            '--- Define os valores iniciais
-            With newVenda
-                .IDPessoaDestino = IDCli
-                .IDPessoaOrigem = Obter_FilialPadrao()
-                .IDOperacao = 1
-                .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA
-                .IDUser = UsuarioAcesso(0)
-                .CFOP = tranBLL.ObterCFOP(TransacaoBLL.OperacaoEnum.Venda, TransacaoBLL.CFOPUFDestino.DentroDaUF)
-                .TransacaoData = ObterDefault("DataPadrao")
-                .IDDepartamento = 1
-                .IDVendedor = IDFunc
-                .CobrancaTipo = 1 '--- venda à prazo
-                .FreteTipo = 0
-                .ValorProdutos = 0
-                .ValorFrete = 0
-                .ValorImpostos = 0
-                .ValorAcrescimos = 0
-                .JurosMes = 0
-                .IDVendaTipo = 1 '--- varejo
-            End With
-            '
             newVenda = vndBLL.SalvaNovaVenda_Procedure_Venda(newVenda)
+            '
             If IsNothing(newVenda) Then
                 MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Nova Venda",
                                 "Inserir Nova Venda", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Return Nothing
             End If
+            '
         Catch ex As Exception
             MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Nova Venda" & vbNewLine &
                             vbNewLine & ex.Message,

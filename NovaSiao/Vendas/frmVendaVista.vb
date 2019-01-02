@@ -629,6 +629,9 @@ Public Class frmVendaVista
         If fFunc.DialogResult = DialogResult.Cancel Then Exit Sub
         '
         Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             Dim newID As Integer = fFunc.IDEscolhido
             '
             If vndBLL.AtualizaVendaVendedor(_Venda.IDVenda, newID) Then
@@ -636,9 +639,13 @@ Public Class frmVendaVista
                 _Venda.ApelidoFuncionario = fFunc.NomeEscolhido
                 lblVendedor.DataBindings("Text").ReadValue()
             End If
+            '
         Catch ex As Exception
             MessageBox.Show("Uma exceção ocorreu ao atualizar o Vendedor..." & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub
@@ -659,19 +666,44 @@ Public Class frmVendaVista
         '
         '--- altera a data da venda e salva no BD
         Dim tranBLL As New TransacaoBLL
-        If tranBLL.AtualizaTransacaoData(_Venda.IDVenda, newDt) Then
+        Dim tc As New TransactionControlBLL
+        Dim dBtran As Object = tc.GetNewAcessoWithTransaction
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
             '
-            _Venda.TransacaoData = frmDt.propDataInfo
-            lblVendaData.DataBindings("Text").ReadValue()
-            '
-            '--- verifica se existe troca e altera a data da troca
-            If Not IsNothing(_Troca) Then
-                Dim tBLL As New TrocaBLL
-                _Troca.TrocaData = newDt
-                tBLL.AtualizaTroca_Procedure_ID(_Troca)
+            If tranBLL.AtualizaTransacaoData(_Venda.IDVenda, newDt, dBtran) Then
+                '
+                _Venda.TransacaoData = frmDt.propDataInfo
+                lblVendaData.DataBindings("Text").ReadValue()
+                '
+                '--- verifica se existe troca e altera a data da troca
+                If Not IsNothing(_Troca) Then
+                    Dim tBLL As New TrocaBLL
+                    _Troca.TrocaData = newDt
+                    '--- updata trocadata 
+                    tBLL.AtualizaTroca_Procedure_ID(_Troca, dBtran)
+                End If
+                '
+                '--- COMMIT
+                tc.CommitAcessoWithTransaction(dBtran)
+                '
             End If
             '
-        End If
+        Catch ex As Exception
+            '
+            '--- ROOLBACK
+            tc.RollbackAcessoWithTransaction(dBtran)
+            '
+            '--- MESSAGE
+            MessageBox.Show("Uma exceção ocorreu ao Evento..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            '
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
     End Sub
     '

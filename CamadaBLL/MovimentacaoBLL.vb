@@ -258,17 +258,54 @@ Public Class MovimentacaoBLL
         Dim db As New AcessoDados
         Dim dtConta As DataTable
         '
+        Dim myQuery As String = "SELECT * FROM qryContas"
+        '
         db.LimparParametros()
         '
         If Not IsNothing(IDFilial) Then
             '--- adiciona os parametros
             db.AdicionarParametros("@IDFilial", IDFilial)
+            myQuery = myQuery & " WHERE IDFilial = @IDFilial"
         End If
         '
         Try
             '--- executa o procedure
-            dtConta = db.ExecutarConsulta(CommandType.StoredProcedure, "uspContas_GET_PorIDFilial")
+            dtConta = db.ExecutarConsulta(CommandType.Text, myQuery)
             Return dtConta
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' RETURN CLCONTA PELO IDCONTA
+    '===================================================================================================
+    Public Function Conta_GET_PorIDConta(IDConta As Byte?) As clConta
+        '
+        Dim db As New AcessoDados
+        Dim dtConta As DataTable
+        '
+        Dim myQuery As String = "SELECT * FROM qryContas"
+        '
+        If Not IsNothing(IDConta) Then
+            db.LimparParametros()
+            '--- adiciona os parametros
+            db.AdicionarParametros("@IDConta", IDConta)
+            myQuery = myQuery & " WHERE IDConta = @IDConta"
+        End If
+        '
+        Try
+            '--- executa o procedure
+            dtConta = db.ExecutarConsulta(CommandType.Text, myQuery)
+            '
+            '--- verifica a quantidade
+            If dtConta.Rows.Count > 0 Then
+                Return Conta_Convert_Dt_To_List(dtConta).Item(0)
+            Else
+                Return Nothing
+            End If
+            '
         Catch ex As Exception
             Throw ex
         End Try

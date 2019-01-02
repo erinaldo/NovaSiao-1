@@ -355,8 +355,8 @@ Public Class frmDespesaSimples
             txtConta.Clear()
         Else
             '
-            txtConta.Text = frmConta.propConta_Escolha
-            _clMovSaida.IDConta = frmConta.propIdConta_Escolha
+            txtConta.Text = frmConta.propConta_Escolha.Conta
+            _clMovSaida.IDConta = frmConta.propConta_Escolha.IDConta
             '
         End If
     End Sub

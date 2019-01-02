@@ -49,34 +49,10 @@ Public Class frmConfig
             Else
                 Sit = FlagEstado.RegistroSalvo
                 '
-                ' Ler a imagem do arquivo da LOGO COLOR
-                If txtLogoColorCaminho.Text.Length > 0 Then
-                    Try
-                        ImageLogoColor = Image.FromFile(txtLogoColorCaminho.Text)
-                        'ImageLogoColor = Image.FromFile(Application.StartupPath + "\Imagens\LogoColor.png")
-                        picLogoColor.Image = ImageLogoColor
-                    Catch ex As Exception
-                        MessageBox.Show("O arquivo de imagem da LOGO Colorida não foi encontrado no caminho especificado:" & vbNewLine &
-                                        txtLogoMonoCaminho.Text, "Erro: Arquivo da Logo", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Information)
-                    End Try
 
-                End If
                 '
-                ' Ler a imagem do arquivo da LOGO MONO
-                If txtLogoMonoCaminho.Text.Length > 0 Then
-                    Try
-                        ImageLogoMono = Image.FromFile(txtLogoMonoCaminho.Text)
-                        'ImageLogoMono = Image.FromFile(Application.StartupPath + "\Imagens\LogoMono.png")
-                        picLogoMono.Image = ImageLogoMono
-                    Catch ex As Exception
-                        MessageBox.Show("O arquivo de imagem da LOGO Monocromática não foi encontrado no caminho especificado:" & vbNewLine &
-                                        txtLogoMonoCaminho.Text, "Erro: Arquivo da Logo", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Information)
-                    End Try
-
-                End If
             End If
+            '
         Else
             '
             Sit = FlagEstado.NovoRegistro
@@ -92,9 +68,58 @@ Public Class frmConfig
         _VerAlteracao = True
         '
     End Sub
+    '
+    Private Function LerLogosImagem() As Boolean
+        '
+        Dim resp As Boolean = False
+        '
+        ' Ler a imagem do arquivo da LOGO COLOR
+        If txtLogoColorCaminho.Text.Length > 0 Then
+            '
+            Try
+                ImageLogoColor = Image.FromFile(txtLogoColorCaminho.Text)
+                'ImageLogoColor = Image.FromFile(Application.StartupPath + "\Imagens\LogoColor.png")
+                picLogoColor.Image = ImageLogoColor
+                '
+                resp = True
+                '
+            Catch ex As Exception
+                MessageBox.Show("O arquivo de imagem da LOGO Colorida não foi encontrado no caminho especificado:" & vbNewLine &
+                                txtLogoMonoCaminho.Text, "Erro: Arquivo da Logo", MessageBoxButtons.OK,
+                                MessageBoxIcon.Information)
+                resp = False
+                '
+            End Try
+            '
+        End If
+        '
+        ' Ler a imagem do arquivo da LOGO MONO
+        If txtLogoMonoCaminho.Text.Length > 0 Then
+            '
+            Try
+                ImageLogoMono = Image.FromFile(txtLogoMonoCaminho.Text)
+                'ImageLogoMono = Image.FromFile(Application.StartupPath + "\Imagens\LogoMono.png")
+                picLogoMono.Image = ImageLogoMono
+                '
+            Catch ex As Exception
+                MessageBox.Show("O arquivo de imagem da LOGO Monocromática não foi encontrado no caminho especificado:" & vbNewLine &
+                                txtLogoMonoCaminho.Text, "Erro: Arquivo da Logo", MessageBoxButtons.OK,
+                                MessageBoxIcon.Information)
+                '
+                resp = False
+                '
+            End Try
+            '
+        End If
+        '
+        Return resp
+        '
+    End Function
+    '
 #End Region
     '
 #Region "ARQUIVO XML"
+    '
     ' LER O ARQUIVO XML
     '-----------------------------------------------------------------------------------------------
     Private Function LerConfigXML() As Boolean
@@ -105,33 +130,43 @@ Public Class frmConfig
         On Error GoTo Error_Handler
 
         With myXML.SelectSingleNode("Configuracao")
+
             ' Lendo a PRIMEIRA Seção
-            dtpDataPadrao.Value = .SelectSingleNode("ValoresPadrao").ChildNodes(0).InnerText
-            _IDFilial = .SelectSingleNode("ValoresPadrao").ChildNodes(1).InnerText
-            txtFilialPadrao.Text = .SelectSingleNode("ValoresPadrao").ChildNodes(2).InnerText
-            _IDConta = .SelectSingleNode("ValoresPadrao").ChildNodes(3).InnerText
-            txtContaPadrao.Text = .SelectSingleNode("ValoresPadrao").ChildNodes(4).InnerText
-            txtCidade.Text = .SelectSingleNode("ValoresPadrao").ChildNodes(5).InnerText
-            txtUF.Text = .SelectSingleNode("ValoresPadrao").ChildNodes(6).InnerText
-            txtNaturalidade.Text = .SelectSingleNode("ValoresPadrao").ChildNodes(7).InnerText
-            txtMensagem.Text = .SelectSingleNode("ValoresPadrao").ChildNodes(8).InnerText
-            'IDProdutoTipoPadrao = .SelectSingleNode("ValoresPadrao").ChildNodes(9).InnerText
-            'ProdutoTipoPadrao = .SelectSingleNode("ValoresPadrao").ChildNodes(10).InnerText
-            'IDProdutoSubTipoPadrao = .SelectSingleNode("ValoresPadrao").ChildNodes(11).InnerText
-            'ProdutoSubTipoPadrao = .SelectSingleNode("ValoresPadrao").ChildNodes(12).InnerText
-            txtPermanencia.Text = .SelectSingleNode("ValoresPadrao").ChildNodes(13).InnerText
+            With .SelectSingleNode("ValoresPadrao")
+                '
+                dtpDataPadrao.Value = .SelectSingleNode("DataPadrao").InnerText
+                _IDFilial = .SelectSingleNode("FilialPadrao").InnerText
+                txtFilialPadrao.Text = .SelectSingleNode("FilialDescricao").InnerText
+                _IDConta = .SelectSingleNode("ContaPadrao").InnerText
+                txtContaPadrao.Text = .SelectSingleNode("ContaDescricao").InnerText
+                lblDataBloqueio.Text = .SelectSingleNode("DataBloqueada").InnerText
+                txtCidade.Text = .SelectSingleNode("Cidade").InnerText
+                txtUF.Text = .SelectSingleNode("UF").InnerText
+                txtNaturalidade.Text = .SelectSingleNode("Naturalidade").InnerText
+                txtMensagem.Text = .SelectSingleNode("MensagemInicial").InnerText
+                'IDProdutoTipoPadrao = .SelectSingleNode("IDProdutoTipoPadrao").InnerText
+                'ProdutoTipoPadrao = .SelectSingleNode("ProdutoTipoPadrao").InnerText
+                'IDProdutoSubTipoPadrao = .SelectSingleNode("IDProdutoSubTipoPadrao").InnerText
+                'ProdutoSubTipoPadrao = .SelectSingleNode("ProdutoSubTipoPadrao").InnerText
+                txtPermanencia.Text = .SelectSingleNode("TaxaPermanencia").InnerText
+                '
+            End With
             '
             ' Lendo a SEGUNDA seção
-            txtRazao.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(0).InnerText
-            txtFantasia.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(1).InnerText
-            txtCNPJ.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(2).InnerText
-            txtIncricao.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(3).InnerText
-            txtTelPrincipal.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(4).InnerText
-            txtTelGerencia.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(5).InnerText
-            txtContatoGerencia.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(6).InnerText
-            txtTelFinanceiro.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(7).InnerText
-            txtContatoFinanceiro.Text = .SelectSingleNode("DadosEmpresa").ChildNodes(8).InnerText
-            '
+            With .SelectSingleNode("DadosEmpresa")
+                '
+                txtRazao.Text = .SelectSingleNode("RazaoSocial").InnerText
+                txtFantasia.Text = .SelectSingleNode("NomeFantasia").InnerText
+                txtCNPJ.Text = .SelectSingleNode("CNPJ").InnerText
+                txtIncricao.Text = .SelectSingleNode("InscricaoSocial").InnerText
+                txtTelPrincipal.Text = .SelectSingleNode("TelefonePrincipal").InnerText
+                txtTelGerencia.Text = .SelectSingleNode("TelefoneGerencia").InnerText
+                txtContatoGerencia.Text = .SelectSingleNode("ContatoGerencia").InnerText
+                txtTelFinanceiro.Text = .SelectSingleNode("TelefoneFinanceiro").InnerText
+                txtContatoFinanceiro.Text = .SelectSingleNode("ContatoFinanceiro").InnerText
+                '
+            End With
+
             ' Lendo a TERCEIRA seção
             txtLogoMonoCaminho.Text = .SelectSingleNode("ArquivoLogo").ChildNodes(0).InnerText
             txtLogoColorCaminho.Text = .SelectSingleNode("ArquivoLogo").ChildNodes(1).InnerText
@@ -154,10 +189,13 @@ Error_Handler:
         Resume Next
         '
     End Function
+    '
     ' CRIA ARQUIVO XML
     '-----------------------------------------------------------------------------------------------
     Private Function CriaConfigXML() As Boolean
+        '
         Try
+            '
             Dim writer As New XmlTextWriter("ConfigFiles\Config.xml", Nothing)
             With writer
                 .WriteStartDocument()
@@ -175,6 +213,7 @@ Error_Handler:
                 .WriteElementString("FilialDescricao", txtFilialPadrao.Text)
                 .WriteElementString("ContaPadrao", _IDConta)
                 .WriteElementString("ContaDescricao", txtContaPadrao.Text)
+                .WriteElementString("DataBloqueada", lblDataBloqueio.Text)
                 .WriteElementString("Cidade", txtCidade.Text)
                 .WriteElementString("UF", txtUF.Text)
                 .WriteElementString("Naturalidade", txtNaturalidade.Text)
@@ -227,13 +266,19 @@ Error_Handler:
                 .WriteEndElement()
                 'escreve o xml para o arquivo e fecha o objeto escritor
                 .Close()
+                '
+                '--- return
                 Return True
+                '
             End With
+            '
         Catch ex As Exception
+            '
             MessageBox.Show(ex.Message)
             Return False
+            '
         End Try
-
+        '
     End Function
     '
 #End Region
@@ -427,12 +472,12 @@ Error_Handler:
         '
         If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        If frmConta.propIdConta_Escolha <> _IDConta Then
+        If frmConta.propConta_Escolha.IDConta <> _IDConta Then
             Sit = FlagEstado.Alterado
         End If
         '
-        _IDConta = frmConta.propIdConta_Escolha
-        txtContaPadrao.Text = frmConta.propConta_Escolha
+        _IDConta = frmConta.propConta_Escolha.IDConta
+        txtContaPadrao.Text = frmConta.propConta_Escolha.Conta
         '
         '--- determina a DataPadrao do Sistema pela conta
         VerficaBloqueioDataConta()
@@ -466,44 +511,66 @@ Error_Handler:
         '
     End Sub
     '
-    '
     '--- VERIFICA BLOQUEIO DA DATA INICIAL DA CONTA ESCOLHIDA
-    Private Sub VerficaBloqueioDataConta()
+    'return FALSE se a DataBloqueio não for encontrada
+    Private Function VerficaBloqueioDataConta() As Boolean
         '
         Dim mBLL As New MovimentacaoBLL
+        Dim blData As Date? = Nothing
         '
+        '--- GET DATA BLOQUEIO
+        '---------------------------------------------------
         Try
-            Dim blData As Date? = mBLL.Conta_GetDataBloqueio(_IDConta)
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
             '
-            If Not IsNothing(blData) Then
-                blData = CDate(blData).AddDays(1)
-                '
-                '-- verifica se a data adicionada é DOMINGO, sendo adiciona um dia
-                If CDate(blData).DayOfWeek = DayOfWeek.Sunday Then CDate(blData).AddDays(1)
-                '
-                '-- define a propriedade DATA PADRAO
-                dtpDataPadrao.MinDate = blData
-                dtpDataPadrao.MaxDate = Today
-                dtpDataPadrao.Value = blData
-            Else '-- Se não houver DataBloqueio definida escolhe o dia de HOJE
-                MessageBox.Show("A CONTA PADRÃO escolhida: " & txtContaPadrao.Text.ToUpper & vbNewLine &
-                                "ainda não tem data de bloqueio definida..." & vbNewLine &
-                                "Logo a DATA PADRÃO do sistema será escolhida como" & vbNewLine &
-                                "DATA ATUAL: " & Now.ToLongDateString, "Data Padrão", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                '
-                dtpDataPadrao.MinDate = Today.AddYears(-10)
-                dtpDataPadrao.Value = Today.ToShortDateString
-                dtpDataPadrao.MaxDate = Today
-                '
-            End If
+            '--- Get databloqueada
+            blData = mBLL.Conta_GetDataBloqueio(_IDConta)
             '
         Catch ex As Exception
             MessageBox.Show("Ocorreu uma exceção ao obter a Data Padrão da Conta Escolhida..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
-    End Sub
-    '
+        '--- DEFINE OS VALORES
+        '---------------------------------------------------
+        If Not IsNothing(blData) Then
+            'blData = CDate(blData).AddDays(1)
+            '
+            '-- verifica se a data adicionada é DOMINGO, sendo adiciona um dia
+            If CDate(blData).DayOfWeek = DayOfWeek.Sunday Then CDate(blData).AddDays(1)
+            '
+            '-- define a propriedade DATA PADRAO
+            dtpDataPadrao.MinDate = blData
+            dtpDataPadrao.MaxDate = Today
+            dtpDataPadrao.Value = blData
+            '
+            '-- define a etiqueta
+            lblDataBloqueio.Text = blData
+            '
+            Return True
+            '
+        Else '-- Se não houver DataBloqueio definida escolhe o dia de HOJE
+            MessageBox.Show("A CONTA PADRÃO escolhida: " & txtContaPadrao.Text.ToUpper & vbNewLine &
+                            "ainda não tem data de bloqueio definida..." & vbNewLine &
+                            "A DATA PADRÃO do sistema será escolhida como" & vbNewLine &
+                            "DATA ATUAL: " & Now.ToLongDateString, "Data Padrão", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            '
+            dtpDataPadrao.MinDate = Today.AddYears(-10)
+            dtpDataPadrao.Value = Today.ToShortDateString
+            dtpDataPadrao.MaxDate = Today
+            '
+            '-- define a etiqueta
+            lblDataBloqueio.Text = dtpDataPadrao.MinDate
+            '
+            Return False
+            '
+        End If
+        '
+    End Function
     '
 #End Region
     '
@@ -511,6 +578,7 @@ Error_Handler:
     ' CRIA TECLA DE ATALHO PARA O TAB
     '---------------------------------------------------------------------------------------------------
     Private Sub frmClientesPF_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        '
         If e.Alt AndAlso e.KeyCode = Keys.D1 Then
             TabPrincipal.SelectedTab = Tab1
             tabPrincipal_SelectedIndexChanged(New Object, New System.EventArgs)
@@ -524,6 +592,7 @@ Error_Handler:
             TabPrincipal.SelectedTab = Tab4
             tabPrincipal_SelectedIndexChanged(New Object, New System.EventArgs)
         End If
+        '
     End Sub
     '
     Private Sub tabPrincipal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles TabPrincipal.SelectedIndexChanged
@@ -532,9 +601,13 @@ Error_Handler:
         ElseIf TabPrincipal.SelectedIndex = 1 Then
             txtRazao.Focus()
         ElseIf TabPrincipal.SelectedIndex = 2 Then
-            txtStringConexao.Focus()
+            txtLogoColorCaminho.Focus()
+            '--- somente faz a leitura dos logos nessa TAB
+            LerLogosImagem()
         ElseIf TabPrincipal.SelectedIndex = 3 Then
             txtStringConexao.Focus()
+        ElseIf TabPrincipal.SelectedIndex = 4 Then
+            dgvOperacao.Focus()
         End If
     End Sub
     '
@@ -755,12 +828,21 @@ Error_Handler:
         '
         Try
             '
-            '--- copia LOGO COLOR
+            '--- se o arquivo foi selecionado
             If txtLogoColorCaminho.Text.Length > 0 Then
-                ImageLogoColor = Image.FromFile(txtLogoColorCaminho.Text)
-                picLogoColor.Image = ImageLogoColor
-                File.Copy(txtLogoColorCaminho.Text, Application.StartupPath + "\Imagens\LogoColor.png", True)
-                txtLogoColorCaminho.Text = Application.StartupPath + "\Imagens\LogoColor.png"
+                '
+                '--- copia LOGO COLOR
+                If txtLogoColorCaminho.Text <> Application.StartupPath + "\Imagens\LogoColor.png" Then
+                    File.Copy(txtLogoColorCaminho.Text, Application.StartupPath + "\Imagens\LogoColor.png", True)
+                    txtLogoColorCaminho.Text = Application.StartupPath + "\Imagens\LogoColor.png"
+                End If
+                '
+                '--- ler a imagem se estiver na TAB 2
+                If TabPrincipal.SelectedIndex = 2 Then
+                    ImageLogoColor = Image.FromFile(txtLogoColorCaminho.Text)
+                    picLogoColor.Image = ImageLogoColor
+                End If
+                '
             Else
                 Return False
             End If
@@ -779,12 +861,21 @@ Error_Handler:
         '
         Try
             '
-            '--- copia LOGO MONO
+            '--- se o arquivo foi selecionado
             If txtLogoMonoCaminho.Text.Length > 0 Then
-                ImageLogoMono = Image.FromFile(txtLogoMonoCaminho.Text)
-                picLogoMono.Image = ImageLogoMono
-                File.Copy(txtLogoMonoCaminho.Text, Application.StartupPath + "\Imagens\LogoMono.png", True)
-                txtLogoMonoCaminho.Text = Application.StartupPath + "\Imagens\LogoMono.png"
+                '
+                '--- copia LOGO MONO
+                If txtLogoMonoCaminho.Text <> Application.StartupPath + "\Imagens\LogoMono.png" Then
+                    File.Copy(txtLogoMonoCaminho.Text, Application.StartupPath + "\Imagens\LogoMono.png", True)
+                    txtLogoMonoCaminho.Text = Application.StartupPath + "\Imagens\LogoMono.png"
+                End If
+                '
+                '--- ler a imagem se estiver na TAB 2
+                If TabPrincipal.SelectedIndex = 2 Then
+                    ImageLogoMono = Image.FromFile(txtLogoMonoCaminho.Text)
+                    picLogoMono.Image = ImageLogoMono
+                End If
+                '
             Else
                 Return False
             End If

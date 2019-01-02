@@ -430,9 +430,9 @@ Public Class frmCaixaInserir
         '
         If frmConta.DialogResult <> DialogResult.OK Then Exit Sub
         '
-        _Conta = frmConta.propConta_Escolha
+        _Conta = frmConta.propConta_Escolha.Conta
         txtConta.Text = _Conta
-        propIDConta = frmConta.propIdConta_Escolha
+        propIDConta = frmConta.propConta_Escolha.IDConta
         '
     End Sub
     '

@@ -1,14 +1,11 @@
 ﻿Imports CamadaBLL
+Imports CamadaDTO
 
 Public Class frmContaDataPadrao
-    Private _IDFilial As Integer?
-    Private _Filial As String
-    Private _IDConta As Int16?
-    Private _Conta As String
-    Private _DataInicial As Date?
     '
+    Private _Conta As clConta
+    Private _DataPadrao As Date?
     Private _formOrigem As Form
-    '
     Private controlaAlteracao As Boolean = False
     '
 #Region "SUB NEW | PROPERTY"
@@ -21,19 +18,79 @@ Public Class frmContaDataPadrao
         ' Add any initialization after the InitializeComponent() call.
         '
         '--- verifica a conta padrao
-        _Conta = ObterDefault("ContaDescricao")
-        _IDConta = Obter_ContaPadrao()
-        _IDFilial = Obter_FilialPadrao()
-        _Filial = ObterDefault("FilialDescricao")
-        txtConta.Text = _Conta
-        txtFilial.Text = _Filial
+        Dim myIDConta As Integer? = Obter_ContaPadrao()
+        If IsNothing(myIDConta) Then Return '--- fecha se for Nothing
         '
-        _DataInicial = Obter_DataPadrao()
-        calDataPadrao.SetDate(_DataInicial)
+        '--- Get Conta pelo IDConta
+        GetConta(myIDConta)
+        If IsNothing(_Conta) Then Return '--- fecha se for Nothing
         '
-        VerficaBloqueioDataConta()
+        txtConta.Text = _Conta.Conta
+        txtFilial.Text = _Conta.ApelidoFilial
+        '
+        '--- Get Data Padrao no CONFIG
+        _DataPadrao = Obter_DataPadrao()
+        lblDataPadrao.Text = _DataPadrao
+        calDataPadrao.SetDate(_DataPadrao)
+        '
+        DefineDtPadrao_DtMin_DtMax()
         '
         controlaAlteracao = True
+        '
+    End Sub
+    '
+    Private Sub GetConta(IDConta As Byte)
+        Dim mBLL As New MovimentacaoBLL
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            _Conta = mBLL.Conta_GET_PorIDConta(IDConta)
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Obter a Conta pelo ID..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    Private Sub frmContaDataPadrao_Shown(sender As Object, e As EventArgs) Handles MyBase.Shown
+        '
+        '--- fecha se não encontar a Conta Padrao
+        If IsNothing(_Conta) Then
+            MessageBox.Show("Não foi encontrada uma Conta Padrão no CONFIG..." & vbNewLine &
+                            "Defina a Conta Padrão no CONFIG." & vbNewLine &
+                            "Esse formulário será encerrado!",
+                            "Conta Padrão Inexistente",
+                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            '
+            btnCancelar_Click(sender, e)
+            '
+        End If
+        '
+    End Sub
+    '
+    '--- VERIFICA INTEGRIDADE DO ARQUIVO DE CONFIG
+    Private Sub VerificaValoresDefault()
+        '
+        '--- Descricao da Conta
+        If Not _Conta.Conta.Equals(ObterDefault("ContaDescricao")) Then
+            SetarDefault("ContaDescricao", _Conta.Conta)
+        End If
+        '
+        '--- Descricao da Filial
+        If Not _Conta.ApelidoFilial.Equals(ObterDefault("FilialDescricao")) Then
+            SetarDefault("FilialDescricao", _Conta.ApelidoFilial)
+        End If
+        '
+        '-- IDFilial
+        If Not _Conta.IDFilial.Equals(Obter_FilialPadrao()) Then
+            SetarDefault("FilialPadrao", _Conta.IDFilial)
+        End If
         '
     End Sub
     '
@@ -49,8 +106,12 @@ Public Class frmContaDataPadrao
         DirectCast(ParentForm, frmPrincipal).propDataPadrao = calDataPadrao.SelectionStart
         DirectCast(ParentForm, frmPrincipal).propContaPadrao = txtConta.Text
         DirectCast(ParentForm, frmPrincipal).propFilialPadrao = txtFilial.Text
-        SetarDefault("FilialPadrao", _IDFilial)
-        SetarDefault("ContaPadrao", _IDConta)
+        '
+        SetarDefault("DataPadrao", calDataPadrao.SelectionStart)
+        SetarDefault("FilialPadrao", _Conta.IDFilial)
+        SetarDefault("FilialDescricao", txtFilial.Text)
+        SetarDefault("ContaPadrao", _Conta.IDConta)
+        SetarDefault("ContaDescricao", txtConta.Text)
         '
         Me.Close()
         If IsNothing(_formOrigem) Then MostraMenuPrincipal()
@@ -62,14 +123,14 @@ Public Class frmContaDataPadrao
         '
         '--- Verifica os controles
         '---------------------------------------------------------------------------------------
-        If IsNothing(_IDFilial) Or txtFilial.Text.Trim.Length = 0 Then
+        If IsNothing(_Conta.IDFilial) Or txtFilial.Text.Trim.Length = 0 Then
             MessageBox.Show("Nenhuma FILIAL padrão foi escolhida...",
                             "Filial Vazia", MessageBoxButtons.OK, MessageBoxIcon.Information)
             txtFilial.Focus()
             Return False
         End If
         '
-        If IsNothing(_IDConta) Or txtConta.Text.Trim.Length = 0 Then
+        If IsNothing(_Conta.IDConta) Or txtConta.Text.Trim.Length = 0 Then
             MessageBox.Show("Nenhuma CONTA padrão foi escolhida...",
                             "Conta Vazia", MessageBoxButtons.OK, MessageBoxIcon.Information)
             txtConta.Focus()
@@ -83,8 +144,8 @@ Public Class frmContaDataPadrao
             Return False
         End If
         '
-        '--- verifica se a data padraoe esta bloqueada pelo sistema
-        If DataBloqueada(calDataPadrao.SelectionStart, _IDConta) Then
+        '--- verifica se a data padrao esta bloqueada pelo sistema
+        If DataBloqueada(calDataPadrao.SelectionStart, _Conta.IDConta) Then
             Return False
         End If
         '
@@ -109,13 +170,13 @@ Public Class frmContaDataPadrao
         '
         If fFil.DialogResult = DialogResult.Cancel Then Exit Sub
         '
-        If fFil.IDFilialEscolhida <> _IDFilial Then
-            _IDConta = Nothing
+        If fFil.IDFilialEscolhida <> _Conta.IDFilial Then
+            _Conta = New clConta
             txtConta.Clear()
         End If
         '
-        _IDFilial = fFil.IDFilialEscolhida
-        _Filial = fFil.FilialEscolhida
+        _Conta.IDFilial = fFil.IDFilialEscolhida
+        _Conta.ApelidoFilial = fFil.FilialEscolhida
         txtFilial.Text = fFil.FilialEscolhida
         '
     End Sub
@@ -123,7 +184,7 @@ Public Class frmContaDataPadrao
     Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
         '
         '--- Verifica se existe uma filial definida
-        If IsNothing(_IDFilial) Then
+        If IsNothing(_Conta.IDFilial) Then
             MessageBox.Show("É necessário definir a Filial para escolher a conta a partir dela..." & vbNewLine &
                             "Favor escolher uma Filial Padrão...",
                             "Escolher Filial",
@@ -134,17 +195,17 @@ Public Class frmContaDataPadrao
         End If
         '
         '--- Abre o frmContas
-        Dim frmConta As New frmContaProcurar(Me, _IDFilial, _IDConta)
-        '
+        Dim frmConta As New frmContaProcurar(Me, _Conta.IDFilial, _Conta.IDConta)
         frmConta.ShowDialog()
         '
         If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
         '
+        '--- Define os valores escolhidos
         _Conta = frmConta.propConta_Escolha
-        txtConta.Text = frmConta.propConta_Escolha
-        _IDConta = frmConta.propIdConta_Escolha
+        txtConta.Text = _Conta.Conta
         '
-        VerficaBloqueioDataConta()
+        '--- Verifica a Data de Bloqueio
+        DefineDtPadrao_DtMin_DtMax()
         '
     End Sub
     '
@@ -152,42 +213,57 @@ Public Class frmContaDataPadrao
     '
 #Region "OUTRAS FUNCOES"
     '
-    '--- VERIFICA BLOQUEIO DA DATA INICIAL DA CONTA ESCOLHIDA
-    Private Sub VerficaBloqueioDataConta()
+    '--- DEFINE OS VALORES DAS DATAS E DAS LABELS
+    Private Function DefineDtPadrao_DtMin_DtMax() As Boolean
         '
-        Dim mBLL As New MovimentacaoBLL
-        '
-        Try
-            Dim blData As Date? = mBLL.Conta_GetDataBloqueio(_IDConta)
+        '--- DEFINE OS VALORES
+        '---------------------------------------------------
+        If Not IsNothing(_Conta.BloqueioData) Then
+            'blData = CDate(blData).AddDays(1)
             '
-            If Not IsNothing(blData) Then
-                'blData = CDate(blData).AddDays(1)
-                '
-                '-- verifica se a data adicionada é DOMINGO, sendo adiciona um dia
-                If CDate(blData).DayOfWeek = DayOfWeek.Sunday Then CDate(blData).AddDays(1)
-                '
-                '-- define a propriedade DATA PADRAO
-                calDataPadrao.MinDate = blData
-                calDataPadrao.MaxDate = Today
-                calDataPadrao.SetDate(blData)
-            Else '-- Se não houver DataBloqueio definida escolhe o dia de HOJE
-                MessageBox.Show("A CONTA PADRÃO escolhida: " & _Conta.ToUpper & vbNewLine &
-                                "ainda não tem data de bloqueio definida..." & vbNewLine &
-                                "A DATA PADRÃO do sistema será escolhida como" & vbNewLine &
-                                "DATA ATUAL: " & Now.ToLongDateString, "Data Padrão", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                '
-                calDataPadrao.MinDate = Today.AddYears(-10)
-                calDataPadrao.SetDate(Today.ToShortDateString)
-                calDataPadrao.MaxDate = Today
-                '
+            '-- verifica se a data adicionada é DOMINGO, sendo adiciona um dia
+            If CDate(_Conta.BloqueioData).DayOfWeek = DayOfWeek.Sunday Then CDate(_Conta.BloqueioData).AddDays(1)
+            '
+            '-- define a propriedade DATA PADRAO
+            calDataPadrao.MinDate = _Conta.BloqueioData
+            calDataPadrao.MaxDate = Today
+            '
+            '-- Verify if DataPadrao is before to DataBloqueio
+            If _DataPadrao < _Conta.BloqueioData Then
+                _DataPadrao = _Conta.BloqueioData
             End If
             '
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma exceção ao obter a Data Padrão da Conta Escolhida..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+            calDataPadrao.SetDate(_DataPadrao)
+            '
+            '-- define a etiqueta
+            lblDataBloqueio.Text = _Conta.BloqueioData
+            '
+            Return True
+            '
+        Else '-- Se não houver DataBloqueio definida escolhe o dia de HOJE
+            MessageBox.Show("A CONTA PADRÃO escolhida: " & _Conta.Conta.ToUpper & vbNewLine &
+                            "ainda não tem data de bloqueio definida..." & vbNewLine &
+                            "A DATA PADRÃO do sistema será escolhida como" & vbNewLine &
+                            "DATA ATUAL: " & Now.ToLongDateString, "Data Padrão", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            '
+            calDataPadrao.MinDate = Today.AddYears(-10)
+            calDataPadrao.MaxDate = Today
+            '
+            '-- Verify if DataPadrao is before to DataBloqueio
+            If _DataPadrao < calDataPadrao.MinDate Then
+                _DataPadrao = calDataPadrao.MinDate
+            End If
+            '
+            calDataPadrao.SetDate(_DataPadrao)
+            '
+            '-- define a etiqueta
+            lblDataBloqueio.Text = calDataPadrao.MinDate
+            '
+            Return False
+            '
+        End If
         '
-    End Sub
+    End Function
     '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
     Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtFilial.KeyDown, txtConta.KeyDown
@@ -214,6 +290,11 @@ Public Class frmContaDataPadrao
             e.SuppressKeyPress = True
         End If
         '
+    End Sub
+    '
+    '--- ALTERA O LABEL AO SELECIONAR NOVA DATA
+    Private Sub calDataPadrao_DateChanged(sender As Object, e As DateRangeEventArgs) Handles calDataPadrao.DateChanged
+        lblDataPadrao.Text = e.Start
     End Sub
     '
 #End Region

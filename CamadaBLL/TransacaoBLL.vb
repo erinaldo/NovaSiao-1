@@ -115,23 +115,22 @@ Public Class TransacaoBLL
     '--------------------------------------------------------------------------------------------
     ' UPDATE A DATA DA TRANSACAO
     '--------------------------------------------------------------------------------------------
-    Public Function AtualizaTransacaoData(myIDTransacao As Integer, myNewDate As Date) As Boolean
+    Public Function AtualizaTransacaoData(myIDTransacao As Integer,
+                                          myNewDate As Date,
+                                          Optional myDBtran As Object = Nothing) As Boolean
         '
-        Dim SQL As New SQLControl
-        SQL.AddParam("@IDTransacao", myIDTransacao)
-        SQL.AddParam("@TransacaoData", myNewDate)
+        Dim db As AcessoDados = If(myDBtran, New AcessoDados)
+        '
+        db.LimparParametros()
+        db.AdicionarParametros("@IDTransacao", myIDTransacao)
+        db.AdicionarParametros("@TransacaoData", myNewDate)
         '
         Dim myQuery As String = "UPDATE tblTransacao SET TransacaoData = @TransacaoData WHERE IDTransacao = @IDTransacao"
         '
         Try
-            SQL.ExecQuery(myQuery)
             '
-            '--- verifica erro
-            If SQL.HasException Then
-                Throw New Exception(SQL.Exception)
-            Else
-                Return True
-            End If
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            Return True
             '
         Catch ex As Exception
             Throw ex

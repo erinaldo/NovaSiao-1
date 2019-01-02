@@ -28,6 +28,8 @@ Partial Class frmConfig
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
         Me.Tab1 = New VIBlend.WinForms.Controls.vTabPage()
+        Me.lblDataBloqueio = New System.Windows.Forms.Label()
+        Me.Label22 = New System.Windows.Forms.Label()
         Me.txtContaPadrao = New System.Windows.Forms.TextBox()
         Me.txtFilialPadrao = New System.Windows.Forms.TextBox()
         Me.txtPermanencia = New Controles.Text_SoNumeros()
@@ -166,6 +168,8 @@ Partial Class frmConfig
         '
         Me.Tab1.ContentBackColor = System.Drawing.Color.Azure
         Me.Tab1.ContentBorderColor = System.Drawing.Color.Transparent
+        Me.Tab1.Controls.Add(Me.lblDataBloqueio)
+        Me.Tab1.Controls.Add(Me.Label22)
         Me.Tab1.Controls.Add(Me.txtContaPadrao)
         Me.Tab1.Controls.Add(Me.txtFilialPadrao)
         Me.Tab1.Controls.Add(Me.txtPermanencia)
@@ -202,6 +206,25 @@ Partial Class frmConfig
         Me.Tab1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.ULTRABLUE
         Me.Tab1.Visible = False
         '
+        'lblDataBloqueio
+        '
+        Me.lblDataBloqueio.BackColor = System.Drawing.Color.Transparent
+        Me.lblDataBloqueio.Location = New System.Drawing.Point(334, 152)
+        Me.lblDataBloqueio.Name = "lblDataBloqueio"
+        Me.lblDataBloqueio.Size = New System.Drawing.Size(92, 18)
+        Me.lblDataBloqueio.TabIndex = 19
+        Me.lblDataBloqueio.Text = "01/01/2018"
+        '
+        'Label22
+        '
+        Me.Label22.AutoSize = True
+        Me.Label22.BackColor = System.Drawing.Color.Transparent
+        Me.Label22.Location = New System.Drawing.Point(211, 152)
+        Me.Label22.Name = "Label22"
+        Me.Label22.Size = New System.Drawing.Size(117, 16)
+        Me.Label22.TabIndex = 19
+        Me.Label22.Text = "Data Bloqueada:"
+        '
         'txtContaPadrao
         '
         Me.txtContaPadrao.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
@@ -222,7 +245,7 @@ Partial Class frmConfig
         '
         Me.txtPermanencia.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtPermanencia.Inteiro = False
-        Me.txtPermanencia.Location = New System.Drawing.Point(214, 252)
+        Me.txtPermanencia.Location = New System.Drawing.Point(214, 280)
         Me.txtPermanencia.Name = "txtPermanencia"
         Me.txtPermanencia.Size = New System.Drawing.Size(53, 27)
         Me.txtPermanencia.TabIndex = 15
@@ -344,7 +367,7 @@ Partial Class frmConfig
         Me.Label14.AutoSize = True
         Me.Label14.BackColor = System.Drawing.Color.Transparent
         Me.Label14.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label14.Location = New System.Drawing.Point(50, 298)
+        Me.Label14.Location = New System.Drawing.Point(50, 326)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(158, 18)
         Me.Label14.TabIndex = 17
@@ -355,7 +378,7 @@ Partial Class frmConfig
         Me.Label13.AutoSize = True
         Me.Label13.BackColor = System.Drawing.Color.Transparent
         Me.Label13.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label13.Location = New System.Drawing.Point(26, 211)
+        Me.Label13.Location = New System.Drawing.Point(26, 239)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(182, 18)
         Me.Label13.TabIndex = 12
@@ -366,7 +389,7 @@ Partial Class frmConfig
         Me.Label20.AutoSize = True
         Me.Label20.BackColor = System.Drawing.Color.Transparent
         Me.Label20.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label20.Location = New System.Drawing.Point(20, 255)
+        Me.Label20.Location = New System.Drawing.Point(20, 283)
         Me.Label20.Name = "Label20"
         Me.Label20.Size = New System.Drawing.Size(188, 18)
         Me.Label20.TabIndex = 14
@@ -377,7 +400,7 @@ Partial Class frmConfig
         Me.Label21.AutoSize = True
         Me.Label21.BackColor = System.Drawing.Color.Transparent
         Me.Label21.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label21.Location = New System.Drawing.Point(271, 255)
+        Me.Label21.Location = New System.Drawing.Point(271, 283)
         Me.Label21.Margin = New System.Windows.Forms.Padding(0)
         Me.Label21.Name = "Label21"
         Me.Label21.Size = New System.Drawing.Size(105, 18)
@@ -390,7 +413,7 @@ Partial Class frmConfig
         Me.Label12.AutoSize = True
         Me.Label12.BackColor = System.Drawing.Color.Transparent
         Me.Label12.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label12.Location = New System.Drawing.Point(452, 164)
+        Me.Label12.Location = New System.Drawing.Point(452, 192)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(98, 18)
         Me.Label12.TabIndex = 10
@@ -401,7 +424,7 @@ Partial Class frmConfig
         Me.Label11.AutoSize = True
         Me.Label11.BackColor = System.Drawing.Color.Transparent
         Me.Label11.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label11.Location = New System.Drawing.Point(75, 164)
+        Me.Label11.Location = New System.Drawing.Point(75, 192)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(133, 18)
         Me.Label11.TabIndex = 8
@@ -410,7 +433,7 @@ Partial Class frmConfig
         'txtMensagem
         '
         Me.txtMensagem.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtMensagem.Location = New System.Drawing.Point(214, 295)
+        Me.txtMensagem.Location = New System.Drawing.Point(214, 323)
         Me.txtMensagem.MaxLength = 1000
         Me.txtMensagem.Multiline = True
         Me.txtMensagem.Name = "txtMensagem"
@@ -420,7 +443,7 @@ Partial Class frmConfig
         'txtNaturalidade
         '
         Me.txtNaturalidade.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtNaturalidade.Location = New System.Drawing.Point(214, 208)
+        Me.txtNaturalidade.Location = New System.Drawing.Point(214, 236)
         Me.txtNaturalidade.MaxLength = 50
         Me.txtNaturalidade.Name = "txtNaturalidade"
         Me.txtNaturalidade.Size = New System.Drawing.Size(212, 27)
@@ -430,7 +453,7 @@ Partial Class frmConfig
         '
         Me.txtUF.CharacterCasing = System.Windows.Forms.CharacterCasing.Upper
         Me.txtUF.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtUF.Location = New System.Drawing.Point(556, 161)
+        Me.txtUF.Location = New System.Drawing.Point(556, 189)
         Me.txtUF.MaxLength = 2
         Me.txtUF.Name = "txtUF"
         Me.txtUF.Size = New System.Drawing.Size(51, 27)
@@ -439,7 +462,7 @@ Partial Class frmConfig
         'txtCidade
         '
         Me.txtCidade.Font = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtCidade.Location = New System.Drawing.Point(214, 161)
+        Me.txtCidade.Location = New System.Drawing.Point(214, 189)
         Me.txtCidade.MaxLength = 50
         Me.txtCidade.Name = "txtCidade"
         Me.txtCidade.Size = New System.Drawing.Size(212, 27)
@@ -701,6 +724,7 @@ Partial Class frmConfig
         'picLogoMono
         '
         Me.picLogoMono.BackColor = System.Drawing.Color.Transparent
+        Me.picLogoMono.InitialImage = Nothing
         Me.picLogoMono.Location = New System.Drawing.Point(214, 255)
         Me.picLogoMono.Name = "picLogoMono"
         Me.picLogoMono.Size = New System.Drawing.Size(413, 115)
@@ -1139,4 +1163,6 @@ Partial Class frmConfig
     Friend WithEvents rbtServLocal As RadioButton
     Friend WithEvents btnContaAdd As VIBlend.WinForms.Controls.vButton
     Friend WithEvents btnFilialAdd As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents lblDataBloqueio As Label
+    Friend WithEvents Label22 As Label
 End Class

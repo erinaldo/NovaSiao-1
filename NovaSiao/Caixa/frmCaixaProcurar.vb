@@ -292,8 +292,8 @@ Public Class frmCaixaProcurar
             propIDConta = Nothing
         Else
             '
-            txtConta.Text = frmConta.propConta_Escolha
-            propIDConta = frmConta.propIdConta_Escolha
+            txtConta.Text = frmConta.propConta_Escolha.Conta
+            propIDConta = frmConta.propConta_Escolha.IDConta
             '
         End If
     End Sub

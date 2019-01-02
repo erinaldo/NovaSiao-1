@@ -31,6 +31,10 @@ Partial Class frmContaDataPadrao
         Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
         Me.calDataPadrao = New System.Windows.Forms.MonthCalendar()
         Me.Panel2 = New System.Windows.Forms.Panel()
+        Me.lblDataPadrao = New System.Windows.Forms.Label()
+        Me.Label5 = New System.Windows.Forms.Label()
+        Me.lblDataBloqueio = New System.Windows.Forms.Label()
+        Me.Label4 = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
@@ -107,6 +111,7 @@ Partial Class frmContaDataPadrao
         '
         Me.btnFilialEscolher.AllowAnimations = True
         Me.btnFilialEscolher.BackColor = System.Drawing.Color.Transparent
+        Me.btnFilialEscolher.Enabled = False
         Me.btnFilialEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
         Me.btnFilialEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
         Me.btnFilialEscolher.Location = New System.Drawing.Point(328, 112)
@@ -175,7 +180,7 @@ Partial Class frmContaDataPadrao
         'calDataPadrao
         '
         Me.calDataPadrao.Font = New System.Drawing.Font("Calibri", 27.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.calDataPadrao.Location = New System.Drawing.Point(62, 6)
+        Me.calDataPadrao.Location = New System.Drawing.Point(6, 6)
         Me.calDataPadrao.MaxDate = New Date(2900, 1, 1, 0, 0, 0, 0)
         Me.calDataPadrao.MaxSelectionCount = 1
         Me.calDataPadrao.MinDate = New Date(1900, 1, 1, 0, 0, 0, 0)
@@ -185,11 +190,57 @@ Partial Class frmContaDataPadrao
         'Panel2
         '
         Me.Panel2.BackColor = System.Drawing.Color.FromArgb(CType(CType(207, Byte), Integer), CType(CType(212, Byte), Integer), CType(CType(218, Byte), Integer))
+        Me.Panel2.Controls.Add(Me.lblDataPadrao)
+        Me.Panel2.Controls.Add(Me.Label5)
+        Me.Panel2.Controls.Add(Me.lblDataBloqueio)
+        Me.Panel2.Controls.Add(Me.Label4)
         Me.Panel2.Controls.Add(Me.calDataPadrao)
         Me.Panel2.Location = New System.Drawing.Point(12, 200)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(362, 174)
         Me.Panel2.TabIndex = 24
+        '
+        'lblDataPadrao
+        '
+        Me.lblDataPadrao.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDataPadrao.ForeColor = System.Drawing.Color.DarkBlue
+        Me.lblDataPadrao.Location = New System.Drawing.Point(244, 107)
+        Me.lblDataPadrao.Name = "lblDataPadrao"
+        Me.lblDataPadrao.Size = New System.Drawing.Size(105, 25)
+        Me.lblDataPadrao.TabIndex = 25
+        Me.lblDataPadrao.Text = "01/01/2019"
+        Me.lblDataPadrao.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label5
+        '
+        Me.Label5.Font = New System.Drawing.Font("Calibri", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label5.Location = New System.Drawing.Point(244, 91)
+        Me.Label5.Name = "Label5"
+        Me.Label5.Size = New System.Drawing.Size(105, 15)
+        Me.Label5.TabIndex = 24
+        Me.Label5.Text = "Data Padrão:"
+        Me.Label5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'lblDataBloqueio
+        '
+        Me.lblDataBloqueio.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblDataBloqueio.ForeColor = System.Drawing.Color.Maroon
+        Me.lblDataBloqueio.Location = New System.Drawing.Point(245, 55)
+        Me.lblDataBloqueio.Name = "lblDataBloqueio"
+        Me.lblDataBloqueio.Size = New System.Drawing.Size(105, 25)
+        Me.lblDataBloqueio.TabIndex = 25
+        Me.lblDataBloqueio.Text = "01/01/2019"
+        Me.lblDataBloqueio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
+        'Label4
+        '
+        Me.Label4.Font = New System.Drawing.Font("Calibri", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label4.Location = New System.Drawing.Point(245, 39)
+        Me.Label4.Name = "Label4"
+        Me.Label4.Size = New System.Drawing.Size(105, 15)
+        Me.Label4.TabIndex = 24
+        Me.Label4.Text = "Data de Bloqueio:"
+        Me.Label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'frmContaDataPadrao
         '
@@ -235,4 +286,8 @@ Partial Class frmContaDataPadrao
     Friend WithEvents btnClose As VIBlend.WinForms.Controls.vFormButton
     Friend WithEvents calDataPadrao As MonthCalendar
     Friend WithEvents Panel2 As Panel
+    Friend WithEvents lblDataPadrao As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents lblDataBloqueio As Label
+    Friend WithEvents Label4 As Label
 End Class
