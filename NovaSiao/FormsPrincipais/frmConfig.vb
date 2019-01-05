@@ -481,7 +481,7 @@ Error_Handler:
         End If
         '
         '--- Abre o frmContas
-        Dim frmConta As New frmContas(Me)
+        Dim frmConta As New frmContas(Me, _Conta.IDFilial, _Conta.ApelidoFilial)
         '
         Opacity = 0.6
         frmConta.ShowDialog()
@@ -507,6 +507,7 @@ Error_Handler:
         End If
         '
         _Conta.IDFilial = fFil.propIdFilial_Escolha
+        _Conta.ApelidoFilial = fFil.propFilial_Escolha
         txtFilialPadrao.Text = fFil.propFilial_Escolha
         '
     End Sub

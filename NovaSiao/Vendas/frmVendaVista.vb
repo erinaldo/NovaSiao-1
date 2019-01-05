@@ -1034,9 +1034,15 @@ Public Class frmVendaVista
         clPag.IDConta = Obter_ContaPadrao()
         clPag.IDMovimentacao = _MovEntradaList.Count + 1
         '
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
         '--- abre o form frmPagamentos
         Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, FlagAcao.INSERIR, pos)
         fPag.ShowDialog()
+        '
+        '--- Ampulheta OFF
+        Cursor = Cursors.Default
         '
         '--- AtualizaTotalPago
         AtualizaTotalPago()

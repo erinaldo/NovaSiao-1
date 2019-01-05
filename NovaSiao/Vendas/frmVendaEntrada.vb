@@ -9,7 +9,6 @@ Public Class frmVendaEntrada
     Private bindPag As New BindingSource
     '
     Private dtTipo As DataTable
-    'Private dtForma As DataTable
     Private lstForma As List(Of clMovForma)
     '
 #Region "NEW | BINDING | COMBOBOX"

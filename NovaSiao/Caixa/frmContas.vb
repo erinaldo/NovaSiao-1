@@ -59,7 +59,9 @@ Public Class frmContas
         '
     End Property
     '
-    Sub New(Optional formOrigem As Form = Nothing)
+    Sub New(Optional formOrigem As Form = Nothing,
+            Optional idFilialPadrao As Integer = Nothing,
+            Optional FilialPadrao As String = "")
         '
         ' This call is required by the designer.
         InitializeComponent()
@@ -68,8 +70,14 @@ Public Class frmContas
         _formOrigem = formOrigem
         '
         '--- Preenche lblFilial e _IDFilial
-        lblFilial.Text = ObterDefault("FilialDescricao")
-        _IDFilialPadrao = Obter_FilialPadrao()
+        '--- if idFilialPadrao isNothing then define
+        If IsNothing(idFilialPadrao) Then
+            lblFilial.Text = ObterDefault("FilialDescricao")
+            _IDFilialPadrao = Obter_FilialPadrao()
+        Else
+            lblFilial.Text = FilialPadrao
+            _IDFilialPadrao = idFilialPadrao
+        End If
         '
         '--- obtem a lista de Contas
         ObtemDados()
@@ -90,6 +98,13 @@ Public Class frmContas
         End If
         '
         _conta = bindConta.Current
+        '
+        '--- Verifica se o IDFilial é valido
+        If IsNothing(_conta.IDFilial) Or _conta.IDFilial = 0 Then
+            _conta.IDFilial = idFilialPadrao
+            _conta.ApelidoFilial = FilialPadrao
+        End If
+        '
         VerAlteracao = True
         '
     End Sub
@@ -145,24 +160,30 @@ Public Class frmContas
     '
     Private Sub handler_CurrentChanged()
         '
-        _conta = DirectCast(bindConta.CurrencyManager.Current, clConta)
-        '
-        ' ADD HANDLER PARA DATABINGS
-        AddHandler _conta.AoAlterar, AddressOf Handler_AoAlterar
-        '
-        '--- Nesse caso é um novo registro
-        If Not IsNothing(_conta.IDConta) Then
+        Try
+
+            _conta = DirectCast(bindConta.CurrencyManager.Current, clConta)
             '
-            ' LER O ID
-            lblIDConta.DataBindings.Item("text").ReadValue()
+            ' ADD HANDLER PARA DATABINGS
+            AddHandler _conta.AoAlterar, AddressOf Handler_AoAlterar
             '
-            ' ALTERAR PARA REGISTRO SALVO
-            Sit = FlagEstado.RegistroSalvo
+            '--- Nesse caso é um novo registro
+            If Not IsNothing(_conta.IDConta) Then
+                '
+                ' LER O ID
+                lblIDConta.DataBindings.Item("text").ReadValue()
+                '
+                ' ALTERAR PARA REGISTRO SALVO
+                Sit = FlagEstado.RegistroSalvo
+                '
+                ' VERIFICA O ATIVO BUTTON
+                AtivoButtonImage()
+                '
+            End If
             '
-            ' VERIFICA O ATIVO BUTTON
-            AtivoButtonImage()
-            '
-        End If
+        Catch ex As Exception
+            Return
+        End Try
         '
     End Sub
     '
@@ -380,6 +401,9 @@ Public Class frmContas
             Cursor = Cursors.WaitCursor
             '
             Dim mBLL As New MovimentacaoBLL
+            '
+            '--- Define o Valor do IDFilial
+            _conta.IDFilial = _IDFilialPadrao
             '
             Dim newID As Integer = mBLL.Conta_Insert(_conta)
             _conta.IDConta = newID
