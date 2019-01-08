@@ -282,8 +282,10 @@ Public Class ParcelaBLL
     '===================================================================================================
     ' SALVAR NOVA PARCELA DA VENDA / TRANSACAO
     '===================================================================================================
-    Public Function InserirNova_Parcela(clParcela As clAReceberParcela) As Integer
-        Dim db As New AcessoDados
+    Public Function InserirNova_Parcela(clParcela As clAReceberParcela,
+                                        Optional dbTran As Object = Nothing) As clAReceberParcela
+        '
+        Dim db As AcessoDados = If(dbTran, New AcessoDados)
         Dim obj As Object = Nothing
         '
         db.LimparParametros()
@@ -298,12 +300,12 @@ Public Class ParcelaBLL
         End With
         '
         Try
-            obj = db.ExecutarManipulacao(CommandType.StoredProcedure, "uspAReceberParcela_Inserir")
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAReceberParcela_Inserir")
             '
-            If IsNumeric(obj) Then
-                Return obj
+            If dt.Rows.Count > 0 Then
+                Return Convert_DataRow_ClAReceberParcela(dt.Rows(0))
             Else
-                Throw New Exception(obj.ToString)
+                Throw New Exception("Uma exceção desconhecida ocorreu ao inserir nova parcela...")
             End If
             '
         Catch ex As Exception
@@ -399,8 +401,13 @@ Public Class ParcelaBLL
     '===================================================================================================
     ' QUITAR PARCELA TRANSACAO
     '===================================================================================================
-    Public Function Quitar_Parcela(IDParcela As Integer, vlRecebido As Double, vlJuros As Double, EntradaData As Date) As Integer
-        Dim db As New AcessoDados
+    Public Function Quitar_Parcela(IDParcela As Integer,
+                                   vlRecebido As Double,
+                                   vlJuros As Double,
+                                   EntradaData As Date,
+                                   Optional dbTran As Object = Nothing) As Integer
+        '
+        Dim db As AcessoDados = If(dbTran, New AcessoDados)
         Dim obj As Object = Nothing
         '
         Try
@@ -559,7 +566,6 @@ Public Class ParcelaBLL
         End Try
         '
     End Function
-    '
     '
     '===================================================================================================
     ' CONVERT DATAROW IN CLARECEBERPARCELA

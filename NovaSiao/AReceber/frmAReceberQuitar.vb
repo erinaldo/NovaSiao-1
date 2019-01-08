@@ -2,35 +2,58 @@
 Imports CamadaDTO
 
 Public Class frmAReceberQuitar
+    '
     Private _formOrigem As Form
+    Private _dbTran As Object = Nothing
+    '
     Private bindEntrada As New BindingSource
     Private _vlMax As Decimal = 0
     Private _VerAlteracao As Boolean = False
+    '
     Property propMovEntrada As clMovimentacao
     Property prop_vlPagoDoValor As Double '--- retorna o valor pago sem o acrescimo
     Property prop_vlPagoJuros As Double '--- retorna o valor pago do Acrescimo / Juros
     '
-    Public Sub New(formOrigem As Form, vlMax As Decimal, IDOrigem As Integer, Optional Acrescimo As Double = 0)
+    Public Sub New(formOrigem As Form,
+                   vlMax As Decimal,
+                   IDOrigem As Integer,
+                   Optional Acrescimo As Double = 0,
+                   Optional DataEntrada As Date? = Nothing,
+                   Optional dbTran As Object = Nothing)
         '
         ' This call is required by the designer.
         InitializeComponent()
         '
         ' Add any initialization after the InitializeComponent() call.
+        _dbTran = dbTran
         _formOrigem = formOrigem
         _vlMax = vlMax
+        '
+        '--- cria uma nova movimentacao
         propMovEntrada = New clMovimentacao(EnumMovimentacaoOrigem.AReceberParcela, EnumMovimento.Entrada)
         bindEntrada.DataSource = propMovEntrada
         PreencheDataBinding()
         '
-        propMovEntrada.MovData = Obter_DataPadrao()
+        '--- define os valores da movimentacao
+        propMovEntrada.MovData = If(DataEntrada, Obter_DataPadrao())
         propMovEntrada.IDConta = Obter_ContaPadrao()
         propMovEntrada.Origem = 2 '--- ORIGEM PARCELAMENTO
         propMovEntrada.IDOrigem = IDOrigem
         propMovEntrada.Creditar = False
         propMovEntrada.Movimento = 1 '--- ORIGEM ENTRADA
+        '
         txtDoValor.Text = FormatCurrency(vlMax, 2)
         txtAcrescimo.Text = FormatCurrency(Acrescimo, 2)
         CalculaValorPago()
+        '
+        '--- se a origem for tblVendaPrazo entao...
+        If formOrigem.Name = "frmVendaPrazo" Then
+            txtAcrescimo.Text = FormatCurrency(0, 2)
+            txtAcrescimo.Enabled = False
+            lblTitulo.Text = "A Receber Entrada"
+        End If
+        '
+        '--- libera alteraçoes
         _VerAlteracao = True
         '
     End Sub
@@ -46,9 +69,21 @@ Public Class frmAReceberQuitar
         txtObservacao.DataBindings.Add("Text", bindEntrada, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' CARREGA OS COMBOBOX
-        CarregaCmbTipo()
-        CarregaCmbForma()
-        CarregaCmbConta()
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            CarregaCmbTipo()
+            CarregaCmbForma()
+            CarregaCmbConta()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Carregar os ComboBox..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblEntradaValor.DataBindings("Text").Format, AddressOf FormatCUR
@@ -162,18 +197,22 @@ Public Class frmAReceberQuitar
             Exit Sub
         End If
         '
-        '--- Verifica se a DATA DA ENTRADA é permitida pelo sistema
-        If DataBloqueada(propMovEntrada.MovData, propMovEntrada.IDConta) Then
-            Exit Sub
-        End If
-        '
-        '--- Insere a Entrada
-        Dim eBLL As New MovimentacaoBLL
-        Dim newID As Integer?
-        '
         Try
-            newID = eBLL.Movimentacao_Inserir(propMovEntrada)
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
             '
+            '--- Verifica se a DATA DA ENTRADA é permitida pelo sistema
+            If DataBloqueada(propMovEntrada.MovData, propMovEntrada.IDConta) Then
+                Return
+            End If
+            '
+            '--- Insere a Entrada
+            Dim eBLL As New MovimentacaoBLL
+            Dim newID As Integer?
+            '
+            newID = eBLL.Movimentacao_Inserir(propMovEntrada, _dbTran)
+            '
+            '--- Verifica resultado
             If Not IsNumeric(newID) Then
                 Throw New Exception(newID.ToString)
             Else
@@ -182,15 +221,20 @@ Public Class frmAReceberQuitar
                 propMovEntrada.MovForma = cmbIDMovForma.Text
             End If
             '
+            '--- retorna valores salvos
             prop_vlPagoDoValor = CDbl(txtDoValor.Text)
             prop_vlPagoJuros = CDbl(txtAcrescimo.Text)
+            '
             DialogResult = DialogResult.OK
             '
         Catch ex As Exception
             MessageBox.Show("Houve uma exceção ao inserir Nova Entrada..." & vbNewLine &
-                            "Comunique ao administrador do sistema.", "Exceção Inesperada",
+                            "Comunique ao administrador do sistema." & vbNewLine &
+                            ex.Message, "Exceção Inesperada",
                             MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub
@@ -333,18 +377,33 @@ Public Class frmAReceberQuitar
             DoValor = CDec(txtDoValor.Text)
             '
             If DoValor > _vlMax Then
-                If MessageBox.Show("O valor da Entrada não pode ser maior que R$ " &
-                                Format(_vlMax, "#,##0.00") & vbNewLine & vbNewLine &
-                                "Deseja inserir a diferença no valor do ACRÉSCIMO?",
-                                "Inserir Acréscimo", MessageBoxButtons.YesNo,
-                                MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = DialogResult.Yes Then
-                    txtAcrescimo.Text = Format(DoValor - _vlMax, "C")
-                Else
-                    txtDoValor.Focus()
+                '
+                If txtAcrescimo.Enabled Then '--- se o acrescimo nao esta bloqueado
+                    '
+                    If MessageBox.Show("O valor da Entrada não pode ser maior que R$ " &
+                                       Format(_vlMax, "#,##0.00") & vbNewLine & vbNewLine &
+                                       "Deseja inserir a diferença no valor do ACRÉSCIMO?",
+                                       "Inserir Acréscimo", MessageBoxButtons.YesNo,
+                                        MessageBoxIcon.Question, MessageBoxDefaultButton.Button1) = DialogResult.Yes Then
+                        txtAcrescimo.Text = Format(DoValor - _vlMax, "C")
+                    Else
+                        txtDoValor.Focus()
+                    End If
+                    '
+                    DoValor = _vlMax
+                    txtDoValor.Text = FormatCurrency(_vlMax, 2)
+                    '
+                Else '--- nesse caso acrescimo esta bloqueado (no caso de entrada de parcelamento)
+                    MessageBox.Show("O valor da Entrada não pode ser maior que R$ " &
+                                    Format(_vlMax, "#,##0.00"),
+                                    "Valor do Pagamento", MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information)
+                    DoValor = _vlMax
+                    txtDoValor.Text = FormatCurrency(_vlMax, 2)
                 End If
-                DoValor = _vlMax
-                txtDoValor.Text = FormatCurrency(_vlMax, 2)
+                '
             End If
+            '
         End If
         '
         If IsNumeric(txtAcrescimo.Text) Then

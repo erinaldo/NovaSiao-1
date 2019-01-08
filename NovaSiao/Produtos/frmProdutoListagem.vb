@@ -5,17 +5,21 @@ Imports ComponentOwl.BetterListView
 '
 Public Class frmProdutoListagem
     Private prodLista As New List(Of clProduto)
-
+    '
     Private _IDProdutoTipo As Integer?
     Private _IDProdutoSubTipo As Integer?
     Private _IDCategoria As Integer?
     Private _IDFabricante As Integer?
     Private _IDFilial As Integer?
     Private _ProdutoAtivo As Byte '--> 0:TODOS | 1:ATIVOS | 2:INATIVOS
-
+    '
+    Private _HabilitaPesquisa As Boolean = True '-- property que habilita o btnPesquisar
+    '
+    Private myWhere As String = ""
     Private LiberaAtualizacao As Boolean = False
     Private _totalProdutos As Integer ' quantidade total de produtos da listagem
-
+    '
+    '--- IMAGENS
     Private ImgInativo As Image = My.Resources.block
     Private ImgAtivo As Image = My.Resources.accept
     '
@@ -30,6 +34,7 @@ Public Class frmProdutoListagem
         '
         '--- verifica a Filial padrao
         _IDFilial = Obter_FilialPadrao()
+        '
         If _IDFilial Is Nothing Then
             MessageBox.Show("Não há nehuma filial padrão selecionada...", "Filial Padrão",
                             MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -38,13 +43,14 @@ Public Class frmProdutoListagem
         End If
         '
         '--- preenche a listagem
-        propProdutoAtivo = 0
+        propProdutoAtivo = 1 '--- ATIVO
         PreencheCombo_Movimento()
-        cmbMovimento.SelectedValue = 0
-        Get_Dados()
+        cmbMovimento.SelectedValue = 0 '--- MOV NORMAL
         FormataListagem()
-        FiltrarListagem()
-        AtualizaLabelTotal()
+        propHabilitaPesquisa = False
+        'Get_Dados()
+        'FiltrarListagem()
+        AtualizaLabelSelecionados()
         '
         LiberaAtualizacao = True
         '
@@ -84,7 +90,7 @@ Public Class frmProdutoListagem
                         '
                     End If
                     '
-                Case 0 '--- TODAS
+                Case 3 '--- TODAS
                     If rbtTodos.Checked <> True Then
                         '
                         rbtTodos.Checked = True
@@ -96,6 +102,51 @@ Public Class frmProdutoListagem
             End Select
             '
             If atualizar Then AtualizaListagem()
+            '
+        End Set
+        '
+    End Property
+    '
+    '--- HABILITAR PROCURA DE DADOS
+    Public Property propHabilitaPesquisa() As Boolean
+        '
+        Get
+            Return _HabilitaPesquisa
+        End Get
+        '
+        Set(ByVal value As Boolean)
+            '
+            If value <> _HabilitaPesquisa Then
+                '
+                If value = True Then
+                    '
+                    btnPesquisar.Enabled = True
+                    lstListagem.Clear(True)
+                    '
+                Else
+                    btnPesquisar.Enabled = False
+                End If
+                '
+            End If
+            '
+            '--- Define o TOOLTIP
+            If value = True Then
+                '
+                Dim toolTip1 As New ToolTip
+                ' Define o delay para a ToolTip.
+                With toolTip1
+                    .AutoPopDelay = 2000
+                    .InitialDelay = 1000
+                    .ReshowDelay = 500
+                    .IsBalloon = True
+                    .UseAnimation = True
+                    .UseFading = True
+                End With
+                toolTip1.Show("Pressione AQUI...", btnPesquisar, btnPesquisar.Width - 30, -40, 1000)
+                '
+            End If
+            '
+            _HabilitaPesquisa = value
             '
         End Set
         '
@@ -146,64 +197,127 @@ Public Class frmProdutoListagem
     Private Sub Get_Dados()
         '
         Dim prodBLL As New ProdutoBLL
-        Dim mySQL As String = "Movimento = " & cmbMovimento.SelectedValue
         '
         '--- consulta o banco de dados
+        '
         Try
-            If propProdutoAtivo <> 0 Then
-                Dim Ativo As Boolean = IIf(propProdutoAtivo = 1, True, False)
-                prodLista = prodBLL.GetProdutosWithEstoque_Where(_IDFilial, mySQL & " AND ProdutoAtivo = '" & Ativo & "'")
-            Else
-                prodLista = prodBLL.GetProdutosWithEstoque_Where(_IDFilial, mySQL)
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            '--- Verifica a quantidade de produtos retornados
+            If prodBLL.CountProdutos_Where(_IDFilial, GetWhere) > 100 Then
+                If MessageBox.Show("Maior que 100...") = DialogResult.No Then
+                    'Return
+                End If
             End If
             '
+            '--- Get BD Dados
+            prodLista = prodBLL.GetProdutosWithEstoque_Where(_IDFilial, GetWhere)
+            '
         Catch ex As Exception
-            MessageBox.Show("Ocorreu exceção ao obter a listagem de Produtos..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Uma exceção ocorreu ao Obter lista de produtos..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub
     '
+    '--- CRIA E RETORNA A CLAUSULA WHERE DA BUSCA NO BD
+    Private Function GetWhere() As String
+        '
+        myWhere = "Movimento = " & cmbMovimento.SelectedValue
+        '
+        '--- Produto ATIVO | INATIVO | TODOS
+        If propProdutoAtivo <> 3 Then
+            myWhere = myWhere & " AND ProdutoAtivo = '" & IIf(propProdutoAtivo = 1, True, False) & "'"
+        End If
+        '
+        '--- ProdutoTipo
+        If Not IsNothing(_IDProdutoTipo) Then
+            myWhere = myWhere & " AND IDProdutoTipo = " & _IDProdutoTipo
+        End If
+        '
+        '--- ProdutoSubTipo
+        If Not IsNothing(_IDProdutoSubTipo) Then
+            myWhere = myWhere & " AND IDProdutoSubTipo = " & _IDProdutoSubTipo
+        End If
+        '
+        '--- ProdutoCategoria
+        If Not IsNothing(_IDCategoria) Then
+            myWhere = myWhere & " AND IDCategoria = " & _IDCategoria
+        End If
+        '
+        '--- ProdutoCategoria
+        If Not IsNothing(_IDFabricante) Then
+            myWhere = myWhere & " AND IDFabricante = " & _IDFabricante
+        End If
+        '
+        Return myWhere
+        '
+    End Function
+    '
     '--- FILTAR LISTAGEM PELO IDTIPO E _IDFilial, TXTPRODUTO, TXTNOME
     Private Sub FiltrarListagem()
         '
-        lstListagem.DataSource = prodLista.FindAll(AddressOf FindProduto)
+        If txtProduto.Text.Length > 0 OrElse txtAutor.Text.Length > 0 Then
+            lstListagem.DataSource = prodLista.FindAll(AddressOf FindProduto)
+        Else
+            lstListagem.DataSource = prodLista
+            'lstListagem.DataSource = prodLista.Take(8).ToList
+            'lstListagem.DataSource = prodLista.GetRange(0, 7)
+        End If
         '
     End Sub
     '
     Private Function FindProduto(ByVal p As clProduto) As Boolean
         '
         If (p.Produto.ToLower Like "*" & txtProduto.Text.ToLower & "*") AndAlso
-           (p.Autor.ToLower Like "*" & txtAutor.Text.ToLower & "*") AndAlso
-           IIf(IsNothing(_IDProdutoTipo), True, (p.IDProdutoTipo = _IDProdutoTipo)) AndAlso
-           IIf(IsNothing(_IDProdutoSubTipo), True, (p.IDProdutoSubTipo = _IDProdutoSubTipo)) AndAlso
-           IIf(IsNothing(_IDCategoria), True, (p.IDCategoria = _IDCategoria)) AndAlso
-           IIf(IsNothing(_IDFabricante), True, (p.IDFabricante = _IDFabricante)) Then
+           (p.Autor.ToLower Like "*" & txtAutor.Text.ToLower & "*") Then
             Return True
         Else
             Return False
         End If
+        '
+        '--- CASO SEJA SERVIDOR LOCAL...
+        '-----------------------------------------------------------------------------------------------------
+        'If (p.Produto.ToLower Like "*" & txtProduto.Text.ToLower & "*") AndAlso
+        '   (p.Autor.ToLower Like "*" & txtAutor.Text.ToLower & "*") AndAlso
+        '   IIf(IsNothing(_IDProdutoTipo), True, (p.IDProdutoTipo = _IDProdutoTipo)) AndAlso
+        '   IIf(IsNothing(_IDProdutoSubTipo), True, (p.IDProdutoSubTipo = _IDProdutoSubTipo)) AndAlso
+        '   IIf(IsNothing(_IDCategoria), True, (p.IDCategoria = _IDCategoria)) AndAlso
+        '   IIf(IsNothing(_IDFabricante), True, (p.IDFabricante = _IDFabricante)) Then
+        '    Return True
+        'Else
+        '    Return False
+        'End If
+        '-----------------------------------------------------------------------------------------------------
         '
     End Function
     '
     '--- ATUALIZA A LISTAGEM
     Private Sub AtualizaListagem()
         '
-        If LiberaAtualizacao Then
-            Get_Dados()
-            FiltrarListagem()
-            '
-            If chkSelecionarTudo.Checked = True Then
-                AtualizaLabelTotal()
-                chkSelecionarTudo.Checked = False
-            End If
-            '
+        '--- verifica se ja esta liberado a pesquisa
+        If Not LiberaAtualizacao Then Exit Sub
+        '
+        Get_Dados()
+        'MsgBox(myWhere)
+        FiltrarListagem()
+        propHabilitaPesquisa = False
+        '
+        '--- uncheck todos os items
+        If chkSelecionarTudo.Checked = True Then
+            AtualizaLabelSelecionados()
+            chkSelecionarTudo.Checked = False
         End If
+        '
         '
     End Sub
     '
     '--- ATUALIZA LBLSELECIONADOS
-    Private Sub AtualizaLabelTotal()
+    Private Sub AtualizaLabelSelecionados()
         '
         Dim sel As Integer = lstListagem.CheckedItems.Count
         '
@@ -233,19 +347,41 @@ Public Class frmProdutoListagem
     '
 #Region "ACAO DOS BOTOES"
     '
+    '--- PESQUISA NO BD
+    Private Sub btnPesquisar_Click(sender As Object, e As EventArgs) Handles btnPesquisar.Click
+        '
+        AtualizaListagem()
+        '
+    End Sub
+    '
     '--- LIMPA TODOS OS CONTROLES E PREENCHE A LISTAGEM
     Private Sub btnLimpar_Click(sender As Object, e As EventArgs) Handles btnLimpar.Click
         '
-        txtProdutoTipo.Clear()
+        '--- cria uma lista de controles que serao limpos
+        Dim controlesLimpar As TextBox() = {
+                txtProduto,
+                txtProdutoTipo,
+                txtProdutoSubTipo,
+                txtProdutoCategoria,
+                txtAutor,
+                txtFabricante
+            }
+        '
+        For Each t In controlesLimpar
+            t.Clear()
+        Next
+        '
         _IDProdutoTipo = Nothing
-        txtProdutoSubTipo.Clear()
         _IDProdutoSubTipo = Nothing
-        txtProdutoCategoria.Clear()
         _IDCategoria = Nothing
-        txtFabricante.Clear()
         _IDFabricante = Nothing
-        txtAutor.Clear()
-        txtProduto.Clear()
+        '
+        '--- Desabilita btnPesquisa
+        propHabilitaPesquisa = False
+        '
+        '--- Limpa listagem
+        lstListagem.Clear(True)
+        totalProdutos = 0
         '
     End Sub
     '
@@ -315,6 +451,7 @@ Public Class frmProdutoListagem
     '--- QUANDO ATUALIZAR O COMBO MOVIMENTO
     Private Sub cmbMovimento_SelectedValueChanged(sender As Object, e As EventArgs) Handles cmbMovimento.SelectedValueChanged
         '
+        If Not LiberaAtualizacao Then Return
         AtualizaListagem()
         '
     End Sub
@@ -325,9 +462,12 @@ Public Class frmProdutoListagem
         If e.KeyChar = "+" Then
             '--- cria uma lista de controles que serao impedidos de receber '+'
             Dim controlesBloqueados As String() = {
-                "txtFormaTipo",
-                "txtPesquisa",
-                "txtValor"
+                "txtProdutoSubTipo",
+                "txtAutor",
+                "txtProdutoSubTipo",
+                "txtProdutoTipo",
+                "txtProdutoCategoria",
+                "txtFabricante"
             }
 
             If controlesBloqueados.Contains(ActiveControl.Name) Then
@@ -370,19 +510,19 @@ Public Class frmProdutoListagem
                 Case "txtProdutoTipo"
                     txtProdutoTipo.Clear()
                     _IDProdutoTipo = Nothing
-                    FiltrarListagem()
+                    propHabilitaPesquisa = True
                 Case "txtProdutoSubTipo"
                     txtProdutoSubTipo.Clear()
                     _IDProdutoSubTipo = Nothing
-                    FiltrarListagem()
+                    propHabilitaPesquisa = True
                 Case "txtProdutoCategoria"
                     txtProdutoCategoria.Clear()
                     _IDCategoria = Nothing
-                    FiltrarListagem()
+                    propHabilitaPesquisa = True
                 Case "txtFabricante"
                     txtFabricante.Clear()
                     _IDFabricante = Nothing
-                    FiltrarListagem()
+                    propHabilitaPesquisa = True
                 Case "txtAutor"
                     txtAutor.Clear()
                     'FiltrarListagem()
@@ -412,54 +552,66 @@ Public Class frmProdutoListagem
         Dim frmT As Form = Nothing
         Dim oldID As Integer?
         '
-        '--- abre o formulário de ProdutoTipo, SubTipo, Categoria, Fabricante
-        Select Case sender.Name
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
             '
-            Case "txtAutor"
+            '--- abre o formulário de ProdutoTipo, SubTipo, Categoria, Fabricante
+            Select Case sender.Name
+            '
+                Case "txtAutor"
+                    '
+                    oldID = Nothing
+                    frmT = New frmAutoresProcurar(Me)
                 '
-                oldID = Nothing
-                frmT = New frmAutoresProcurar(Me)
+                Case "txtFabricante"
+                    '
+                    oldID = _IDFabricante
+                    frmT = New frmFabricanteProcurar(Me, oldID)
                 '
-            Case "txtFabricante"
+                Case "txtProdutoTipo"
+                    '
+                    oldID = _IDProdutoTipo
+                    frmT = New frmProdutoProcurarTipo(Me, oldID)
                 '
-                oldID = _IDFabricante
-                frmT = New frmFabricanteProcurar(Me, oldID)
+                Case "txtProdutoSubTipo"
+                    '
+                    ' verifica se existe TIPO selecionado
+                    If IsNothing(_IDProdutoTipo) Then
+                        MessageBox.Show("Favor escolher o TIPO de produto, antes de escolher o SUBTIPO/CLASSIFICAÇÃO...",
+                    "Escolher Tipo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        txtProdutoTipo.Focus()
+                        Return
+                    End If
+                    '
+                    oldID = _IDProdutoSubTipo
+                    frmT = New frmProdutoProcurarSubTipo(Me, oldID, _IDProdutoTipo)
                 '
-            Case "txtProdutoTipo"
-                '
-                oldID = _IDProdutoTipo
-                frmT = New frmProdutoProcurarTipo(Me, oldID)
-                '
-            Case "txtProdutoSubTipo"
-                '
-                ' verifica se existe TIPO selecionado
-                If IsNothing(_IDProdutoTipo) Then
-                    MessageBox.Show("Favor escolher o TIPO de produto, antes de escolher o SUBTIPO/CLASSIFICAÇÃO...",
-                        "Escolher Tipo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    txtProdutoTipo.Focus()
-                    Return
-                End If
-                '
-                oldID = _IDProdutoSubTipo
-                frmT = New frmProdutoProcurarSubTipo(Me, oldID, _IDProdutoTipo)
-                '
-            Case "txtProdutoCategoria"
-                '
-                ' verifica se existe TIPO selecionado
-                If IsNothing(_IDProdutoTipo) Then
-                    MessageBox.Show("Favor escolher o TIPO de produto, antes de escolher a CATEGORIA...",
-                        "Escolher Tipo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    txtProdutoTipo.Focus()
-                    Return
-                End If
-                '
-                oldID = _IDCategoria
-                frmT = New frmProdutoProcurarCategoria(Me, oldID, _IDProdutoTipo)
-                '
-        End Select
-        '
-        ' revela o formulario dependendo do controle acionado
-        frmT.ShowDialog()
+                Case "txtProdutoCategoria"
+                    '
+                    ' verifica se existe TIPO selecionado
+                    If IsNothing(_IDProdutoTipo) Then
+                        MessageBox.Show("Favor escolher o TIPO de produto, antes de escolher a CATEGORIA...",
+                    "Escolher Tipo", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                        txtProdutoTipo.Focus()
+                        Return
+                    End If
+                    '
+                    oldID = _IDCategoria
+                    frmT = New frmProdutoProcurarCategoria(Me, oldID, _IDProdutoTipo)
+                    '
+            End Select
+            '
+            ' revela o formulario dependendo do controle acionado
+            frmT.ShowDialog()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Evento..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
         ' ao fechar dialog verifica o resultado
         If frmT.DialogResult <> DialogResult.Cancel Then
@@ -478,7 +630,7 @@ Public Class frmProdutoListagem
                     '
                     ' Filtra Listagem novamente
                     If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_IDFabricante), 0, _IDFabricante) Then
-                        FiltrarListagem()
+                        propHabilitaPesquisa = True
                     End If
                     '
                     ' move focus
@@ -496,7 +648,7 @@ Public Class frmProdutoListagem
                         _IDProdutoSubTipo = Nothing
                         txtProdutoCategoria.Text = ""
                         _IDCategoria = Nothing
-                        FiltrarListagem()
+                        propHabilitaPesquisa = True
                         '
                     End If
                     '
@@ -511,7 +663,7 @@ Public Class frmProdutoListagem
                     '
                     ' Filtra Listagem novamente
                     If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_IDProdutoSubTipo), 0, _IDProdutoSubTipo) Then
-                        FiltrarListagem()
+                        propHabilitaPesquisa = True
                     End If
                     '
                     ' move focus
@@ -525,7 +677,7 @@ Public Class frmProdutoListagem
                     '
                     ' Filtra Listagem novamente
                     If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_IDCategoria), 0, _IDCategoria) Then
-                        FiltrarListagem()
+                        propHabilitaPesquisa = True
                     End If
                     '
                     ' move focus
@@ -575,7 +727,7 @@ Public Class frmProdutoListagem
         ElseIf rbtInativas.Checked = True Then
             propProdutoAtivo = 2
         ElseIf rbtTodos.Checked = True Then
-            propProdutoAtivo = 0
+            propProdutoAtivo = 3
         End If
         '
     End Sub
@@ -808,7 +960,7 @@ Public Class frmProdutoListagem
             eventArgs.Item.BackColor = Color.White
         End If
         '
-        AtualizaLabelTotal()
+        AtualizaLabelSelecionados()
         '
     End Sub
     '
@@ -870,7 +1022,11 @@ Public Class frmProdutoListagem
         RemoveHandler myControl.MouseHover, AddressOf showToolTip
         '
     End Sub
-
+    '
+#End Region '// TOOLTIPS
+    '
+#Region "MENU ALTERACAO"
+    '
     Private Sub chkAlterarProdutos_CheckedChanged(sender As Object, e As EventArgs) Handles chkAlterarProdutos.CheckedChanged
         '
         If chkAlterarProdutos.Checked = False And mnuAlteracao.Visible() Then
@@ -884,10 +1040,6 @@ Public Class frmProdutoListagem
         End If
         '
     End Sub
-
-    Private Sub mnuAlteracao_VisibleChanged(sender As Object, e As EventArgs) Handles mnuAlteracao.VisibleChanged
-        If Not mnuAlteracao.Visible() And chkAlterarProdutos.Checked = True Then chkAlterarProdutos.Checked = False
-    End Sub
     '
     '--- SELECIONA TODOS OS PRODUTOS
     Private Sub chkSelecionarTudo_CheckedChanged(sender As Object, e As EventArgs) Handles chkSelecionarTudo.CheckedChanged
@@ -898,9 +1050,10 @@ Public Class frmProdutoListagem
         '
     End Sub
     '
-#End Region '// TOOLTIPS
-    '
-#Region "MENU ALTERACAO"
+    '--- AO VISUALIZAR MENU ALTERACAO
+    Private Sub mnuAlteracao_VisibleChanged(sender As Object, e As EventArgs) Handles mnuAlteracao.VisibleChanged
+        If Not mnuAlteracao.Visible() And chkAlterarProdutos.Checked = True Then chkAlterarProdutos.Checked = False
+    End Sub
     '
     Private Sub itemAtivar_Click(sender As Object, e As EventArgs) Handles itemAtivar.Click
         '

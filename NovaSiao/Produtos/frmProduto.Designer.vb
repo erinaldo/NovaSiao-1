@@ -354,20 +354,20 @@ Partial Class frmProduto
         Me.btnNovoProduto.Image = Global.NovaSiao.My.Resources.Resources.add
         Me.btnNovoProduto.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.btnNovoProduto.Name = "btnNovoProduto"
-        Me.btnNovoProduto.Size = New System.Drawing.Size(178, 24)
+        Me.btnNovoProduto.Size = New System.Drawing.Size(180, 24)
         Me.btnNovoProduto.Text = "Novo Produto"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
-        Me.ToolStripSeparator2.Size = New System.Drawing.Size(175, 6)
+        Me.ToolStripSeparator2.Size = New System.Drawing.Size(177, 6)
         '
         'btnNovoTipo
         '
         Me.btnNovoTipo.Image = Global.NovaSiao.My.Resources.Resources.add
         Me.btnNovoTipo.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.btnNovoTipo.Name = "btnNovoTipo"
-        Me.btnNovoTipo.Size = New System.Drawing.Size(178, 24)
+        Me.btnNovoTipo.Size = New System.Drawing.Size(180, 24)
         Me.btnNovoTipo.Text = "Novo Tipo"
         '
         'btnNovoSubTipo
@@ -375,7 +375,7 @@ Partial Class frmProduto
         Me.btnNovoSubTipo.Image = Global.NovaSiao.My.Resources.Resources.add
         Me.btnNovoSubTipo.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.btnNovoSubTipo.Name = "btnNovoSubTipo"
-        Me.btnNovoSubTipo.Size = New System.Drawing.Size(178, 24)
+        Me.btnNovoSubTipo.Size = New System.Drawing.Size(180, 24)
         Me.btnNovoSubTipo.Text = "Novo SubTipo"
         '
         'btnNovaCategoria
@@ -383,7 +383,7 @@ Partial Class frmProduto
         Me.btnNovaCategoria.Image = Global.NovaSiao.My.Resources.Resources.add
         Me.btnNovaCategoria.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.btnNovaCategoria.Name = "btnNovaCategoria"
-        Me.btnNovaCategoria.Size = New System.Drawing.Size(178, 24)
+        Me.btnNovaCategoria.Size = New System.Drawing.Size(180, 24)
         Me.btnNovaCategoria.Text = "Nova Categoria"
         '
         'ToolStripSeparator5

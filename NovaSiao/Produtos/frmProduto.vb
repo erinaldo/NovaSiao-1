@@ -411,13 +411,22 @@ Public Class frmProduto
     '
     ' CANCELAR ALTERAÇÃO DO REGISTRO ATUAL
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
+        '
         If MessageBox.Show("Deseja cancelar todas as alterações feitas no registro atual?",
                            "Cancelar Alterações", MessageBoxButtons.YesNo,
-                           MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes Then
-            bindP.CancelEdit()
+                           MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.No Then
+            Return
+        End If
+        '
+        bindP.CancelEdit()
+        '
+        If Not IsNothing(DirectCast(bindP.Current, clProduto).IDProduto) Then
             txtProduto.Focus()
             Sit = FlagEstado.RegistroSalvo
+        Else
+            btnFechar_Click(sender, e)
         End If
+        '
     End Sub
     '
     ' ATIVAR OU DESATIVAR CLIENTE BOTÃO

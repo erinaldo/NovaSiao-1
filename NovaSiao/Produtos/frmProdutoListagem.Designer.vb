@@ -76,6 +76,7 @@ Partial Class frmProdutoListagem
         Me.Label8 = New System.Windows.Forms.Label()
         Me.lblSelecionados = New System.Windows.Forms.Label()
         Me.lblSelTitulo = New System.Windows.Forms.Label()
+        Me.btnPesquisar = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         Me.pnlAtivas.SuspendLayout()
         CType(Me.lstListagem, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -132,7 +133,7 @@ Partial Class frmProdutoListagem
         Me.btnFechar.Location = New System.Drawing.Point(859, 5)
         Me.btnFechar.Name = "btnFechar"
         Me.btnFechar.Size = New System.Drawing.Size(153, 41)
-        Me.btnFechar.TabIndex = 16
+        Me.btnFechar.TabIndex = 4
         Me.btnFechar.Text = "&Fechar"
         Me.btnFechar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnFechar.UseVisualStyleBackColor = True
@@ -147,7 +148,7 @@ Partial Class frmProdutoListagem
         Me.btnEditar.Location = New System.Drawing.Point(165, 5)
         Me.btnEditar.Name = "btnEditar"
         Me.btnEditar.Size = New System.Drawing.Size(153, 41)
-        Me.btnEditar.TabIndex = 14
+        Me.btnEditar.TabIndex = 1
         Me.btnEditar.Text = "&Editar"
         Me.btnEditar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnEditar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -198,7 +199,7 @@ Partial Class frmProdutoListagem
         Me.btnNovo.Location = New System.Drawing.Point(324, 5)
         Me.btnNovo.Name = "btnNovo"
         Me.btnNovo.Size = New System.Drawing.Size(153, 41)
-        Me.btnNovo.TabIndex = 15
+        Me.btnNovo.TabIndex = 2
         Me.btnNovo.Text = "&Novo"
         Me.btnNovo.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -218,7 +219,7 @@ Partial Class frmProdutoListagem
         'rbtInativas
         '
         Me.rbtInativas.AutoSize = True
-        Me.rbtInativas.Location = New System.Drawing.Point(192, 7)
+        Me.rbtInativas.Location = New System.Drawing.Point(104, 7)
         Me.rbtInativas.Name = "rbtInativas"
         Me.rbtInativas.Size = New System.Drawing.Size(78, 23)
         Me.rbtInativas.TabIndex = 2
@@ -229,10 +230,10 @@ Partial Class frmProdutoListagem
         'rbtTodos
         '
         Me.rbtTodos.AutoSize = True
-        Me.rbtTodos.Location = New System.Drawing.Point(12, 7)
+        Me.rbtTodos.Location = New System.Drawing.Point(198, 7)
         Me.rbtTodos.Name = "rbtTodos"
         Me.rbtTodos.Size = New System.Drawing.Size(65, 23)
-        Me.rbtTodos.TabIndex = 0
+        Me.rbtTodos.TabIndex = 3
         Me.rbtTodos.TabStop = True
         Me.rbtTodos.Text = "Todos"
         Me.rbtTodos.UseVisualStyleBackColor = True
@@ -240,10 +241,10 @@ Partial Class frmProdutoListagem
         'rbtAtivas
         '
         Me.rbtAtivas.AutoSize = True
-        Me.rbtAtivas.Location = New System.Drawing.Point(101, 7)
+        Me.rbtAtivas.Location = New System.Drawing.Point(17, 7)
         Me.rbtAtivas.Name = "rbtAtivas"
         Me.rbtAtivas.Size = New System.Drawing.Size(67, 23)
-        Me.rbtAtivas.TabIndex = 1
+        Me.rbtAtivas.TabIndex = 0
         Me.rbtAtivas.TabStop = True
         Me.rbtAtivas.Text = "Ativos"
         Me.rbtAtivas.UseVisualStyleBackColor = True
@@ -325,7 +326,7 @@ Partial Class frmProdutoListagem
         Me.lstListagem.MultiSelect = False
         Me.lstListagem.Name = "lstListagem"
         Me.lstListagem.Size = New System.Drawing.Size(998, 320)
-        Me.lstListagem.TabIndex = 20
+        Me.lstListagem.TabIndex = 19
         '
         'clnRGProduto
         '
@@ -451,7 +452,7 @@ Partial Class frmProdutoListagem
         Me.btnPrintListagem.Location = New System.Drawing.Point(6, 5)
         Me.btnPrintListagem.Name = "btnPrintListagem"
         Me.btnPrintListagem.Size = New System.Drawing.Size(153, 41)
-        Me.btnPrintListagem.TabIndex = 13
+        Me.btnPrintListagem.TabIndex = 0
         Me.btnPrintListagem.Text = "Listagem"
         Me.btnPrintListagem.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnPrintListagem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -501,10 +502,10 @@ Partial Class frmProdutoListagem
         Me.chkAlterarProdutos.Appearance = System.Windows.Forms.Appearance.Button
         Me.chkAlterarProdutos.Enabled = False
         Me.chkAlterarProdutos.Image = Global.NovaSiao.My.Resources.Resources.refresh1
-        Me.chkAlterarProdutos.Location = New System.Drawing.Point(84, 526)
+        Me.chkAlterarProdutos.Location = New System.Drawing.Point(483, 5)
         Me.chkAlterarProdutos.Name = "chkAlterarProdutos"
         Me.chkAlterarProdutos.Size = New System.Drawing.Size(198, 41)
-        Me.chkAlterarProdutos.TabIndex = 21
+        Me.chkAlterarProdutos.TabIndex = 3
         Me.chkAlterarProdutos.Text = "Alterar Produtos"
         Me.chkAlterarProdutos.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         Me.chkAlterarProdutos.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -515,12 +516,13 @@ Partial Class frmProdutoListagem
         Me.btnLimpar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
             Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnLimpar.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.btnLimpar.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.btnLimpar.ForeColor = System.Drawing.Color.Brown
         Me.btnLimpar.Image = Global.NovaSiao.My.Resources.Resources.limpar_24x24
         Me.btnLimpar.Location = New System.Drawing.Point(288, 526)
         Me.btnLimpar.Name = "btnLimpar"
         Me.btnLimpar.Size = New System.Drawing.Size(142, 41)
-        Me.btnLimpar.TabIndex = 15
+        Me.btnLimpar.TabIndex = 14
         Me.btnLimpar.Text = "&Limpar"
         Me.btnLimpar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnLimpar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -590,7 +592,7 @@ Partial Class frmProdutoListagem
         Me.chkSelecionarTudo.Location = New System.Drawing.Point(24, 67)
         Me.chkSelecionarTudo.Name = "chkSelecionarTudo"
         Me.chkSelecionarTudo.Size = New System.Drawing.Size(137, 23)
-        Me.chkSelecionarTudo.TabIndex = 22
+        Me.chkSelecionarTudo.TabIndex = 16
         Me.chkSelecionarTudo.Text = "Selecionar Todos"
         Me.chkSelecionarTudo.UseVisualStyleBackColor = True
         '
@@ -601,10 +603,11 @@ Partial Class frmProdutoListagem
         Me.Panel2.Controls.Add(Me.btnNovo)
         Me.Panel2.Controls.Add(Me.btnPrintListagem)
         Me.Panel2.Controls.Add(Me.btnEditar)
+        Me.Panel2.Controls.Add(Me.chkAlterarProdutos)
         Me.Panel2.Location = New System.Drawing.Point(3, 586)
         Me.Panel2.Name = "Panel2"
         Me.Panel2.Size = New System.Drawing.Size(1016, 51)
-        Me.Panel2.TabIndex = 23
+        Me.Panel2.TabIndex = 15
         '
         'lblTotalProdutos
         '
@@ -640,6 +643,23 @@ Partial Class frmProdutoListagem
         Me.lblSelTitulo.TabIndex = 24
         Me.lblSelTitulo.Text = "SELECIONADOS:"
         '
+        'btnPesquisar
+        '
+        Me.btnPesquisar.Anchor = CType(((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left) _
+            Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
+        Me.btnPesquisar.DialogResult = System.Windows.Forms.DialogResult.Cancel
+        Me.btnPesquisar.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnPesquisar.ForeColor = System.Drawing.Color.DarkSlateGray
+        Me.btnPesquisar.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
+        Me.btnPesquisar.Location = New System.Drawing.Point(140, 526)
+        Me.btnPesquisar.Name = "btnPesquisar"
+        Me.btnPesquisar.Size = New System.Drawing.Size(142, 41)
+        Me.btnPesquisar.TabIndex = 13
+        Me.btnPesquisar.Text = "&Pesquisar"
+        Me.btnPesquisar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnPesquisar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.btnPesquisar.UseVisualStyleBackColor = True
+        '
         'frmProdutoListagem
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
@@ -650,7 +670,6 @@ Partial Class frmProdutoListagem
         Me.Controls.Add(Me.lblTotalProdutos)
         Me.Controls.Add(Me.Panel2)
         Me.Controls.Add(Me.chkSelecionarTudo)
-        Me.Controls.Add(Me.chkAlterarProdutos)
         Me.Controls.Add(Me.pnlMovimento)
         Me.Controls.Add(Me.txtFabricante)
         Me.Controls.Add(Me.txtProdutoCategoria)
@@ -664,6 +683,7 @@ Partial Class frmProdutoListagem
         Me.Controls.Add(Me.txtProdutoTipo)
         Me.Controls.Add(Me.Label3)
         Me.Controls.Add(Me.Label12)
+        Me.Controls.Add(Me.btnPesquisar)
         Me.Controls.Add(Me.btnLimpar)
         Me.Controls.Add(Me.Label2)
         Me.Controls.Add(Me.txtAutor)
@@ -673,6 +693,7 @@ Partial Class frmProdutoListagem
         Me.Controls.SetChildIndex(Me.txtAutor, 0)
         Me.Controls.SetChildIndex(Me.Label2, 0)
         Me.Controls.SetChildIndex(Me.btnLimpar, 0)
+        Me.Controls.SetChildIndex(Me.btnPesquisar, 0)
         Me.Controls.SetChildIndex(Me.Label12, 0)
         Me.Controls.SetChildIndex(Me.Label3, 0)
         Me.Controls.SetChildIndex(Me.txtProdutoTipo, 0)
@@ -687,7 +708,6 @@ Partial Class frmProdutoListagem
         Me.Controls.SetChildIndex(Me.txtFabricante, 0)
         Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Controls.SetChildIndex(Me.pnlMovimento, 0)
-        Me.Controls.SetChildIndex(Me.chkAlterarProdutos, 0)
         Me.Controls.SetChildIndex(Me.chkSelecionarTudo, 0)
         Me.Controls.SetChildIndex(Me.Panel2, 0)
         Me.Controls.SetChildIndex(Me.lblTotalProdutos, 0)
@@ -763,4 +783,5 @@ Partial Class frmProdutoListagem
     Friend WithEvents clnCategoria As ComponentOwl.BetterListView.BetterListViewColumnHeader
     Friend WithEvents clnFabricante As ComponentOwl.BetterListView.BetterListViewColumnHeader
     Friend WithEvents itemAlterarCategoria As ToolStripMenuItem
+    Friend WithEvents btnPesquisar As Button
 End Class

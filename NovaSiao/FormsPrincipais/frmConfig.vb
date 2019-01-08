@@ -692,7 +692,7 @@ Error_Handler:
     '
     Private Sub dtpDataPadrao_ValueChanged(sender As Object, e As EventArgs) Handles dtpDataPadrao.ValueChanged
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If _VerAlteracao AndAlso Sit = FlagEstado.RegistroSalvo Then
             Sit = FlagEstado.Alterado
         End If
         '

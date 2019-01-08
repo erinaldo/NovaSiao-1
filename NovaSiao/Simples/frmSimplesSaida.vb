@@ -1307,7 +1307,7 @@ Public Class frmSimplesSaida
             '--- Insere cada um AReceber no BD
             For Each parc As clAReceberParcela In _ParcelaList
                 parc.IDAReceber = _Simples.IDAReceber
-                parc.IDAReceberParcela = parcBLL.InserirNova_Parcela(parc)
+                parc = parcBLL.InserirNova_Parcela(parc)
             Next
             '
             Return True

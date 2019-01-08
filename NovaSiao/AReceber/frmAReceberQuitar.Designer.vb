@@ -51,8 +51,9 @@ Partial Class frmAReceberQuitar
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(222, 0)
-        Me.lblTitulo.Size = New System.Drawing.Size(204, 50)
+        Me.lblTitulo.Location = New System.Drawing.Point(186, 0)
+        Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
+        Me.lblTitulo.Size = New System.Drawing.Size(240, 50)
         Me.lblTitulo.Text = "A Receber - Quitar"
         '
         'txtEntradaData
@@ -115,9 +116,9 @@ Partial Class frmAReceberQuitar
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_30px
         Me.btnCancelar.Location = New System.Drawing.Point(218, 407)
         Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(120, 48)
+        Me.btnCancelar.Size = New System.Drawing.Size(128, 48)
         Me.btnCancelar.TabIndex = 10
-        Me.btnCancelar.Text = "&Fechar"
+        Me.btnCancelar.Text = "&Cancelar"
         Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnCancelar.UseVisualStyleBackColor = True
@@ -236,9 +237,9 @@ Partial Class frmAReceberQuitar
         'btnQuitar
         '
         Me.btnQuitar.Image = Global.NovaSiao.My.Resources.Resources.dollar_currency_sign
-        Me.btnQuitar.Location = New System.Drawing.Point(88, 407)
+        Me.btnQuitar.Location = New System.Drawing.Point(81, 407)
         Me.btnQuitar.Name = "btnQuitar"
-        Me.btnQuitar.Size = New System.Drawing.Size(120, 48)
+        Me.btnQuitar.Size = New System.Drawing.Size(128, 48)
         Me.btnQuitar.TabIndex = 9
         Me.btnQuitar.Text = "&Quitar"
         Me.btnQuitar.TextAlign = System.Drawing.ContentAlignment.MiddleRight

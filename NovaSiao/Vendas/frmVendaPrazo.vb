@@ -2,14 +2,18 @@
 Imports CamadaDTO
 '
 Public Class frmVendaPrazo
+    '
+    Private vndBLL As New VendaBLL
     Private _Venda As clVenda
     Private _Troca As clTroca
-    Private vndBLL As New VendaBLL
+    '
     Private _ItensList As New List(Of clTransacaoItem)
     Private _ParcelaList As New List(Of clAReceberParcela)
+    '
     Private bindVenda As New BindingSource
     Private bindItem As New BindingSource
     Private bindParc As New BindingSource
+    '
     Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private _IDFilial As Integer
     Private VerificaAlteracao As Boolean
@@ -285,6 +289,7 @@ Public Class frmVendaPrazo
     End Sub
     '
     Private Sub CarregaCmbPlano()
+        '
         Dim sql As New SQLControl
         sql.ExecQuery("SELECT * FROM tblVendaPlanos WHERE Ativo = 'TRUE'")
         '
@@ -324,7 +329,6 @@ Public Class frmVendaPrazo
     End Sub
     '
     Private Sub CarregaCmbVendaTipo()
-        '
         '
         Try
             Dim dtVendaTipo As DataTable = vndBLL.GetVendaTipo_DT '--- Datatable do combo VendaTipo (Altera se há troca)
@@ -1342,9 +1346,11 @@ Public Class frmVendaPrazo
     Private Sub cmbIDPlano_SelectedValueChanged(sender As Object, e As EventArgs) Handles cmbIDPlano.SelectedValueChanged
         '
         '--- Se não houver SelectedVaue então exit
+        '----------------------------------------------------------------------------------------------
         If Not IsNumeric(cmbIDPlano.SelectedValue) OrElse VerificaAlteracao = False Then Exit Sub
         '
         '--- Se o registro da venda esta bloqueado não permite alteracao
+        '----------------------------------------------------------------------------------------------
         If Sit = FlagEstado.RegistroBloqueado Then
             VerificaAlteracao = False
             cmbIDPlano.SelectedValue = IIf(IsNothing(_Venda.IDPlano), -1, _Venda.IDPlano)
@@ -1354,6 +1360,7 @@ Public Class frmVendaPrazo
         End If
         '
         '--- Se Valor Total da Venda for igual a Zero então Avisa e Exit
+        '----------------------------------------------------------------------------------------------
         Dim vlTotal As Double = AtualizaTotalGeral()
         If vlTotal = 0 Then
             MessageBox.Show("Não é possivel adicionar Parcelas de A Receber" & vbNewLine &
@@ -1366,7 +1373,8 @@ Public Class frmVendaPrazo
             Exit Sub
         End If
         '
-        '--- Pergunta ao usuario
+        '--- Pergunta ao usuario se for alteracao do plano
+        '----------------------------------------------------------------------------------------------
         If Not IsNothing(_Venda.IDPlano) Then 'AndAlso cmbIDPlano.SelectedValue <> _Venda.IDPlano Then
             Dim a As DialogResult
             a = MessageBox.Show("Você deseja realmente alterar a forma de parcelamento dessa venda?",
@@ -1380,6 +1388,7 @@ Public Class frmVendaPrazo
         End If
         '
         '--- Verifica se o parcelamento escolhido é o PERSONALIZADO = 0
+        '----------------------------------------------------------------------------------------------
         If cmbIDPlano.SelectedValue = 0 Then
             dgvAReceber.Focus()
             Exit Sub
@@ -1387,6 +1396,7 @@ Public Class frmVendaPrazo
         '
         '--- Obtem o DataTable do cmbPlano
         Dim dtPlano As DataTable = cmbIDPlano.DataSource
+        '
         '--- Procura pelo ROW no DataTable
         Dim r As DataRow = dtPlano.Select("IDPlano = " & cmbIDPlano.SelectedValue.ToString)(0)
         '
@@ -1406,12 +1416,14 @@ Public Class frmVendaPrazo
         For i = 0 To Parcelas + IIf(Entrada = True, -1, 0)
             If Entrada = False And i = 0 Then i += 1
             Dim _parc As New clAReceberParcela
+            '
             _parc.ParcelaValor = vlParcela
             _parc.Vencimento = _Venda.TransacaoData.AddMonths(i)
             _parc.IDAReceber = _Venda.IDAReceber
             _parc.IDPessoa = _Venda.IDPessoaDestino
             _parc.SituacaoParcela = 0
             _parc.PermanenciaTaxa = Taxa
+            '
             If Entrada = True Then
                 _parc.Letra = Chr(i + 65)
             Else
@@ -1430,6 +1442,30 @@ Public Class frmVendaPrazo
         '--- Atualiza o Total do AReceber
         AtualizaTotalAReceber()
         Sit = FlagEstado.Alterado
+        '
+        ''--- Salva a Venda no BD
+        'Try
+        '    '--- Ampulheta ON
+        '    Cursor = Cursors.WaitCursor
+        '    '
+        '    _Venda.IDSituacao = 1 '--> EM ABERTO
+        '    _Venda.IDPlano = cmbIDPlano.SelectedValue
+        '    '
+        '    Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
+        '    '
+        '    If Not IsNumeric(obj) Then
+        '        Throw New Exception(obj.ToString)
+        '    End If
+        '    '
+        'Catch ex As Exception
+        '    MessageBox.Show("Uma exceção ocorreu ao Salvar Novo Parcelamento..." & vbNewLine &
+        '                    ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        'Finally
+        '    '--- Ampulheta OFF
+        '    Cursor = Cursors.Default
+        'End Try
+        ''
+        '
     End Sub
     '
     ' ALTERA A COR DO DATAGRIDVIEW ARECEBER QUANDO GANHA OU PERDE O FOCO
@@ -1463,37 +1499,84 @@ Public Class frmVendaPrazo
             '
             '--- PERGUNTA AO USUÁRIO
             If MessageBox.Show("Deseja realmente Finalizar essa Transação de Venda?", "Finalizar Venda",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
+                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then
                 Exit Sub
             End If
             '
+            '--- INICIA A TRANSACAO NO BD
+            '----------------------------------------------------------------------------------------
+            Dim tranBLL As New TransactionControlBLL
+            Dim dbTran As Object = tranBLL.GetNewAcessoWithTransaction
+            '
             '--- SALVA O ARECEBER PARCELAS NO BD
-            If Salvar_Parcelas() = False Then Exit Sub
+            '----------------------------------------------------------------------------------------
+            Try
+                '--- Ampulheta ON
+                Cursor = Cursors.WaitCursor
+                '
+                If Salvar_Parcelas(dbTran) = False Then
+                    '
+                    '--- rollback trasaction
+                    tranBLL.RollbackAcessoWithTransaction(dbTran)
+                    Exit Sub
+                    '
+                End If
+                '
+            Catch ex As Exception
+                '
+                '--- RollBack Transaction
+                tranBLL.RollbackAcessoWithTransaction(dbTran)
+                '
+                MessageBox.Show("Uma exceção ocorreu ao Salvar as Parcelas..." & vbNewLine &
+                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Finally
+                '--- Ampulheta OFF
+                Cursor = Cursors.Default
+            End Try
             '
             '--- SALVA A TRANSACAO/VENDA NO BD
+            '----------------------------------------------------------------------------------------
             Try
-                '--- altera a situacao da transacao atual
-                _Venda.IDSituacao = 2 'CONCLUÍDA
+                '--- Ampulheta ON
+                Cursor = Cursors.WaitCursor
                 '
-                Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda)
+                '--- altera a situacao da transacao atual
+                '--- Havendo pag Entrada a venda é bloqueada
+                If _Venda.IDSituacao <> 3 Then _Venda.IDSituacao = 2 ' BLOQUEADA OU CONCLUÍDA
+                '
+                Dim obj As Object = vndBLL.AtualizaVenda_Procedure_ID(_Venda, dbTran)
                 '
                 If Not IsNumeric(obj) Then
                     Throw New Exception(obj.ToString)
                 End If
                 '
+                '--- COMMIT all 
+                tranBLL.CommitAcessoWithTransaction(dbTran)
+                '
             Catch ex As Exception
-                MessageBox.Show(ex.Message)
+                '
+                '--- RollBack Transaction
+                tranBLL.RollbackAcessoWithTransaction(dbTran)
+                '
+                MessageBox.Show("Uma exceção ocorreu ao Salvar a Venda..." & vbNewLine &
+                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Finally
+                '--- Ampulheta OFF
+                Cursor = Cursors.Default
             End Try
             '
-            '--- RECEBE/QUITA A PARCELA QUE ESTA VENCIDA (ENTRADA OU A VISTA)
-
-            '
             '--- ALTERA A SITUACAO DO REGISTRO ATUAL
-            Sit = FlagEstado.RegistroSalvo
+            '----------------------------------------------------------------------------------------
+            If _Venda.IDSituacao = 2 Then
+                Sit = FlagEstado.RegistroSalvo
+            ElseIf _Venda.IDSituacao = 3 Then '--> bloqueia caso a venda tenha pag.Entrada
+                Sit = FlagEstado.RegistroBloqueado
+            End If
             '
         End If
         '
         '--- PERGUNTA O QUE O USUARIO DESEJA FAZER
+        '----------------------------------------------------------------------------------------
         Dim fAcao As New frmAcaoDialog(Me, "Venda")
         '
         fAcao.ShowDialog()
@@ -1506,7 +1589,7 @@ Public Class frmVendaPrazo
     End Sub
     '
     Private Function Verificar() As Boolean
-        '--- Verifica se a Data não está BLOQUEADA pelo sistema
+        '--- Verifica se a Data não está BLOQUEADA pelo sistema?
         '
         '----------------------------------------------------------------------------------------------
         ' VERIFICA OS VALORES DA VENDA, DAS PARCELAS E DO FRETE
@@ -1556,7 +1639,7 @@ Public Class frmVendaPrazo
         End If
         '
         '--- Verifica se há PLANO DE PAGAMENTO
-        If IsNothing(_Venda.IDPlano) Then
+        If IsNothing(_Venda.IDPlano) OrElse _Venda.IDPlano = 0 Then
             MessageBox.Show("O campo PLANO DE PAGAMENTO não pode ficar vazio...", "Campo Necessário",
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             tabPrincipal.SelectedTab = vtab2
@@ -1577,19 +1660,24 @@ Public Class frmVendaPrazo
         '
     End Function
     '
-    Private Function Salvar_Parcelas() As Boolean
+    '--- LIMPA E SALVA TODO PARCELAMENTO
+    Private Function Salvar_Parcelas(dbTran As Object) As Boolean
+        '
         If _ParcelaList.Count = 0 Then Return False
         '
         Dim parcBLL As New ParcelaBLL
         '
-        '--- Exclui todos os registros de Parcela da Venda atual
         Try
-            parcBLL.Excluir_Parcelas_AReceber(_Venda.IDAReceber)
+            '--- Exclui todos os registros de Parcela da Venda atual
+            parcBLL.Excluir_Parcelas_AReceber(_Venda.IDAReceber, dbTran)
             '
             '--- Insere cada um AReceber no BD
             For Each parc As clAReceberParcela In _ParcelaList
-                parcBLL.InserirNova_Parcela(parc)
+                parc.IDAReceberParcela = parcBLL.InserirNova_Parcela(parc, dbTran).IDAReceberParcela
             Next
+            '
+            '--- RECEBE/QUITA A PARCELA QUE ESTA VENCIDA (ENTRADA OU A VISTA)
+            If Not QuitaRecebeEntrada(dbTran) Then Return False
             '
             Return True
         Catch ex As Exception
@@ -1597,6 +1685,96 @@ Public Class frmVendaPrazo
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
         End Try
+        '
+    End Function
+    '
+    '--- RECEBE E QUITA A PARCELA DA ENTRADA
+    Private Function QuitaRecebeEntrada(dbTran As Object) As Boolean
+        '
+        Dim dtPlano As DataTable = cmbIDPlano.DataSource
+        '
+        If Not IsNothing(dtPlano) AndAlso dtPlano.Rows.Count > 0 Then '--> verifica o plano de pagamento
+            '
+            Dim plano As DataRow = dtPlano.Select("IDPlano = " & _Venda.IDPlano)(0)
+            '
+            '--- verifica se existe entrada no plano escolhido
+            If plano("Entrada") = True Then
+                '
+                '--- get e verifica se a primeira parcela de entrada já está quitada
+                Dim firstParc As clAReceberParcela = _ParcelaList.OrderBy(Function(x) x.Vencimento).First()
+                '
+                If firstParc.SituacaoParcela = 1 Then 'já esta pago
+                    Return True
+                End If
+                '
+                '--- Entrada na movimentacao de Conta (LOOP)
+                '---------------------------------------------------------------------------------------
+                Try
+                    '--- Ampulheta ON
+                    Cursor = Cursors.WaitCursor
+                    '
+                    '--- Inicia o valor Recebido
+                    Dim valorRecebido As Double = 0
+                    '
+                    Do While valorRecebido < firstParc.ParcelaValor
+                        '
+                        '--- open frmAReceberQuitar
+                        Dim frmRec As New frmAReceberQuitar(Me,
+                                                            firstParc.ParcelaValor - valorRecebido,
+                                                            firstParc.IDAReceberParcela,
+                                                            0, _Venda.TransacaoData,
+                                                            dbTran)
+                        frmRec.ShowDialog()
+                        '
+                        If frmRec.DialogResult <> DialogResult.OK Then
+                            Return False
+                            Exit Do
+                        End If
+                        '
+                        '--- retorna e altera o valor que foi recebido
+                        valorRecebido += frmRec.prop_vlPagoDoValor
+                        '
+                    Loop
+                    '
+                Catch ex As Exception
+                    Throw ex
+                    Return False
+                Finally
+                    '--- Ampulheta OFF
+                    Cursor = Cursors.Default
+                End Try
+                '
+                '--- quita a parcela
+                '---------------------------------------------------------------------------------------
+                Dim parcBLL As New ParcelaBLL
+                '
+                Try
+                    '--- Ampulheta ON
+                    Cursor = Cursors.WaitCursor
+                    '
+                    parcBLL.Quitar_Parcela(firstParc.IDAReceberParcela,
+                                           firstParc.ParcelaValor, 0,
+                                           firstParc.Vencimento,
+                                           dbTran)
+                    '
+                    firstParc.SituacaoParcela = 1 '---> parcela paga
+                    '
+                Catch ex As Exception
+                    Throw ex
+                    Return False
+                Finally
+                    '--- Ampulheta OFF
+                    Cursor = Cursors.Default
+                End Try
+                '
+                '--- bloqueia a venda
+                _Venda.IDSituacao = 3 '--> Venda Bloqueada
+                '
+            End If
+            '
+        End If
+        '
+        Return True
         '
     End Function
     '

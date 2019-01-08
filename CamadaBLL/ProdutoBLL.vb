@@ -52,25 +52,59 @@ Public Class ProdutoBLL
             strSql = strSql & " AND " & myWhere
         End If
         '
-        Dim dr As SqlDataReader = objdb.ExecuteAndGetReader(strSql)
-        Dim lista As New List(Of clProduto)
+        Try
+            '
+            Dim dr As SqlDataReader = objdb.ExecuteAndGetReader(strSql)
+            Dim lista As New List(Of clProduto)
+            '
+            While dr.Read
+                '
+                '--- converte dr em clProduto
+                Dim prod As clProduto = ConvertDR_To_clProduto(dr)
+                '
+                '--- adiciona os campo do qryProdutosEstoque
+                prod.Estoque = IIf(IsDBNull(dr("Estoque")), 0, dr("Estoque"))
+                prod.EstoqueNivel = IIf(IsDBNull(dr("EstoqueNivel")), 0, dr("EstoqueNivel"))
+                prod.EstoqueIdeal = IIf(IsDBNull(dr("EstoqueIdeal")), 0, dr("EstoqueIdeal"))
+                '
+                lista.Add(prod)
+                '
+            End While
+            '
+            dr.Close()
+            Return lista
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
         '
-        While dr.Read
-            '
-            '--- converte dr em clProduto
-            Dim prod As clProduto = ConvertDR_To_clProduto(dr)
-            '
-            '--- adiciona os campo do qryProdutosEstoque
-            prod.Estoque = IIf(IsDBNull(dr("Estoque")), 0, dr("Estoque"))
-            prod.EstoqueNivel = IIf(IsDBNull(dr("EstoqueNivel")), 0, dr("EstoqueNivel"))
-            prod.EstoqueIdeal = IIf(IsDBNull(dr("EstoqueIdeal")), 0, dr("EstoqueIdeal"))
-            '
-            lista.Add(prod)
-            '
-        End While
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------------------
+    ' COUNT PRODUTOS FILTRO WHERE PELA FILIAL
+    '---------------------------------------------------------------------------------------------------------
+    Public Function CountProdutos_Where(myFilial As Integer, Optional myWhere As String = "") As Integer
         '
-        dr.Close()
-        Return lista
+        Dim objdb As New AcessoDados
+        Dim strSql As String = "SELECT COUNT(*) FROM qryProdutosEstoque WHERE IDFilial = " & myFilial
+        '
+        If Len(myWhere) > 0 Then
+            strSql = strSql & " AND " & myWhere
+        End If
+        '
+        Try
+            '
+            Dim DT As DataTable = objdb.ExecutarConsulta(CommandType.Text, strSql)
+            '
+            If DT.Rows.Count > 0 Then
+                Return DT.Rows(0).Item(0)
+            Else
+                Return 0
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
         '
     End Function
     '
