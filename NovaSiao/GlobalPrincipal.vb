@@ -64,7 +64,10 @@ Public Module GlobalPrincipal
     '
     '--- VERIFICA SE A DATA ESTA BLOQUEADA PELO SISTEMA
     '--- PARECE COM mBLL.Conta_GetDataBloqueio (retorna a data de bloqueio)
-    Public Function DataBloqueada(myData As Date, IDConta As Byte) As Boolean
+    Public Function DataBloqueada(myData As Date,
+                                  IDConta As Byte,
+                                  Optional ContaDescricao As String = "",
+                                  Optional FilialDescricao As String = "") As Boolean
         '
         Dim mBLL As New MovimentacaoBLL
         Dim dtBloq As Date? = Nothing
@@ -76,13 +79,20 @@ Public Module GlobalPrincipal
                 Return False
             Else
                 If myData < dtBloq Then
-                    '--- obter a descricao da Conta Padrao
-                    Dim ContaPadrao As String = ObterDefault("ContaDescricao")
                     '
-                    MessageBox.Show("A Conta Padrão: " & ContaPadrao.ToUpper & vbNewLine &
+                    Dim myConta As String
+                    '
+                    '--- obter a descricao da Conta Padrao
+                    If String.IsNullOrEmpty(ContaDescricao) Then
+                        myConta = ObterDefault("ContaDescricao") & " - " & ObterDefault("FilialDescricao")
+                    Else
+                        myConta = ContaDescricao & " - " & FilialDescricao
+                    End If
+                    '
+                    MessageBox.Show("A Conta Selecionada: " & myConta.ToUpper & vbNewLine &
                                     "já está bloqueada nessa DATA, pelo sistema..." & vbNewLine & vbNewLine &
                                     "Já existe caixa efetuado posterior a essa data." & vbNewLine & vbNewLine &
-                                    "Favor utilizar outra data ou altere a conta padrão.", "Data Bloqueada",
+                                    "Favor utilizar outra data ou altere a Conta.", "Data Bloqueada",
                                     MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Return True
                 Else

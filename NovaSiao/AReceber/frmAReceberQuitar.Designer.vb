@@ -136,6 +136,7 @@ Partial Class frmAReceberQuitar
         'rbtCreditar
         '
         Me.rbtCreditar.AutoSize = True
+        Me.rbtCreditar.Enabled = False
         Me.rbtCreditar.Location = New System.Drawing.Point(231, 5)
         Me.rbtCreditar.Name = "rbtCreditar"
         Me.rbtCreditar.Size = New System.Drawing.Size(79, 23)

@@ -45,21 +45,6 @@ Public Class frmAPagarProcurar
     '
     Public Property propSituacaoAtual() As Byte?
         Get
-            If rbtEmAberto.Checked = True Then
-                SituacaoAtual = 0 '--- em aberto
-            ElseIf rbtQuitadas.Checked = True Then
-                SituacaoAtual = 1 '--- pagas
-            ElseIf rbtCanceladas.Checked = True Then
-                SituacaoAtual = 2 '--- canceladas
-            ElseIf rbtNegativadas.Checked = True Then
-                SituacaoAtual = 3 '--- negativadas
-            ElseIf rbtNegociadas.Checked = True Then
-                SituacaoAtual = 4 '--- Negociadas
-            ElseIf rbtTodas.Checked = True Then
-                SituacaoAtual = Nothing '--- Todas
-            Else
-                SituacaoAtual = Nothing
-            End If
             '
             Return SituacaoAtual
             '
@@ -205,26 +190,48 @@ Public Class frmAPagarProcurar
         '--- Verifica o IDFilial
         Dim myFilial As Integer = Obter_FilialPadrao()
         '
+        '--- Verifica a Situacao
+        Dim Situacao As Byte? = Nothing
+        If Not IsNothing(propSituacaoAtual) Then Situacao = propSituacaoAtual
+        '
         '--- consulta o banco de dados
         Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
-                pagLista = pagBLL.GetAPagarLista_Procura(myFilial, myIDCobrancaForma, txtCredorCadastro.Text)
+                pagLista = pagBLL.GetAPagarLista_Procura(myFilial,
+                                                         txtCredorCadastro.Text,
+                                                         True, False,
+                                                         myIDCobrancaForma,
+                                                         Nothing, Nothing,
+                                                         Situacao)
             Else
                 Dim f As New FuncoesUtilitarias
                 Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
                 Dim dtFinal As Date = f.LastDayOfMonth(myMes)
                 '
-                pagLista = pagBLL.GetAPagarLista_Procura(myFilial, myIDCobrancaForma, txtCredorCadastro.Text, dtInicial, dtFinal)
+                pagLista = pagBLL.GetAPagarLista_Procura(myFilial,
+                                                         txtCredorCadastro.Text,
+                                                         True, False,
+                                                         myIDCobrancaForma,
+                                                         dtInicial, dtFinal,
+                                                         Situacao)
             End If
             '
-            FiltraSituacao()
+            '--- define o souce da listagem
+            dgvListagem.DataSource = pagLista
             '
             Sit = FlagEstado.RegistroSalvo
+            '
             '
         Catch ex As Exception
             MessageBox.Show("Ocorreu exceção ao obter a lista de A Pagar..." & vbNewLine &
             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub
@@ -545,20 +552,24 @@ Public Class frmAPagarProcurar
     End Sub
     '
     Private Sub Butons_CheckedChanged(sender As Object, e As EventArgs)
-        FiltraSituacao()
-    End Sub
-    '
-    '--- FILTRAGEM DA LISTA PELA SITUACAO (EM ABERTO, QUITADA, CANCELADA, NEGATIVADA)
-    Private Sub FiltraSituacao()
         '
-        If Not IsNothing(propSituacaoAtual) Then
-            Dim query = From P In pagLista
-            query = pagLista.Where(Function(p) p.Situacao = propSituacaoAtual).ToList
-            '
-            dgvListagem.DataSource = query
+        If rbtEmAberto.Checked = True Then
+            propSituacaoAtual = 0 '--- em aberto
+        ElseIf rbtQuitadas.Checked = True Then
+            propSituacaoAtual = 1 '--- pagas
+        ElseIf rbtCanceladas.Checked = True Then
+            propSituacaoAtual = 2 '--- canceladas
+        ElseIf rbtNegativadas.Checked = True Then
+            propSituacaoAtual = 3 '--- negativadas
+        ElseIf rbtNegociadas.Checked = True Then
+            propSituacaoAtual = 4 '--- Negociadas
+        ElseIf rbtTodas.Checked = True Then
+            propSituacaoAtual = Nothing '--- Todas
         Else
-            dgvListagem.DataSource = pagLista
+            propSituacaoAtual = Nothing
         End If
+        '
+        Get_Dados()
         '
     End Sub
     '
@@ -663,7 +674,7 @@ Public Class frmAPagarProcurar
         '--- atualiza a listagem
         DirectCast(dgvListagem.Rows(dgvListagem.CurrentCell.RowIndex).DataBoundItem, clAPagar).Situacao = 2 '-- 2 : Situacao CANCELADA
         dgvListagem.EndEdit()
-        FiltraSituacao()
+        Get_Dados()
         '
     End Sub
     '
@@ -704,7 +715,7 @@ Public Class frmAPagarProcurar
         '-- 2 : Situacao EM ABERTO
         DirectCast(dgvListagem.Rows(dgvListagem.CurrentCell.RowIndex).DataBoundItem, clAPagar).Situacao = 0
         dgvListagem.EndEdit()
-        FiltraSituacao()
+        Get_Dados()
         '
     End Sub
     '

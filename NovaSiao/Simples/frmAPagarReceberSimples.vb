@@ -154,7 +154,7 @@ Public Class frmAPagarReceberSimples
     '
     Private Sub GetList_APagar()
         '
-        Dim pagBLL As New SimplesMovimentacaoBLL
+        Dim pagBLL As New APagarBLL
         '
         '--- consulta o banco de dados
         Try
@@ -163,13 +163,18 @@ Public Class frmAPagarReceberSimples
             '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
-                SourceList = pagBLL.GetSimplesAPagarLista_Procura(_IDFilialPadrao, txtFilialDestino.Text)
+                SourceList = pagBLL.GetAPagarLista_Procura(_IDFilialPadrao,
+                                                           txtFilialDestino.Text,
+                                                           False, True)
             Else
                 Dim f As New FuncoesUtilitarias
                 Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
                 Dim dtFinal As Date = f.LastDayOfMonth(myMes)
                 '
-                SourceList = pagBLL.GetSimplesAPagarLista_Procura(_IDFilialPadrao, txtFilialDestino.Text, dtInicial, dtFinal)
+                SourceList = pagBLL.GetAPagarLista_Procura(_IDFilialPadrao,
+                                                           txtFilialDestino.Text,
+                                                           False, True, Nothing,
+                                                           dtInicial, dtFinal)
             End If
             '
             dgvListagem.DataSource = SourceList

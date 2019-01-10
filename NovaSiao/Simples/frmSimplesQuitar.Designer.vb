@@ -122,11 +122,11 @@ Partial Class frmSimplesQuitar
         '
         Me.btnCancelar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_30px
-        Me.btnCancelar.Location = New System.Drawing.Point(200, 349)
+        Me.btnCancelar.Location = New System.Drawing.Point(204, 349)
         Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(120, 48)
+        Me.btnCancelar.Size = New System.Drawing.Size(128, 48)
         Me.btnCancelar.TabIndex = 16
-        Me.btnCancelar.Text = "&Fechar"
+        Me.btnCancelar.Text = "&Cancelar"
         Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnCancelar.UseVisualStyleBackColor = True
@@ -169,9 +169,9 @@ Partial Class frmSimplesQuitar
         '
         Me.btnQuitar.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Right), System.Windows.Forms.AnchorStyles)
         Me.btnQuitar.Image = Global.NovaSiao.My.Resources.Resources.dollar_currency_sign
-        Me.btnQuitar.Location = New System.Drawing.Point(70, 349)
+        Me.btnQuitar.Location = New System.Drawing.Point(66, 349)
         Me.btnQuitar.Name = "btnQuitar"
-        Me.btnQuitar.Size = New System.Drawing.Size(120, 48)
+        Me.btnQuitar.Size = New System.Drawing.Size(128, 48)
         Me.btnQuitar.TabIndex = 15
         Me.btnQuitar.Text = "&Quitar"
         Me.btnQuitar.TextAlign = System.Drawing.ContentAlignment.MiddleRight

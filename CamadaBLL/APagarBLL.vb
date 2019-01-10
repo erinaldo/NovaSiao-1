@@ -9,7 +9,6 @@ Public Class APagarBLL
     Public Function APagar_GET_PorOrigem(myIDOrigem As Integer, myOrigem As clAPagar.Origem_APagar) As List(Of clAPagar)
         Dim db As New AcessoDados
         Dim dt As New DataTable
-        Dim PagList As New List(Of clAPagar)
         '
         Try
             db.LimparParametros()
@@ -17,33 +16,7 @@ Public Class APagarBLL
             db.AdicionarParametros("@Origem", myOrigem)
             '
             dt = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAPagar_GET_PorOrigem")
-            '
-            If dt.Rows.Count = 0 Then Return PagList
-            '
-            For Each r As DataRow In dt.Rows
-                Dim clPag As New clAPagar
-                '
-                With clPag
-                    '--- tblAReceberParcela
-                    .Origem = myOrigem
-                    .IDOrigem = myIDOrigem
-                    .IDAPagar = IIf(IsDBNull(r("IDAPagar")), Nothing, r("IDAPagar"))
-                    .IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
-                    .IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
-                    .IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-                    .CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), "", r("CobrancaForma"))
-                    .Identificador = IIf(IsDBNull(r("Identificador")), Nothing, r("Identificador"))
-                    .RGBanco = IIf(IsDBNull(r("RGBanco")), Nothing, r("RGBanco"))
-                    .APagarValor = IIf(IsDBNull(r("APagarValor")), 0, r("APagarValor"))
-                    .Situacao = IIf(IsDBNull(r("Situacao")), Nothing, r("Situacao"))
-                    .Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
-                End With
-                '
-                PagList.Add(clPag)
-                '
-            Next
-            '
-            Return PagList
+            Return ConvertDT_To_ListAPagar(dt)
             '
         Catch ex As Exception
             Throw ex
@@ -141,60 +114,72 @@ Public Class APagarBLL
     End Function
     '
     '===================================================================================================
-    ' GET LISTA APAGAR PARA FRMPROCURA
+    ' GET LISTA APAGAR PARA FRMPROCURA COM OU SEM DESPESA PERIODICA
     '===================================================================================================
     Public Function GetAPagarLista_Procura(myIDFilial As Integer,
-                                           myIDCobrancaForma As Int16?,
                                            myCredorCadastro As String,
+                                           withPeriodico As Boolean,
+                                           onlySimples As Boolean,
+                                           Optional myIDCobrancaForma As Int16? = Nothing,
                                            Optional dtInicial As Date? = Nothing,
-                                           Optional dtFinal As Date? = Nothing) As List(Of clAPagar)
-        Dim db As New AcessoDados
+                                           Optional dtFinal As Date? = Nothing,
+                                           Optional Situacao As Byte? = Nothing) As List(Of clAPagar)
         '
+        Dim db As New AcessoDados
         db.LimparParametros()
         '
-        db.AdicionarParametros("@APagarExterno", True) '--> TRUE: APAGAR WITHOUT SIMPLES | FALSE: APAGAR ONLY SIMPLES
-        db.AdicionarParametros("@IDCobrancaForma", myIDCobrancaForma)
+        '--- ADICIONA PARAMETROS
+        '--------------------------------------------------------------------------------------------
         db.AdicionarParametros("@IDFilial", myIDFilial)
         db.AdicionarParametros("@CredorCadastro", myCredorCadastro)
         '
+        '--- CRIA MYQUERY
+        Dim myQuery As String = "SELECT * FROM qryAPagar WHERE IDFilial = @IDFilial " &
+                                "AND Cadastro LIKE '%'+@CredorCadastro+'%' "
+        '
+        '--- Verifica se é APagar Normal ou de SimplesEntrada
+        If Not onlySimples Then
+            myQuery = myQuery & "AND Origem <> 4 " '--> sem simples
+        Else
+            myQuery = myQuery & "AND Origem = 4 " '--> somente simples
+        End If
+        '
+        If Not IsNothing(myIDCobrancaForma) Then
+            db.AdicionarParametros("@IDCobrancaForma", myIDCobrancaForma)
+            myQuery = myQuery & "AND IDCobrancaForma = @IDCobrancaForma "
+        End If
+        '
         If Not IsNothing(dtInicial) Then
             db.AdicionarParametros("@DataInicial", dtInicial)
+            myQuery = myQuery & " AND Vencimento >= @DataInicial "
         End If
         '
         If Not IsNothing(dtFinal) Then
             db.AdicionarParametros("@DataFinal", dtFinal)
+            myQuery = myQuery & " AND Vencimento <= @DataFinal "
         End If
         '
+        If Not IsNothing(Situacao) Then
+            db.AdicionarParametros("@Situacao", Situacao)
+            myQuery = myQuery & "AND Situacao = @Situacao"
+        End If
+        '
+        '--- EXECUTA CONSULTA QUERY E CRIA A LISTA
+        '--------------------------------------------------------------------------------------------
         Try
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAPagar_ProcurarLista")
-            Dim pList As New List(Of clAPagar)
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
+            Dim plist As List(Of clAPagar) = ConvertDT_To_ListAPagar(dt)
             '
-            For Each r In dt.Rows
-                Dim p As New clAPagar
+            '--- Verifica se deve incluir as despesas periodicas
+            If withPeriodico = False OrElse If(Situacao, 0) <> 0 Then
                 '
-                p.IDAPagar = IIf(IsDBNull(r("IDAPagar")), Nothing, r("IDAPagar"))
-                p.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
-                p.OrigemTexto = IIf(IsDBNull(r("OrigemTexto")), String.Empty, r("OrigemTexto"))
-                p.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
-                p.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
-                p.IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
-                p.Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
-                p.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-                p.CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), String.Empty, r("CobrancaForma"))
-                p.Identificador = IIf(IsDBNull(r("Identificador")), String.Empty, r("Identificador"))
-                p.RGBanco = IIf(IsDBNull(r("RGBanco")), Nothing, r("RGBanco"))
-                p.BancoNome = IIf(IsDBNull(r("BancoNome")), String.Empty, r("BancoNome"))
-                p.Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
-                p.APagarValor = IIf(IsDBNull(r("APagarValor")), 0, r("APagarValor"))
-                p.Situacao = IIf(IsDBNull(r("Situacao")), Nothing, r("Situacao"))
-                p.PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
-                p.Desconto = IIf(IsDBNull(r("Desconto")), Nothing, r("Desconto"))
-                p.Acrescimo = IIf(IsDBNull(r("Acrescimo")), Nothing, r("Acrescimo"))
+                '--- retorna
+                Return plist.OrderBy(Function(x) x.Vencimento).ToList
                 '
-                pList.Add(p)
-                '
-            Next
+            End If
             '
+            'INSERE NA LISTA AS DESPESAS PERIODICAS
+            '-----------------------------------------------------------------------------------------------------
             Dim pListPeriodica As List(Of clAPagar) = GetAPagarPeriodicoLista_Procura(myIDFilial,
                                                                                       myIDCobrancaForma,
                                                                                       myCredorCadastro,
@@ -202,7 +187,6 @@ Public Class APagarBLL
             '
             '--- Adiciona as listagem de APagar das Despesas Periodicas
             pList.AddRange(pListPeriodica)
-            '
             '
             '--- Ordena a listagem pelos vencimentos
             pList = pList.OrderBy(Function(x) x.Vencimento).ToList
@@ -212,6 +196,44 @@ Public Class APagarBLL
         Catch ex As Exception
             Throw ex
         End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' CONVERTER APAGAR DATATABLE EM LIST OF CLAPAGAR
+    '===================================================================================================
+    Private Function ConvertDT_To_ListAPagar(dt As DataTable) As List(Of clAPagar)
+        '
+        Dim pList As New List(Of clAPagar)
+        '
+        For Each r In dt.Rows
+            '
+            Dim p As New clAPagar
+            '
+            p.IDAPagar = IIf(IsDBNull(r("IDAPagar")), Nothing, r("IDAPagar"))
+            p.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
+            p.OrigemTexto = IIf(IsDBNull(r("OrigemTexto")), String.Empty, r("OrigemTexto"))
+            p.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
+            p.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
+            p.IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
+            p.Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
+            p.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
+            p.CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), String.Empty, r("CobrancaForma"))
+            p.Identificador = IIf(IsDBNull(r("Identificador")), String.Empty, r("Identificador"))
+            p.RGBanco = IIf(IsDBNull(r("RGBanco")), Nothing, r("RGBanco"))
+            p.BancoNome = IIf(IsDBNull(r("BancoNome")), String.Empty, r("BancoNome"))
+            p.Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
+            p.APagarValor = IIf(IsDBNull(r("APagarValor")), 0, r("APagarValor"))
+            p.Situacao = IIf(IsDBNull(r("Situacao")), Nothing, r("Situacao"))
+            p.PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
+            p.Desconto = IIf(IsDBNull(r("Desconto")), Nothing, r("Desconto"))
+            p.Acrescimo = IIf(IsDBNull(r("Acrescimo")), Nothing, r("Acrescimo"))
+            '
+            pList.Add(p)
+            '
+        Next
+        '
+        Return pList
         '
     End Function
     '
