@@ -244,19 +244,30 @@ Public Class APagarBLL
                                                      myIDCobrancaForma As Int16?,
                                                      myCredorCadastro As String,
                                                      Optional dtInicial As Date? = Nothing,
-                                                     Optional dtFinal As Date? = Nothing) As List(Of clAPagar)
+                                                     Optional dtFinal As Date? = Nothing,
+                                                     Optional Ativa As Boolean = True) As List(Of clAPagar)
         Dim db As New AcessoDados
         '
         '--- Adiciona os Parametros da pesquisa
         db.LimparParametros()
         '
         db.AdicionarParametros("@IDFilial", myIDFilial)
-        db.AdicionarParametros("@IDCobrancaForma", myIDCobrancaForma)
         db.AdicionarParametros("@CredorCadastro", myCredorCadastro)
+        db.AdicionarParametros("@Ativa", Ativa)
+        '
+        '--- CRIA MYQUERY
+        Dim myQuery As String = "SELECT * FROM qryDespesaPeriodica WHERE IDFilial = @IDFilial " &
+                                "AND Cadastro LIKE '%'+@CredorCadastro+'%' " &
+                                "AND Ativa = @Ativa "
+        '
+        If Not IsNothing(myIDCobrancaForma) Then
+            db.AdicionarParametros("@IDCobrancaForma", myIDCobrancaForma)
+            myQuery = myQuery & "AND IDCobrancaForma = @IDCobrancaForma "
+        End If
         '
         Try
             '--- Get datatable DespesaPeriodica
-            Dim dtDesp As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAPagarPeriodico_ProcurarLista")
+            Dim dtDesp As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
             Dim pList As New List(Of clAPagar)
             '
             '--- Verifica se retornou algum registro de despesa periódica

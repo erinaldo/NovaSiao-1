@@ -230,7 +230,8 @@ Public Class SimplesMovimentacaoBLL
     Public Function GetSimplesAReceberLista_Procura(IDFilialOrigem As Integer,
                                                     Optional IDFilialDestino As Integer? = Nothing,
                                                     Optional dtInicial As Date? = Nothing,
-                                                    Optional dtFinal As Date? = Nothing) As List(Of clAReceberParcela)
+                                                    Optional dtFinal As Date? = Nothing,
+                                                    Optional Situacao As Byte? = Nothing) As List(Of clAReceberParcela)
         '
         Dim myQuery As String = "SELECT * FROM qryAReceberParcela WHERE Origem = 3 AND IDFilial = @IDFilialOrigem "
         '
@@ -251,6 +252,11 @@ Public Class SimplesMovimentacaoBLL
         If Not IsNothing(dtFinal) Then
             SQL.AddParam("@dtFinal", dtFinal)
             myQuery = myQuery & " AND Vencimento <= @dtFinal"
+        End If
+        '
+        If Not IsNothing(Situacao) Then '--- 0:EmAberto | 1:Pago | 2:Cancelada | 3:Negativada | 4:Negociada
+            SQL.AddParam("@Situacao", Situacao)
+            myQuery = myQuery & " AND SituacaoParcela = @Situacao"
         End If
         '
         '--- Execute

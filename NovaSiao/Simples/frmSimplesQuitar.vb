@@ -313,7 +313,9 @@ Public Class frmSimplesQuitar
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Return simplesBLL.GetSimplesAReceberLista_Procura(_IDFilialOrigem, _IDFilialDestino)
+            Return simplesBLL.GetSimplesAReceberLista_Procura(_IDFilialOrigem,
+                                                              _IDFilialDestino,
+                                                              Nothing, Nothing, 0)
             '
         Catch ex As Exception
             MessageBox.Show("Uma exceção ocorreu ao Obter Lista de a Receber..." & vbNewLine &
@@ -338,7 +340,7 @@ Public Class frmSimplesQuitar
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            'Return pagBLL.GetSimplesAPagarLista_Procura(_IDFilialDestino, lblFilial.Text)
+            Return pagBLL.GetSimplesAPagarLista_Procura(_IDFilialDestino, lblFilial.Text)
             '
         Catch ex As Exception
             MessageBox.Show("Uma exceção ocorreu ao obter a lista de A Pagar..." & vbNewLine &
@@ -369,6 +371,8 @@ Public Class frmSimplesQuitar
             Return
         End Try
         '
+        '--- Quita os itens da lista até alcançar o valor
+        '--------------------------------------------------------------------------------------------------------
         Dim ValorAReceber As Double = txtValor.Text
         '
         For Each rec In lstAReceber
