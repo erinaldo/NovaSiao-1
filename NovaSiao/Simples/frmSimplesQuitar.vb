@@ -126,9 +126,9 @@ Public Class frmSimplesQuitar
     '------------------------------------------------------------------------------------------
     Private Sub btnQuitar_Click(sender As Object, e As EventArgs) Handles btnQuitar.Click
         '
-        '--- Verifica se os Valores estão preenchidos e corretos
+        '--- Verifica se os Campos estão preenchidos e corretos
         '--------------------------------------------------------------------------------------------------------
-        If Not VerificarValores() Then Return
+        If Not VerificarCamposControles() Then Return
         '
         '--- Verifica se a DATA DA ENTRADA e SAIDA é permitida pelo sistema
         '--------------------------------------------------------------------------------------------------------
@@ -138,73 +138,107 @@ Public Class frmSimplesQuitar
         '--------------------------------------------------------------------------------------------------------
         If _EntradaSaida Then '-- A RECEBER ================================================
             '
-            '--- Verifica o valor do Total do AReceber da FilialOrigem
-            '--------------------------------------------------------------------------------------------------------
-            If Not VerificaTotalAReceber() Then Return
-            '
-            '--- CRIA uma BD Transaction
-            '--------------------------------------------------------------------------------------------------------
-            Dim tBLL As New TransactionControlBLL
-            Dim dbTran As Object = tBLL.GetNewAcessoWithTransaction
-            '
-            '--- EFETUA o RECEBIMENTO DA FILIAL ORIGEM
-            '--------------------------------------------------------------------------------------------------------
-            Try
-                '--- Ampulheta ON
-                Cursor = Cursors.WaitCursor
-                '
-                EfetuarRecebimentoList(dbTran)
-                '
-            Catch ex As Exception
-                MessageBox.Show("Uma exceção ocorreu ao Efetuar o Recebimento..." & vbNewLine &
-                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                tBLL.RollbackAcessoWithTransaction(dbTran)
-            Finally
-                '--- Ampulheta OFF
-                Cursor = Cursors.Default
-            End Try
-            '
-            '
-            '--- EFETUA o PAGAMENTO DA FILIAL DESTINO IF BD SERVER NOT LOCAL
-            '--------------------------------------------------------------------------------------------------------
-            '
-            '--- verifica se o servidor é local
-            Dim NodeServidorLocal As String = ObterConfigValorNode("ServidorLocal")
-            '
-            If String.IsNullOrEmpty(NodeServidorLocal) OrElse NodeServidorLocal.ToUpper = "TRUE" Then Return
-            '
-            Try
-                '--- Ampulheta ON
-                Cursor = Cursors.WaitCursor
-                '
-                'EfetuarPagamentoList(dbTran)
-                '
-            Catch ex As Exception
-                MessageBox.Show("Uma exceção ocorreu ao Efetuar o Pagamento..." & vbNewLine &
-                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                tBLL.RollbackAcessoWithTransaction(dbTran)
-            Finally
-                '--- Ampulheta OFF
-                Cursor = Cursors.Default
-            End Try
-            '
+            If ExecutaQuitacao_Entrada() Then
+                MessageBox.Show("Crédito realizado com sucesso!", "Receber Simples",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information)
+                DialogResult = DialogResult.OK
+            End If
             '
         Else '--- A PAGAR ===================================================================
-
+            '
+            If ExecutaQuitacao_Saida() Then
+                MessageBox.Show("Pagamento realizado com sucesso!", "Pagamento Simples",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information)
+                DialogResult = DialogResult.OK
+            End If
+            '
         End If
         '
     End Sub
     '
     '------------------------------------------------------------------------------------------
-    ' VERIFICA O VALOR DO ARECEBER
+    ' EXECUTA QUITACAO DE ENTRADA
     '------------------------------------------------------------------------------------------
-    Private Function VerificaTotalAReceber() As Boolean
+    Private Function ExecutaQuitacao_Entrada() As Boolean
+        '
+        '--- Verifica o valor do Total do AReceber da FilialOrigem
+        '--------------------------------------------------------------------------------------------------------
+        If Not VerificaTotalAReceber(_IDFilialOrigem, _IDFilialDestino) Then Return False
+        '
+        '--- CRIA uma BD Transaction
+        '--------------------------------------------------------------------------------------------------------
+        Dim tBLL As New TransactionControlBLL
+        Dim dbTran As Object = tBLL.GetNewAcessoWithTransaction
+        '
+        '--- EFETUA o RECEBIMENTO DA FILIAL ORIGEM
+        '--------------------------------------------------------------------------------------------------------
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            EfetuarRecebimentoList(_IDFilialOrigem, _IDFilialDestino, dbTran)
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Efetuar o Recebimento..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            tBLL.RollbackAcessoWithTransaction(dbTran)
+            Return False
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+        '
+        '--- EFETUA o PAGAMENTO DA FILIAL DESTINO IF BD SERVER NOT LOCAL
+        '--------------------------------------------------------------------------------------------------------
+        '
+        '--- verifica se o servidor é local
+        Dim NodeServidorLocal As String = ObterConfigValorNode("ServidorLocal")
+        If String.IsNullOrEmpty(NodeServidorLocal) OrElse NodeServidorLocal.ToUpper = "TRUE" Then Return True
         '
         Try
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Dim totalAReceber As Double = simplesBLL.Simples_AReceberTotal_Filial(_IDFilialOrigem, _IDFilialDestino)
+            EfetuarPagamentoList(_IDFilialDestino, _IDFilialOrigem, dbTran)
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Efetuar o Pagamento..." & vbNewLine &
+                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            tBLL.RollbackAcessoWithTransaction(dbTran)
+            Return False
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+        '--- COMMIT AND RETURN
+        '--------------------------------------------------------------------------------------------------------
+        tBLL.CommitAcessoWithTransaction(dbTran)
+        'tBLL.RollbackAcessoWithTransaction(dbTran)
+        Return True
+        '
+    End Function
+    '
+    '------------------------------------------------------------------------------------------
+    ' EXECUTA QUITACAO DE SAIDA
+    '------------------------------------------------------------------------------------------
+    Private Function ExecutaQuitacao_Saida() As Boolean
+        MsgBox("Em Implementação")
+        Return False
+    End Function
+    '
+    '------------------------------------------------------------------------------------------
+    ' VERIFICA O VALOR DO ARECEBER
+    '------------------------------------------------------------------------------------------
+    Private Function VerificaTotalAReceber(IDFilialCreditada As Integer,
+                                           IDFilialDebitada As Integer) As Boolean
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim totalAReceber As Double = simplesBLL.Simples_AReceberTotal_Filial(IDFilialCreditada, IDFilialDebitada)
             '
             If totalAReceber < txtValor.Text Then
                 MessageBox.Show("O Valor que você deseja quitar é maior que o Valor Total do A Receber que há entre as Filiais: " &
@@ -233,7 +267,7 @@ Public Class frmSimplesQuitar
     '------------------------------------------------------------------------------------------
     ' VERIFICACAO DOS CAMPOS NECESSARIOS
     '------------------------------------------------------------------------------------------
-    Private Function VerificarValores() As Boolean
+    Private Function VerificarCamposControles() As Boolean
         Dim f As New FuncoesUtilitarias
         '
         '--- Campo Conta de Entrada
@@ -307,14 +341,15 @@ Public Class frmSimplesQuitar
     '------------------------------------------------------------------------------------------
     ' GET | RETURN LISTA DE ARECEBER
     '------------------------------------------------------------------------------------------
-    Private Function GetListaAReceber() As List(Of clAReceberParcela)
+    Private Function GetListaAReceber(IDFilialCreditada As Integer,
+                                      IDFilialDebitada As Integer) As List(Of clAReceberParcela)
         '
         Try
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Return simplesBLL.GetSimplesAReceberLista_Procura(_IDFilialOrigem,
-                                                              _IDFilialDestino,
+            Return simplesBLL.GetSimplesAReceberLista_Procura(IDFilialCreditada,
+                                                              IDFilialDebitada,
                                                               Nothing, Nothing, 0)
             '
         Catch ex As Exception
@@ -329,18 +364,19 @@ Public Class frmSimplesQuitar
     End Function
     '
     '------------------------------------------------------------------------------------------
-    ' GET | RETURN LISTA DE APAGAR
+    ' GET | RETURN LISTA DE APAGAR FILIAL PADRAO
     '------------------------------------------------------------------------------------------
-    Private Function GetListaAPagar() As List(Of clAPagar)
+    Private Function GetListaAPagar(IDFilialCreditada As Integer,
+                                    IDFilialDebitada As Integer) As List(Of clAPagar)
         '
-        Dim pagBLL As New SimplesMovimentacaoBLL
+        Dim pagBLL As New APagarBLL
         '
         '--- consulta o banco de dados
         Try
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Return pagBLL.GetSimplesAPagarLista_Procura(_IDFilialDestino, lblFilial.Text)
+            Return pagBLL.GetListAPagar_Simples_EmAberto(IDFilialCreditada, IDFilialDebitada)
             '
         Catch ex As Exception
             MessageBox.Show("Uma exceção ocorreu ao obter a lista de A Pagar..." & vbNewLine &
@@ -352,19 +388,20 @@ Public Class frmSimplesQuitar
         End Try
         '
     End Function
-
     '
     '------------------------------------------------------------------------------------------
-    ' EFETUAR RECEBIMENTO | PAGAMENTO
+    ' EFETUAR RECEBIMENTO | ENTRADA FILIAL PADRAO
     '------------------------------------------------------------------------------------------
-    Private Sub EfetuarRecebimentoList(dbTran)
+    Private Sub EfetuarRecebimentoList(IDFilialCreditada As Integer,
+                                       IDFilialDebitada As Integer,
+                                       dbTran As Object)
         '
         '--- GET lista de AReceber
         '--------------------------------------------------------------------------------------------------------
         Dim lstAReceber As New List(Of clAReceberParcela)
         '
         Try
-            lstAReceber = GetListaAReceber()
+            lstAReceber = GetListaAReceber(IDFilialCreditada, IDFilialDebitada)
             If IsNothing(lstAReceber) Then Return
         Catch ex As Exception
             Throw ex
@@ -377,7 +414,7 @@ Public Class frmSimplesQuitar
         '
         For Each rec In lstAReceber
             '
-            Dim EmAbertoParcela As Double = rec.ValorPagoTotalParcela - rec.ValorPagoParcela
+            Dim EmAbertoParcela As Double = rec.ParcelaValor - rec.ValorPagoParcela
             Dim vlRecParcela As Double
             '
             '--- verifica se o valor a receber é maior que o valor da parcela
@@ -400,7 +437,10 @@ Public Class frmSimplesQuitar
         Next
         '
     End Sub
-
+    '
+    '------------------------------------------------------------------------------------------
+    '--- EFETUA O RECEBIMENTO DE CADA ITEM DA LISTAGEM
+    '------------------------------------------------------------------------------------------
     Private Sub EfetuarRecebimentoItem(rec As clAReceberParcela,
                                        vlRecParcela As Double,
                                        dbTran As Object)
@@ -409,9 +449,8 @@ Public Class frmSimplesQuitar
         '------------------------------------------------------------------------------------------
         Dim MovEntrada As New clMovimentacao(EnumMovimentacaoOrigem.AReceberParcela, EnumMovimento.Entrada) With {
             .Creditar = False,
-            .Descricao = "",
-            .IDConta = cmbIDContaOrigem.SelectedValue,
-            .IDFilial = _FilialOrigem,
+            .IDConta = IIf(rec.IDFilial = _IDFilialOrigem, cmbIDContaOrigem.SelectedValue, cmbIDContaDestino.SelectedValue),
+            .IDFilial = rec.IDFilial,
             .IDMovForma = 1,
             .IDMovTipo = 1,
             .IDOrigem = rec.IDAReceberParcela,
@@ -456,6 +495,105 @@ Public Class frmSimplesQuitar
         Finally
             '--- Ampulheta OFF
             Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+    '------------------------------------------------------------------------------------------
+    ' EFETUAR PAGAMENTO | SAIDA DA FILIAL PADRAO
+    '------------------------------------------------------------------------------------------
+    Private Sub EfetuarPagamentoList(IDFilialCreditada As Integer,
+                                     IDFilialDebitada As Integer,
+                                     dbTran As Object)
+        '
+        '--- GET lista de APagar
+        '--------------------------------------------------------------------------------------------------------
+        Dim lstAPagar As New List(Of clAPagar)
+        '
+        Try
+            lstAPagar = GetListaAPagar(IDFilialDebitada, IDFilialCreditada)
+            If IsNothing(lstAPagar) Then Return
+        Catch ex As Exception
+            Throw ex
+            Return
+        End Try
+        '
+        '--- Quita os itens da lista até alcançar o valor
+        '--------------------------------------------------------------------------------------------------------
+        Dim ValorAPagar As Double = txtValor.Text
+        '
+        For Each pag In lstAPagar
+            '
+            Dim EmAberto As Double = pag.APagarValor - pag.ValorPago
+            Dim vlRecebido As Double
+            '
+            '--- verifica se o valor a pagar é maior que o valor do pag
+            If ValorAPagar >= EmAberto Then
+                vlRecebido = EmAberto '--- se for maior quita totalmente o apagar
+            Else
+                vlRecebido = ValorAPagar '--- se for menor quita parcialmente o apagar
+            End If
+            '
+            '--- reajusta o novo valor a Pagar que restou
+            ValorAPagar = ValorAPagar - vlRecebido
+            '
+            Try
+                EfetuarPagamentoItem(pag, vlRecebido, dbTran)
+            Catch ex As Exception
+                Throw ex
+                Exit For
+            End Try
+            '
+        Next
+        '
+    End Sub
+    '
+    '------------------------------------------------------------------------------------------
+    '--- EFETUA O PAGAMENTO DE CADA ITEM DA LISTAGEM
+    '------------------------------------------------------------------------------------------
+    Private Sub EfetuarPagamentoItem(pag As clAPagar,
+                                     vlRecebido As Double,
+                                     dbTran As Object)
+        '
+        '--- MOVIMENTACAO DE SAIDA
+        '------------------------------------------------------------------------------------------
+        Dim MovSaida As New clMovimentacao(EnumMovimentacaoOrigem.APagar, EnumMovimento.Saida) With {
+            .Creditar = False,
+            .IDConta = IIf(pag.IDFilial = _IDFilialOrigem, cmbIDContaOrigem.SelectedValue, cmbIDContaDestino.SelectedValue),
+            .IDFilial = pag.IDFilial,
+            .IDMovForma = 1,
+            .IDMovTipo = 1,
+            .IDOrigem = pag.IDAPagar,
+            .MovData = txtEntradaData.Text,
+            .MovValor = vlRecebido,
+            .Movimento = 2, '--- saida
+            .Observacao = txtObservacao.Text,
+            .Origem = 10 '--- ORIGEM: tblAReceberParcela
+        }
+        '
+        '--- Quita o APAGAR e cria a Mov SAIDA
+        '------------------------------------------------------------------------------------------
+        Dim pBLL As New APagarBLL
+        Dim newID As Integer?
+        '
+        Try
+            newID = pBLL.Quitar_APagar(MovSaida.IDOrigem,
+                                       Math.Abs(MovSaida.MovValor),
+                                       0,
+                                       MovSaida.MovData,
+                                       MovSaida.IDConta,
+                                       MovSaida.Observacao,
+                                       dbTran)
+            '
+            If Not IsNumeric(newID) Then
+                Throw New Exception(newID.ToString)
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Houve uma exceção ao QUITAR o APagar:" & vbNewLine &
+                            ex.Message, "Exceção Inesperada",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
         End Try
         '
     End Sub
@@ -522,7 +660,65 @@ Public Class frmSimplesQuitar
 #End Region
     '
 #Region "OUTRAS FUNCOES"
-
+    '    
+    '---------------------------------------------------------------------------------------
+    '--- BLOQUEIA PRESS A TECLA (+)
+    '---------------------------------------------------------------------------------------
+    Private Sub me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
+        '
+        If e.KeyChar = "+" Then
+            '--- cria uma lista de controles que serao impedidos de receber '+'
+            Dim controlesBloqueados As String() = {
+            "txtFilialDestino"
+         }
+            '
+            If controlesBloqueados.Contains(ActiveControl.Name) Then
+                e.Handled = True
+            End If
+            '
+        End If
+        '
+    End Sub
+    '
+    '
+    '---------------------------------------------------------------------------------------
+    '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
+    '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
+    '---------------------------------------------------------------------------------------
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _
+    Handles txtFilialDestino.KeyDown
+        '
+        Dim ctr As Control = DirectCast(sender, Control)
+        '
+        If e.KeyCode = Keys.Add Then
+            e.Handled = True
+            '
+            Select Case ctr.Name
+                Case "txtFilialDestino"
+                    btnProcurarFilial_Click(New Object, New EventArgs)
+            End Select
+            '
+        ElseIf e.KeyCode = Keys.Delete Then
+            e.Handled = True
+            Select Case ctr.Name
+                Case "txtFilialDestino"
+                    txtFilialDestino.Clear()
+                    _IDFilialDestino = Nothing
+            End Select
+            '
+        Else
+            '--- cria uma lista de controles que serão bloqueados de alteracao
+            Dim controlesBloqueados As New List(Of String)
+            controlesBloqueados.AddRange({"txtFilialDestino"})
+            '
+            If controlesBloqueados.Contains(ctr.Name) Then
+                e.Handled = True
+                e.SuppressKeyPress = True
+            End If
+            '
+        End If
+        '
+    End Sub
     '
 #End Region '/ OUTRAS FUNCOES
     '
@@ -533,6 +729,7 @@ Public Class frmSimplesQuitar
     '------------------------------------------------------------------------------------------
     Private Sub txtValor_KeyDown(sender As Object, e As KeyEventArgs) Handles _
             rbtTransferencia.KeyDown,
+            txtFilialDestino.KeyDown,
             txtValor.KeyDown,
             txtObservacao.KeyDown
         '

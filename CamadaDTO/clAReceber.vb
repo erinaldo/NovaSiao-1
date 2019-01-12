@@ -482,7 +482,7 @@ Public Class clAReceberParcela
     End Property
     '
     '--- Propriedade READONLY ValorPagoTotal
-    Public ReadOnly Property ValorPagoTotalParcela() As Decimal?
+    Public ReadOnly Property ValorPagoMaisJuros() As Decimal?
         Get
             If Not IsNothing(ValorPagoParcela) AndAlso Not IsNothing(ValorJuros) Then
                 Return ValorPagoParcela + ValorJuros

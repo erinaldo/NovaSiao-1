@@ -713,7 +713,7 @@ Public Class SimplesMovimentacaoBLL
     End Function
     '
     '--------------------------------------------------------------------------------------------
-    ' RETORNA TOTAL DE A PAGAR ENTRE DUAS FILIAIS 
+    ' RETORNA TOTAL DE A RECEBER ENTRE DUAS FILIAIS 
     '--------------------------------------------------------------------------------------------
     Public Function Simples_AReceberTotal_Filial(IDFilialCreditada As Integer,
                                                  IDFilialDebitada As Integer) As Double

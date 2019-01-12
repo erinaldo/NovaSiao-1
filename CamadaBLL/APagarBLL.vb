@@ -497,9 +497,10 @@ Public Class APagarBLL
     '===================================================================================================
     Public Function Quitar_APagar(IDAPagar As Integer, ValorPago As Double,
                                   Acrescimo As Double, SaidaData As Date,
-                                  IDConta As Byte, Observacao As String) As Integer
+                                  IDConta As Byte, Observacao As String,
+                                  Optional dbTran As Object = Nothing) As Integer
         '
-        Dim db As New AcessoDados
+        Dim db As AcessoDados = If(dbTran, New AcessoDados)
         Dim obj As Object = Nothing
         '
         Try
@@ -567,38 +568,47 @@ Public Class APagarBLL
                 Throw New Exception("Uma exceção inesperada ocorreu ao Estornar Pagamento...")
             End If
             '
-            '--- seleciona a ROW
-            Dim r As DataRow = dtPag.Rows(0)
-            '
             '--- verifica se o RETORNO é uma clParcela
             If dtPag.Columns.Count = 1 Then '--- se tem mais de uma coluna então é uma clParcela
-                Throw New Exception(r(0))
+                Throw New Exception(dtPag.Rows(0)(0))
             End If
             '
-            '--- Preenche Nova clParcela com a DataROW
-            '---------------------------------------------------------------------
-            Dim clPag As New clAPagar
-            '--- qryAPagar
-            clPag.IDAPagar = IIf(IsDBNull(r("IDAPagar")), Nothing, r("IDAPagar"))
-            clPag.Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
-            clPag.IDOrigem = IIf(IsDBNull(r("IDOrigem")), Nothing, r("IDOrigem"))
-            clPag.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
-            clPag.IDPessoa = IIf(IsDBNull(r("IDPessoa")), Nothing, r("IDPessoa"))
-            clPag.Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
-            clPag.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-            clPag.CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), String.Empty, r("CobrancaForma"))
-            clPag.Identificador = IIf(IsDBNull(r("Identificador")), String.Empty, r("Identificador"))
-            clPag.RGBanco = IIf(IsDBNull(r("RGBanco")), Nothing, r("RGBanco"))
-            clPag.BancoNome = IIf(IsDBNull(r("BancoNome")), String.Empty, r("BancoNome"))
-            clPag.Vencimento = IIf(IsDBNull(r("Vencimento")), Nothing, r("Vencimento"))
-            clPag.APagarValor = IIf(IsDBNull(r("APagarValor")), 0, r("APagarValor"))
-            clPag.Situacao = IIf(IsDBNull(r("Situacao")), Nothing, r("Situacao"))
-            clPag.PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
-            clPag.Desconto = IIf(IsDBNull(r("Desconto")), 0, r("Desconto"))
-            clPag.Acrescimo = IIf(IsDBNull(r("Acrescimo")), 0, r("Acrescimo"))
-            '
             '--- Retorna
-            Return clPag
+            Return ConvertDT_To_ListAPagar(dtPag).Item(0)
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' RETORNA LIST OF APAGAR EM ABERTO SIMPLES BETWEEN TWO FILIAIS
+    '===================================================================================================
+    Public Function GetListAPagar_Simples_EmAberto(IDFilialCreditada As Integer,
+                                                   IDFilialDebitada As Integer) As List(Of clAPagar)
+        '
+        Dim myDB As New AcessoDados
+        '
+        Dim myQuery As String = "SELECT * " &
+                                "FROM qryAPagar " &
+                                "WHERE Origem = 4 " & '--> Origem Simples Entrada
+                                "AND Situacao = 0 " & '--> Situacao EmAberto
+                                "AND IDFilial = @IDFilialDebitada " &
+                                "AND IDPessoa = @IDFilialCreditada"
+        '
+        myDB.LimparParametros()
+        myDB.AdicionarParametros("@IDFilialCreditada", IDFilialCreditada)
+        myDB.AdicionarParametros("@IDFilialDebitada", IDFilialDebitada)
+        '
+        Try
+            Dim dt As DataTable = myDB.ExecutarConsulta(CommandType.Text, myQuery)
+            '
+            If dt.Rows.Count = 0 Then
+                Return New List(Of clAPagar)
+            Else
+                Return ConvertDT_To_ListAPagar(dt)
+            End If
             '
         Catch ex As Exception
             Throw ex
