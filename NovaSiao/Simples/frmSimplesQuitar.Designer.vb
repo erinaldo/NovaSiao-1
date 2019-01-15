@@ -19,7 +19,6 @@ Partial Class frmSimplesQuitar
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Me.txtEntradaData = New Controles.MaskText_Data()
         Me.lblData = New System.Windows.Forms.Label()
         Me.lblContaOrigem = New System.Windows.Forms.Label()
         Me.cmbIDContaOrigem = New Controles.ComboBox_OnlyValues()
@@ -39,6 +38,8 @@ Partial Class frmSimplesQuitar
         Me.cmbIDContaDestino = New Controles.ComboBox_OnlyValues()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.lblFilial = New System.Windows.Forms.Label()
+        Me.dtpEntradaData = New System.Windows.Forms.DateTimePicker()
+        Me.chkValorMaximo = New System.Windows.Forms.CheckBox()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         Me.SuspendLayout()
@@ -60,16 +61,6 @@ Partial Class frmSimplesQuitar
         Me.lblTitulo.Size = New System.Drawing.Size(226, 50)
         Me.lblTitulo.TabIndex = 2
         Me.lblTitulo.Text = "Simples - Quitar"
-        '
-        'txtEntradaData
-        '
-        Me.txtEntradaData.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.txtEntradaData.Location = New System.Drawing.Point(147, 206)
-        Me.txtEntradaData.Mask = "00/00/0000"
-        Me.txtEntradaData.Name = "txtEntradaData"
-        Me.txtEntradaData.Size = New System.Drawing.Size(131, 31)
-        Me.txtEntradaData.TabIndex = 10
-        Me.txtEntradaData.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'lblData
         '
@@ -102,19 +93,21 @@ Partial Class frmSimplesQuitar
         '
         'txtValor
         '
+        Me.txtValor.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.txtValor.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.txtValor.Location = New System.Drawing.Point(147, 243)
         Me.txtValor.Name = "txtValor"
-        Me.txtValor.Size = New System.Drawing.Size(131, 31)
-        Me.txtValor.TabIndex = 12
+        Me.txtValor.Size = New System.Drawing.Size(139, 31)
+        Me.txtValor.TabIndex = 13
         Me.txtValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'lblValor
         '
+        Me.lblValor.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.lblValor.Location = New System.Drawing.Point(12, 246)
         Me.lblValor.Name = "lblValor"
         Me.lblValor.Size = New System.Drawing.Size(129, 19)
-        Me.lblValor.TabIndex = 11
+        Me.lblValor.TabIndex = 12
         Me.lblValor.Text = "Valor"
         Me.lblValor.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -125,7 +118,7 @@ Partial Class frmSimplesQuitar
         Me.btnCancelar.Location = New System.Drawing.Point(204, 349)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(128, 48)
-        Me.btnCancelar.TabIndex = 16
+        Me.btnCancelar.TabIndex = 17
         Me.btnCancelar.Text = "&Cancelar"
         Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -172,7 +165,7 @@ Partial Class frmSimplesQuitar
         Me.btnQuitar.Location = New System.Drawing.Point(66, 349)
         Me.btnQuitar.Name = "btnQuitar"
         Me.btnQuitar.Size = New System.Drawing.Size(128, 48)
-        Me.btnQuitar.TabIndex = 15
+        Me.btnQuitar.TabIndex = 16
         Me.btnQuitar.Text = "&Quitar"
         Me.btnQuitar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnQuitar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -180,18 +173,20 @@ Partial Class frmSimplesQuitar
         '
         'txtObservacao
         '
+        Me.txtObservacao.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.txtObservacao.Location = New System.Drawing.Point(147, 280)
         Me.txtObservacao.Multiline = True
         Me.txtObservacao.Name = "txtObservacao"
         Me.txtObservacao.Size = New System.Drawing.Size(234, 54)
-        Me.txtObservacao.TabIndex = 14
+        Me.txtObservacao.TabIndex = 15
         '
         'Label2
         '
+        Me.Label2.Anchor = CType((System.Windows.Forms.AnchorStyles.Bottom Or System.Windows.Forms.AnchorStyles.Left), System.Windows.Forms.AnchorStyles)
         Me.Label2.Location = New System.Drawing.Point(12, 280)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(129, 19)
-        Me.Label2.TabIndex = 13
+        Me.Label2.TabIndex = 14
         Me.Label2.Text = "Observação"
         Me.Label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
@@ -276,10 +271,31 @@ Partial Class frmSimplesQuitar
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'dtpEntradaData
+        '
+        Me.dtpEntradaData.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.dtpEntradaData.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpEntradaData.Location = New System.Drawing.Point(147, 206)
+        Me.dtpEntradaData.Name = "dtpEntradaData"
+        Me.dtpEntradaData.Size = New System.Drawing.Size(139, 31)
+        Me.dtpEntradaData.TabIndex = 10
+        '
+        'chkValorMaximo
+        '
+        Me.chkValorMaximo.AutoSize = True
+        Me.chkValorMaximo.Location = New System.Drawing.Point(16, 311)
+        Me.chkValorMaximo.Name = "chkValorMaximo"
+        Me.chkValorMaximo.Size = New System.Drawing.Size(117, 23)
+        Me.chkValorMaximo.TabIndex = 11
+        Me.chkValorMaximo.Text = "Valor Máximo"
+        Me.chkValorMaximo.UseVisualStyleBackColor = True
+        '
         'frmSimplesQuitar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(408, 409)
+        Me.Controls.Add(Me.chkValorMaximo)
+        Me.Controls.Add(Me.dtpEntradaData)
         Me.Controls.Add(Me.btnProcurarFilial)
         Me.Controls.Add(Me.lblFilialDestino)
         Me.Controls.Add(Me.txtFilialDestino)
@@ -295,11 +311,9 @@ Partial Class frmSimplesQuitar
         Me.Controls.Add(Me.lblValor)
         Me.Controls.Add(Me.lblContaOrigem)
         Me.Controls.Add(Me.lblData)
-        Me.Controls.Add(Me.txtEntradaData)
         Me.KeyPreview = True
         Me.Name = "frmSimplesQuitar"
         Me.Controls.SetChildIndex(Me.Panel1, 0)
-        Me.Controls.SetChildIndex(Me.txtEntradaData, 0)
         Me.Controls.SetChildIndex(Me.lblData, 0)
         Me.Controls.SetChildIndex(Me.lblContaOrigem, 0)
         Me.Controls.SetChildIndex(Me.lblValor, 0)
@@ -315,6 +329,8 @@ Partial Class frmSimplesQuitar
         Me.Controls.SetChildIndex(Me.txtFilialDestino, 0)
         Me.Controls.SetChildIndex(Me.lblFilialDestino, 0)
         Me.Controls.SetChildIndex(Me.btnProcurarFilial, 0)
+        Me.Controls.SetChildIndex(Me.dtpEntradaData, 0)
+        Me.Controls.SetChildIndex(Me.chkValorMaximo, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
@@ -323,8 +339,6 @@ Partial Class frmSimplesQuitar
         Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents txtEntradaData As Controles.MaskText_Data
     Friend WithEvents lblData As Label
     Friend WithEvents lblContaOrigem As Label
     Friend WithEvents cmbIDContaOrigem As Controles.ComboBox_OnlyValues
@@ -344,4 +358,6 @@ Partial Class frmSimplesQuitar
     Friend WithEvents cmbIDContaDestino As Controles.ComboBox_OnlyValues
     Friend WithEvents Label18 As Label
     Friend WithEvents lblFilial As Label
+    Friend WithEvents dtpEntradaData As DateTimePicker
+    Friend WithEvents chkValorMaximo As CheckBox
 End Class

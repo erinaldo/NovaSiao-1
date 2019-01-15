@@ -359,7 +359,7 @@ Public Class frmVendaVista
         '
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Venda.IDVenda, _IDFilial)
+            _ItensList = tBLL.GetTransacaoItens_List(_Venda.IDVenda, _IDFilial)
         Catch ex As Exception
             MessageBox.Show("Um execeção ocorreu ao obter Itens da Venda:" & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -377,13 +377,12 @@ Public Class frmVendaVista
         '
         '--- Abre o frmItem
         '
-        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _IDFilial, Nothing)
+        Dim newItem As New clTransacaoItem
+        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _IDFilial, newItem)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
         If Not fItem.DialogResult = DialogResult.OK Then Exit Sub
-        '
-        Dim newItem As clTransacaoItem = fItem.propItem
         '
         '--- Insere o novo Item
         Dim ItemBLL As New TransacaoItemBLL

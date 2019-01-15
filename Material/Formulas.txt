@@ -166,3 +166,15 @@ End Sub
     Dim ds As DataSet = New DataSet()
     ds.ReadXml(xmlCaminhoCompleto, XmlReadMode.InferTypedSchema)
     ds.WriteXmlSchema(pasta & "\teste.xsd")
+
+'
+'---------------------------------------------------------------------------------------
+' REDESENHA A BORDER DO FORM
+'---------------------------------------------------------------------------------------
+	Dim rect As New Rectangle(0, 0, Me.ClientSize.Width - 1, Me.ClientSize.Height - 1)
+	Dim pen As New Pen(Color.SlateGray, 3)
+	'
+	Me.Refresh()
+	Me.CreateGraphics.DrawRectangle(pen, rect)
+	'
+	TipoPagamento = value

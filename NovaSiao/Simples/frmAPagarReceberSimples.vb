@@ -113,7 +113,7 @@ Public Class frmAPagarReceberSimples
                 '--- calcula Totais
                 Dim lst As List(Of clAReceberParcela) = SourceList
                 Dim AReceber As Double = lst.Sum(Function(x) x.ParcelaValor)
-                Dim Recebido As Double = lst.Sum(Function(x) x.ValorPagoTotal)
+                Dim Recebido As Double = lst.Sum(Function(x) x.ValorPagoParcela)
                 '
                 lblTotal.Text = Format(AReceber, "C")
                 lblPago.Text = Format(Recebido, "C")

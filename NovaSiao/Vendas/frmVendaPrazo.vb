@@ -511,7 +511,7 @@ Public Class frmVendaPrazo
     Private Sub obterItens()
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Venda.IDVenda, _IDFilial)
+            _ItensList = tBLL.GetTransacaoItens_List(_Venda.IDVenda, _IDFilial)
         Catch ex As Exception
             MessageBox.Show("Um execeção ocorreu ao obter Itens da Venda:" & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)

@@ -418,7 +418,7 @@ Public Class frmSimplesEntrada
         '
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetCompraItens_IDCompra_List(_Simples.IDTransacao, _Filial)
+            _ItensList = tBLL.GetTransacaoItens_WithCustos_List(_Simples.IDTransacao, _Filial)
             '
             '--- Atualiza o label TOTAL
             Dim x = TotalGeral

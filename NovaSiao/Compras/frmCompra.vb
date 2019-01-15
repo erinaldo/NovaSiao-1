@@ -522,7 +522,7 @@ Public Class frmCompra
         '
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetCompraItens_IDCompra_List(_Compra.IDCompra, _Filial)
+            _ItensList = tBLL.GetTransacaoItens_WithCustos_List(_Compra.IDCompra, _Filial)
             '--- Atualiza o label TOTAL
             Dim x = TotalGeral
         Catch ex As Exception

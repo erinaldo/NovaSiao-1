@@ -176,7 +176,7 @@ Public Class frmTrocaSimples
         Try
             '
             '--- get itens da transacao entradas relacionadas a troca
-            ItensGroupEntrada.ItensList = tBLL.GetVendaItens_IDVenda_List(_Troca.IDTransacaoEntrada, _Troca.IDFilial)
+            ItensGroupEntrada.ItensList = tBLL.GetTransacaoItens_List(_Troca.IDTransacaoEntrada, _Troca.IDFilial)
             '
         Catch ex As Exception
             MessageBox.Show("Um execeção ocorreu ao obter Produtos de Entrada da Troca:" & vbNewLine &
@@ -703,14 +703,12 @@ Public Class frmTrocaSimples
             If frmOrigem.RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
             If frmOrigem.RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
             '
-            Dim fItem As New frmVendaItem(frmOrigem, Movimento, _Filial, Nothing)
+            Dim newItem As New clTransacaoItem
+            Dim fItem As New frmVendaItem(frmOrigem, Movimento, _Filial, newItem)
             fItem.ShowDialog()
             '
             '--- Verifica o retorno do Dialog
             If Not fItem.DialogResult = DialogResult.OK Then Exit Sub
-            '
-            '--- Obtem o valor do novo Item
-            Dim newItem As clTransacaoItem = fItem.propItem
             '
             '--- Insere o novo Item
             Dim ItemBLL As New TransacaoItemBLL

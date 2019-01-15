@@ -1,11 +1,10 @@
 ﻿Imports CamadaDTO
 Imports CamadaDAL
-Imports System.Data.SqlClient
 '
 Public Class TransacaoItemBLL
     '
     '==========================================================================================
-    ' ENUM MOVIMENTO de entrada ou saida
+    ' ENUM MOVIMENTO de ENTRADA ou SAIDA
     '==========================================================================================
     Public Enum EnumMovimento
         ENTRADA '--- no caso de COMPRA, entrada de produto
@@ -13,9 +12,38 @@ Public Class TransacaoItemBLL
     End Enum
     '
     '==========================================================================================
-    ' RETORNA UMA LISTA DE ITEM TRANSACAO FILTRADO PELO IDVENDA
+    ' RETORNA UMA LISTA DE ITEM TRANSACAO PELO IDTRANSACAO - SAIDA DE PRODUTOS
     '==========================================================================================
-    Public Function GetVendaItens_IDVenda_List(myIDTransacao As Integer, myFilial As Integer) As List(Of clTransacaoItem)
+    Public Function GetTransacaoItens_List(IDTransacao As Integer, IDFilial As Integer) As List(Of clTransacaoItem)
+        Dim objdb As New AcessoDados
+        '
+        '--- limpar os parâmetros
+        objdb.LimparParametros()
+        '
+        '--- adicionar os parâmetros
+        objdb.AdicionarParametros("@IDTransacao", IDTransacao)
+        objdb.AdicionarParametros("@IDFilial", IDFilial)
+        '
+        '--- Create SELECT query
+        Dim myQuery As String = "SELECT * FROM qryTransacaoItem WHERE IDTransacao = @IDTransacao AND IDFilial = @IDFilial"
+        '
+        Try
+            '--- GET DATATABLE
+            Dim dt As DataTable = objdb.ExecutarConsulta(CommandType.Text, myQuery)
+            '
+            '--- RETURN
+            Return ConvertDt_in_ListOf(dt, False)
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' RETORNA UMA LISTA DE ITENS TRANSACAO PELO IDTRANSACAO COM CUSTOS - ENTRADA DE PRODUTOS
+    '===================================================================================================
+    Public Function GetTransacaoItens_WithCustos_List(myIDTransacao As Integer, myFilial As Integer) As List(Of clTransacaoItem)
         Dim objdb As New AcessoDados
         '
         '--- limpar os parâmetros
@@ -24,89 +52,112 @@ Public Class TransacaoItemBLL
         objdb.AdicionarParametros("@IDTransacao", myIDTransacao)
         objdb.AdicionarParametros("@IDFilial", myFilial)
         '
+        '--- Create SELECT query
+        Dim myQuery As String = "SELECT * FROM qryTransacaoItemCustos WHERE IDTransacao = @IDTransacao AND IDFilial = @IDFilial"
+        '
         Try
-            Dim dt As DataTable = objdb.ExecutarConsulta(CommandType.StoredProcedure, "uspTransacaoItem_GETItens_PorVenda")
-            Dim lista As New List(Of clTransacaoItem)
             '
-            If dt.Rows.Count = 0 Then Return lista
+            '--- GET TABLE
+            Dim dt As DataTable = objdb.ExecutarConsulta(CommandType.Text, myQuery)
             '
-            For Each r As DataRow In dt.Rows
-                Dim itn As clTransacaoItem = New clTransacaoItem
-                '--- Itens da tblTransacaoItens
-                itn.IDTransacaoItem = IIf(IsDBNull(r("IDTransacaoItem")), Nothing, r("IDTransacaoItem"))
-                itn.Preco = IIf(IsDBNull(r("Preco")), Nothing, r("Preco"))
-                itn.IDTransacao = IIf(IsDBNull(r("IDTransacao")), Nothing, r("IDTransacao"))
-                itn.IDProduto = IIf(IsDBNull(r("IDProduto")), Nothing, r("IDProduto"))
-                itn.Quantidade = IIf(IsDBNull(r("Quantidade")), Nothing, r("Quantidade"))
-                itn.Desconto = IIf(IsDBNull(r("Desconto")), Nothing, r("Desconto"))
-                '--- Itens Importados tblProdutos
-                itn.RGProduto = IIf(IsDBNull(r("RGProduto")), Nothing, r("RGProduto"))
-                itn.CodBarrasA = IIf(IsDBNull(r("CodBarrasA")), Nothing, r("CodBarrasA"))
-                itn.PVenda = IIf(IsDBNull(r("PVenda")), Nothing, r("PVenda"))
-                itn.DescontoCompra = IIf(IsDBNull(r("DescontoCompra")), 0, r("DescontoCompra"))
-                itn.PCompra = IIf(IsDBNull(r("PCompra")), Nothing, r("PCompra"))
-                itn.ProdutoAtivo = IIf(IsDBNull(r("ProdutoAtivo")), Nothing, r("ProdutoAtivo"))
-                itn.Produto = IIf(IsDBNull(r("Produto")), String.Empty, r("Produto"))
-                itn.Estoque = IIf(IsDBNull(r("Estoque")), Nothing, r("Estoque"))
-                itn.Reservado = IIf(IsDBNull(r("Reservado")), Nothing, r("Reservado"))
-                itn.ProdutoAtivo = IIf(IsDBNull(r("ProdutoAtivo")), Nothing, r("ProdutoAtivo"))
-                '
-                '--- Itens Estoque
-                itn.IDFilial = myFilial
-                '
-                lista.Add(itn)
-                '
-            Next
+            '--- RETURN
+            Return ConvertDt_in_ListOf(dt, True)
             '
-            Return lista
         Catch ex As Exception
             Throw ex
         End Try
+        '
     End Function
     '
     '==========================================================================================
     ' GET UM PRODUTO DO NOVO ITEM DA TRANSACAO
     '==========================================================================================
-    Public Function ProdutoItem_GET(_CodProcurado As String, _IDFilial As Integer) As clTransacaoItem
+    Public Function TransacaoItem_Get_New(_CodProcurado As String, _IDFilial As Integer) As clTransacaoItem
         Dim db As New AcessoDados
         '
         db.LimparParametros()
         '
-        '--- verifica se o cod informado é RG ou CODBARRAS
-        If Len(_CodProcurado) < 7 Then
-            db.AdicionarParametros("@RGProduto", _CodProcurado)
-        Else
-            db.AdicionarParametros("@CodBarras", _CodProcurado)
-        End If
+        Dim myQuery As String = "SELECT P.*, E.Quantidade AS Estoque, E.Reservado, " &
+                                "NULL AS IDTransacaoItem, NULL AS Preco, NULL AS IDTransacao, " &
+                                "NULL AS Quantidade, NULL AS Desconto, @IDFilial AS IDFilial " &
+                                "FROM qryProdutos AS P " &
+                                "LEFT JOIN tblEstoque AS E " &
+                                "ON P.IDProduto = E.IDProduto AND E.IDFilial = @IDFilial"
         '
-        '--- Adico
+        '--- Adiciona IDFilial
         db.AdicionarParametros("@IDFilial", _IDFilial)
         '
+        '--- verifica se o cod informado é RG ou CODBARRAS
+        If Len(_CodProcurado) < 7 Then '--> FIND for RGProduto
+            db.AdicionarParametros("@RGProduto", _CodProcurado)
+            myQuery = myQuery & " WHERE RGProduto = @RGProduto"
+        Else '--> FIND for CodBarrasA
+            db.AdicionarParametros("@CodBarrasA", _CodProcurado)
+            myQuery = myQuery & " WHERE CodBarrasA = @CodBarrasA"
+        End If
+        '
         Try
-            Dim clItem As New clTransacaoItem
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspProdutoItem_GET")
             '
-            If dt.Rows.Count = 0 Then Return clItem '--- retorna um item vazio quando nao encontra
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
             '
-            Dim r As DataRow = dt.Rows(0)
-            '
-            clItem.IDProduto = r("IDProduto")
-            clItem.RGProduto = r("RGProduto")
-            clItem.Produto = r("Produto")
-            clItem.CodBarrasA = r("CodBarrasA")
-            clItem.PVenda = r("PVenda")
-            clItem.DescontoCompra = r("DescontoCompra")
-            clItem.PCompra = r("PCompra")
-            clItem.ProdutoAtivo = r("ProdutoAtivo")
-            clItem.Estoque = r("Estoque")
-            clItem.Reservado = r("Reservado")
-            clItem.IDFilial = _IDFilial
-            '
-            Return clItem
+            If dt.Rows.Count = 0 Then
+                Return New clTransacaoItem '--- retorna um item vazio quando nao encontra
+            Else
+                Return ConvertDt_in_ListOf(dt, False)(0)
+            End If
             '
         Catch ex As Exception
             Throw ex
         End Try
+        '
+    End Function
+    '
+    '==========================================================================================
+    ' CONVERTE DATATABLE IN LIST OF CLTRANSACAOITEM
+    '==========================================================================================
+    Private Function ConvertDt_in_ListOf(dt As DataTable, withCustos As Boolean) As List(Of clTransacaoItem)
+        '
+        Dim lista As New List(Of clTransacaoItem)
+        '
+        If dt.Rows.Count = 0 Then Return lista
+        '
+        For Each r As DataRow In dt.Rows
+            Dim itn As clTransacaoItem = New clTransacaoItem
+            '--- Itens da tblTransacaoItens
+            itn.IDTransacaoItem = IIf(IsDBNull(r("IDTransacaoItem")), Nothing, r("IDTransacaoItem"))
+            itn.Preco = IIf(IsDBNull(r("Preco")), Nothing, r("Preco"))
+            itn.IDTransacao = IIf(IsDBNull(r("IDTransacao")), Nothing, r("IDTransacao"))
+            itn.Quantidade = IIf(IsDBNull(r("Quantidade")), Nothing, r("Quantidade"))
+            itn.Desconto = IIf(IsDBNull(r("Desconto")), Nothing, r("Desconto"))
+            '--- Itens Importados tblProdutos
+            itn.IDProduto = IIf(IsDBNull(r("IDProduto")), Nothing, r("IDProduto"))
+            itn.RGProduto = IIf(IsDBNull(r("RGProduto")), Nothing, r("RGProduto"))
+            itn.CodBarrasA = IIf(IsDBNull(r("CodBarrasA")), Nothing, r("CodBarrasA"))
+            itn.PVenda = IIf(IsDBNull(r("PVenda")), Nothing, r("PVenda"))
+            itn.DescontoCompra = IIf(IsDBNull(r("DescontoCompra")), 0, r("DescontoCompra"))
+            itn.PCompra = IIf(IsDBNull(r("PCompra")), Nothing, r("PCompra"))
+            itn.ProdutoAtivo = IIf(IsDBNull(r("ProdutoAtivo")), Nothing, r("ProdutoAtivo"))
+            itn.Produto = IIf(IsDBNull(r("Produto")), String.Empty, r("Produto"))
+            itn.ProdutoAtivo = IIf(IsDBNull(r("ProdutoAtivo")), Nothing, r("ProdutoAtivo"))
+            '--- Itens tblEstoque
+            itn.Reservado = IIf(IsDBNull(r("Reservado")), Nothing, r("Reservado"))
+            itn.Estoque = IIf(IsDBNull(r("Estoque")), Nothing, r("Estoque"))
+            itn.IDFilial = r("IDFilial")
+            '
+            If withCustos Then '--> Add Custos
+                '--- Itens Importados tblTransacaoItensCustos
+                itn.FreteRateado = IIf(IsDBNull(r("FreteRateado")), Nothing, r("FreteRateado"))
+                itn.ICMS = IIf(IsDBNull(r("ICMS")), Nothing, r("ICMS"))
+                itn.Substituicao = IIf(IsDBNull(r("Substituicao")), Nothing, r("Substituicao"))
+                itn.MVA = IIf(IsDBNull(r("MVA")), Nothing, r("MVA"))
+                itn.IPI = IIf(IsDBNull(r("IPI")), Nothing, r("IPI"))
+            End If
+            '
+            lista.Add(itn)
+            '
+        Next
+        '
+        Return lista
         '
     End Function
     '
@@ -250,61 +301,6 @@ Public Class TransacaoItemBLL
             Throw ex
         End Try
         '
-    End Function
-    '
-    '==========================================================================================
-    ' RETORNA UMA LISTA DE ITENS TRANSACAO FILTRADO PELO IDTRANSACAO
-    '==========================================================================================
-    Public Function GetCompraItens_IDCompra_List(myIDTransacao As Integer, myFilial As Integer) As List(Of clTransacaoItem)
-        Dim objdb As New AcessoDados
-        '
-        '--- limpar os parâmetros
-        objdb.LimparParametros()
-        '--- adicionar os parâmetros
-        objdb.AdicionarParametros("@IDTransacao", myIDTransacao)
-        objdb.AdicionarParametros("@IDFilial", myFilial)
-        '
-        Try
-            Dim dt As DataTable = objdb.ExecutarConsulta(CommandType.StoredProcedure, "uspTransacaoItem_GETItens_PorCompra")
-            Dim lista As New List(Of clTransacaoItem)
-            '
-            If dt.Rows.Count = 0 Then Return lista
-            '
-            For Each r As DataRow In dt.Rows
-                Dim itn As clTransacaoItem = New clTransacaoItem
-                '--- Itens da tblTransacaoItens
-                itn.IDTransacaoItem = IIf(IsDBNull(r("IDTransacaoItem")), Nothing, r("IDTransacaoItem"))
-                itn.Preco = IIf(IsDBNull(r("Preco")), Nothing, r("Preco"))
-                itn.IDTransacao = IIf(IsDBNull(r("IDTransacao")), Nothing, r("IDTransacao"))
-                itn.IDProduto = IIf(IsDBNull(r("IDProduto")), Nothing, r("IDProduto"))
-                itn.Quantidade = IIf(IsDBNull(r("Quantidade")), Nothing, r("Quantidade"))
-                itn.Desconto = IIf(IsDBNull(r("Desconto")), Nothing, r("Desconto"))
-                '--- Itens Importados tblProdutos
-                itn.RGProduto = IIf(IsDBNull(r("RGProduto")), Nothing, r("RGProduto"))
-                itn.CodBarrasA = IIf(IsDBNull(r("CodBarrasA")), Nothing, r("CodBarrasA"))
-                itn.PVenda = IIf(IsDBNull(r("PVenda")), Nothing, r("PVenda"))
-                itn.DescontoCompra = IIf(IsDBNull(r("DescontoCompra")), Nothing, r("DescontoCompra"))
-                itn.PCompra = IIf(IsDBNull(r("PCompra")), Nothing, r("PCompra"))
-                itn.ProdutoAtivo = IIf(IsDBNull(r("ProdutoAtivo")), Nothing, r("ProdutoAtivo"))
-                itn.Produto = IIf(IsDBNull(r("Produto")), String.Empty, r("Produto"))
-                itn.Estoque = IIf(IsDBNull(r("Estoque")), Nothing, r("Estoque"))
-                itn.Reservado = IIf(IsDBNull(r("Reservado")), Nothing, r("Reservado"))
-                itn.ProdutoAtivo = IIf(IsDBNull(r("ProdutoAtivo")), Nothing, r("ProdutoAtivo"))
-                '--- Itens Importados tblTransacaoItensCustos
-                itn.FreteRateado = IIf(IsDBNull(r("FreteRateado")), Nothing, r("FreteRateado"))
-                itn.ICMS = IIf(IsDBNull(r("ICMS")), Nothing, r("ICMS"))
-                itn.Substituicao = IIf(IsDBNull(r("Substituicao")), Nothing, r("Substituicao"))
-                itn.MVA = IIf(IsDBNull(r("MVA")), Nothing, r("MVA"))
-                itn.IPI = IIf(IsDBNull(r("IPI")), Nothing, r("IPI"))
-                '
-                lista.Add(itn)
-                '
-            Next
-            '
-            Return lista
-        Catch ex As Exception
-            Throw ex
-        End Try
     End Function
     '
 End Class

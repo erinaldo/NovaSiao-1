@@ -355,7 +355,7 @@ Public Class frmSimplesSaida
     Private Sub obterItens()
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetVendaItens_IDVenda_List(_Simples.IDTransacao, _Filial)
+            _ItensList = tBLL.GetTransacaoItens_List(_Simples.IDTransacao, _Filial)
         Catch ex As Exception
             MessageBox.Show("Um execeção ocorreu ao obter Itens da Simples Saída:" & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -372,14 +372,12 @@ Public Class frmSimplesSaida
         If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
         '
         '--- Abre o frmItem
-        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_COMPRA, _Filial, Nothing)
+        Dim newItem As New clTransacaoItem
+        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_COMPRA, _Filial, newItem)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
         If Not fItem.DialogResult = DialogResult.OK Then Exit Sub
-        '
-        '--- captura o valor do Item editado
-        Dim newItem As clTransacaoItem = fItem.propItem
         '
         '--- Insere o novo Item
         Dim ItemBLL As New TransacaoItemBLL
@@ -1194,15 +1192,62 @@ Public Class frmSimplesSaida
         '--- Verifica se a SITUACAO do registro permite salvar
         If Not (Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro) Then
             '
-            ' Verifica se a SIMPLES ENTRADA foi GERADA e pergunta ao Usuario
-
+            '--- verifica se o servidor é local
+            Dim NodeServidorLocal As String = ObterConfigValorNode("ServidorLocal")
             '
-            If MessageBox.Show("Deseja gerar arquivo de transmissão de Simples Saída?",
-                               "Gerar Arquivo",
-                               MessageBoxButtons.YesNo,
-                               MessageBoxIcon.Question) = vbYes Then
-                '--- cria o arquivo XML
-                CriarArquivoXML()
+            If String.IsNullOrEmpty(NodeServidorLocal) OrElse NodeServidorLocal.ToUpper = "TRUE" Then '--> Servidor LOCAL
+                '
+                If MessageBox.Show("Deseja gerar arquivo de transmissão de Simples Saída?",
+                                   "Gerar Arquivo",
+                                   MessageBoxButtons.YesNo,
+                                   MessageBoxIcon.Question) = vbYes Then
+                    '--- cria o arquivo XML
+                    CriarArquivoXML()
+                    '
+                End If
+                '
+            Else '--> Servidor REMOTO 
+                '
+                ' Verifica se a SIMPLES ENTRADA foi GERADA e pergunta ao Usuario
+                Dim entrada As clSimplesEntrada = simplesBLL.VerificaEntrada(_Simples.IDTransacao)
+                '
+                If IsNothing(entrada) Then
+                    '
+                    '--- ask user if create a SIMPLES ENTRADA
+                    If MessageBox.Show("Deseja CRIAR automaticamente uma SIMPLES ENTRADA para a Filial Destino? " & vbNewLine &
+                                       _Simples.PessoaDestino.ToUpper,
+                                       "Gerar Simples Entrada",
+                                       MessageBoxButtons.YesNo,
+                                       MessageBoxIcon.Question) = vbYes Then
+                        '--- cria SIMPLES ENTRADA
+                        '
+                        Try
+                            '--- Ampulheta ON
+                            Cursor = Cursors.WaitCursor
+                            '
+                            simplesBLL.Insert_SimplesEntrada_FROM_SimplesSaida(_Simples)
+                            '
+                            _Simples.ArquivoGerado = True
+                            _Simples.ArquivoRecebido = True
+                            simplesBLL.AtualizaSimplesSaida_Procedure_DT(_Simples)
+                            '
+                            MessageBox.Show("Simples Entrada gerada com sucesso!",
+                                            "Simples Entrada",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Information)
+                            '
+                        Catch ex As Exception
+                            MessageBox.Show("Uma exceção ocorreu ao criar Simples Entrada..." & vbNewLine &
+                                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            Exit Sub
+                        Finally
+                            '--- Ampulheta OFF
+                            Cursor = Cursors.Default
+                        End Try
+                        '
+                    End If
+                    '
+                End If
                 '
             End If
             '

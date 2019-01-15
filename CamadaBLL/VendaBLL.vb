@@ -273,7 +273,7 @@ Public Class VendaBLL
         '
         Try
             '--- get VENDA ITENS
-            lstItens = ItemBLL.GetVendaItens_IDVenda_List(IDVenda, IDFilial)
+            lstItens = ItemBLL.GetTransacaoItens_List(IDVenda, IDFilial)
             '
             '--- get TROCA item
             Troca = tBLL.GetTroca_PorIDVenda_clTroca(clV.IDVenda)
@@ -281,7 +281,7 @@ Public Class VendaBLL
             '--- GET TROCA ITENS
             If Not IsNothing(Troca) Then
                 '
-                lstItensTroca = ItemBLL.GetVendaItens_IDVenda_List(Troca.IDTransacaoEntrada, IDFilial)
+                lstItensTroca = ItemBLL.GetTransacaoItens_List(Troca.IDTransacaoEntrada, IDFilial)
                 '
             End If
             '

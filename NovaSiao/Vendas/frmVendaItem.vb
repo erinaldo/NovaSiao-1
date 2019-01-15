@@ -34,13 +34,13 @@ Public Class frmVendaItem
         _formOrigem = fOrigem '--- DEFINE O FORMULARIO DE ORIGEM PARA RETORNAR
         _filial = Filial
         '
-        If IsNothing(Item) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
-            propItem = New clTransacaoItem '--- DEFINE E PREECHE A CLASSE
-            propItem.IDFilial = Filial
+        '--- DEFINE E PREECHE A CLASSE
+        propItem = Item
+        propItem.IDFilial = Filial
+        '
+        If IsNothing(Item.IDTransacaoItem) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
             propAcao = FlagAcao.INSERIR
         Else
-            propItem = Item '--- DEFINE E PREECHE A CLASSE
-            propItem.IDFilial = Filial
             propAcao = FlagAcao.EDITAR
         End If
         '
@@ -67,9 +67,11 @@ Public Class frmVendaItem
     '
     '--- Propriedade propItem
     Public Property propItem() As clTransacaoItem
+        '
         Get
             Return _clItem
         End Get
+        '
         Set(ByVal value As clTransacaoItem)
             _clItem = value
             '
@@ -82,6 +84,7 @@ Public Class frmVendaItem
                 BindItem.ResetBindings(True)
             End If
         End Set
+        '
     End Property
     '
 #End Region
@@ -155,7 +158,7 @@ Public Class frmVendaItem
         '
         '--- obter as informacoes do produto digitado
         Try
-            Dim ItemProduto As clTransacaoItem = itemBLL.ProdutoItem_GET(txtRGProduto.Text, _filial)
+            Dim ItemProduto As clTransacaoItem = itemBLL.TransacaoItem_Get_New(txtRGProduto.Text, _filial)
             '
             If String.IsNullOrEmpty(ItemProduto.Produto) Then
                 MessageBox.Show("Registro de Produto não encontrado..." & vbNewLine &

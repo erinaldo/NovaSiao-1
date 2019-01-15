@@ -200,18 +200,18 @@ Public Class ProdutoBLL
         '
     End Function
     '
-    '---------------------------------------------------------------------------------------------------------
+    '=================================================================================================================
     ' GET LISTA PRODUTOS DE UMA TRANSACAO
-    '---------------------------------------------------------------------------------------------------------
+    '=================================================================================================================
     Public Function GetProdutosLista_Transacao(IDTransacao As Integer) As List(Of clProduto)
         '
         Return GetProdutos_Where("IDProduto IN (SELECT IDProduto FROM tblTransacaoItens WHERE IDTransacao = " & IDTransacao & ")")
         '
     End Function
     '
-    '---------------------------------------------------------------------------------------------------------
+    '=================================================================================================================
     ' UPDATE
-    '---------------------------------------------------------------------------------------------------------
+    '=================================================================================================================
     Public Function AtualizaProduto_Procedure_ID(ByVal _prod As clProduto, _filial As Integer) As Integer
         Dim objDB As New AcessoDados
         Dim Conn As New SqlCommand
@@ -255,9 +255,9 @@ Public Class ProdutoBLL
 
     End Function
     '
-    '---------------------------------------------------------------------------------------------------------
+    '=================================================================================================================
     ' INSERT
-    '---------------------------------------------------------------------------------------------------------
+    '=================================================================================================================
     Public Function SalvaNovoProduto_Procedure_ID(ByVal _prod As clProduto, _filial As Integer) As Long
         Dim objDB As New AcessoDados
         Dim Conn As New SqlCommand
@@ -296,44 +296,69 @@ Public Class ProdutoBLL
         '
     End Function
     '
-    '-----------------------------------------------------------------------------------------------------------------
+    '=================================================================================================================
     ' PROCURAR PRODUTO DO FRMPROCURAR PRODUTO
-    '-----------------------------------------------------------------------------------------------------------------
+    '=================================================================================================================
     Public Function ProdutoProcurar(myFilial As Integer,
                                     myTipo As Integer?,
                                     mySubTipo As Integer?,
                                     myAtivo As Boolean?,
                                     myComEstoque As Boolean?,
                                     myDescricao As String) As List(Of clProduto)
+        '
         Dim db As New AcessoDados
+        Dim WhereOn As Boolean = False
         '
         db.LimparParametros()
         '
-        db.AdicionarParametros("IDFilial", myFilial)
+        '--- CRIA A QUERY
+        '-----------------------------------------------------------------------------------
+        Dim myQuery As String =
+            "SELECT " &
+            "P.IDProduto, P.RGProduto, P.Produto, P.Autor, " &
+            "P.IDProdutoTipo, P.IDProdutoSubTipo, P.PVenda, " &
+            "P.DescontoCompra, P.PCompra, P.ProdutoAtivo, " &
+            "E.Quantidade AS Estoque, E.Reservado " &
+            "FROM tblProduto AS P " &
+            "LEFT JOIN tblEstoque AS E " &
+            "ON P.IDProduto = E.IDProduto AND E.IDFilial = @IDFilial"
+        '
+        db.AdicionarParametros("@IDFilial", myFilial)
         '
         If Not IsNothing(myTipo) Then
-            db.AdicionarParametros("ProdutoTipo", myTipo)
+            db.AdicionarParametros("@IDProdutoTipo", myTipo)
+            myQuery = myQuery + IIf(WhereOn, " AND ", " WHERE ") + "IDProdutoTipo = @IDProdutoTipo"
+            WhereOn = True
         End If
         '
         If Not IsNothing(mySubTipo) Then
-            db.AdicionarParametros("SubTipo", mySubTipo)
+            db.AdicionarParametros("@IDProdutoSubTipo", mySubTipo)
+            myQuery = myQuery + IIf(WhereOn, " AND ", " WHERE ") + "IDProdutoSubTipo = @IDProdutoSubTipo"
+            WhereOn = True
         End If
         '
-        If Not IsNothing(myAtivo) Then
-            db.AdicionarParametros("SomenteAtivo", myAtivo)
+        If myAtivo Then
+            db.AdicionarParametros("@ProdutoAtivo", myAtivo)
+            myQuery = myQuery + IIf(WhereOn, " AND ", " WHERE ") + "ProdutoAtivo = @ProdutoAtivo"
+            WhereOn = True
         End If
         '
-        If Not IsNothing(myComEstoque) Then
-            db.AdicionarParametros("ComEstoque", myComEstoque)
+        If myComEstoque Then
+            myQuery = myQuery + IIf(WhereOn, " AND ", " WHERE ") + "E.Quantidade > 0"
+            WhereOn = True
         End If
         '
         If myDescricao.Trim.Length > 0 Then
-            db.AdicionarParametros("Descricao", myDescricao.Trim)
+            db.AdicionarParametros("@Descricao", myDescricao.Trim)
+            myQuery = myQuery + IIf(WhereOn, " AND ", " WHERE ") + "Produto LIKE '%'+@Descricao+'%' "
+            myQuery = myQuery + "OR Autor LIKE '%'+@Descricao+'%'"
         End If
         '
+        '--- Execute select query
+        '-----------------------------------------------------------------------------------
         Try
             Dim pList As New List(Of clProduto)
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspProduto_Procura")
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
             '
             For Each r As DataRow In dt.Rows
                 Dim p As New clProduto

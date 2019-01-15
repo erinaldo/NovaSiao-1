@@ -119,13 +119,19 @@ Public Class frmProdutoProcurar
         Dim pSomenteAtivo As Boolean = chkProdutosAtivos.Checked
         '
         Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             listProd = db.ProdutoProcurar(pFilial, pTipo, pSubTipo, pSomenteAtivo, pComEstoque, "")
             '
             dgvProdutos.DataSource = listProd
             '
         Catch ex As Exception
-            MessageBox.Show(ex.Message)
-            Exit Sub
+            MessageBox.Show("Uma exceção ocorreu ao Obter Lista de Produtos..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub

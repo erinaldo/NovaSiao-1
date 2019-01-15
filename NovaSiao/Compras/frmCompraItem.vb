@@ -24,7 +24,7 @@ Public Class frmCompraItem
         _filial = Filial
         propItem = Item
         '
-        If IsNothing(Item) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
+        If IsNothing(Item.IDTransacaoItem) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
             propAcao = FlagAcao.INSERIR
         Else
             propAcao = FlagAcao.EDITAR
@@ -139,6 +139,8 @@ Public Class frmCompraItem
     '
 #End Region
     '
+#Region "OUTRAS FUNCOES"
+    '
     '--- VALIDA O TEXTO DO RGPRODUTO E ACIONA O ObterProdutoPeloRG
     Private Sub txtRGProduto_Validating(sender As Object, e As CancelEventArgs) Handles txtRGProduto.Validating
         '
@@ -162,7 +164,7 @@ Public Class frmCompraItem
         '
         '--- obter as informacoes do produto digitado
         Try
-            Dim ItemProduto As clTransacaoItem = itemBLL.ProdutoItem_GET(txtRGProduto.Text, _filial)
+            Dim ItemProduto As clTransacaoItem = itemBLL.TransacaoItem_Get_New(txtRGProduto.Text, _filial)
             '
             If String.IsNullOrEmpty(ItemProduto.Produto) Then
                 MessageBox.Show("Registro de Produto não encontrado..." & vbNewLine &
@@ -276,6 +278,10 @@ Public Class frmCompraItem
         End If
     End Sub
     '
+#End Region '/ OUTRAS FUNCOES
+    '
+#Region "BUTONS FUNCTION"
+    '
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
         '
         '--- VERIFICA SE OS VALORES ESTÃO PREENCHIDOS
@@ -298,6 +304,8 @@ Public Class frmCompraItem
         BindItem.CancelEdit()
         Close()
     End Sub
+    '
+#End Region '/ BUTONS FUNCTION
     '
 #Region "EFEITOS VISUAIS"
     '

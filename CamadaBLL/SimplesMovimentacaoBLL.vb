@@ -323,10 +323,10 @@ Public Class SimplesMovimentacaoBLL
     '--------------------------------------------------------------------------------------------
     ' GERA SIMPLES ENTRADA A PARTIR DE UMA SIMPLES SAIDA
     '--------------------------------------------------------------------------------------------
-    Public Function Insert_SimplesEntrada_FOR_SimplesSaida(_Simples As clSimplesSaida,
-                                                           _IDFilial As Integer,
-                                                           _IDUser As Integer) As clSimplesEntrada
-        '
+    Public Function Insert_SimplesEntrada_FROM_SimplesSaida(_Simples As clSimplesSaida) As clSimplesEntrada ',
+        '_IDFilial As Integer,
+        '_IDUser As Integer) As clSimplesEntrada
+        ' 
         '--- GET LIST OF ITENS E ARECEBER
         '========================================================================
         Dim SaidaItens As New List(Of clTransacaoItem)
@@ -335,7 +335,7 @@ Public Class SimplesMovimentacaoBLL
         Try
             '--- GET A LIST OF ITENS
             Dim tBLL As New TransacaoItemBLL
-            SaidaItens = tBLL.GetVendaItens_IDVenda_List(_Simples.IDTransacao, _IDFilial)
+            SaidaItens = tBLL.GetTransacaoItens_List(_Simples.IDTransacao, _Simples.IDPessoaOrigem)
             '
             ' GET A LIST OF ARECEBER
             Dim rBLL As New ParcelaBLL
@@ -359,7 +359,7 @@ Public Class SimplesMovimentacaoBLL
         Dim newSEntrada As New clSimplesEntrada With {
             .IDPessoaDestino = _Simples.IDPessoaDestino,
             .IDPessoaOrigem = _Simples.IDPessoaOrigem,
-            .IDUser = _IDUser,
+            .IDUser = _Simples.IDUser,
             .TransacaoData = _Simples.TransacaoData,
             .EntradaData = _Simples.TransacaoData,
             .IDTransacaoOrigem = _Simples.IDTransacao,
@@ -640,7 +640,7 @@ Public Class SimplesMovimentacaoBLL
     End Function
     '
     '--------------------------------------------------------------------------------------------
-    ' VERIFIES IF SIMPLES ENTRADA HAS ALREADY BEEN INSERTED RETURN ZERO IF NOT INSERTED
+    ' VERIFIES IF SIMPLES ENTRADA HAS ALREADY BEEN INSERTED RETURN NOTHING IF NOT INSERTED
     '--------------------------------------------------------------------------------------------
     Public Function VerificaEntrada(IDTransacaoOrigem As Integer) As clSimplesEntrada
         '
@@ -705,42 +705,6 @@ Public Class SimplesMovimentacaoBLL
             End If
             '
             Return True
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
-    '--------------------------------------------------------------------------------------------
-    ' RETORNA TOTAL DE A RECEBER ENTRE DUAS FILIAIS 
-    '--------------------------------------------------------------------------------------------
-    Public Function Simples_AReceberTotal_Filial(IDFilialCreditada As Integer,
-                                                 IDFilialDebitada As Integer) As Double
-        '
-        Dim myQuery As String = "SELECT SUM(ParcelaValor) - SUM(ValorPagoParcela) " &
-                                "FROM qryAReceberParcela " &
-                                "WHERE Origem = 3 " &
-                                "AND SituacaoParcela = 0 " &
-                                "AND IDFilial = @IDFilialCreditada " &
-                                "AND IDPessoa = @IDFilialDebitada"
-        '
-        SQL.ClearParams()
-        SQL.AddParam("@IDFilialCreditada", IDFilialCreditada)
-        SQL.AddParam("@IDFilialDebitada", IDFilialDebitada)
-        '
-        Try
-            SQL.ExecQuery(myQuery)
-            '
-            If SQL.HasException Then
-                Throw New Exception(SQL.Exception)
-            End If
-            '
-            If SQL.RecordCount = 0 Then
-                Return 0
-            Else
-                Return SQL.DBDT.Rows(0).Item(0)
-            End If
             '
         Catch ex As Exception
             Throw ex

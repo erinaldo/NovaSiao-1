@@ -226,6 +226,7 @@ Public Class APagarBLL
             p.APagarValor = IIf(IsDBNull(r("APagarValor")), 0, r("APagarValor"))
             p.Situacao = IIf(IsDBNull(r("Situacao")), Nothing, r("Situacao"))
             p.PagamentoData = IIf(IsDBNull(r("PagamentoData")), Nothing, r("PagamentoData"))
+            p.ValorPago = IIf(IsDBNull(r("ValorPago")), 0, r("ValorPago"))
             p.Desconto = IIf(IsDBNull(r("Desconto")), Nothing, r("Desconto"))
             p.Acrescimo = IIf(IsDBNull(r("Acrescimo")), Nothing, r("Acrescimo"))
             '
