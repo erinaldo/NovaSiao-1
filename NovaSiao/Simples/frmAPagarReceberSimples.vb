@@ -357,7 +357,7 @@ Public Class frmAPagarReceberSimples
         End With
         '
         ' (3) COLUNA VALOR PAGO
-        dgvListagem.Columns.Add("clnValorPago", "Pago")
+        dgvListagem.Columns.Add("clnValorPago", "Recebido")
         With dgvListagem.Columns("clnValorPago")
             .DataPropertyName = "ValorPagoParcela"
             .Width = 100
@@ -396,12 +396,14 @@ Public Class frmAPagarReceberSimples
             '
             ' column 3 - Column SIT
             lbl3.Text = dgvListagem.Columns(3).HeaderText
+            'r = dgvListagem.GetCellDisplayRectangle(3, 0, False)
+            'lbl3.Width = r.Width
+            'lbl3.Location = New Point(r.X, lbl3.Location.Y)
+            'lbl3.TextAlign = ContentAlignment.MiddleRight
+            '
+            ' column 4
             lbl4.Text = dgvListagem.Columns(4).HeaderText
 
-            'r = dgvListagem.GetCellDisplayRectangle(3, 0, False)
-            'lbl4.Width = r.Width
-            'lbl4.Location = New Point(r.X, lbl4.Location.Y)
-            'lbl4.TextAlign = ContentAlignment.MiddleCenter
             '
         Catch ex As Exception
             lbl0.Text = ""
@@ -718,6 +720,7 @@ Public Class frmAPagarReceberSimples
             '
             lblT1.Text = "A Pagar Total"
             lblT2.Text = "Pago"
+            lbl3.Text = "Pago"
             '
             btnQuitar.Text = "&Quitar"
             '
@@ -733,6 +736,7 @@ Public Class frmAPagarReceberSimples
             '
             lblT1.Text = "A Receber Total"
             lblT2.Text = "Recebido"
+            lbl3.Text = "Recebido"
             '
             btnQuitar.Text = "&Receber"
             '

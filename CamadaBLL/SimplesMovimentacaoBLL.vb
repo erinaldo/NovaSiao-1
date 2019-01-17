@@ -416,7 +416,7 @@ Public Class SimplesMovimentacaoBLL
         For Each rec As clAReceberParcela In SaidaAReceber
             Dim newAPagar As New clAPagar With {
                     .Origem = 4, '--> tblSimplesEntrada
-                    .IDOrigem = _Simples.IDTransacao,
+                    .IDOrigem = newSimplesEntrada.IDTransacao,
                     .IDPessoa = _Simples.IDPessoaOrigem,
                     .IDFilial = _Simples.IDPessoaDestino,
                     .IDCobrancaForma = 1, '--> EmCarteira

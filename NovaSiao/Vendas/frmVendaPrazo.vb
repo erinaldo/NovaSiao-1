@@ -28,6 +28,7 @@ Public Class frmVendaPrazo
         Set(value As FlagEstado)
             _Sit = value
             Select Case _Sit
+                '
                 Case FlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
                     lblSituacao.Text = "Finalizada"
                     btnFinalizar.Text = "&Fechar"
@@ -101,7 +102,9 @@ Public Class frmVendaPrazo
                     btnDesbloquearVenda.Enabled = True
                     '
             End Select
+            '
         End Set
+        '
     End Property
     '
     Property propVenda As clVenda
@@ -138,8 +141,8 @@ Public Class frmVendaPrazo
             '
             '--- Preenche Itens do A Receber (parcelas)
             Preenche_AReceber()
-            cmbIDPlano.SelectedValue = IIf(IsNothing(_Venda.IDPlano), -1, _Venda.IDPlano)
-            cmbIDCobrancaForma.SelectedValue = IIf(IsNothing(_Venda.IDCobrancaForma), -1, _Venda.IDCobrancaForma)
+            cmbIDPlano.SelectedValue = If(_Venda.IDPlano, -1)
+            cmbIDCobrancaForma.SelectedValue = If(_Venda.IDCobrancaForma, -1)
             '
             '--- Atualiza o estado da Situacao: FLAGESTADO
             Select Case _Venda.IDSituacao
@@ -779,32 +782,10 @@ Public Class frmVendaPrazo
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
         '
         If Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado Then
-            If MessageBox.Show("ALTERAÇÕES DA VENDA NÃO SERÃO SALVAS!" & vbNewLine & vbNewLine &
-                               "Se você fechar agora essa Venda," & vbNewLine &
-                               "todas alterações serão perdidas," & vbNewLine &
-                               "inclusive as alterações no Parcelamento..." & vbNewLine & vbNewLine &
-                               "Deseja Fechar assim mesmo?", "Venda não Finalizada",
-                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
-                tabPrincipal.SelectedTab = vtab2
-                '
-                txtValorFrete.Focus()
-                Exit Sub
-            End If
             '
-            'Dim vlReceber As Double = AtualizaTotalAReceber()
-            ''
-            'If vlReceber > 0 Then
-            '    '--- Verifica se o valor da venda é igual à soma das parcelas
-            '    If Math.Abs(AtualizaTotalGeral() - AtualizaTotalAReceber()) > 1 Then
-            '        If MessageBox.Show("Se você fechar agora o parcelamento não será salvo..." & vbNewLine &
-            '                           "Deseja Fechar a Venda assim mesmo?", "Fechar a Venda",
-            '                           MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
-            '            tabPrincipal.SelectedTab = vtab2
-            '            dgvAReceber.Focus()
-            '            Exit Sub
-            '        End If
-            '    End If
-            'End If
+            '--- ask to user
+            If Not CanCloseMessage() Then Exit Sub
+            '
         End If
         '
         Close()
@@ -897,12 +878,24 @@ Public Class frmVendaPrazo
     '
     ' PROCURAR
     Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
+        '
+        '--- ask user
+        If Not CanCloseMessage() Then Exit Sub
+        '
+        '--- procura
         ProcuraVenda()
+        '
     End Sub
     '
     ' ADICIONAR
     Private Sub btnAdicionar_Click(sender As Object, e As EventArgs) Handles btnAdicionar.Click
+        '
+        '--- ask user
+        If Not CanCloseMessage() Then Exit Sub
+        '
+        '--- execute
         NovaVenda()
+        '
     End Sub
     '
     ' EXCLUIR
@@ -984,12 +977,14 @@ Public Class frmVendaPrazo
     ' PROCURA VENDA
     '-----------------------------------------------------------------------------------------------------
     Public Sub ProcuraVenda()
+        '
         Me.Close()
         Dim frmP As New frmOperacaoSaidaProcurar
         OcultaMenuPrincipal()
         Dim fPrincipal As Form = Application.OpenForms.OfType(Of frmPrincipal)().First
         frmP.MdiParent = fPrincipal
         frmP.Show()
+        '
     End Sub
     '
 #End Region '/ MENU ACAO INFERIOR
@@ -1930,6 +1925,31 @@ Public Class frmVendaPrazo
         Else
             RegistroFinalizado = False
         End If
+        '
+    End Function
+    '
+    Private Function CanCloseMessage() As Boolean
+        '
+        If MessageBox.Show("ALTERAÇÕES DA VENDA NÃO SERÃO SALVAS!" & vbNewLine & vbNewLine &
+                           "Se você fechar agora essa Venda," & vbNewLine &
+                           "algumas alterações podem ser perdidas," & vbNewLine &
+                           "inclusive as alterações no Parcelamento..." & vbNewLine & vbNewLine &
+                           "Deseja FECHAR a venda assim mesmo?", "Venda não Finalizada",
+                           MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
+            '
+            '--- Seleciona a TAB
+            tabPrincipal.SelectedTab = vtab2
+            '
+            '--- Select Control txtValorFrete
+            txtValorFrete.Focus()
+            '
+            '--- return
+            Return False
+            '
+        End If
+        '
+        '--- return
+        Return True
         '
     End Function
     '

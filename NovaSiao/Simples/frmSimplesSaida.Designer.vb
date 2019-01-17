@@ -26,13 +26,26 @@ Partial Class frmSimplesSaida
         Dim DataGridViewCellStyle12 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle14 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle15 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle13 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle16 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.tabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
         Me.vtab1 = New VIBlend.WinForms.Controls.vTabPage()
         Me.dgvItens = New System.Windows.Forms.DataGridView()
+        Me.clnIDTransacaoItem = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnRGProduto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnProduto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnQuantidade = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnPreco = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnSubTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnDesconto = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.vtab2 = New VIBlend.WinForms.Controls.vTabPage()
         Me.dgvAReceber = New System.Windows.Forms.DataGridView()
+        Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnReg = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnVencimento = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnPermanencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.txtObservacao = New System.Windows.Forms.TextBox()
         Me.Label12 = New System.Windows.Forms.Label()
         Me.lblTotalCobrado = New System.Windows.Forms.Label()
@@ -43,6 +56,7 @@ Partial Class frmSimplesSaida
         Me.ShapeContainer2 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
         Me.LineShape3 = New Microsoft.VisualBasic.PowerPacks.LineShape()
         Me.LineShape1 = New Microsoft.VisualBasic.PowerPacks.LineShape()
+        Me.cmbIDPlano = New Controles.ComboBox_OnlyValues()
         Me.vtab3 = New VIBlend.WinForms.Controls.vTabPage()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.dgvVendaNotas = New System.Windows.Forms.DataGridView()
@@ -94,20 +108,7 @@ Partial Class frmSimplesSaida
         Me.DataGridViewTextBoxColumn11 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DataGridViewTextBoxColumn12 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DataGridViewTextBoxColumn13 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnIDTransacaoItem = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnRGProduto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnProduto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnQuantidade = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnPreco = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnSubTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnDesconto = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnTotal = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnReg = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnVencimento = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnPermanencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.cmbIDPlano = New Controles.ComboBox_OnlyValues()
+        Me.btnCriarXML = New VIBlend.WinForms.Controls.vButton()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -249,6 +250,65 @@ Partial Class frmSimplesSaida
         Me.dgvItens.Size = New System.Drawing.Size(1012, 444)
         Me.dgvItens.TabIndex = 0
         '
+        'clnIDTransacaoItem
+        '
+        Me.clnIDTransacaoItem.Frozen = True
+        Me.clnIDTransacaoItem.HeaderText = "IDItem"
+        Me.clnIDTransacaoItem.Name = "clnIDTransacaoItem"
+        Me.clnIDTransacaoItem.ReadOnly = True
+        Me.clnIDTransacaoItem.Visible = False
+        '
+        'clnRGProduto
+        '
+        Me.clnRGProduto.Frozen = True
+        Me.clnRGProduto.HeaderText = "Reg."
+        Me.clnRGProduto.Name = "clnRGProduto"
+        Me.clnRGProduto.ReadOnly = True
+        Me.clnRGProduto.Width = 70
+        '
+        'clnProduto
+        '
+        Me.clnProduto.Frozen = True
+        Me.clnProduto.HeaderText = "Produto"
+        Me.clnProduto.Name = "clnProduto"
+        Me.clnProduto.ReadOnly = True
+        Me.clnProduto.Width = 430
+        '
+        'clnQuantidade
+        '
+        Me.clnQuantidade.Frozen = True
+        Me.clnQuantidade.HeaderText = "Qtde"
+        Me.clnQuantidade.Name = "clnQuantidade"
+        Me.clnQuantidade.ReadOnly = True
+        Me.clnQuantidade.Width = 70
+        '
+        'clnPreco
+        '
+        Me.clnPreco.Frozen = True
+        Me.clnPreco.HeaderText = "Preço"
+        Me.clnPreco.Name = "clnPreco"
+        Me.clnPreco.ReadOnly = True
+        '
+        'clnSubTotal
+        '
+        Me.clnSubTotal.Frozen = True
+        Me.clnSubTotal.HeaderText = "SubTotal"
+        Me.clnSubTotal.Name = "clnSubTotal"
+        Me.clnSubTotal.ReadOnly = True
+        '
+        'clnDesconto
+        '
+        Me.clnDesconto.HeaderText = "Desc."
+        Me.clnDesconto.Name = "clnDesconto"
+        Me.clnDesconto.ReadOnly = True
+        Me.clnDesconto.Width = 80
+        '
+        'clnTotal
+        '
+        Me.clnTotal.HeaderText = "Total"
+        Me.clnTotal.Name = "clnTotal"
+        Me.clnTotal.ReadOnly = True
+        '
         'vtab2
         '
         Me.vtab2.Controls.Add(Me.dgvAReceber)
@@ -311,6 +371,43 @@ Partial Class frmSimplesSaida
         Me.dgvAReceber.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvAReceber.Size = New System.Drawing.Size(447, 210)
         Me.dgvAReceber.TabIndex = 9
+        '
+        'clnID
+        '
+        Me.clnID.HeaderText = "IDAReceber"
+        Me.clnID.Name = "clnID"
+        Me.clnID.ReadOnly = True
+        Me.clnID.Visible = False
+        '
+        'clnReg
+        '
+        Me.clnReg.HeaderText = "Reg."
+        Me.clnReg.Name = "clnReg"
+        Me.clnReg.ReadOnly = True
+        Me.clnReg.Width = 70
+        '
+        'clnVencimento
+        '
+        Me.clnVencimento.HeaderText = "Vencimento"
+        Me.clnVencimento.Name = "clnVencimento"
+        Me.clnVencimento.ReadOnly = True
+        '
+        'clnPermanencia
+        '
+        Me.clnPermanencia.HeaderText = "Perm."
+        Me.clnPermanencia.Name = "clnPermanencia"
+        Me.clnPermanencia.ReadOnly = True
+        Me.clnPermanencia.Width = 90
+        '
+        'clnValor
+        '
+        DataGridViewCellStyle13.Format = "C2"
+        DataGridViewCellStyle13.NullValue = "0"
+        Me.clnValor.DefaultCellStyle = DataGridViewCellStyle13
+        Me.clnValor.HeaderText = "Valor"
+        Me.clnValor.Name = "clnValor"
+        Me.clnValor.ReadOnly = True
+        Me.clnValor.Width = 120
         '
         'txtObservacao
         '
@@ -413,6 +510,17 @@ Partial Class frmSimplesSaida
         Me.LineShape1.X2 = 446
         Me.LineShape1.Y1 = 39
         Me.LineShape1.Y2 = 39
+        '
+        'cmbIDPlano
+        '
+        Me.cmbIDPlano.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbIDPlano.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbIDPlano.FormattingEnabled = True
+        Me.cmbIDPlano.Location = New System.Drawing.Point(160, 63)
+        Me.cmbIDPlano.Name = "cmbIDPlano"
+        Me.cmbIDPlano.RestrictContentToListItems = True
+        Me.cmbIDPlano.Size = New System.Drawing.Size(234, 27)
+        Me.cmbIDPlano.TabIndex = 7
         '
         'vtab3
         '
@@ -955,117 +1063,35 @@ Partial Class frmSimplesSaida
         Me.DataGridViewTextBoxColumn13.Name = "DataGridViewTextBoxColumn13"
         Me.DataGridViewTextBoxColumn13.Width = 120
         '
-        'clnIDTransacaoItem
+        'btnCriarXML
         '
-        Me.clnIDTransacaoItem.Frozen = True
-        Me.clnIDTransacaoItem.HeaderText = "IDItem"
-        Me.clnIDTransacaoItem.Name = "clnIDTransacaoItem"
-        Me.clnIDTransacaoItem.ReadOnly = True
-        Me.clnIDTransacaoItem.Visible = False
-        '
-        'clnRGProduto
-        '
-        Me.clnRGProduto.Frozen = True
-        Me.clnRGProduto.HeaderText = "Reg."
-        Me.clnRGProduto.Name = "clnRGProduto"
-        Me.clnRGProduto.ReadOnly = True
-        Me.clnRGProduto.Width = 70
-        '
-        'clnProduto
-        '
-        Me.clnProduto.Frozen = True
-        Me.clnProduto.HeaderText = "Produto"
-        Me.clnProduto.Name = "clnProduto"
-        Me.clnProduto.ReadOnly = True
-        Me.clnProduto.Width = 430
-        '
-        'clnQuantidade
-        '
-        Me.clnQuantidade.Frozen = True
-        Me.clnQuantidade.HeaderText = "Qtde"
-        Me.clnQuantidade.Name = "clnQuantidade"
-        Me.clnQuantidade.ReadOnly = True
-        Me.clnQuantidade.Width = 70
-        '
-        'clnPreco
-        '
-        Me.clnPreco.Frozen = True
-        Me.clnPreco.HeaderText = "Preço"
-        Me.clnPreco.Name = "clnPreco"
-        Me.clnPreco.ReadOnly = True
-        '
-        'clnSubTotal
-        '
-        Me.clnSubTotal.Frozen = True
-        Me.clnSubTotal.HeaderText = "SubTotal"
-        Me.clnSubTotal.Name = "clnSubTotal"
-        Me.clnSubTotal.ReadOnly = True
-        '
-        'clnDesconto
-        '
-        Me.clnDesconto.HeaderText = "Desc."
-        Me.clnDesconto.Name = "clnDesconto"
-        Me.clnDesconto.ReadOnly = True
-        Me.clnDesconto.Width = 80
-        '
-        'clnTotal
-        '
-        Me.clnTotal.HeaderText = "Total"
-        Me.clnTotal.Name = "clnTotal"
-        Me.clnTotal.ReadOnly = True
-        '
-        'clnID
-        '
-        Me.clnID.HeaderText = "IDAReceber"
-        Me.clnID.Name = "clnID"
-        Me.clnID.ReadOnly = True
-        Me.clnID.Visible = False
-        '
-        'clnReg
-        '
-        Me.clnReg.HeaderText = "Reg."
-        Me.clnReg.Name = "clnReg"
-        Me.clnReg.ReadOnly = True
-        Me.clnReg.Width = 70
-        '
-        'clnVencimento
-        '
-        Me.clnVencimento.HeaderText = "Vencimento"
-        Me.clnVencimento.Name = "clnVencimento"
-        Me.clnVencimento.ReadOnly = True
-        '
-        'clnPermanencia
-        '
-        Me.clnPermanencia.HeaderText = "Perm."
-        Me.clnPermanencia.Name = "clnPermanencia"
-        Me.clnPermanencia.ReadOnly = True
-        Me.clnPermanencia.Width = 90
-        '
-        'clnValor
-        '
-        DataGridViewCellStyle13.Format = "C2"
-        DataGridViewCellStyle13.NullValue = "0"
-        Me.clnValor.DefaultCellStyle = DataGridViewCellStyle13
-        Me.clnValor.HeaderText = "Valor"
-        Me.clnValor.Name = "clnValor"
-        Me.clnValor.ReadOnly = True
-        Me.clnValor.Width = 120
-        '
-        'cmbIDPlano
-        '
-        Me.cmbIDPlano.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
-        Me.cmbIDPlano.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
-        Me.cmbIDPlano.FormattingEnabled = True
-        Me.cmbIDPlano.Location = New System.Drawing.Point(160, 63)
-        Me.cmbIDPlano.Name = "cmbIDPlano"
-        Me.cmbIDPlano.RestrictContentToListItems = True
-        Me.cmbIDPlano.Size = New System.Drawing.Size(234, 27)
-        Me.cmbIDPlano.TabIndex = 7
+        Me.btnCriarXML.AllowAnimations = True
+        Me.btnCriarXML.BackColor = System.Drawing.Color.Transparent
+        Me.btnCriarXML.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnCriarXML.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnCriarXML.HoverEffectsEnabled = True
+        Me.btnCriarXML.Image = Global.NovaSiao.My.Resources.Resources.download
+        Me.btnCriarXML.Location = New System.Drawing.Point(601, 615)
+        Me.btnCriarXML.Name = "btnCriarXML"
+        Me.btnCriarXML.Opacity = 0!
+        Me.btnCriarXML.RoundedCornersMask = CType(15, Byte)
+        Me.btnCriarXML.RoundedCornersRadius = 0
+        Me.btnCriarXML.Size = New System.Drawing.Size(81, 42)
+        Me.btnCriarXML.TabIndex = 17
+        Me.btnCriarXML.Text = "&XML"
+        Me.btnCriarXML.TextAbsolutePosition = New System.Drawing.Point(27, 1)
+        Me.btnCriarXML.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.btnCriarXML.UseAbsoluteImagePositioning = True
+        Me.btnCriarXML.UseAbsoluteTextPositioning = True
+        Me.btnCriarXML.UseVisualStyleBackColor = False
+        Me.btnCriarXML.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICEBLACK
+        Me.btnCriarXML.Visible = False
         '
         'frmSimplesSaida
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(1049, 667)
+        Me.Controls.Add(Me.btnCriarXML)
         Me.Controls.Add(Me.tspMenuAcao)
         Me.Controls.Add(Me.VPanel2)
         Me.Controls.Add(Me.VPanel1)
@@ -1083,6 +1109,7 @@ Partial Class frmSimplesSaida
         Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Controls.SetChildIndex(Me.VPanel2, 0)
         Me.Controls.SetChildIndex(Me.tspMenuAcao, 0)
+        Me.Controls.SetChildIndex(Me.btnCriarXML, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.tabPrincipal.ResumeLayout(False)
@@ -1186,4 +1213,5 @@ Partial Class frmSimplesSaida
     Friend WithEvents DataGridViewTextBoxColumn11 As DataGridViewTextBoxColumn
     Friend WithEvents DataGridViewTextBoxColumn12 As DataGridViewTextBoxColumn
     Friend WithEvents DataGridViewTextBoxColumn13 As DataGridViewTextBoxColumn
+    Friend WithEvents btnCriarXML As VIBlend.WinForms.Controls.vButton
 End Class

@@ -251,16 +251,23 @@ Public Class ParcelaBLL
     ' OBTER PARCELAS POR IDORIGEM (IDTRANSACAO OU PARCELAMENTO)
     '===================================================================================================
     Public Function Parcela_GET_PorIDOrigem(Origem As Byte, IDOrigem As Integer) As List(Of clAReceberParcela)
+        '
         Dim db As New AcessoDados
         Dim dt As New DataTable
         Dim ParcList As New List(Of clAReceberParcela)
         '
+        '--- INSERT PARAMS
+        db.LimparParametros()
+        '
+        db.AdicionarParametros("@IDOrigem", IDOrigem)
+        db.AdicionarParametros("@Origem", Origem)
+        '
+        '--- CREATE QUERY STRING
+        Dim myQuery As String = "SELECT * FROM qryAReceberParcela WHERE IDOrigem = @IDOrigem AND Origem = @Origem"
+        '
         Try
-            db.LimparParametros()
-            db.AdicionarParametros("@IDOrigem", IDOrigem)
-            db.AdicionarParametros("@Origem", Origem)
             '
-            dt = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAReceberParcela_GET_PorIDOrigem")
+            dt = db.ExecutarConsulta(CommandType.Text, myQuery)
             '
             If dt.Rows.Count = 0 Then Return ParcList
             '

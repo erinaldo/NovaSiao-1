@@ -379,4 +379,5 @@ Public Class clCompra : Implements IEditableObject
     End Property
     '
 #End Region
+    '
 End Class

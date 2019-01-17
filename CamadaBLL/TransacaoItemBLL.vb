@@ -235,13 +235,12 @@ Public Class TransacaoItemBLL
         '
         '--- adiciona os parametros
         db.AdicionarParametros("@IDTransacaoItem", Item.IDTransacaoItem)
-        db.AdicionarParametros("@IDTransacao", Item.IDTransacao)
         db.AdicionarParametros("@IDProduto", Item.IDProduto)
         db.AdicionarParametros("@Quantidade", Item.Quantidade)
         db.AdicionarParametros("@Preco", Item.Preco)
         db.AdicionarParametros("@Desconto", Item.Desconto)
         db.AdicionarParametros("@IDFilial", Item.IDFilial)
-        db.AdicionarParametros("@Movimento", Movimento.ToString)
+        db.AdicionarParametros("@Movimento", Left(Movimento.ToString, 1).ToUpper)
         db.AdicionarParametros("@MovData", MovData)
         db.AdicionarParametros("@InsereCustos", InsereCustos)
         '

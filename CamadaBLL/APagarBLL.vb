@@ -10,12 +10,19 @@ Public Class APagarBLL
         Dim db As New AcessoDados
         Dim dt As New DataTable
         '
+        '--- INSERT PARAMS
+        db.LimparParametros()
+        '
+        db.AdicionarParametros("@IDOrigem", myIDOrigem)
+        db.AdicionarParametros("@Origem", myOrigem)
+        '
+        '--- CREATE A QUERY
+        Dim myQuery As String = "SELECT * FROM qryAPagar WHERE IDOrigem = @IDOrigem AND Origem = @Origem"
+        '
+        '--- EXECUTE QUERY
         Try
-            db.LimparParametros()
-            db.AdicionarParametros("@IDOrigem", myIDOrigem)
-            db.AdicionarParametros("@Origem", myOrigem)
             '
-            dt = db.ExecutarConsulta(CommandType.StoredProcedure, "uspAPagar_GET_PorOrigem")
+            dt = db.ExecutarConsulta(CommandType.Text, myQuery)
             Return ConvertDT_To_ListAPagar(dt)
             '
         Catch ex As Exception

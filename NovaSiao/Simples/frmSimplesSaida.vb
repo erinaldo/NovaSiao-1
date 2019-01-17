@@ -1190,70 +1190,15 @@ Public Class frmSimplesSaida
     Private Sub btnFinalizar_Click(sender As Object, e As EventArgs) Handles btnFinalizar.Click
         '
         '--- Verifica se a SITUACAO do registro permite salvar
-        If Not (Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro) Then
+        If Not (Sit = FlagEstado.Alterado Or Sit = FlagEstado.NovoRegistro) Then
             '
-            '--- verifica se o servidor é local
-            Dim NodeServidorLocal As String = ObterConfigValorNode("ServidorLocal")
+            '--- Cria arquivo XML ou gera Simples Entrada Automatica
+            VerificaXML_AND_SimplesEntrada()
             '
-            If String.IsNullOrEmpty(NodeServidorLocal) OrElse NodeServidorLocal.ToUpper = "TRUE" Then '--> Servidor LOCAL
-                '
-                If MessageBox.Show("Deseja gerar arquivo de transmissão de Simples Saída?",
-                                   "Gerar Arquivo",
-                                   MessageBoxButtons.YesNo,
-                                   MessageBoxIcon.Question) = vbYes Then
-                    '--- cria o arquivo XML
-                    CriarArquivoXML()
-                    '
-                End If
-                '
-            Else '--> Servidor REMOTO 
-                '
-                ' Verifica se a SIMPLES ENTRADA foi GERADA e pergunta ao Usuario
-                Dim entrada As clSimplesEntrada = simplesBLL.VerificaEntrada(_Simples.IDTransacao)
-                '
-                If IsNothing(entrada) Then
-                    '
-                    '--- ask user if create a SIMPLES ENTRADA
-                    If MessageBox.Show("Deseja CRIAR automaticamente uma SIMPLES ENTRADA para a Filial Destino? " & vbNewLine &
-                                       _Simples.PessoaDestino.ToUpper,
-                                       "Gerar Simples Entrada",
-                                       MessageBoxButtons.YesNo,
-                                       MessageBoxIcon.Question) = vbYes Then
-                        '--- cria SIMPLES ENTRADA
-                        '
-                        Try
-                            '--- Ampulheta ON
-                            Cursor = Cursors.WaitCursor
-                            '
-                            simplesBLL.Insert_SimplesEntrada_FROM_SimplesSaida(_Simples)
-                            '
-                            _Simples.ArquivoGerado = True
-                            _Simples.ArquivoRecebido = True
-                            simplesBLL.AtualizaSimplesSaida_Procedure_DT(_Simples)
-                            '
-                            MessageBox.Show("Simples Entrada gerada com sucesso!",
-                                            "Simples Entrada",
-                                            MessageBoxButtons.OK,
-                                            MessageBoxIcon.Information)
-                            '
-                        Catch ex As Exception
-                            MessageBox.Show("Uma exceção ocorreu ao criar Simples Entrada..." & vbNewLine &
-                                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                            Exit Sub
-                        Finally
-                            '--- Ampulheta OFF
-                            Cursor = Cursors.Default
-                        End Try
-                        '
-                    End If
-                    '
-                End If
-                '
-            End If
-            '
+            '--- Close Form
             Close()
             MostraMenuPrincipal()
-            Return
+            Exit Sub
             '
         End If
         '
@@ -1261,8 +1206,10 @@ Public Class frmSimplesSaida
         If Verificar() = False Then Exit Sub
         '
         '--- PERGUNTA AO USUÁRIO
-        If MessageBox.Show("Deseja realmente Finalizar essa Transação de Simples Saída?", "Finalizar Simples Saída",
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
+        If MessageBox.Show("Deseja realmente Finalizar essa Transação de Simples Saída?",
+                           "Finalizar Simples Saída",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
         '
         '--- SALVA O ARECEBER PARCELAS NO BD
         If Salvar_Parcelas() = False Then Exit Sub
@@ -1294,6 +1241,89 @@ Public Class frmSimplesSaida
         End Try
         '
     End Sub
+    '
+    '--- VERIFICA GERACAO DE ARQUIVO XML OU GERACAO DE SIMPLES ENTRADA
+    Private Function VerificaXML_AND_SimplesEntrada() As Boolean
+        '
+        '--- verifica se o servidor é local
+        Dim NodeServidorLocal As String = ObterConfigValorNode("ServidorLocal")
+        '
+        If String.IsNullOrEmpty(NodeServidorLocal) OrElse NodeServidorLocal.ToUpper = "TRUE" Then '--> Servidor LOCAL
+            '
+            If _Simples.ArquivoGerado Then Return True
+            '
+            If MessageBox.Show("Deseja gerar arquivo de transmissão de Simples Saída?",
+                               "Gerar Arquivo",
+                               MessageBoxButtons.YesNo,
+                               MessageBoxIcon.Question) = vbYes Then
+                '
+                '--- cria o arquivo XML
+                If CriarArquivoXML() Then
+                    '
+                    _Simples.IDSituacao = 3 '--- BLOQUEADA
+                    _Simples.ArquivoGerado = True
+                    _Simples.ArquivoRecebido = True
+                    simplesBLL.AtualizaSimplesSaida_Procedure_DT(_Simples)
+                    Return True
+                    '
+                Else
+                    Return False
+                End If
+                '
+            End If
+            '
+        Else '--> Servidor REMOTO 
+            '
+            ' Verifica se a SIMPLES ENTRADA foi GERADA e pergunta ao Usuario
+            Dim entrada As clSimplesEntrada = simplesBLL.VerificaEntrada(_Simples.IDTransacao)
+            '
+            If IsNothing(entrada) Then
+                '
+                '--- ask user if create a SIMPLES ENTRADA
+                If MessageBox.Show("Deseja CRIAR automaticamente uma SIMPLES ENTRADA para a Filial Destino? " &
+                                   vbNewLine & vbNewLine &
+                                   _Simples.PessoaDestino.ToUpper,
+                                   "Gerar Simples Entrada",
+                                   MessageBoxButtons.YesNo,
+                                   MessageBoxIcon.Question) = vbYes Then
+                    '
+                    '--- cria SIMPLES ENTRADA
+                    '
+                    Try
+                        '--- Ampulheta ON
+                        Cursor = Cursors.WaitCursor
+                        '
+                        simplesBLL.Insert_SimplesEntrada_FROM_SimplesSaida(_Simples)
+                        '
+                        _Simples.ArquivoGerado = True
+                        _Simples.ArquivoRecebido = True
+                        simplesBLL.AtualizaSimplesSaida_Procedure_DT(_Simples)
+                        '
+                        MessageBox.Show("Simples Entrada gerada com sucesso!",
+                                        "Simples Entrada",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information)
+                        '
+                        Return True
+                        '
+                    Catch ex As Exception
+                        MessageBox.Show("Uma exceção ocorreu ao criar Simples Entrada..." & vbNewLine &
+                                        ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                        Return False
+                    Finally
+                        '--- Ampulheta OFF
+                        Cursor = Cursors.Default
+                    End Try
+                    '
+                End If
+                '
+            End If
+            '
+        End If
+        '
+        Return True
+        '
+    End Function
     '
     Private Function Verificar() As Boolean
         '--- Verifica se a Data não está BLOQUEADA pelo sistema
@@ -1456,7 +1486,7 @@ Public Class frmSimplesSaida
     '
 #Region "XML"
     '
-    Private Sub CriarArquivoXML()
+    Private Function CriarArquivoXML() As Boolean
         '
         Dim saveDir As String = ""
         '
@@ -1470,7 +1500,7 @@ Public Class frmSimplesSaida
                 saveDir = FBDiag.SelectedPath
                 '
             Else
-                Return
+                Return False
             End If
             '
         End Using
@@ -1517,6 +1547,7 @@ Public Class frmSimplesSaida
                 '
                 MessageBox.Show("Uma exceção ocorreu ao Obter Produtos da Simples Saída..." & vbNewLine &
                                 ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Return False
                 '
             Finally
                 '--- Ampulheta OFF
@@ -1546,13 +1577,16 @@ Public Class frmSimplesSaida
                 '
             End If
             '
+            Return True
+            '
         Catch ex As Exception
             '
             MessageBox.Show("Uma exceção ocorreu ao Gerar Arquivo de Simples Saída..." & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
         End Try
         '
-    End Sub
+    End Function
     '
 #End Region
     '

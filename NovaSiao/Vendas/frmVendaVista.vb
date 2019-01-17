@@ -27,6 +27,7 @@ Public Class frmVendaVista
             '
             _Sit = value
             Select Case _Sit
+                '
                 Case FlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
                     lblSituacao.Text = "Finalizada"
                     btnFinalizar.Text = "&Fechar"
@@ -152,6 +153,7 @@ Public Class frmVendaVista
     End Property
     '
     Public Sub New(myVenda As clVenda)
+        '
         ' This call is required by the designer.
         InitializeComponent()
         '
@@ -605,13 +607,7 @@ Public Class frmVendaVista
             If vlReceber > 0 Then
                 '--- Verifica se o valor da venda é igual à soma das parcelas
                 If Math.Abs(AtualizaTotalGeral() - AtualizaTotalPago()) > 1 Then
-                    If MessageBox.Show("Se você fechar agora os pagamentos não serão salvos..." & vbNewLine &
-                                       "Deseja Fechar a Venda assim mesmo?", "Fechar a Venda",
-                                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
-                        tabPrincipal.SelectedTab = vtab2
-                        dgvPagamentos.Focus()
-                        Exit Sub
-                    End If
+                    If Not CanCloseMessage() Then Exit Sub
                 End If
             End If
         End If
@@ -750,12 +746,22 @@ Public Class frmVendaVista
     '
     ' PROCURAR
     Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
+        '
+        '--- verifica e pergunta
+        If Not CanCloseMessage() Then Exit Sub
+        '
         ProcuraVenda()
+        '
     End Sub
     '
     ' ADICIONAR
     Private Sub btnAdicionar_Click(sender As Object, e As EventArgs) Handles btnAdicionar.Click
+        '
+        '--- verifica e pergunta
+        If Not CanCloseMessage() Then Exit Sub
+        '
         NovaVenda()
+        '
     End Sub
     '
     ' EXCLUIR
@@ -825,9 +831,11 @@ Public Class frmVendaVista
 #End Region '/ BOTOES ACAO
     '
 #Region "FORMATACAO E FLUXO"
+    '
     ' CRIA TECLA DE ATALHO PARA O TAB
     '---------------------------------------------------------------------------------------------------
     Private Sub Form_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        '
         If e.Alt AndAlso e.KeyCode = Keys.D1 Then
             tabPrincipal.SelectedTab = vtab1
             tabPrincipal_SelectedIndexChanged(New Object, New System.EventArgs)
@@ -835,14 +843,17 @@ Public Class frmVendaVista
             tabPrincipal.SelectedTab = vtab2
             tabPrincipal_SelectedIndexChanged(New Object, New System.EventArgs)
         End If
+        '
     End Sub
     '
     Private Sub tabPrincipal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles tabPrincipal.SelectedIndexChanged
+        '
         If tabPrincipal.SelectedIndex = 0 Then
             dgvItens.Focus()
         ElseIf tabPrincipal.SelectedIndex = 1 Then
             dgvPagamentos.Focus()
         End If
+        '
     End Sub
     '
 #End Region
@@ -1618,6 +1629,30 @@ Public Class frmVendaVista
             MessageBox.Show(ex.Message)
             Return True
         End Try
+        '
+    End Function
+    '
+    Private Function CanCloseMessage() As Boolean
+        '
+        If MessageBox.Show("Se você fechar essa VENDA agora os pagamentos não serão salvos..." & vbNewLine &
+                           "Deseja Fechar a Venda assim mesmo?",
+                           "Fechar a Venda",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question) = vbNo Then
+            '
+            '--- Seleciona a TAB
+            tabPrincipal.SelectedTab = vtab2
+            '
+            '--- Select Control
+            dgvPagamentos.Focus()
+            '
+            '--- return
+            Return False
+            '
+        End If
+        '
+        '--- return
+        Return True
         '
     End Function
     '

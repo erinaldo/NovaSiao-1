@@ -189,7 +189,7 @@ Public Class frmSimplesQuitar
                 '
                 If ExecutaQuitacao_Entrada() Then
                     MessageBox.Show("Crédito realizado com sucesso!", "Receber Simples",
-                                MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information)
                     DialogResult = DialogResult.OK
                 End If
                 '
@@ -416,7 +416,14 @@ Public Class frmSimplesQuitar
             ValorMaximo = totalAPagarOrigem
         End If
         '
-        txtValor.Text = ValorMaximo
+        txtValor.Text = Format(ValorMaximo, "C")
+        '
+        '--- GET LISTs de AReceber ORIGEM E DESTINO
+        '==============================================================
+        '--- ORIGEM
+        Dim lstAReceberEmAbertoOrigem As List(Of clAReceberParcela) = GetListaAReceber(_IDFilialOrigem, _IDFilialDestino)
+        '--- DESTINO
+        Dim lstAReceberEmAbertoDestino As List(Of clAReceberParcela) = GetListaAReceber(_IDFilialDestino, _IDFilialOrigem)
         '
         '--- CRIA uma BD Transaction
         '==============================================================
@@ -434,18 +441,23 @@ Public Class frmSimplesQuitar
             EfetuarPagamentoList(_IDFilialDestino, _IDFilialOrigem, dbTran, lstAPagarEmAberto_Origem)
             '
             '--- 2. Recebimento ORIGEM --> DESTINO
-            EfetuarRecebimentoList(_IDFilialDestino, _IDFilialOrigem, dbTran)
+            EfetuarRecebimentoList(_IDFilialDestino, _IDFilialOrigem, dbTran, lstAReceberEmAbertoDestino)
             '
             '--- 3. Pagamento ORIGEM --> DESTINO
-            EfetuarPagamentoList(_IDFilialOrigem, _IDFilialDestino, dbTran, lstAPagarEmAberto_Origem)
+            EfetuarPagamentoList(_IDFilialOrigem, _IDFilialDestino, dbTran, lstAPagarEmAberto_Destino)
             '
             '--- 4. Recebimento DESTINO --> ORIGEM
-            EfetuarRecebimentoList(_IDFilialOrigem, _IDFilialDestino, dbTran)
+            EfetuarRecebimentoList(_IDFilialOrigem, _IDFilialDestino, dbTran, lstAReceberEmAbertoOrigem)
+            '
+            '--- COMMIT AND RETURN
+            '--------------------------------------------------------------------------------------------------------
+            tBLL.CommitAcessoWithTransaction(dbTran)
             '
             '--- RETURN
             Return True
             '
         Catch ex As Exception
+            tBLL.RollbackAcessoWithTransaction(dbTran)
             MessageBox.Show("Uma exceção ocorreu ao Evento Pagar e Receber entre Filiais..." & vbNewLine &
                             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
@@ -716,15 +728,18 @@ Public Class frmSimplesQuitar
                 vlRecParcela = ValorAReceber '--- se for menor quita parcialmente a parcela
             End If
             '
-            '--- reajusta o novo valor a Receber que restou
-            ValorAReceber = ValorAReceber - vlRecParcela
-            '
             Try
+                MsgBox("RECEBIMENTO" & vbNewLine & "Cred:" & IDFilialCreditada & " Deb:" & IDFilialDebitada & " Valor: " & vlRecParcela)
                 EfetuarRecebimentoItem(rec, vlRecParcela, dbTran)
             Catch ex As Exception
                 Throw ex
                 Exit For
             End Try
+            '
+            '--- reajusta o novo valor a Receber que restou
+            ValorAReceber = ValorAReceber - vlRecParcela
+            '
+            If ValorAReceber = 0 Then Exit For
             '
         Next
         '
@@ -828,15 +843,18 @@ Public Class frmSimplesQuitar
                 vlRecebido = ValorAPagar '--- se for menor quita parcialmente o apagar
             End If
             '
-            '--- reajusta o novo valor a Pagar que restou
-            ValorAPagar = ValorAPagar - vlRecebido
-            '
             Try
+                MsgBox("PAGAMENTO" & vbNewLine & "Cred:" & IDFilialCreditada & " Deb:" & IDFilialDebitada & " Valor: " & vlRecebido)
                 EfetuarPagamentoItem(pag, vlRecebido, dbTran)
             Catch ex As Exception
                 Throw ex
                 Exit For
             End Try
+            '
+            '--- reajusta o novo valor a Pagar que restou
+            ValorAPagar = ValorAPagar - vlRecebido
+            '
+            If ValorAPagar = 0 Then Exit For
             '
         Next
         '

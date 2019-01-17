@@ -28,8 +28,7 @@ Public Class frmCompra
                     lblSituacao.Text = "Finalizada"
                     btnFinalizar.Text = "&Fechar"
                     '
-                    btnDataAnterior.Enabled = True
-                    btnDataSuperior.Enabled = True
+                    btnData.Enabled = True
                     txtFreteValor.ReadOnly = False
                     txtObservacao.ReadOnly = False
                     txtVolumes.ReadOnly = False
@@ -43,8 +42,7 @@ Public Class frmCompra
                     lblSituacao.Text = "Alterada"
                     btnFinalizar.Text = "&Finalizar"
                     '
-                    btnDataAnterior.Enabled = True
-                    btnDataSuperior.Enabled = True
+                    btnData.Enabled = True
                     txtFreteValor.ReadOnly = False
                     txtObservacao.ReadOnly = False
                     txtVolumes.ReadOnly = False
@@ -58,8 +56,7 @@ Public Class frmCompra
                     lblSituacao.Text = "Em Aberto"
                     btnFinalizar.Text = "&Finalizar"
                     '
-                    btnDataAnterior.Enabled = True
-                    btnDataSuperior.Enabled = True
+                    btnData.Enabled = True
                     txtFreteValor.ReadOnly = False
                     txtObservacao.ReadOnly = False
                     txtVolumes.ReadOnly = False
@@ -73,8 +70,7 @@ Public Class frmCompra
                     lblSituacao.Text = "Bloqueada"
                     btnFinalizar.Text = "&Fechar"
                     '
-                    btnDataAnterior.Enabled = False
-                    btnDataSuperior.Enabled = False
+                    btnData.Enabled = False
                     txtFreteValor.ReadOnly = True
                     txtObservacao.ReadOnly = True
                     txtVolumes.ReadOnly = True
@@ -119,6 +115,9 @@ Public Class frmCompra
             '
             '--- Preenche Itens do A Pagar (parcelas)
             Preenche_APagar()
+            cmbFreteTipo.SelectedValue = _Compra.FreteTipo
+            cmbIDTransportadora.SelectedValue = If(_Compra.IDTransportadora, -1)
+            cmbNotaTipo.SelectedValue = -1
             '
             '--- Preenche Notas Fiscais
             Preenche_Notas()
@@ -187,6 +186,9 @@ Public Class frmCompra
         ' Add any initialization after the InitializeComponent() call.
         Dim cBLL As New CompraBLL
         propCompra = myCompra
+        '
+        '--- hANDLER Menu Acao
+        MenuOpen_AdHandler()
         '
     End Sub
     '
@@ -610,9 +612,10 @@ Public Class frmCompra
             myID = ItemBLL.EditarItem(itmAtual,
                                       TransacaoItemBLL.EnumMovimento.ENTRADA,
                                       _Compra.TransacaoData,
-                                      InsereCustos:=True
-                                      )
+                                      InsereCustos:=True)
+            '
             itmAtual.IDTransacaoItem = myID
+            '
         Catch ex As Exception
             MessageBox.Show("Houve um exceção ao ALTERAR o item no BD..." & vbNewLine & ex.Message,
                             "Exceção Inesperada", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -703,30 +706,48 @@ Public Class frmCompra
 #End Region
     '
 #Region "BOTOES DE ACAO"
+    '
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
-        If Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado Then
-            If MessageBox.Show("Se você fechar agora o fomulário de compra," & vbNewLine &
-                               "Algumas alterações serão perdidas." & vbNewLine & vbNewLine &
-                               "Deseja Fechar a Compra assim mesmo?", "Fechar a Compra",
-                               MessageBoxButtons.YesNo, MessageBoxIcon.Question) = vbNo Then
-                tabPrincipal.SelectedTab = vtab2
-                dgvAPagar.Focus()
-                Exit Sub
-            End If
-        End If
         '
+        '--- ASK USER
+        If Not CanCloseMessage() Then Exit Sub
+        '
+        '--- CLOSE
         Close()
         MostraMenuPrincipal()
+        '
     End Sub
     '
-    Private Sub btnDataSuperior_Click(sender As Object, e As EventArgs) Handles btnDataSuperior.Click
-        _Compra.TransacaoData = _Compra.TransacaoData.AddDays(1)
-        lblCompraData.DataBindings("Text").ReadValue()
-    End Sub
-    '
-    Private Sub btnDataAnterior_Click(sender As Object, e As EventArgs) Handles btnDataAnterior.Click
-        _Compra.TransacaoData = _Compra.TransacaoData.AddDays(-1)
-        lblCompraData.DataBindings("Text").ReadValue()
+    '--- ALTERAR A DATA DA COMPRA
+    Private Sub lblCompraData_DoubleClick(sender As Object, e As EventArgs) _
+        Handles lblCompraData.DoubleClick, btnData.Click
+        '
+        Dim frmDt As New frmDataInformar("Informe a data da Compra", DataTipo.PassadoPresente, _Compra.TransacaoData, Me)
+        frmDt.ShowDialog()
+        '
+        If frmDt.DialogResult <> DialogResult.OK Then Exit Sub
+        '
+        Dim newDt As Date = frmDt.propDataInfo
+        '
+        '--- verifica a data bloqueada
+        If DataBloqueada(newDt, Obter_ContaPadrao) Then Exit Sub
+        '
+        '--- altera a data da TRANSACAO e salva no BD
+        Try
+            '
+            Dim tranBLL As New TransacaoBLL
+            If tranBLL.AtualizaTransacaoData(_Compra.IDCompra, newDt) Then
+                '
+                _Compra.TransacaoData = frmDt.propDataInfo
+                lblCompraData.DataBindings("Text").ReadValue()
+                '
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao alterar a Data da Compra..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+        '
     End Sub
     '
 #End Region
@@ -1004,6 +1025,7 @@ Public Class frmCompra
         '
         clPag.Origem = 1
         clPag.IDOrigem = _Compra.IDCompra
+        clPag.IDPessoa = _Compra.IDPessoaOrigem
         clPag.IDFilial = _Compra.IDPessoaDestino
         clPag.APagarValor = vl - _APagarList.Sum(Function(x) x.APagarValor)
         clPag.Vencimento = _Compra.TransacaoData
@@ -1432,7 +1454,7 @@ Public Class frmCompra
 #End Region
     '
 #Region "BLOQUEIO DE REGISTROS"
-
+    '
     ' PROIBE EDICAO NOS COMBOBOX QUANDO COMPRA BLOQUEADA
     '-----------------------------------------------------------------------------------------------------
     Private Sub ComboBox_SelectedValueChanged(sender As Object, e As EventArgs) _
@@ -1507,6 +1529,34 @@ Public Class frmCompra
         Else
             RegistroFinalizado = False
         End If
+    End Function
+    '
+    Private Function CanCloseMessage() As Boolean
+        '
+        If Not (Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado) Then Return True
+        '
+        If MessageBox.Show("Essa COMPRA ainda não está CONCLUÍDA!" & vbNewLine & vbNewLine &
+                           "Se você fechar agora o fomulário de compra," & vbNewLine &
+                           "Algumas alterações podem ser perdidas." & vbNewLine & vbNewLine &
+                           "Deseja Fechar a Compra assim mesmo?",
+                           "Fechar a Compra",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question) = vbNo Then
+            '
+            '--- Seleciona a TAB
+            tabPrincipal.SelectedTab = vtab2
+            '
+            '--- Select Control txtValorFrete
+            dgvAPagar.Focus()
+            '
+            '--- return
+            Return False
+            '
+        End If
+        '
+        '--- return
+        Return True
+        '
     End Function
     '
 #End Region
@@ -1921,5 +1971,70 @@ Public Class frmCompra
     End Sub
     '
 #End Region
+    '
+#Region "MENU ACAO INFERIOR"
+    '
+    '--- CONTROLE DO MENU ACAO INFERIOR
+    '=====================================
+    Private Sub tsbButtonClick(sender As Object, e As EventArgs)
+        '
+        DirectCast(sender, ToolStripSplitButton).ShowDropDown()
+        '
+    End Sub
+    '
+    Private Sub MenuOpen_AdHandler()
+        '
+        AddHandler btnImprimir.ButtonClick, AddressOf tsbButtonClick
+        AddHandler btnImprimir.MouseHover, AddressOf tsbButtonClick
+        '
+    End Sub
+    '
+    Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
+        '
+        '--- verifica e pergunta
+        If Not CanCloseMessage() Then Exit Sub
+        '
+        '--- close
+        Me.Close()
+        '
+        '--- open form procura
+        Dim frmP As New frmOperacaoEntradaProcurar
+        OcultaMenuPrincipal()
+        Dim fPrincipal As Form = Application.OpenForms.OfType(Of frmPrincipal)().First
+        frmP.MdiParent = fPrincipal
+        frmP.Show()
+        '
+    End Sub
+    '
+    Private Sub btnAdicionar_Click(sender As Object, e As EventArgs) Handles btnAdicionar.Click
+        '
+        '--- verifica e pergunta
+        If Not CanCloseMessage() Then Exit Sub
+        '
+        Dim c As New AcaoGlobal
+        Dim newCompra As Object = c.Compra_Nova
+        '
+        If IsNothing(newCompra) Then Exit Sub
+        '
+        _Compra = newCompra
+        '
+    End Sub
+    '
+    Private Sub btnExcluir_Click(sender As Object, e As EventArgs) Handles btnExcluir.Click
+        MsgBox("Em Implementação")
+
+    End Sub
+    '
+    Private Sub miImprimirEtiquetas_Click(sender As Object, e As EventArgs) Handles miImprimirEtiquetas.Click
+        MsgBox("Em Implementação")
+
+    End Sub
+    '
+    Private Sub miImprimirRelatorio_Click(sender As Object, e As EventArgs) Handles miImprimirRelatorio.Click
+        MsgBox("Em Implementação")
+
+    End Sub
+    '
+#End Region '/ MENU ACAO INFERIOR
     '
 End Class

@@ -19,8 +19,8 @@ Partial Class frmOperacaoEntradaProcurar
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.cmbOperacao = New Controles.ComboBox_OnlyValues()
         Me.txtProcura = New System.Windows.Forms.TextBox()
         Me.Label1 = New System.Windows.Forms.Label()
@@ -202,8 +202,8 @@ Partial Class frmOperacaoEntradaProcurar
         '
         Me.dgvListagem.AllowUserToAddRows = False
         Me.dgvListagem.AllowUserToDeleteRows = False
-        DataGridViewCellStyle3.BackColor = System.Drawing.Color.Azure
-        Me.dgvListagem.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle1.BackColor = System.Drawing.Color.Azure
+        Me.dgvListagem.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvListagem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvListagem.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID, Me.VendaData, Me.CadastroNome, Me.TotalCompra})
         Me.dgvListagem.GridColor = System.Drawing.Color.LightSteelBlue
@@ -212,8 +212,8 @@ Partial Class frmOperacaoEntradaProcurar
         Me.dgvListagem.Name = "dgvListagem"
         Me.dgvListagem.ReadOnly = True
         Me.dgvListagem.RowHeadersWidth = 30
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.LightSlateGray
-        Me.dgvListagem.RowsDefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.LightSlateGray
+        Me.dgvListagem.RowsDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvListagem.Size = New System.Drawing.Size(920, 368)
         Me.dgvListagem.TabIndex = 5
         '
@@ -311,7 +311,7 @@ Partial Class frmOperacaoEntradaProcurar
         Me.lbl3.BackColor = System.Drawing.Color.Transparent
         Me.lbl3.Location = New System.Drawing.Point(183, 4)
         Me.lbl3.Name = "lbl3"
-        Me.lbl3.Size = New System.Drawing.Size(81, 19)
+        Me.lbl3.Size = New System.Drawing.Size(198, 19)
         Me.lbl3.TabIndex = 7
         Me.lbl3.Text = "Fornecedor"
         '

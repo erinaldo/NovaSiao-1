@@ -10,7 +10,6 @@ Public Class frmPrincipal
 #Region "FORM PRINCIPAL"
     Private _DataPadrao As Date
     Private _ContaPadrao As clConta
-    'Private _FilialPadrao As String
     '
     '========================================================================================================
     ' PROPRIEDADES PUBLICAS
@@ -51,23 +50,6 @@ Public Class frmPrincipal
             '
         End Set
     End Property
-    '
-    ''--- PROP FILIAL: DEFINE O LABEL DA FILIAL PADRAO
-    'Public Property propFilialPadrao() As String
-    '    Get
-    '        Return _FilialPadrao
-    '    End Get
-    '    Set(ByVal value As String)
-    '        _FilialPadrao = value
-    '        '
-    '        '--- define a data padrao no config
-    '        SetarDefault("FilialDescricao", value)
-    '        '
-    '        '--- define a label da data padrao
-    '        lblFilial.Text = value
-    '        '
-    '    End Set
-    'End Property
     '
     '========================================================================================================
     ' EVENTO LOAD
@@ -1240,6 +1222,21 @@ Public Class frmPrincipal
     End Sub
     '
     Private Sub miFazerBackup_Click(sender As Object, e As EventArgs) Handles miFazerBackup.Click
+        '
+        '--- verifica se o BD is LOCAL OR REMOTE
+        Dim NodeServidorLocal As String = ObterConfigValorNode("ServidorLocal")
+        '
+        If NodeServidorLocal.ToUpper = "FALSE" Then
+            '--- Aviso ao user
+            MessageBox.Show("A operação de BACKUP não é possível em servidores REMOTOS.",
+                            "Realizar Backup",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            '
+            Exit Sub
+        End If
+        '
+        '--- Open Form
         OcultaMenuPrincipal()
         Dim f As New frmBackup
         f.MdiParent = Me

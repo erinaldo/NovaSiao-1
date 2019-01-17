@@ -321,13 +321,13 @@ Partial Class frmAPagarReceberSimples
         '
         'lbl3
         '
-        Me.lbl3.AutoSize = True
         Me.lbl3.BackColor = System.Drawing.Color.Transparent
-        Me.lbl3.Location = New System.Drawing.Point(564, 4)
+        Me.lbl3.Location = New System.Drawing.Point(505, 4)
         Me.lbl3.Name = "lbl3"
-        Me.lbl3.Size = New System.Drawing.Size(41, 19)
+        Me.lbl3.Size = New System.Drawing.Size(100, 19)
         Me.lbl3.TabIndex = 3
         Me.lbl3.Text = "Pago"
+        Me.lbl3.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
         'lbl2
         '

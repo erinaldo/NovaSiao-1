@@ -427,11 +427,13 @@ Public Class frmOperacaoEntradaProcurar
             ' coluna 4
             lbl4.Text = dgvListagem.Columns(3).HeaderText
             r = dgvListagem.GetCellDisplayRectangle(3, 0, False)
+            lbl4.Width = r.Width
             lbl4.Location = New Point(r.X, lbl4.Location.Y)
             '
             ' column 5
             lbl5.Text = dgvListagem.Columns(4).HeaderText
             r = dgvListagem.GetCellDisplayRectangle(4, 0, False)
+            lbl5.Width = r.Width
             lbl5.Location = New Point(r.X, lbl5.Location.Y)
             '
             ' column 6 - Column SIT

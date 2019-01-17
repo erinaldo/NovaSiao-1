@@ -20,11 +20,11 @@ Partial Class frmCompra
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle9 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle10 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.tabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
         Me.vtab1 = New VIBlend.WinForms.Controls.vTabPage()
         Me.dgvItens = New System.Windows.Forms.DataGridView()
@@ -108,8 +108,6 @@ Partial Class frmCompra
         Me.lblFornecedor = New System.Windows.Forms.Label()
         Me.ShapeContainer1 = New Microsoft.VisualBasic.PowerPacks.ShapeContainer()
         Me.RectangleShape2 = New Microsoft.VisualBasic.PowerPacks.RectangleShape()
-        Me.btnDataSuperior = New VIBlend.WinForms.Controls.vArrowButton()
-        Me.btnDataAnterior = New VIBlend.WinForms.Controls.vArrowButton()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.lbl_IdTexto = New System.Windows.Forms.Label()
         Me.lblCompraData = New System.Windows.Forms.Label()
@@ -134,9 +132,12 @@ Partial Class frmCompra
         Me.btnProcurar = New System.Windows.Forms.ToolStripButton()
         Me.btnAdicionar = New System.Windows.Forms.ToolStripButton()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
+        Me.btnExcluir = New System.Windows.Forms.ToolStripButton()
+        Me.ToolStripSeparator3 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnImprimir = New System.Windows.Forms.ToolStripSplitButton()
         Me.miImprimirEtiquetas = New System.Windows.Forms.ToolStripMenuItem()
         Me.miImprimirRelatorio = New System.Windows.Forms.ToolStripMenuItem()
+        Me.btnData = New VIBlend.WinForms.Controls.vArrowButton()
         Me.Panel1.SuspendLayout()
         Me.tabPrincipal.SuspendLayout()
         Me.vtab1.SuspendLayout()
@@ -152,14 +153,13 @@ Partial Class frmCompra
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.btnData)
         Me.Panel1.Controls.Add(Me.Label18)
         Me.Panel1.Controls.Add(Me.lblFilial)
         Me.Panel1.Controls.Add(Me.Label3)
         Me.Panel1.Controls.Add(Me.Label15)
         Me.Panel1.Controls.Add(Me.lbl_IdTexto)
         Me.Panel1.Controls.Add(Me.btnClose)
-        Me.Panel1.Controls.Add(Me.btnDataSuperior)
-        Me.Panel1.Controls.Add(Me.btnDataAnterior)
         Me.Panel1.Controls.Add(Me.lblSituacao)
         Me.Panel1.Controls.Add(Me.lblIDCompra)
         Me.Panel1.Controls.Add(Me.lblCompraData)
@@ -168,15 +168,14 @@ Partial Class frmCompra
         Me.Panel1.Controls.SetChildIndex(Me.lblCompraData, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblIDCompra, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblSituacao, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.btnDataAnterior, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
-        Me.Panel1.Controls.SetChildIndex(Me.btnDataSuperior, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lbl_IdTexto, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label15, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label3, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblFilial, 0)
         Me.Panel1.Controls.SetChildIndex(Me.Label18, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.btnData, 0)
         '
         'lblTitulo
         '
@@ -233,20 +232,20 @@ Partial Class frmCompra
         '
         Me.dgvItens.AllowUserToAddRows = False
         Me.dgvItens.AllowUserToDeleteRows = False
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.Azure
-        Me.dgvItens.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle6.BackColor = System.Drawing.Color.Azure
+        Me.dgvItens.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle6
         Me.dgvItens.BackgroundColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(243, Byte), Integer))
         Me.dgvItens.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvItens.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal
         Me.dgvItens.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
-        DataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = System.Drawing.Color.LightSteelBlue
-        DataGridViewCellStyle2.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle2.ForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvItens.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle7.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle7.BackColor = System.Drawing.Color.LightSteelBlue
+        DataGridViewCellStyle7.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle7.ForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle7.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle7.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvItens.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
         Me.dgvItens.ColumnHeadersHeight = 25
         Me.dgvItens.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnIDTransacaoItem, Me.clnRGProduto, Me.clnProduto, Me.clnQuantidade, Me.clnPreco, Me.clnSubTotal, Me.clnDesconto, Me.clnTotal, Me.clnICMS, Me.clnST, Me.clnMVA, Me.clnIPI})
         Me.dgvItens.EnableHeadersVisualStyles = False
@@ -683,9 +682,9 @@ Partial Class frmCompra
         '
         'clnVencimento
         '
-        DataGridViewCellStyle3.Format = "C2"
-        DataGridViewCellStyle3.NullValue = "0"
-        Me.clnVencimento.DefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle8.Format = "C2"
+        DataGridViewCellStyle8.NullValue = "0"
+        Me.clnVencimento.DefaultCellStyle = DataGridViewCellStyle8
         Me.clnVencimento.HeaderText = "Vencimento"
         Me.clnVencimento.Name = "clnVencimento"
         Me.clnVencimento.ReadOnly = True
@@ -972,14 +971,14 @@ Partial Class frmCompra
         Me.dgvVendaNotas.BackgroundColor = System.Drawing.Color.FromArgb(CType(CType(224, Byte), Integer), CType(CType(232, Byte), Integer), CType(CType(243, Byte), Integer))
         Me.dgvVendaNotas.BorderStyle = System.Windows.Forms.BorderStyle.None
         Me.dgvVendaNotas.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.Raised
-        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.ButtonFace
-        DataGridViewCellStyle4.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText
-        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvVendaNotas.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle9.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.ButtonFace
+        DataGridViewCellStyle9.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle9.ForeColor = System.Drawing.SystemColors.WindowText
+        DataGridViewCellStyle9.SelectionBackColor = System.Drawing.SystemColors.Highlight
+        DataGridViewCellStyle9.SelectionForeColor = System.Drawing.SystemColors.HighlightText
+        DataGridViewCellStyle9.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
+        Me.dgvVendaNotas.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle9
         Me.dgvVendaNotas.ColumnHeadersHeight = 30
         Me.dgvVendaNotas.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
         Me.dgvVendaNotas.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnChaveAcesso, Me.clnNotaTipo, Me.clnNotaSerie, Me.clnNotaNumero, Me.clnEmissaoData, Me.clnNotaValor})
@@ -988,8 +987,8 @@ Partial Class frmCompra
         Me.dgvVendaNotas.Name = "dgvVendaNotas"
         Me.dgvVendaNotas.ReadOnly = True
         Me.dgvVendaNotas.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
-        DataGridViewCellStyle5.Font = New System.Drawing.Font("Calibri", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.dgvVendaNotas.RowsDefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle10.Font = New System.Drawing.Font("Calibri", 11.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.dgvVendaNotas.RowsDefaultCellStyle = DataGridViewCellStyle10
         Me.dgvVendaNotas.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
         Me.dgvVendaNotas.Size = New System.Drawing.Size(846, 312)
         Me.dgvVendaNotas.TabIndex = 3
@@ -1048,7 +1047,7 @@ Partial Class frmCompra
         'lblFornecedor
         '
         Me.lblFornecedor.BackColor = System.Drawing.Color.White
-        Me.lblFornecedor.Location = New System.Drawing.Point(122, 67)
+        Me.lblFornecedor.Location = New System.Drawing.Point(115, 67)
         Me.lblFornecedor.Name = "lblFornecedor"
         Me.lblFornecedor.Size = New System.Drawing.Size(614, 25)
         Me.lblFornecedor.TabIndex = 1
@@ -1076,40 +1075,12 @@ Partial Class frmCompra
         Me.RectangleShape2.Name = "RectangleShape2"
         Me.RectangleShape2.Size = New System.Drawing.Size(626, 30)
         '
-        'btnDataSuperior
-        '
-        Me.btnDataSuperior.AllowAnimations = True
-        Me.btnDataSuperior.ArrowDirection = System.Windows.Forms.ArrowDirection.Up
-        Me.btnDataSuperior.Location = New System.Drawing.Point(271, 10)
-        Me.btnDataSuperior.Maximum = 100
-        Me.btnDataSuperior.Minimum = 0
-        Me.btnDataSuperior.Name = "btnDataSuperior"
-        Me.btnDataSuperior.Size = New System.Drawing.Size(16, 16)
-        Me.btnDataSuperior.TabIndex = 52
-        Me.btnDataSuperior.TabStop = False
-        Me.btnDataSuperior.Value = 0
-        Me.btnDataSuperior.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
-        '
-        'btnDataAnterior
-        '
-        Me.btnDataAnterior.AllowAnimations = True
-        Me.btnDataAnterior.ArrowDirection = System.Windows.Forms.ArrowDirection.Down
-        Me.btnDataAnterior.Location = New System.Drawing.Point(271, 26)
-        Me.btnDataAnterior.Maximum = 100
-        Me.btnDataAnterior.Minimum = 0
-        Me.btnDataAnterior.Name = "btnDataAnterior"
-        Me.btnDataAnterior.Size = New System.Drawing.Size(16, 16)
-        Me.btnDataAnterior.TabIndex = 53
-        Me.btnDataAnterior.TabStop = False
-        Me.btnDataAnterior.Value = 0
-        Me.btnDataAnterior.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
-        '
         'Label3
         '
         Me.Label3.AutoSize = True
         Me.Label3.BackColor = System.Drawing.Color.Transparent
         Me.Label3.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label3.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.Label3.ForeColor = System.Drawing.Color.Silver
         Me.Label3.Location = New System.Drawing.Point(166, 4)
         Me.Label3.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label3.Name = "Label3"
@@ -1123,7 +1094,7 @@ Partial Class frmCompra
         Me.lbl_IdTexto.AutoSize = True
         Me.lbl_IdTexto.BackColor = System.Drawing.Color.Transparent
         Me.lbl_IdTexto.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lbl_IdTexto.ForeColor = System.Drawing.SystemColors.ControlText
+        Me.lbl_IdTexto.ForeColor = System.Drawing.Color.Silver
         Me.lbl_IdTexto.Location = New System.Drawing.Point(29, 4)
         Me.lbl_IdTexto.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.lbl_IdTexto.Name = "lbl_IdTexto"
@@ -1201,7 +1172,7 @@ Partial Class frmCompra
         Me.lblSituacao.BackColor = System.Drawing.Color.Transparent
         Me.lblSituacao.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblSituacao.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblSituacao.Location = New System.Drawing.Point(320, 16)
+        Me.lblSituacao.Location = New System.Drawing.Point(512, 16)
         Me.lblSituacao.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblSituacao.Name = "lblSituacao"
         Me.lblSituacao.Size = New System.Drawing.Size(145, 30)
@@ -1214,8 +1185,8 @@ Partial Class frmCompra
         Me.Label15.AutoSize = True
         Me.Label15.BackColor = System.Drawing.Color.Transparent
         Me.Label15.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label15.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label15.Location = New System.Drawing.Point(357, 4)
+        Me.Label15.ForeColor = System.Drawing.Color.Silver
+        Me.Label15.Location = New System.Drawing.Point(549, 4)
         Me.Label15.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label15.Name = "Label15"
         Me.Label15.Size = New System.Drawing.Size(67, 13)
@@ -1291,8 +1262,8 @@ Partial Class frmCompra
         Me.Label18.AutoSize = True
         Me.Label18.BackColor = System.Drawing.Color.Transparent
         Me.Label18.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label18.ForeColor = System.Drawing.SystemColors.ControlText
-        Me.Label18.Location = New System.Drawing.Point(522, 4)
+        Me.Label18.ForeColor = System.Drawing.Color.Silver
+        Me.Label18.Location = New System.Drawing.Point(377, 4)
         Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(43, 13)
@@ -1305,10 +1276,10 @@ Partial Class frmCompra
         Me.lblFilial.BackColor = System.Drawing.Color.Transparent
         Me.lblFilial.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblFilial.ForeColor = System.Drawing.Color.AliceBlue
-        Me.lblFilial.Location = New System.Drawing.Point(473, 16)
+        Me.lblFilial.Location = New System.Drawing.Point(306, 16)
         Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblFilial.Name = "lblFilial"
-        Me.lblFilial.Size = New System.Drawing.Size(145, 30)
+        Me.lblFilial.Size = New System.Drawing.Size(193, 30)
         Me.lblFilial.TabIndex = 55
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -1350,7 +1321,7 @@ Partial Class frmCompra
         Me.ToolStrip1.AutoSize = False
         Me.ToolStrip1.BackColor = System.Drawing.Color.Transparent
         Me.ToolStrip1.Dock = System.Windows.Forms.DockStyle.None
-        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnProcurar, Me.btnAdicionar, Me.ToolStripSeparator2, Me.btnImprimir})
+        Me.ToolStrip1.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnProcurar, Me.btnAdicionar, Me.ToolStripSeparator2, Me.btnExcluir, Me.ToolStripSeparator3, Me.btnImprimir})
         Me.ToolStrip1.Location = New System.Drawing.Point(10, 612)
         Me.ToolStrip1.Name = "ToolStrip1"
         Me.ToolStrip1.Size = New System.Drawing.Size(517, 47)
@@ -1366,7 +1337,7 @@ Partial Class frmCompra
         Me.btnProcurar.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
         Me.btnProcurar.Name = "btnProcurar"
         Me.btnProcurar.Size = New System.Drawing.Size(36, 44)
-        Me.btnProcurar.Text = "ToolStripButton1"
+        Me.btnProcurar.Text = "Procurar Compra"
         '
         'btnAdicionar
         '
@@ -1377,12 +1348,28 @@ Partial Class frmCompra
         Me.btnAdicionar.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
         Me.btnAdicionar.Name = "btnAdicionar"
         Me.btnAdicionar.Size = New System.Drawing.Size(36, 44)
-        Me.btnAdicionar.Text = "ToolStripButton2"
+        Me.btnAdicionar.Text = "Adicionar Compra"
         '
         'ToolStripSeparator2
         '
         Me.ToolStripSeparator2.Name = "ToolStripSeparator2"
         Me.ToolStripSeparator2.Size = New System.Drawing.Size(6, 47)
+        '
+        'btnExcluir
+        '
+        Me.btnExcluir.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
+        Me.btnExcluir.Image = Global.NovaSiao.My.Resources.Resources.Lixeira_PEQ
+        Me.btnExcluir.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.btnExcluir.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnExcluir.Name = "btnExcluir"
+        Me.btnExcluir.Size = New System.Drawing.Size(45, 44)
+        Me.btnExcluir.Text = "Excluir Compra"
+        Me.btnExcluir.ToolTipText = "Excluir a Compra"
+        '
+        'ToolStripSeparator3
+        '
+        Me.ToolStripSeparator3.Name = "ToolStripSeparator3"
+        Me.ToolStripSeparator3.Size = New System.Drawing.Size(6, 47)
         '
         'btnImprimir
         '
@@ -1394,7 +1381,7 @@ Partial Class frmCompra
         Me.btnImprimir.Margin = New System.Windows.Forms.Padding(5, 1, 5, 2)
         Me.btnImprimir.Name = "btnImprimir"
         Me.btnImprimir.Size = New System.Drawing.Size(56, 44)
-        Me.btnImprimir.Text = "ToolStripSplitButton1"
+        Me.btnImprimir.Text = "Imprimir"
         '
         'miImprimirEtiquetas
         '
@@ -1409,6 +1396,20 @@ Partial Class frmCompra
         Me.miImprimirRelatorio.Name = "miImprimirRelatorio"
         Me.miImprimirRelatorio.Size = New System.Drawing.Size(183, 22)
         Me.miImprimirRelatorio.Text = "Relatório da Compra"
+        '
+        'btnData
+        '
+        Me.btnData.AllowAnimations = True
+        Me.btnData.ArrowDirection = System.Windows.Forms.ArrowDirection.Left
+        Me.btnData.Location = New System.Drawing.Point(269, 24)
+        Me.btnData.Maximum = 100
+        Me.btnData.Minimum = 0
+        Me.btnData.Name = "btnData"
+        Me.btnData.Size = New System.Drawing.Size(16, 16)
+        Me.btnData.TabIndex = 57
+        Me.btnData.TabStop = False
+        Me.btnData.Value = 0
+        Me.btnData.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
         'frmCompra
         '
@@ -1474,8 +1475,6 @@ Partial Class frmCompra
     Friend WithEvents dgvVendaNotas As DataGridView
     Friend WithEvents lblCli As Label
     Friend WithEvents lblFornecedor As Label
-    Friend WithEvents btnDataSuperior As VIBlend.WinForms.Controls.vArrowButton
-    Friend WithEvents btnDataAnterior As VIBlend.WinForms.Controls.vArrowButton
     Friend WithEvents Label3 As Label
     Friend WithEvents lblIDCompra As Label
     Friend WithEvents lbl_IdTexto As Label
@@ -1566,4 +1565,7 @@ Partial Class frmCompra
     Private WithEvents LineShape2 As PowerPacks.LineShape
     Private WithEvents LineShape3 As PowerPacks.LineShape
     Private WithEvents LineShape4 As PowerPacks.LineShape
+    Friend WithEvents btnData As VIBlend.WinForms.Controls.vArrowButton
+    Friend WithEvents btnExcluir As ToolStripButton
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
 End Class
