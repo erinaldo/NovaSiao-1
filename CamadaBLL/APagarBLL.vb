@@ -80,8 +80,11 @@ Public Class APagarBLL
     '===================================================================================================
     ' EXCLUIR TODOS APAGAR DE UMA TRANSACAO PELO ID
     '===================================================================================================
-    Public Function Excluir_APagar_Origem(IDOrigem As Integer, Origem As clAPagar.Origem_APagar) As Boolean
-        Dim db As New AcessoDados
+    Public Function Excluir_APagar_Origem(IDOrigem As Integer,
+                                          Origem As clAPagar.Origem_APagar,
+                                          Optional dbTran As Object = Nothing) As Boolean
+        '
+        Dim db As AcessoDados = If(dbTran, New AcessoDados)
         '
         '--- Limpa os paramentros
         db.LimparParametros()

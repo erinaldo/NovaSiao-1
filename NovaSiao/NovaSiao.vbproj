@@ -433,6 +433,12 @@
       <AutoGen>True</AutoGen>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Compile>
+    <Compile Include="Devolucao\frmDevolucaoSaida.designer.vb">
+      <DependentUpon>frmDevolucaoSaida.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Devolucao\frmDevolucaoSaida.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormsPrincipais\frmBackup.Designer.vb">
       <DependentUpon>frmBackup.vb</DependentUpon>
     </Compile>
@@ -883,6 +889,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Compras\frmOperacaoEntradaProcurar.resx">
       <DependentUpon>frmOperacaoEntradaProcurar.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Devolucao\frmDevolucaoSaida.resx">
+      <DependentUpon>frmDevolucaoSaida.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipais\frmBackup.resx">
       <DependentUpon>frmBackup.vb</DependentUpon>

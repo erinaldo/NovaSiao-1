@@ -2,17 +2,23 @@
 Imports CamadaDTO
 '
 Public Class frmCompra
+    '--- CLASSE
     Private _Compra As clCompra
+    Private cBLL As New CompraBLL
+    Private _IDFilial As Integer
+    '--- LISTS
     Private _ItensList As New List(Of clTransacaoItem)
     Private _APagarList As New List(Of clAPagar)
     Private _NotasList As New List(Of clNotaFiscal)
+    '--- BINDINGS
     Private bindCompra As New BindingSource
     Private bindItem As New BindingSource
     Private bindAPagar As New BindingSource
     Private bindNota As New BindingSource
+    '--- CONTROLES
     Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
-    Private _Filial As Integer
     Private VerificaAlteracao As Boolean
+    '--- TOTAIS
     Private _TotalGeral As Decimal
     Private _TotalProdutos As Decimal
     '
@@ -91,7 +97,7 @@ Public Class frmCompra
         Set(value As clCompra)
             'VerificaAlteracao = False '--- Inibe a verificacao dos campos IDPlano
             _Compra = value
-            _Filial = _Compra.IDPessoaDestino
+            _IDFilial = _Compra.IDPessoaDestino
             obterItens()
             obterAPagar()
             obterNotas()
@@ -184,7 +190,6 @@ Public Class frmCompra
         InitializeComponent()
         '
         ' Add any initialization after the InitializeComponent() call.
-        Dim cBLL As New CompraBLL
         propCompra = myCompra
         '
         '--- hANDLER Menu Acao
@@ -524,7 +529,7 @@ Public Class frmCompra
         '
         Dim tBLL As New TransacaoItemBLL
         Try
-            _ItensList = tBLL.GetTransacaoItens_WithCustos_List(_Compra.IDCompra, _Filial)
+            _ItensList = tBLL.GetTransacaoItens_WithCustos_List(_Compra.IDCompra, _IDFilial)
             '--- Atualiza o label TOTAL
             Dim x = TotalGeral
         Catch ex As Exception
@@ -545,7 +550,7 @@ Public Class frmCompra
         '--- Abre o frmItem
         Dim newItem As New clTransacaoItem
         '
-        Dim fItem As New frmCompraItem(Me, precoOrigem.PRECO_COMPRA, _Filial, newItem)
+        Dim fItem As New frmCompraItem(Me, precoOrigem.PRECO_COMPRA, _IDFilial, newItem)
         fItem.ShowDialog()
         '
         '--- Verifica a resposa do Dialog
@@ -594,7 +599,7 @@ Public Class frmCompra
         '--- Abre o frmItem
         Dim itmAtual As clTransacaoItem
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
-        Dim fitem As New frmCompraItem(Me, precoOrigem.PRECO_COMPRA, _Filial, itmAtual)
+        Dim fitem As New frmCompraItem(Me, precoOrigem.PRECO_COMPRA, _IDFilial, itmAtual)
         '
         fitem.ShowDialog()
         '
@@ -1160,14 +1165,13 @@ Public Class frmCompra
             If Salvar_APagar() = False Then Exit Sub
             '
             '--- EFETUA O RATEIO DO FRETE NOS ITENS
-            Dim cmpBLL As New CompraBLL
             Dim Rateio As Object = Nothing
             '
             Try
                 Dim FreteTotal As Decimal = IIf(IsNothing(_Compra.FreteCobrado), 0, _Compra.FreteCobrado)
                 FreteTotal = FreteTotal + IIf(IsNothing(_Compra.FreteValor), 0, _Compra.FreteValor)
                 '
-                Rateio = cmpBLL.CompraItens_ReteioFrete(_Compra.IDCompra, FreteTotal, TProdutos)
+                Rateio = cBLL.CompraItens_ReteioFrete(_Compra.IDCompra, FreteTotal, TProdutos)
                 '
                 If Not IsNumeric(Rateio) Then
                     Throw New Exception(Rateio.ToString)
@@ -1183,7 +1187,7 @@ Public Class frmCompra
                 _Compra.IDSituacao = 2 'CONCLUÍDA
                 _Compra.TotalCompra = TGeral
                 '
-                Dim obj As Object = cmpBLL.AtualizaCompra_Procedure_ID(_Compra)
+                Dim obj As Object = cBLL.AtualizaCompra_Procedure_ID(_Compra)
                 '
                 If Not IsNumeric(obj) Then
                     Throw New Exception(obj.ToString)
@@ -1428,29 +1432,6 @@ Public Class frmCompra
         Return T
     End Function
     '
-    ' CRIA UMA NOVA COMPRA
-    '-----------------------------------------------------------------------------------------------------
-    Public Sub NovaCompra()
-        Dim c As New AcaoGlobal
-        Dim newCompra As Object = c.Compra_Nova
-        '
-        If IsNothing(newCompra) Then Exit Sub
-        '
-        _Compra = newCompra
-        '
-    End Sub
-    '
-    ' PROCURA COMPRA
-    '-----------------------------------------------------------------------------------------------------
-    Public Sub ProcuraCompra()
-        Me.Close()
-        Dim frmP As New frmOperacaoSaidaProcurar
-        OcultaMenuPrincipal()
-        Dim fPrincipal As Form = Application.OpenForms.OfType(Of frmPrincipal)().First
-        frmP.MdiParent = fPrincipal
-        frmP.Show()
-    End Sub
-    '
 #End Region
     '
 #Region "BLOQUEIO DE REGISTROS"
@@ -1510,9 +1491,8 @@ Public Class frmCompra
                 _Compra.IDSituacao = 1
                 '
                 '--- SALVA A TRANSACAO/VENDA NO BD
-                Dim cmpBLL As New CompraBLL
                 Try
-                    Dim obj As Object = cmpBLL.AtualizaCompra_Procedure_ID(_Compra)
+                    Dim obj As Object = cBLL.AtualizaCompra_Procedure_ID(_Compra)
                     '
                     If Not IsNumeric(obj) Then
                         Throw New Exception(obj.ToString)
@@ -1989,10 +1969,9 @@ Public Class frmCompra
         '
     End Sub
     '
-    Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
-        '
-        '--- verifica e pergunta
-        If Not CanCloseMessage() Then Exit Sub
+    ' PROCURA COMPRA
+    '-----------------------------------------------------------------------------------------------------
+    Public Sub ProcuraCompra()
         '
         '--- close
         Me.Close()
@@ -2006,13 +1985,26 @@ Public Class frmCompra
         '
     End Sub
     '
-    Private Sub btnAdicionar_Click(sender As Object, e As EventArgs) Handles btnAdicionar.Click
+    Private Sub btnProcurar_Click(sender As Object, e As EventArgs) Handles btnProcurar.Click
         '
         '--- verifica e pergunta
         If Not CanCloseMessage() Then Exit Sub
         '
+        '--- abre procura
+        ProcuraCompra()
+        '
+    End Sub
+    '
+    ' CRIA UMA NOVA COMPRA
+    '-----------------------------------------------------------------------------------------------------
+    Public Sub NovaCompra()
+        '
+        Visible = False
+        '
         Dim c As New AcaoGlobal
         Dim newCompra As Object = c.Compra_Nova
+        '
+        Me.Visible = True
         '
         If IsNothing(newCompra) Then Exit Sub
         '
@@ -2020,16 +2012,63 @@ Public Class frmCompra
         '
     End Sub
     '
+    Private Sub btnAdicionar_Click(sender As Object, e As EventArgs) Handles btnAdicionar.Click
+        '
+        '--- verifica e pergunta
+        If Not CanCloseMessage() Then Exit Sub
+        '
+        NovaCompra()
+        '
+    End Sub
+    '
+    ' EXCLUIR COMPRA
+    '-----------------------------------------------------------------------------------------------------
     Private Sub btnExcluir_Click(sender As Object, e As EventArgs) Handles btnExcluir.Click
-        MsgBox("Em Implementação")
+        '
+        '--- Verifica bloqueio
+        If RegistroBloqueado() Then Exit Sub
+        '
+        '--- pergunta ao usuario
+        If MessageBox.Show("Você deseja realmente excluir definitivamente essa Compra?",
+                           "Excluir Compra",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question,
+                           MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
+        '
+        '--- Excluir Compra
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            If cBLL.DeletaCompraPorID(_Compra.IDCompra, _IDFilial) Then
+                '
+                '--- fecha
+                Close()
+                MostraMenuPrincipal()
+                '
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Excluir a Compra..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+
 
     End Sub
     '
+    ' IMPRIMIR ETIQUETAS COMPRA
+    '-----------------------------------------------------------------------------------------------------
     Private Sub miImprimirEtiquetas_Click(sender As Object, e As EventArgs) Handles miImprimirEtiquetas.Click
         MsgBox("Em Implementação")
 
     End Sub
     '
+    ' IMPRIMIR RELATORIO
+    '-----------------------------------------------------------------------------------------------------
     Private Sub miImprimirRelatorio_Click(sender As Object, e As EventArgs) Handles miImprimirRelatorio.Click
         MsgBox("Em Implementação")
 

@@ -2,54 +2,30 @@
 Imports CamadaDAL
 Imports System.Data.SqlClient
 '
-Public Class VendaBLL
+Public Class DevolucaoSaidaBLL
     '
-    '--------------------------------------------------------------------------------------------
-    ' GET DATATABLE COM WHERE
-    '--------------------------------------------------------------------------------------------
-    Public Function GetVendas_DT(Optional myWhere As String = "") As DataTable
-        Dim objdb As New AcessoDados
-        Dim dt As New DataTable
-        Dim strSql As String
-        '
-        If Len(myWhere) = 0 Then
-            strSql = "SELECT * FROM qryVendas"
-        Else
-            strSql = "SELECT * FROM qryVendas WHERE " & myWhere
-        End If
-        '
-        Try
-            dt = objdb.ExecuteConsultaSQL_DataTable(strSql)
-            Return dt
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     ' GET LIST COM WHERE
-    '--------------------------------------------------------------------------------------------
-    Public Function GetVendas_List(Optional myWhere As String = "") As List(Of clVenda)
+    '===========================================================================--
+    Public Function GetDevolucao_List(Optional myWhere As String = "") As List(Of clDevolucaoSaida)
+        '
         Dim objdb As New AcessoDados
         Dim strSql As String = ""
         If Len(myWhere) = 0 Then
-            strSql = "SELECT * FROM qryVenda"
+            strSql = "SELECT * FROM qryDevolucaoSaida"
         Else
-            strSql = "SELECT * FROM qryVenda WHERE " & myWhere
+            strSql = "SELECT * FROM qryDevolucaoSaida WHERE " & myWhere
         End If
         '
         Try
             Dim dt As DataTable = objdb.ExecuteConsultaSQL_DataTable(strSql)
-            Dim lista As New List(Of clVenda)
+            Dim lista As New List(Of clDevolucaoSaida)
             '
             If dt.Rows.Count = 0 Then Return lista
             '
             For Each r As DataRow In dt.Rows
-                Dim vnd As clVenda = New clVenda
-                vnd = ConvertDtRow_clVenda(r)
+                Dim vnd As clDevolucaoSaida = ConvertDtRow_clDevolucao(r)
                 lista.Add(vnd)
-
             Next
             '
             Return lista
@@ -60,15 +36,18 @@ Public Class VendaBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '==============================================================================
     ' GET REGISTRO POR ID/RG
-    '--------------------------------------------------------------------------------------------
-    Public Function GetVenda_PorID_OBJ(ByVal myIDVenda As Integer) As clVenda
+    '==============================================================================
+    Public Function GetDevolucao_PorID(IDDevolucao As Integer) As clDevolucaoSaida
         '
         Dim objdb As New AcessoDados
         Dim strSql As String = ""
         '
-        strSql = "SELECT * FROM qryVenda WHERE IDVenda = " & myIDVenda
+        objdb.LimparParametros()
+        objdb.AdicionarParametros("@IDDevolucao", IDDevolucao)
+        '
+        strSql = "SELECT * FROM qryDevolucaoSaida WHERE IDDevolucao = @IDDevolucao"
         '
         Try
             Dim dt As DataTable = objdb.ExecuteConsultaSQL_DataTable(strSql)
@@ -76,19 +55,20 @@ Public Class VendaBLL
             '
             If dt.Rows.Count > 0 Then
                 r = dt.Rows(0)
-                Return ConvertDtRow_clVenda(r)
+                Return ConvertDtRow_clDevolucao(r)
             Else
                 Return Nothing
             End If
+            '
         Catch ex As Exception
             Throw ex
         End Try
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     ' UPDATE
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     Public Function AtualizaVenda_Procedure_ID(ByVal _vnd As clVenda,
                                                Optional myDB As Object = Nothing) As String
         '
@@ -172,9 +152,9 @@ Public Class VendaBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     ' INSERT NOVA VENDA E RETORNA UMA CLVENDA
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     Public Function SalvaNovaVenda_Procedure_Venda(ByVal _venda As clVenda) As clVenda
         Try
             Dim dtVenda As DataTable
@@ -192,9 +172,9 @@ Public Class VendaBLL
         End Try
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     ' INSERT NOVA VENDA E RETORNA UM DATATABLE
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     Public Function SalvaNovaVenda_Procedure_DT(ByVal _vnd As clVenda) As DataTable
         '
         Dim objDB As New AcessoDados
@@ -235,16 +215,16 @@ Public Class VendaBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     ' DELETE VENDA POR IDVENDA
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     Public Function DeletaVendaPorID(IDVenda As Integer, IDFilial As Integer) As Boolean
         '
         Dim clV As clVenda = Nothing
         Dim myQuery As String = ""
         '
         '--- OBTEM O CLVENDA
-        '------------------------------------------------------------------
+        '=======================================================
         Try
             clV = GetVenda_PorID_OBJ(IDVenda)
             '
@@ -473,16 +453,16 @@ Public Class VendaBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     ' VERIFICA AS LIGACOES ANTES DE EXCLUIR UMA VENDA
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     Private Function VerificaLiberacaoVenda(clV As clVenda, Acao As String) As Boolean
         '
         Dim myQuery As String
         Dim SQL As New SQLControl
         '
         '--- VERIFY TBLMOVIMENTACAO | ENTRADAS | RECEBIMENTOS
-        '------------------------------------------------------------------
+        '=======================================================
         '--- 1 - Venda => AReceber => Movimentacoes
         '--- 2 - Venda => AReceber => AReceberParcelas => Movimentacoes
         '--- 3 - Venda => Frete => APagar => Movimentacoes
@@ -599,9 +579,9 @@ Public Class VendaBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '=============================================================================
     ' DESBLOQUEIA UMA VENDA BLOQUEADA
-    '--------------------------------------------------------------------------------------------
+    '=============================================================================
     Public Function VendaDesbloquear(myVenda As clVenda) As Boolean
         '
         If Not VerificaLiberacaoVenda(myVenda, "DESBLOQUEAR") Then Return False
@@ -626,62 +606,62 @@ Public Class VendaBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     ' CONVERT DATAROW DA DATATABLE VENDA EM UM CLVENDA 
-    '--------------------------------------------------------------------------------------------
-    Private Function ConvertDtRow_clVenda(r As DataRow) As clVenda
+    '===========================================================================--
+    Private Function ConvertDtRow_clDevolucao(r As DataRow) As clDevolucaoSaida
         '
-        Dim vnd As clVenda = New clVenda
+        Dim dev As New clDevolucaoSaida
         '
-        vnd.IDVenda = IIf(IsDBNull(r("IDVenda")), Nothing, r("IDVenda"))
-        vnd.IDPessoaDestino = IIf(IsDBNull(r("IDPessoaDestino")), Nothing, r("IDPessoaDestino"))
-        vnd.Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
-        vnd.CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
-        vnd.UF = IIf(IsDBNull(r("UF")), String.Empty, r("UF"))
-        vnd.Cidade = IIf(IsDBNull(r("Cidade")), String.Empty, r("Cidade"))
-        vnd.IDPessoaOrigem = IIf(IsDBNull(r("IDPessoaOrigem")), Nothing, r("IDPessoaOrigem"))
-        vnd.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
-        vnd.IDOperacao = IIf(IsDBNull(r("IDOperacao")), Nothing, r("IDOperacao"))
-        vnd.IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao"))
-        vnd.Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
-        vnd.IDUser = IIf(IsDBNull(r("IDUser")), Nothing, r("IDUser"))
-        vnd.CFOP = IIf(IsDBNull(r("CFOP")), String.Empty, r("CFOP"))
-        vnd.TransacaoData = IIf(IsDBNull(r("TransacaoData")), Nothing, r("TransacaoData"))
-        vnd.IDDepartamento = IIf(IsDBNull(r("IDDepartamento")), Nothing, r("IDDepartamento"))
-        vnd.IDVendedor = IIf(IsDBNull(r("IDVendedor")), Nothing, r("IDVendedor"))
-        vnd.CobrancaTipo = IIf(IsDBNull(r("CobrancaTipo")), Nothing, r("CobrancaTipo"))
-        vnd.AgregaDevolucao = IIf(IsDBNull(r("AgregaDevolucao")), False, r("AgregaDevolucao"))
-        vnd.ValorProdutos = IIf(IsDBNull(r("ValorProdutos")), 0, r("ValorProdutos"))
-        vnd.ValorFrete = IIf(IsDBNull(r("ValorFrete")), 0, r("ValorFrete"))
-        vnd.ValorImpostos = IIf(IsDBNull(r("ValorImpostos")), 0, r("ValorImpostos"))
-        vnd.ValorAcrescimos = IIf(IsDBNull(r("ValorAcrescimos")), 0, r("ValorAcrescimos"))
-        vnd.ValorDevolucao = IIf(IsDBNull(r("ValorDevolucao")), 0, r("ValorDevolucao"))
-        vnd.JurosMes = IIf(IsDBNull(r("JurosMes")), Nothing, r("JurosMes"))
-        vnd.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
-        vnd.IDVendaTipo = IIf(IsDBNull(r("IDVendaTipo")), Nothing, r("IDVendaTipo"))
+        '--- tblDevolucaoSaida
+        '-----------------------------------------------------------------------------------------------
+        dev.IDDevolucao = IIf(IsDBNull(r("IDDevolucao")), Nothing, r("IDDevolucao"))
+        dev.IDPessoaDestino = IIf(IsDBNull(r("IDPessoaDestino")), Nothing, r("IDPessoaDestino"))
+        dev.Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
+        dev.CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
+        dev.UF = IIf(IsDBNull(r("UF")), String.Empty, r("UF"))
+        dev.Cidade = IIf(IsDBNull(r("Cidade")), String.Empty, r("Cidade"))
+        dev.IDPessoaOrigem = IIf(IsDBNull(r("IDPessoaOrigem")), Nothing, r("IDPessoaOrigem"))
+        dev.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
+        dev.IDOperacao = IIf(IsDBNull(r("IDOperacao")), Nothing, r("IDOperacao"))
+        dev.IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao"))
+        dev.Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
+        dev.IDUser = IIf(IsDBNull(r("IDUser")), Nothing, r("IDUser"))
+        dev.CFOP = IIf(IsDBNull(r("CFOP")), String.Empty, r("CFOP"))
+        dev.TransacaoData = IIf(IsDBNull(r("TransacaoData")), Nothing, r("TransacaoData"))
+        dev.IDDepartamento = IIf(IsDBNull(r("IDDepartamento")), Nothing, r("IDDepartamento"))
+        dev.IDVendedor = IIf(IsDBNull(r("IDVendedor")), Nothing, r("IDVendedor"))
+        dev.CobrancaTipo = IIf(IsDBNull(r("CobrancaTipo")), Nothing, r("CobrancaTipo"))
+        dev.AgregaDevolucao = IIf(IsDBNull(r("AgregaDevolucao")), False, r("AgregaDevolucao"))
+        dev.ValorProdutos = IIf(IsDBNull(r("ValorProdutos")), 0, r("ValorProdutos"))
+        dev.ValorFrete = IIf(IsDBNull(r("ValorFrete")), 0, r("ValorFrete"))
+        dev.ValorImpostos = IIf(IsDBNull(r("ValorImpostos")), 0, r("ValorImpostos"))
+        dev.ValorAcrescimos = IIf(IsDBNull(r("ValorAcrescimos")), 0, r("ValorAcrescimos"))
+        dev.ValorDevolucao = IIf(IsDBNull(r("ValorDevolucao")), 0, r("ValorDevolucao"))
+        dev.JurosMes = IIf(IsDBNull(r("JurosMes")), Nothing, r("JurosMes"))
+        dev.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
+        dev.IDVendaTipo = IIf(IsDBNull(r("IDVendaTipo")), Nothing, r("IDVendaTipo"))
         '--- Dados do tblAReceber
-        vnd.IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
-        vnd.SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
-        vnd.IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
-        vnd.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-        vnd.CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), String.Empty, r("CobrancaForma"))
-        vnd.ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), Nothing, r("ValorPagoTotal"))
+        dev.IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
+        dev.SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
+        dev.IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
+        dev.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
+        dev.CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), String.Empty, r("CobrancaForma"))
+        dev.ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), Nothing, r("ValorPagoTotal"))
         '--- Dados da tblVendaFrete
-        vnd.IDTransportadora = IIf(IsDBNull(r("IDTransportadora")), Nothing, r("IDTransportadora"))
-        vnd.FreteTipo = IIf(IsDBNull(r("FreteTipo")), Nothing, r("FreteTipo"))
-        vnd.FreteValor = IIf(IsDBNull(r("FreteValor")), Nothing, r("FreteValor"))
-        vnd.Volumes = IIf(IsDBNull(r("Volumes")), Nothing, r("Volumes"))
-        vnd.IDApagar = IIf(IsDBNull(r("IDApagar")), Nothing, r("IDApagar"))
-        '--- Dados Adicionais
-        vnd.ApelidoFuncionario = IIf(IsDBNull(r("ApelidoFuncionario")), String.Empty, r("ApelidoFuncionario"))
+        dev.IDTransportadora = IIf(IsDBNull(r("IDTransportadora")), Nothing, r("IDTransportadora"))
+        dev.FreteTipo = IIf(IsDBNull(r("FreteTipo")), Nothing, r("FreteTipo"))
+        dev.FreteValor = IIf(IsDBNull(r("FreteValor")), Nothing, r("FreteValor"))
+        dev.Volumes = IIf(IsDBNull(r("Volumes")), Nothing, r("Volumes"))
+        dev.IDApagar = IIf(IsDBNull(r("IDApagar")), Nothing, r("IDApagar"))
         '
-        Return vnd
+        Return dev
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     ' GET LISTA VENDAS PARA FRMPROCURA RETORNA LIST OF CLVENDA
-    '--------------------------------------------------------------------------------------------
+    '===========================================================================--
     Public Function GetVendaLista_Procura(IDFilial As Integer,
                                           Optional dtInicial As Date? = Nothing,
                                           Optional dtFinal As Date? = Nothing) As List(Of clVenda)
@@ -689,7 +669,7 @@ Public Class VendaBLL
         Dim sql As New SQLControl
         '
         sql.AddParam("@IDFilial", IDFilial)
-        Dim myQuery As String = "SELECT * FROM qryVenda WHERE IDPessoaOrigem = @IDFilial"
+        Dim myQuery As String = "SELECT * FROM qryDevolucaoSaida WHERE IDPessoaOrigem = @IDFilial"
         '
 
         If Not IsNothing(dtInicial) Then
@@ -734,9 +714,9 @@ Public Class VendaBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '=============================================================================
     ' GET VENDA TIPOS DATATABLE COM OPTIONAL IDVENDATIPO
-    '--------------------------------------------------------------------------------------------
+    '=============================================================================
     Public Function GetVendaTipo_DT(Optional IDVendaTipo As Byte? = Nothing) As DataTable
         '
         Dim objdb As New AcessoDados
@@ -758,9 +738,9 @@ Public Class VendaBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
+    '=============================================================================
     ' UPDATE A FUNCIONARIO / VENDEDOR DA VENDA
-    '--------------------------------------------------------------------------------------------
+    '=============================================================================
     Public Function AtualizaVendaVendedor(myIDVenda As Integer, NewIDVendedor As Integer) As Boolean
         '
         Dim SQL As New SQLControl

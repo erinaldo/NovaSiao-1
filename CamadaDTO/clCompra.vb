@@ -3,7 +3,8 @@ Public Class clCompra : Implements IEditableObject
     '
 #Region "ESTRUTURA DOS DADOS"
     Structure CompraStruc ' alguns usam FRIEND em vez de DIM
-        'tblTransacao =====================================================
+        '
+        ' TBLTRANSACAO =====================================================
         Dim _IDCompra As Integer?
         Dim _IDPessoaDestino As Integer
         ' Cadastro As String
@@ -16,7 +17,8 @@ Public Class clCompra : Implements IEditableObject
         Dim _IDUser As Integer
         Dim _CFOP As Int16
         Dim _TransacaoData As Date
-        'tblCompra =====================================================
+        '
+        ' TBLCOMPRA =====================================================
         Dim _CobrancaTipo As Byte 'tinyint ==> 0 = SemCobrança | 1 = A Vista | 2 = Parcelada
         ' CobrancaTipoTexto As String
         Dim _FreteTipo As Byte ' 0="Sem Frete" | 1="Emitente" | 2="Destinatário" | 3=Reembolso | 4="A Cobrar"
@@ -26,12 +28,14 @@ Public Class clCompra : Implements IEditableObject
         Dim _Descontos As Decimal
         Dim _TotalCompra As Decimal
         Dim _Observacao As String
-        'tblFrete =====================================================
+        '
+        ' TBLFRETE =====================================================
         Dim _IDTransportadora As Integer?
         ' Transportadora As String
         Dim _FreteValor As Decimal?
         Dim _Volumes As Int16?
         Dim _IDAPagar As Integer?
+        '
     End Structure
 #End Region
     '

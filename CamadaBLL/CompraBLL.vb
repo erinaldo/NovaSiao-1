@@ -233,32 +233,313 @@ Public Class CompraBLL
     End Function
     '
     '--------------------------------------------------------------------------------------------
-    ' DELETE VENDA POR IDVENDA
+    ' DELETE COMPRA POR IDCOMPRA
     '--------------------------------------------------------------------------------------------
-    Public Function DeletaCompraPorID(ByVal IDCompra As Integer)
-
-        Dim strSql As String
-        Dim objDB As AcessoDados
-        '--- Verificar se a compra já foi incluída no Caixa Geral
-
-        '--- Apagar todos os itens da compra
-
-        '--- Apagar todos os AReceber relacionadas à compra
-
-        '--- Apagar o tblFrete associado
-
-        '--- Apagar a Venda em si
-        strSql = "" '"DELETE FROM tblCompra where IDCompra=" & _IDCompra
+    Public Function DeletaCompraPorID(IDCompra As Integer, IDFilial As Integer) As Boolean
         '
-        objDB = New AcessoDados
+        Dim clCmp As clCompra = Nothing
+        Dim myQuery As String = ""
+        '
+        '--- OBTEM O CLCOMPRA
+        '------------------------------------------------------------------
         Try
-            objDB.ExecuteQuery(strSql)
+            clCmp = GetCompra_PorID_OBJ(IDCompra)
+            '
+            If IsNothing(clCmp) Then Throw New Exception("Registro da Compra não foi encontrado...")
+            '
         Catch ex As Exception
             Throw ex
-            Return Nothing
+            Return False
         End Try
-
+        '
+        '--- VERIFICA MOVIMENTACAO ANTES DE EXCLUIR
+        If Not VerificaLiberacaoCompra(clCmp, "EXCLUIR") Then
+            Return False
+        End If
+        '
+        '--- GET ITEMS COMPRA
+        '==================================================================
+        '
+        '--- get produtos | itens da COMPRA
+        Dim ItemBLL As New TransacaoItemBLL
+        Dim lstItens As New List(Of clTransacaoItem)
+        '
+        Try
+            '--- get COMPRA ITENS
+            lstItens = ItemBLL.GetTransacaoItens_List(IDCompra, IDFilial)
+            '
+        Catch ex As Exception
+            '
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- INIT TRANSACTION
+        '==================================================================
+        Dim ObjDB As New AcessoDados
+        ObjDB.BeginTransaction()
+        '
+        '--- DELETE ALL ITENS OF COMPRA AND RESOLVE ESTOQUE
+        '==================================================================
+        '
+        '--- delete all itens of COMPRA
+        Try
+            '
+            For Each it In lstItens
+                ItemBLL.ExcluirItem(it, TransacaoItemBLL.EnumMovimento.ENTRADA, ObjDB)
+            Next
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE ALL APAGAR | MOVIMENTACOES OF COMPRA
+        '==================================================================
+        '
+        '--- GET IDAPagar vinculado a Compra
+        Try
+            Dim pBLL As New APagarBLL
+            '
+            '--- DELETA APAGAR
+            pBLL.Excluir_APagar_Origem(IDCompra, clAPagar.Origem_APagar.Compra, ObjDB)
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE APAGAR OF THE TBLVENDAFRETE RELATED
+        '==================================================================
+        '
+        '--- FRETE -> APAGAR -> MOVIMENTACAO | FRETE -> APAGAR
+        If Not IsNothing(clCmp.IDApagar) Then
+            '
+            Try
+                '
+                '--- DELETE MOVIMENTACOES DE FRETE
+                ObjDB.LimparParametros()
+                ObjDB.AdicionarParametros("@IDAPagar", clCmp.IDApagar)
+                '
+                myQuery = "DELETE FROM tblMovimentacoes WHERE Origem = 10 AND IDOrigem = @IDAPagar"
+                '
+                ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+                '
+                '--- DELETE A PAGAR DE FRETE
+                ObjDB.LimparParametros()
+                ObjDB.AdicionarParametros("@IDAPagar", clCmp.IDApagar)
+                '
+                myQuery = "DELETE FROM tblAPagar WHERE IDAPagar = @IDAPagar"
+                '
+                ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+                '
+            Catch ex As Exception
+                '
+                ObjDB.RollBackTransaction()
+                Throw ex
+                Return False
+                '
+            End Try
+            '
+        End If
+        '
+        '--- DELETE FRETE
+        Try
+            '
+            ObjDB.LimparParametros()
+            ObjDB.AdicionarParametros("@IDCompra", clCmp.IDCompra)
+            '
+            myQuery = "DELETE tblFrete WHERE IDTransacao = @IDCompra"
+            '
+            ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE NOTAS IF NECESSITY
+        '==================================================================
+        Try
+            '
+            ObjDB.LimparParametros()
+            ObjDB.AdicionarParametros("@IDCompra", clCmp.IDCompra)
+            '
+            myQuery = "DELETE FROM tblTransacaoNotaFiscal WHERE IDTransacao = @IDCompra"
+            '
+            ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE COMPRA FINNALY AND COMMIT
+        '==================================================================
+        '
+        Try
+            '
+            ObjDB.LimparParametros()
+            ObjDB.AdicionarParametros("@IDCompra", clCmp.IDCompra)
+            '
+            myQuery = "DELETE FROM tblCompra WHERE IDCompra = @IDCompra"
+            '
+            ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+            ' COMMIT TRANSACTION
+            ObjDB.CommitTransaction()
+            Return True
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+    End Function
+    '
+    '--------------------------------------------------------------------------------------------
+    ' VERIFICA AS LIGACOES ANTES DE EXCLUIR UMA COMPRA
+    '--------------------------------------------------------------------------------------------
+    Private Function VerificaLiberacaoCompra(clCmp As clCompra, Acao As String) As Boolean
+        '
+        Dim myQuery As String
+        Dim SQL As New SQLControl
+        '
+        '--- VERIFY ESTOQUE | TBLMOVIMENTACAO | SAIDAS | PAGAMENTOS
+        '------------------------------------------------------------------
+        '--- 1 - Compra => APagar => Movimentacoes
+        '--- 2 - Compra => Frete  => APagar => Movimentacoes
+        '--- 3 - Compra => Itens  => Estoque
+        '==================================================================
+        '
+        '
+        ' 1. --- verifica movimentacao de entrada da Compra antes de excluir
+        ' ORIGEM = 1 ( TBLTRANSACAO | TBLCOMPRA )
+        Try
+            SQL.ClearParams()
+            SQL.AddParam("@IDCompra", clCmp.IDCompra)
+            '
+            myQuery = "SELECT COUNT(*) FROM tblCaixaMovimentacao " &
+                      "WHERE Origem = 10 AND NOT IDCaixa IS NULL " &
+                      "AND IDOrigem IN (SELECT IDAPagar FROM tblAPagar WHERE Origem = 1 AND IDOrigem = @IDCompra)"
+            '
+            '--- execute query
+            SQL.ExecQuery(myQuery)
+            '
+            '--- verify error
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+                Return False
+            End If
+            '
+            '--- get count of data returned
+            Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
+            '
+            If quant > 0 Then
+                Throw New Exception("Não é possível " & Acao & " uma Compra que possui " &
+                                    "débitos/pagamentos que já foram incluídos em um caixa...")
+                Return False
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+        '
+        ' 2. --- verifica movimentacao de saida do frete antes de excluir
+        ' FRETE => TBLAPAGAR => TBLMOVIMENTACAO
+        If IsNothing(clCmp.IDApagar) Then Return True
+        '
+        Try
+            '
+            SQL.ClearParams()
+            SQL.AddParam("@IDAPagar", clCmp.IDApagar)
+            '
+            myQuery = "SELECT COUNT(*) FROM tblCaixaMovimentacao
+                       WHERE Origem = 10 AND IDOrigem = @IDAPagar AND NOT IDCaixa IS NULL"
+            '
+            '--- execute query
+            SQL.ExecQuery(myQuery)
+            '
+            '--- verify error
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+                Return False
+            End If
+            '
+            '--- get count of data returned
+            Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
+            '
+            If quant > 0 Then
+                Throw New Exception("Não é possível " & Acao & " uma Compra que possui " &
+                                    "saidas/pagamentos de FRETE que já foram incluídos em um caixa...")
+                Return False
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+        '
+        ' 3. --- verifica estoque negativo before DELETE
+        ' ( TBLESTOQUE | TBLITENS )
+        '
+        If Acao.ToUpper <> "EXCLUIR" Then Return True '--> somente verifica ESTOQUE caso for EXCLUIR
+        '
+        Try
+            '
+            SQL.ClearParams()
+            SQL.AddParam("@IDTransacao", clCmp.IDCompra)
+            '
+            myQuery = "SELECT COUNT(*) AS Quant
+                      FROM tblTransacaoItens AS I
+                      JOIN tblTransacao AS T ON T.IDTransacao = I.IDTransacao
+                      JOIN tblEstoque AS E ON E.IDFilial = T.IDPessoaDestino AND E.IDProduto = I.IDProduto
+                      WHERE I.IDTransacao = @IDTransacao AND E.Quantidade - I.Quantidade < 0"
+            '
+            '--- execute query
+            SQL.ExecQuery(myQuery)
+            '
+            '--- verify error
+            If SQL.HasException Then
+                Throw New Exception(SQL.Exception)
+                Return False
+            End If
+            '
+            '--- get count of data returned
+            Dim Quant As Integer = SQL.DBDT.Rows(0).Item(0)
+            '
+            If Quant > 0 Then
+                Throw New Exception("Não é possível " & Acao & " uma Compra que possui " &
+                                    "items que se forem removidos farão com que o ESTOQUE se torne negativo...")
+                Return False
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+            Return False
+        End Try
+        '
+        '--- RETORNA
         Return True
+        '
     End Function
     '
     '--------------------------------------------------------------------------------------------
