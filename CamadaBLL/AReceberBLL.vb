@@ -6,7 +6,7 @@ Public Class AReceberBLL
     '===================================================================================================
     ' OBTER ARECEBER POR IDORIGEM E ORIGEM (TRANSACAO OU FINANCIAMENTO)
     '===================================================================================================
-    Public Function AReceber_GET_PorOrigem(IDOrigem As Integer, Origem As clAReceber.AReceberOrigem) As clAReceber
+    Public Function AReceber_GET_PorOrigem(IDOrigem As Integer, Origem As clAReceber.EnumAReceberOrigem) As clAReceber
         Dim db As New AcessoDados
         Dim dt As New DataTable
         Dim clRec As New clAReceber
@@ -146,12 +146,14 @@ Public Class AReceberBLL
     ' EXCLUIR TODOS ARECEBER E MOVIMENTACAO DE UMA TRANSACAO PELO ID
     '===================================================================================================
     Public Function Excluir_AReceber_Transacao(IDTransacao As Integer,
+                                               Origem As clAReceber.EnumAReceberOrigem,
                                                Optional mydb As Object = Nothing) As Boolean
         '
         Dim db As AcessoDados = If(mydb, New AcessoDados)
         Dim tranLocal As Boolean = False '--- informa se foi iniciada uma transaction local
         '
         ' VERIFY IF EXISTS TRANSACTION
+        '----------------------------------------------------------------------------
         If Not db.isTransaction Then
             db.BeginTransaction()
             tranLocal = True
@@ -159,7 +161,8 @@ Public Class AReceberBLL
         '
         Dim myQuery As String = ""
         '
-        '1. DELETE MOVIMENTACAO
+        '--- 1. DELETE MOVIMENTACAO
+        '----------------------------------------------------------------------------
         db.LimparParametros()
         db.AdicionarParametros("@IDVenda", IDTransacao)
         '
@@ -175,11 +178,13 @@ Public Class AReceberBLL
             Return False
         End Try
         '
-        '2. DELETE ARECEBER
+        '--- 2. DELETE ARECEBER
+        '----------------------------------------------------------------------------
         db.LimparParametros()
         db.AdicionarParametros("@IDTransacao", IDTransacao)
+        db.AdicionarParametros("@Origem", Origem)
         '
-        myQuery = "DELETE tblAReceber WHERE Origem = 1 AND IDOrigem = @IDTransacao"
+        myQuery = "DELETE tblAReceber WHERE Origem = @Origem AND IDOrigem = @IDTransacao"
         '
         Try
             '

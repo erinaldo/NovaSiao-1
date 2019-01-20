@@ -10,7 +10,7 @@ Public Module GlobalPrincipal
     Public UsuarioAcesso(1) As Integer ' (0)IdUser; (1)UsuarioAcesso
 
     ' ENUM PUBLICO ESTADO DO REGISTRO
-    Public Enum FlagEstado
+    Public Enum EnumFlagEstado
         RegistroSalvo = 1
         Alterado = 2
         NovoRegistro = 3
@@ -18,7 +18,7 @@ Public Module GlobalPrincipal
     End Enum
 
     ' ENUM PULICO ACAO NO REGISTRO
-    Public Enum FlagAcao
+    Public Enum EnumFlagAcao
         INSERIR = 1
         EDITAR = 2
         VISUALIZAR = 3
@@ -26,14 +26,14 @@ Public Module GlobalPrincipal
     End Enum
     '
     ' VARIANTE PUBLICA TIPO DE ACESSO DOS USUÁRIO
-    Public Enum AcessoTipo
+    Public Enum EnumAcessoTipo
         Administrador = 1
         UsuarioSenior = 2
         UsuarioComum = 3
     End Enum
     '
     ' ENUM PARA frmDataInformar
-    Enum DataTipo
+    Enum EnumDataTipo
         Passado = 1
         PassadoPresente = 2
         Futuro = 3
@@ -41,7 +41,7 @@ Public Module GlobalPrincipal
     End Enum
     '
     ' ENUM PARA Origem do Preco
-    Public Enum precoOrigem
+    Public Enum EnumPrecoOrigem
         PRECO_VENDA = 1
         PRECO_COMPRA = 2
     End Enum
@@ -108,7 +108,7 @@ Public Module GlobalPrincipal
     '
     '--- OBTER DATA DO USUARIO MULTIPLAS FUNCOES
     Public Function DataInformar(subTitulo As String,
-                                 DataTipo As DataTipo,
+                                 DataTipo As EnumDataTipo,
                                  dataPadrao As Date,
                                  formOrigem As Form) As Date?
         '

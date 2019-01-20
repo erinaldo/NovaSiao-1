@@ -4,8 +4,8 @@ Imports System.ComponentModel
 '
 Public Class frmCompraItem
     Private _clItem As clTransacaoItem
-    Private _acao As FlagAcao
-    Private _pOrigem As precoOrigem
+    Private _acao As EnumFlagAcao
+    Private _pOrigem As EnumPrecoOrigem
     Private _formOrigem As Form
     Private _filial As Integer?
     Private BindItem As New BindingSource
@@ -13,7 +13,7 @@ Public Class frmCompraItem
     '
 #Region "NEW | PROPERTYS"
     '
-    Sub New(fOrigem As Form, pOrigem As precoOrigem, Filial As Integer, Item As clTransacaoItem)
+    Sub New(fOrigem As Form, pOrigem As EnumPrecoOrigem, Filial As Integer, Item As clTransacaoItem)
         '
         ' This call is required by the designer.
         InitializeComponent()
@@ -25,9 +25,9 @@ Public Class frmCompraItem
         propItem = Item
         '
         If IsNothing(Item.IDTransacaoItem) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
-            propAcao = FlagAcao.INSERIR
+            propAcao = EnumFlagAcao.INSERIR
         Else
-            propAcao = FlagAcao.EDITAR
+            propAcao = EnumFlagAcao.EDITAR
         End If
         '
         '--- posiciona o form pelo FORMORIGEM
@@ -40,17 +40,17 @@ Public Class frmCompraItem
     End Sub
     '
     '--- Propriedade propAcao
-    Public Property propAcao() As FlagAcao
+    Public Property propAcao() As EnumFlagAcao
         Get
             Return _acao
         End Get
-        Set(ByVal value As FlagAcao)
+        Set(ByVal value As EnumFlagAcao)
             _acao = value
             '
-            If _acao = FlagAcao.INSERIR Then
+            If _acao = EnumFlagAcao.INSERIR Then
                 btnOK.Text = "&Inserir"
                 lblToolStripInfo.Text = "Inserindo Novo Item - Para cadastrar NOVO Produto pressione tecla N"
-            ElseIf _acao = FlagAcao.EDITAR Then
+            ElseIf _acao = enumFlagAcao.EDITAR Then
                 btnOK.Text = "&Alterar"
                 lblToolStripInfo.Text = "Editando Item"
             End If
@@ -187,9 +187,9 @@ Public Class frmCompraItem
                 .RGProduto = ItemProduto.RGProduto
                 '
                 '--- define o preco de VENDA OU DE COMPRA
-                If _pOrigem = precoOrigem.PRECO_VENDA Then
+                If _pOrigem = EnumPrecoOrigem.PRECO_VENDA Then
                     .Preco = ItemProduto.PVenda
-                ElseIf _pOrigem = precoOrigem.PRECO_COMPRA Then
+                ElseIf _pOrigem = enumprecoOrigem.PRECO_COMPRA Then
                     .Preco = ItemProduto.PCompra
                     .Desconto = ItemProduto.DescontoCompra
                     .Substituicao = 0
@@ -262,11 +262,11 @@ Public Class frmCompraItem
 
 
             End If
-        ElseIf e.KeyCode = Keys.N AndAlso _acao = FlagAcao.INSERIR Then
+        ElseIf e.KeyCode = Keys.N AndAlso _acao = enumFlagAcao.INSERIR Then
             e.Handled = True
             '
             Dim prod As New clProduto
-            Dim f As New frmProduto(FlagAcao.INSERIR, prod, Me)
+            Dim f As New frmProduto(EnumFlagAcao.INSERIR, prod, Me)
             '
             f.ShowDialog()
             '

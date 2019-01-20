@@ -7,10 +7,10 @@ Public Class frmProduto
     Private prodBLL As New ProdutoBLL
     Private _produto As clProduto
     Private WithEvents bindP As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
-    Private _acao As FlagAcao
+    Private _acao As EnumFlagAcao
     Private _formOrigem As Form
     '
 #Region "EVENTO LOAD E PROPRIEDADE SIT"
@@ -18,13 +18,13 @@ Public Class frmProduto
     Public Property RGEscolhido As Integer? '--- Propriedade para escolha do produto
     '
     'PROPERTY SIT
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovoProduto.Enabled = True
                 btnExcluir.Enabled = True
@@ -33,14 +33,14 @@ Public Class frmProduto
                 lblIDProduto.Text = Format(_produto.IDProduto, "0000")
                 CalcMargemDescontoLabel()
                 AtivoButtonImage()
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovoProduto.Enabled = False
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = True
                 btnProcurar.Enabled = False
                 AtivoButtonImage()
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 txtProduto.Select()
                 btnSalvar.Enabled = True
                 btnNovoProduto.Enabled = False
@@ -57,7 +57,7 @@ Public Class frmProduto
         End Set
     End Property
     '
-    Public Sub New(myAcao As FlagAcao, myProduto As clProduto, Optional formOrigem As Form = Nothing)
+    Public Sub New(myAcao As EnumFlagAcao, myProduto As clProduto, Optional formOrigem As Form = Nothing)
         '
         ' This call is required by the designer.
         InitializeComponent()
@@ -98,16 +98,16 @@ Public Class frmProduto
         End Set
     End Property
     '
-    Public Property propAcao As FlagAcao
+    Public Property propAcao As EnumFlagAcao
         Get
             Return _acao
         End Get
-        Set(value As FlagAcao)
+        Set(value As EnumFlagAcao)
             _acao = value
-            If value = FlagAcao.INSERIR Then
-                Sit = FlagEstado.NovoRegistro
-            ElseIf value = FlagAcao.EDITAR Then
-                Sit = FlagEstado.RegistroSalvo
+            If value = EnumFlagAcao.INSERIR Then
+                Sit = EnumFlagEstado.NovoRegistro
+            ElseIf value = enumFlagAcao.EDITAR Then
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
         End Set
     End Property
@@ -162,8 +162,8 @@ Public Class frmProduto
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _produto.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _produto.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -254,9 +254,9 @@ Public Class frmProduto
         '
         Try
             'Salva o Produto, mas antes define se é ATUALIZAR OU UM NOVO REGISTRO
-            If Sit = FlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
+            If Sit = EnumFlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
                 NewProdID = prodBLL.SalvaNovoProduto_Procedure_ID(_produto, myFilial)
-            ElseIf _Sit = FlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
+            ElseIf _Sit = EnumFlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
                 _produto.UltAltera = Now.ToShortDateString
                 NewProdID = prodBLL.AtualizaProduto_Procedure_ID(_produto, myFilial)
             End If
@@ -270,7 +270,7 @@ Public Class frmProduto
         If NewProdID <> 0 Then
             '
             'Obtem o número de Registro do Novo Produto Cadastrado
-            If _Sit = FlagEstado.NovoRegistro Then
+            If _Sit = EnumFlagEstado.NovoRegistro Then
                 _produto.IDProduto = NewProdID
                 lblIDProduto.Tag = NewProdID
                 lblIDProduto.Text = Format(NewProdID, "D4")
@@ -278,7 +278,7 @@ Public Class frmProduto
 
             If IsNothing(_formOrigem) Then '--- nesse caso mantém o formulário aberto depois de salvar
                 'Altera a Situação
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 bindP.CurrencyManager.EndCurrentEdit()
 
                 'Mensagem
@@ -368,9 +368,9 @@ Public Class frmProduto
 
         Dim ProdRG As String = ""
 
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             ProdRG = ProcurarProduto_RG(CInt(txtRGProduto.Text))
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             ProdRG = ProcurarProduto_RG(CInt(txtRGProduto.Text), _produto.RGProduto)
         End If
 
@@ -403,7 +403,7 @@ Public Class frmProduto
             Dim pReg As Integer = frmP.IDEscolhido
             propProduto = prodBLL.GetProduto_PorID(pReg, Obter_FilialPadrao)
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
         '
     End Sub
@@ -422,7 +422,7 @@ Public Class frmProduto
         '
         If Not IsNothing(DirectCast(bindP.Current, clProduto).IDProduto) Then
             txtProduto.Focus()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         Else
             btnFechar_Click(sender, e)
         End If
@@ -431,7 +431,7 @@ Public Class frmProduto
     '
     ' ATIVAR OU DESATIVAR CLIENTE BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR um Produto Novo", "Desativar Produto",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -481,7 +481,7 @@ Public Class frmProduto
     ' BOTÃO NOVO REGISTRO
     Private Sub btnNovoProduto_Click(sender As Object, e As EventArgs) Handles btnNovoProduto.Click
         propProduto = New clProduto
-        propAcao = FlagAcao.INSERIR
+        propAcao = EnumFlagAcao.INSERIR
     End Sub
     '
 #End Region '// OPERAÇÕES DE REGISTRO
@@ -494,9 +494,9 @@ Public Class frmProduto
 
         ' VERIFICA A CONEXÃO COM O SQL
         Try
-            If Sit = FlagEstado.NovoRegistro Then ' nesse caso é um novo registro
+            If Sit = EnumFlagEstado.NovoRegistro Then ' nesse caso é um novo registro
                 lista = prodBLL.GetProdutos_Where("RGProduto = " & myRGProduto)
-            ElseIf Sit = FlagEstado.RegistroSalvo Then
+            ElseIf Sit = EnumFlagEstado.RegistroSalvo Then
                 lista = prodBLL.GetProdutos_Where("IDProduto <> " & myID & " AND RGProduto = " & myRGProduto)
             End If
         Catch ex As Exception
@@ -639,15 +639,15 @@ Public Class frmProduto
             e.Handled = True
             Select Case ctr.Name
                 Case "txtProdutoTipo"
-                    If Not IsNothing(_produto.IDProdutoTipo) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_produto.IDProdutoTipo) Then Sit = EnumFlagEstado.Alterado
                     txtProdutoTipo.Clear()
                     _produto.IDProdutoTipo = Nothing
                 Case "txtProdutoSubTipo"
-                    If Not IsNothing(_produto.IDProdutoSubTipo) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_produto.IDProdutoSubTipo) Then Sit = EnumFlagEstado.Alterado
                     txtProdutoSubTipo.Clear()
                     _produto.IDProdutoSubTipo = Nothing
                 Case "txtProdutoCategoria"
-                    If Not IsNothing(_produto.IDCategoria) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_produto.IDCategoria) Then Sit = EnumFlagEstado.Alterado
                     txtProdutoCategoria.Clear()
                     _produto.IDCategoria = Nothing
             End Select
@@ -965,7 +965,7 @@ Public Class frmProduto
                     txtProdutoTipo.Text = DirectCast(frmT, frmProdutoProcurarTipo).propTipo_Escolha
                     _produto.IDProdutoTipo = DirectCast(frmT, frmProdutoProcurarTipo).propIdTipo_Escolha
                     '
-                    ' altera o FlagEstado para ALTERADO
+                    ' altera o EnumFlagEstado para ALTERADO
                     If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDProdutoTipo), 0, _produto.IDProdutoTipo) Then
                         '
                         ' remove o SUBTIPO e a CATEGORIA porque o TIPO foi alterado
@@ -974,8 +974,8 @@ Public Class frmProduto
                         txtProdutoCategoria.Text = ""
                         _produto.IDCategoria = Nothing
                         '
-                        ' altera o FLAGestado
-                        Sit = FlagEstado.Alterado
+                        ' altera o EnumFlagEstado
+                        Sit = EnumFlagEstado.Alterado
                         '
                     End If
                     '
@@ -988,9 +988,9 @@ Public Class frmProduto
                     txtProdutoSubTipo.Text = DirectCast(frmT, frmProdutoProcurarSubTipo).propSubTipo_Escolha
                     _produto.IDProdutoSubTipo = DirectCast(frmT, frmProdutoProcurarSubTipo).propIdSubTipo_Escolha
                     '
-                    ' altera o FlagEstado para ALTERADO
+                    ' altera o EnumFlagEstado para ALTERADO
                     If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDProdutoSubTipo), 0, _produto.IDProdutoSubTipo) Then
-                        Sit = FlagEstado.Alterado
+                        Sit = EnumFlagEstado.Alterado
                     End If
                     '
                     ' move focus
@@ -1002,9 +1002,9 @@ Public Class frmProduto
                     txtProdutoCategoria.Text = DirectCast(frmT, frmProdutoProcurarCategoria).propCategoria_Escolha
                     _produto.IDCategoria = DirectCast(frmT, frmProdutoProcurarCategoria).propIdCategoria_Escolha
                     '
-                    ' altera o FlagEstado para ALTERADO
+                    ' altera o EnumFlagEstado para ALTERADO
                     If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDCategoria), 0, _produto.IDCategoria) Then
-                        Sit = FlagEstado.Alterado
+                        Sit = EnumFlagEstado.Alterado
                     End If
                     '
                     ' move focus

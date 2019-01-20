@@ -372,7 +372,7 @@ Public Class frmPrincipal
                 Dim cliBll As New ClientePF_BLL
 
                 Dim myCliPF As clClientePF = cliBll.GetClientePF_PorID(frm.propClienteID)
-                Dim frmCli As New frmClientePF(FlagAcao.EDITAR, myCliPF)
+                Dim frmCli As New frmClientePF(EnumFlagAcao.EDITAR, myCliPF)
                 frmCli.MdiParent = Me
                 frmCli.Show()
             ElseIf frm.propClienteTipo = 2 Then ' PESSOA JURÍDICA
@@ -382,7 +382,7 @@ Public Class frmPrincipal
                 Dim cliBLL As New ClientePJ_BLL
 
                 Dim myCliPJ As clClientePJ = cliBLL.GetClientesPJ_PorID(frm.propClienteID)
-                Dim frmCli As New frmClientePJ(FlagAcao.EDITAR, myCliPJ)
+                Dim frmCli As New frmClientePJ(EnumFlagAcao.EDITAR, myCliPJ)
                 frmCli.MdiParent = Me
                 frmCli.Show()
             End If
@@ -540,7 +540,7 @@ Public Class frmPrincipal
     '
     Private Sub miProdutoNovo_Click(sender As Object, e As EventArgs) Handles miProdutoNovo.Click
         OcultaMenuPrincipal()
-        Dim prod As New frmProduto(FlagAcao.INSERIR, New clProduto)
+        Dim prod As New frmProduto(EnumFlagAcao.INSERIR, New clProduto)
         prod.MdiParent = Me
         prod.Show()
     End Sub
@@ -572,7 +572,7 @@ Public Class frmPrincipal
             OcultaMenuPrincipal()
             '
             ' abre o produto para edição
-            Dim prod As New frmProduto(FlagAcao.EDITAR, clProd)
+            Dim prod As New frmProduto(EnumFlagAcao.EDITAR, clProd)
             prod.MdiParent = Me
             prod.Show()
         Catch ex As Exception

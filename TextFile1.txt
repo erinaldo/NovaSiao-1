@@ -1,0 +1,36 @@
+    ' ENUM PUBLICO ESTADO DO REGISTRO
+    Public Enum FlagEstado
+        RegistroSalvo = 1
+        Alterado = 2
+        NovoRegistro = 3
+        RegistroBloqueado = 4
+    End Enum
+
+    ' ENUM PULICO ACAO NO REGISTRO
+    Public Enum FlagAcao
+        INSERIR = 1
+        EDITAR = 2
+        VISUALIZAR = 3
+        EXCLUIR = 4
+    End Enum
+    '
+    ' VARIANTE PUBLICA TIPO DE ACESSO DOS USUÁRIO
+    Public Enum AcessoTipo
+        Administrador = 1
+        UsuarioSenior = 2
+        UsuarioComum = 3
+    End Enum
+    '
+    ' ENUM PARA frmDataInformar
+    Enum DataTipo
+        Passado = 1
+        PassadoPresente = 2
+        Futuro = 3
+        FuturoPresente = 4
+    End Enum
+    '
+    ' ENUM PARA Origem do Preco
+    Public Enum precoOrigem
+        PRECO_VENDA = 1
+        PRECO_COMPRA = 2
+    End Enum

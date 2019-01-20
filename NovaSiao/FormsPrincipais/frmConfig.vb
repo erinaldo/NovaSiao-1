@@ -12,26 +12,26 @@ Public Class frmConfig
     Private _Conta As clConta
     Private IDConta_Config As Short?
     Private IDFilial_Config As Integer?
-    Private _Sit As FlagEstado
+    Private _Sit As EnumFlagEstado
     Private ImageLogoMono As Image
     Private ImageLogoColor As Image
     Dim _VerAlteracao As Boolean = False
     '
 #Region "LOAD"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnCancelar.Text = "Fechar"
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnCancelar.Text = "Cancelar"
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 btnSalvar.Enabled = True
                 btnCancelar.Text = "Sair"
             End If
@@ -49,14 +49,14 @@ Public Class frmConfig
                 MessageBox.Show("O arquivo de Configuração possui um erro de leitura..." & vbNewLine &
                                 "Preencha todos os campos para gravar nova Configuração do Sistema.",
                                 "Arquivo Corrompido", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             Else
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
             '
         Else
             '
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
             '
         End If
         '
@@ -109,19 +109,19 @@ Public Class frmConfig
         '--- Descricao da Conta
         If Not _Conta.Conta.Equals(txtContaPadrao.Text) Then
             txtContaPadrao.Text = _Conta.Conta
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         '--- Descricao da Filial
         If Not _Conta.ApelidoFilial.Equals(txtFilialPadrao.Text) Then
             txtFilialPadrao.Text = _Conta.ApelidoFilial
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         '-- IDFilial
         If Not _Conta.IDFilial.Equals(IDFilial_Config) Then
             IDFilial_Config = _Conta.IDFilial
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub
@@ -501,7 +501,7 @@ Error_Handler:
         If fFil.DialogResult = DialogResult.Cancel Then Exit Sub
         '
         If fFil.propIdFilial_Escolha <> _Conta.IDFilial Then
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
             _Conta = New clConta '--- clear _Conta as NEW clConta
             txtContaPadrao.Clear()
         End If
@@ -531,7 +531,7 @@ Error_Handler:
         If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
         '
         If frmConta.propConta_Escolha.IDConta <> _Conta.IDConta Then
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         _Conta = frmConta.propConta_Escolha
@@ -684,16 +684,16 @@ Error_Handler:
     '
     Private Sub Controles_TextChanged(sender As Object, e As EventArgs)
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub
     '
     Private Sub dtpDataPadrao_ValueChanged(sender As Object, e As EventArgs) Handles dtpDataPadrao.ValueChanged
         '
-        If _VerAlteracao AndAlso Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _VerAlteracao AndAlso Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub
@@ -703,8 +703,8 @@ Error_Handler:
         rbtServLocal.CheckedChanged,
         rbtServRemoto.CheckedChanged
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub
@@ -758,7 +758,7 @@ Error_Handler:
                             "Configuração do Sistema", MessageBoxButtons.OK,
                             MessageBoxIcon.Information)
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         Else
             MessageBox.Show("Erro ao gravar o arquivo de Configuração",
                 "Configuração do Sistema", MessageBoxButtons.OK,
@@ -937,7 +937,7 @@ Error_Handler:
                 txtLogoMonoCaminho.Text = OFD.FileName
                 ImageLogoMono = Image.FromFile(OFD.FileName)
                 picLogoMono.Image = ImageLogoMono
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End Using
         '
@@ -950,7 +950,7 @@ Error_Handler:
                 txtLogoColorCaminho.Text = OFD.FileName
                 ImageLogoColor = Image.FromFile(OFD.FileName)
                 picLogoColor.Image = ImageLogoColor
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End Using
         '
@@ -1014,7 +1014,7 @@ Error_Handler:
             '--- preenche com o valor escolhido
             dgvOperacao.CurrentCell.Value = f.Escolhido
             '
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
             '
         End If
         '
@@ -1024,7 +1024,7 @@ Error_Handler:
     Private Sub LimparToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LimparToolStripMenuItem.Click
         dgvOperacao.CurrentCell.Value = DBNull.Value
         '
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
         '
     End Sub
     '
@@ -1036,7 +1036,7 @@ Error_Handler:
     '--------------------------------------------------------------------------------------------------------
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         '
-        If _Sit = FlagEstado.Alterado Then
+        If _Sit = EnumFlagEstado.Alterado Then
             '
             LerConfigXML()
             '
@@ -1047,9 +1047,9 @@ Error_Handler:
                 _Conta = New clConta
             End If
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
-        ElseIf _Sit = FlagEstado.NovoRegistro Then
+        ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
             DialogResult = DialogResult.Cancel
             Close()
         Else

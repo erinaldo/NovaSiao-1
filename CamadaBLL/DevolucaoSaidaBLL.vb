@@ -66,169 +66,294 @@ Public Class DevolucaoSaidaBLL
         '
     End Function
     '
-    '===========================================================================--
+    '=============================================================================
     ' UPDATE
-    '===========================================================================--
-    Public Function AtualizaVenda_Procedure_ID(ByVal _vnd As clVenda,
-                                               Optional myDB As Object = Nothing) As String
+    '=============================================================================
+    Public Function Update_Devolucao(_dev As clDevolucaoSaida,
+                                     Optional myDB As Object = Nothing) As Boolean
         '
-        Dim objDB As AcessoDados = If(myDB, New AcessoDados)
-        Dim Conn As New SqlCommand
+        Dim objDB As AcessoDados
+        Dim TranLocal As Boolean = True
         '
+        If IsNothing(myDB) Then
+            objDB = New AcessoDados
+            objDB.BeginTransaction()
+        Else
+            objDB = myDB
+            TranLocal = False
+        End If
+        '
+        Dim myQuery As String = ""
+        '
+        '--- 1. UPDATE TBLTRANSACAO
+        '--------------------------------------------------------------------------------------
         'Limpa os Parâmetros
         objDB.LimparParametros()
         '
         '-- PARAMETROS DA TBLTRANSACAO
-        '@IDVenda AS INT
-        objDB.AdicionarParametros("@IDVenda", _vnd.IDVenda)
-        '@IDPessoaDestino AS INT, 
-        objDB.AdicionarParametros("@IDPessoaDestino", _vnd.IDPessoaDestino)
-        '@IDPessoaOrigem AS INT, 
-        objDB.AdicionarParametros("@IDPessoaOrigem", _vnd.IDPessoaOrigem)
-        '@IDOperacao AS BYTE, 
-        objDB.AdicionarParametros("@IDOperacao", _vnd.IDOperacao)
-        '@IDSituacao AS TINYINT = 0, --0|INSERIDA ; 1|VERIFICADA ; 2|FECHADA 
-        objDB.AdicionarParametros("@IDSituacao", _vnd.IDSituacao)
-        '@IDUser AS INT,
-        objDB.AdicionarParametros("@IDUser", _vnd.IDUser)
-        '@CFOP AS INT(16), 
-        objDB.AdicionarParametros("@CFOP", _vnd.CFOP)
-        '@VendaData AS SMALLDATETIME, 
-        objDB.AdicionarParametros("@TransacaoData", _vnd.TransacaoData)
+        objDB.AdicionarParametros("@IDDevolucao", _dev.IDDevolucao)
+        objDB.AdicionarParametros("@IDPessoaDestino", _dev.IDPessoaDestino)
+        objDB.AdicionarParametros("@IDSituacao", _dev.IDSituacao)
+        objDB.AdicionarParametros("@TransacaoData", _dev.TransacaoData)
         '
-        '-- PARAMETROS DA TBLVENDA
-        '@IDDepartamento AS SMALLINT = 1,
-        objDB.AdicionarParametros("@IDDepartamento", _vnd.IDDepartamento)
-        '@IDVendedor AS INT,
-        objDB.AdicionarParametros("@IDVendedor", _vnd.IDVendedor)
-        '@CobrancaTipo AS TINYINT, 
-        objDB.AdicionarParametros("@CobrancaTipo", _vnd.CobrancaTipo)
-        '@AgregaDevolucao AS BIT, 
-        objDB.AdicionarParametros("@AgregaDevolucao", _vnd.AgregaDevolucao)
-        '@ValorProdutos AS MONEY
-        objDB.AdicionarParametros("@ValorProdutos", _vnd.ValorProdutos)
-        '@ValorFrete AS MONEY -- Valor do Frete a ser cobrado na Venda
-        objDB.AdicionarParametros("@ValorFrete", _vnd.ValorFrete)
-        '@ValorImpostos AS MONEY -- Valor dos Impostos a ser cobrados
-        objDB.AdicionarParametros("@ValorImpostos", _vnd.ValorImpostos)
-        '@ValorAcrescimos AS MONEY -- Valor dos outros acrescimos
-        objDB.AdicionarParametros("@ValorAcrescimos", _vnd.ValorAcrescimos)
-        '@ValorDevoucao AS MONEY -- Valor das devolucao a ser abatida
-        objDB.AdicionarParametros("@ValorDevolucao", _vnd.ValorDevolucao)
-        '@TotalVenda AS MONEY -- Valor total da Venda
-        objDB.AdicionarParametros("@TotalVenda", _vnd.TotalVenda)
-        '@JurosMes AS DECIMAL(6,2), 
-        objDB.AdicionarParametros("@JurosMes", _vnd.JurosMes)
-        '@Observacao AS VARCHAR(max) = null, 
-        objDB.AdicionarParametros("@Observacao", _vnd.Observacao)
-        '@VendaTipo AS TINYINT = 0, --0|VAREJO ; 1|ATACADO
-        objDB.AdicionarParametros("@IDVendaTipo", _vnd.IDVendaTipo)
-        '
-        '-- PARAMETROS DA TBLARECEBER
-        '@IDCobrancaForma AS SMALLINT, 
-        objDB.AdicionarParametros("@IDCobrancaForma", _vnd.IDCobrancaForma)
-        '@IDPlano SMALLINT = NULL, 
-        objDB.AdicionarParametros("@IDPlano", _vnd.IDPlano)
-        '
-        '-- PARAMETROS DA TBLVENDAFRETE
-        '@IDTransportadora AS INT = NULL,
-        objDB.AdicionarParametros("@IDTransportadora", _vnd.IDTransportadora)
-        '@FreteTipo AS TINYINT = 0, -- 1|EMITENTE; 2|DESTINATARIO
-        objDB.AdicionarParametros("@FreteTipo", _vnd.FreteTipo)
-        '@FreteValor AS MONEY = 0,
-        objDB.AdicionarParametros("@FreteValor", _vnd.FreteValor)
-        '@Volumes AS SMALLINT = 1,
-        objDB.AdicionarParametros("@Volumes", _vnd.Volumes)
-        '@IDAPagar AS INT = NULL
-        objDB.AdicionarParametros("@IDAPagar", _vnd.IDApagar)
-        '
+        myQuery = "UPDATE tblTransacao " &
+                  "SET IDPessoaDestino = @IDPessoaDestino, " &
+                  "IDSituacao = @IDSituacao, " &
+                  "TransacaoData = @TransacaoData " &
+                  "WHERE IDTransacao = @IDDevolucao"
         '
         Try
-            Return objDB.ExecutarManipulacao(CommandType.StoredProcedure, "uspVenda_Alterar")
+            objDB.ExecutarManipulacao(CommandType.Text, myQuery)
         Catch ex As Exception
+            If TranLocal Then objDB.RollBackTransaction()
             Throw ex
-            Return Nothing
+            Return False
         End Try
         '
-    End Function
-    '
-    '===========================================================================--
-    ' INSERT NOVA VENDA E RETORNA UMA CLVENDA
-    '===========================================================================--
-    Public Function SalvaNovaVenda_Procedure_Venda(ByVal _venda As clVenda) As clVenda
+        '--- 2. UPDATE TBLDEVOLUCAO
+        '--------------------------------------------------------------------------------------
+        'Limpa os Parâmetros
+        objDB.LimparParametros()
+        '
+        '-- PARAMETROS DA TBLDEVOLUCAO
+        objDB.AdicionarParametros("@IDDevolucao", _dev.IDDevolucao)
+        objDB.AdicionarParametros("@ValorProdutos", _dev.ValorProdutos)
+        objDB.AdicionarParametros("@ValorAcrescimos", _dev.ValorAcrescimos)
+        objDB.AdicionarParametros("@ValorDescontos", _dev.ValorDescontos)
+        objDB.AdicionarParametros("@ValorTotal", _dev.ValorTotal)
+        objDB.AdicionarParametros("@Enviada", _dev.Enviada)
+        objDB.AdicionarParametros("@Creditada", _dev.Creditada)
+        '
+        myQuery = "UPDATE tblDevolucao " &
+                  "SET ValorProdutos = @ValorProdutos, " &
+                  "ValorAcrescimos = @ValorAcrescimos, " &
+                  "ValorDescontos = @ValorDescontos " &
+                  "TotalDevolucao = @ValorTotal " &
+                  "Enviada = @Enviada " &
+                  "Creditada = @Creditada " &
+                  "WHERE IDDevolucao = @IDDevolucao"
+        '
         Try
-            Dim dtVenda As DataTable
+            objDB.ExecutarManipulacao(CommandType.Text, myQuery)
+        Catch ex As Exception
+            If TranLocal Then objDB.RollBackTransaction()
+            Throw ex
+            Return False
+        End Try
+        '
+        '--- 3. UPDATE TBLOBSERVACAO
+        '--------------------------------------------------------------------------------------
+        'Limpa os Parâmetros
+        objDB.LimparParametros()
+        '
+        Try
+            'Delete Observacoes Anteriores
+            myQuery = "DELETE tblObservacao WHERE Origem = 12 AND IDOrigem = " & _dev.IDDevolucao
+            objDB.ExecutarManipulacao(CommandType.Text, myQuery)
             '
-            dtVenda = SalvaNovaVenda_Procedure_DT(_venda)
-            If dtVenda.Rows.Count > 0 Then
-                Dim r As DataRow = dtVenda(0)
+            '--- Insert if exist
+            If _dev.Observacao.Trim.Length > 0 Then
                 '
-                Return ConvertDtRow_clVenda(r)
-            Else
-                Return Nothing
+                '-- PARAMETROS DA TBLOBSERVACAO
+                objDB.AdicionarParametros("@Observacao", _dev.Observacao)
+                objDB.AdicionarParametros("@IDDevolucao", _dev.IDDevolucao)
+                '
+                myQuery = "INSERT INTO tblObservacao (Origem, IDOrigem, Observacao) " &
+                          "VALUES (12, @IDDevolucao, @Observacao)"
+                '
+                objDB.ExecutarManipulacao(CommandType.Text, myQuery)
+                '
             End If
+            '
         Catch ex As Exception
+            If TranLocal Then objDB.RollBackTransaction()
             Throw ex
+            Return False
         End Try
+        '
+        '--- 4. UPDATE TBLVENDAFRETE
+        '--------------------------------------------------------------------------------------
+        'Limpa os Parâmetros
+        objDB.LimparParametros()
+        '
+        ' Verifica IDAPagar no FRETE
+        If IsNothing(_dev.IDApagar) Then
+            '
+            Try
+                'Delete Frete Anterior caso houver
+                myQuery = "DELETE tblFrete WHERE IDTransacao = " & _dev.IDDevolucao
+                objDB.ExecutarManipulacao(CommandType.Text, myQuery)
+                '
+                '--- Insert if exist
+                If _dev.FreteTipo <> 0 Then
+                    '
+                    '-- PARAMETROS DA TBLVENDAFRETE
+                    objDB.AdicionarParametros("@IDDevolucao", _dev.IDDevolucao)
+                    objDB.AdicionarParametros("@IDTransportadora", _dev.IDTransportadora)
+                    objDB.AdicionarParametros("@FreteTipo", _dev.FreteTipo)
+                    objDB.AdicionarParametros("@FreteValor", _dev.FreteValor)
+                    objDB.AdicionarParametros("@Volumes", _dev.Volumes)
+                    '
+                    myQuery = "INSERT INTO tblFrete " &
+                              "(IDTransacao, IDTransportadora, FreteTipo, FreteValor, Volumes) " &
+                              "VALUES " &
+                              "(@IDDevolucao, @IDTransportadora, @FreteTipo, @FreteValor, @Volumes)"
+                    '
+                    objDB.ExecutarManipulacao(CommandType.Text, myQuery)
+                    '
+                End If
+                '
+            Catch ex As Exception
+                If TranLocal Then objDB.RollBackTransaction()
+                Throw ex
+                Return False
+            End Try
+            '
+        End If
+        '
+        '--- 5. FINALIZA
+        '--------------------------------------------------------------------------------------
+        If TranLocal Then objDB.CommitTransaction()
+        Return True
+        '
     End Function
     '
-    '===========================================================================--
-    ' INSERT NOVA VENDA E RETORNA UM DATATABLE
-    '===========================================================================--
-    Public Function SalvaNovaVenda_Procedure_DT(ByVal _vnd As clVenda) As DataTable
+    '=============================================================================
+    ' INSERT NOVA DEVOLUCAO E RETORNA UMA CLDEVOLUCAO
+    '=============================================================================
+    Public Function Insert_Devolucao(_dev As clDevolucaoSaida) As clDevolucaoSaida
         '
         Dim objDB As New AcessoDados
-        Dim Conn As New SqlCommand
+        objDB.BeginTransaction()
         '
-        'Adiciona os Parâmetros
+        Dim myQuery As String = ""
+        Dim newID As Integer
+        Dim newIDAReceber As Integer
+        '
+        '--- 1. INSERT TBLTRANSACAO
+        '--------------------------------------------------------------------------------------
+        'Limpa os Parâmetros
         objDB.LimparParametros()
         '
         '-- PARAMETROS DA TBLTRANSACAO
-
-        objDB.AdicionarParametros("@IDPessoaDestino", _vnd.IDPessoaDestino) '@IDPessoaDestino AS INT, x
-        objDB.AdicionarParametros("@IDPessoaOrigem", _vnd.IDPessoaOrigem) '@IDPessoaOrigem AS INT, x
-        objDB.AdicionarParametros("@IDUser", _vnd.IDUser) '@IDUser AS INT, x
-        objDB.AdicionarParametros("@CFOP", _vnd.CFOP) '@CFOP AS INT(16), x
-        objDB.AdicionarParametros("@TransacaoData", _vnd.TransacaoData) '@VendaData AS SMALLDATETIME, x
+        objDB.AdicionarParametros("@IDPessoaOrigem", _dev.IDPessoaOrigem) '@IDPessoaOrigem AS INT, x
+        objDB.AdicionarParametros("@IDPessoaDestino", _dev.IDPessoaDestino)
+        objDB.AdicionarParametros("@IDOperacao", _dev.IDOperacao)
+        objDB.AdicionarParametros("@IDSituacao", _dev.IDSituacao)
+        objDB.AdicionarParametros("@TransacaoData", _dev.TransacaoData)
+        objDB.AdicionarParametros("@CFOP", _dev.CFOP) '@CFOP AS INT(16), x
+        objDB.AdicionarParametros("@IDUser", _dev.IDUser) '@IDUser AS INT, x
         '
-        '-- PARAMETROS DA TBLVENDA
-        objDB.AdicionarParametros("@IDDepartamento", _vnd.IDDepartamento) '@IDDepartamento AS SMALLINT = 1, x
-        objDB.AdicionarParametros("@IDVendedor", _vnd.IDVendedor) '@IDVendedor AS INT, x
-        objDB.AdicionarParametros("@CobrancaTipo", _vnd.CobrancaTipo) '@CobrancaTipo AS TINYINT,  x
+        myQuery = "INSERT INTO tblTransacao (" &
+                  "IDPessoaOrigem, IDPessoaDestino, IDOperacao, IDSituacao, TransacaoData, CFOP, IDUser ) " &
+                  "VALUES (" &
+                  "@IDPessoaOrigem, @IDPessoaDestino, 6, 0, @TransacaoData, @CFOP, @IDUser )"
         '
         Try
-            Dim dtV As DataTable = objDB.ExecutarConsulta(CommandType.StoredProcedure, "uspVenda_Inserir")
+            objDB.ExecutarManipulacao(CommandType.Text, myQuery)
             '
-            If dtV.Rows.Count = 0 Then
-                Throw New Exception("Um erro ineperado ocorreu na uspVenda_Inserir")
-            End If
+            '--- obter NewID
+            myQuery = "SELECT @@IDENTITY As LastID;"
+            Dim dt As DataTable = objDB.ExecutarConsulta(CommandType.Text, myQuery)
             '
-            If IsNumeric(dtV.Rows(0).Item(0)) Then
-                Return dtV
+            newID = dt.Rows(0)(0)
+            '
+        Catch ex As Exception
+            objDB.RollBackTransaction()
+            Throw ex
+        End Try
+        '
+        '--- 2. INSERT TBLARECEBER
+        '--------------------------------------------------------------------------------------
+        'Limpa os Parâmetros
+        objDB.LimparParametros()
+        '
+        '-- PARAMETROS DA TBLDEVOLUCAO
+        objDB.AdicionarParametros("@IDDevolucao", newID)
+        objDB.AdicionarParametros("@IDFilial", _dev.IDPessoaOrigem)
+        objDB.AdicionarParametros("@IDPessoa", _dev.IDPessoaDestino)
+        '
+        myQuery = "INSERT INTO tblAReceber
+			      (IDOrigem, Origem, IDFilial, IDPessoa, AReceberValor, ValorPagoTotal, SituacaoAReceber)
+			      VALUES
+			      (@IDDevolucao, 4, @IDFilial, @IDPessoa, 0, 0, 0)"
+        '
+        Try
+            objDB.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+            '--- obter NewID
+            myQuery = "SELECT @@IDENTITY As LastID;"
+            Dim dt As DataTable = objDB.ExecutarConsulta(CommandType.Text, myQuery)
+            '
+            newIDAReceber = dt.Rows(0)(0)
+            '
+        Catch ex As Exception
+            objDB.RollBackTransaction()
+            Throw ex
+        End Try
+        '
+        '--- 3. INSERT TBLDEVOLUCAO
+        '--------------------------------------------------------------------------------------
+        'Limpa os Parâmetros
+        objDB.LimparParametros()
+        '
+        '-- PARAMETROS DA TBLDEVOLUCAO
+        objDB.AdicionarParametros("@IDDevolucao", newID)
+        objDB.AdicionarParametros("@IDAReceber", newIDAReceber)
+        '
+        myQuery = "INSERT INTO tblDevolucaoSaida (" &
+                  "IDDevolucao, IDAReceber, ValorProdutos, ValorAcrescimos, " &
+                  "ValorDescontos, TotalDevolucao, Enviada, Creditada) " &
+                  "VALUES( " &
+                  "@IDDevolucao, @IDAReceber, 0, 0, 0, 0, 0, 0)"
+        '
+        Try
+            objDB.ExecutarManipulacao(CommandType.Text, myQuery)
+        Catch ex As Exception
+            objDB.RollBackTransaction()
+            Throw ex
+        End Try
+        '
+        '--- 4. RETURN
+        '--------------------------------------------------------------------------------------
+        'Limpa os Parâmetros
+        objDB.LimparParametros()
+        '
+        '-- PARAMETROS DA TBLDEVOLUCAO
+        objDB.AdicionarParametros("@IDDevolucao", newID)
+        '
+        myQuery = "SELECT * FROM qryDevolucaoSaida WHERE IDDevolucao = @IDDevolucao"
+        '
+        Try
+            Dim myDT As DataTable = objDB.ExecutarConsulta(CommandType.Text, myQuery)
+            '
+            If myDT.Rows.Count > 0 Then
+                Return ConvertDtRow_clDevolucao(myDT.Rows(0))
             Else
-                Throw New Exception(dtV.Rows(0).Item(0))
+                Throw New Exception("Não foi retornado nenhum valor, o registro não foi inserido...")
             End If
             '
         Catch ex As Exception
+            objDB.RollBackTransaction()
             Throw ex
         End Try
         '
     End Function
     '
     '===========================================================================--
-    ' DELETE VENDA POR IDVENDA
+    ' DELETE DEVOLUCAO POR IDDEVOLUCAO
     '===========================================================================--
-    Public Function DeletaVendaPorID(IDVenda As Integer, IDFilial As Integer) As Boolean
+    Public Function DeletaDevolucaoPorID(IDDevolucao As Integer, IDFilial As Integer) As Boolean
         '
-        Dim clV As clVenda = Nothing
+        Dim clDev As clDevolucaoSaida = Nothing
         Dim myQuery As String = ""
         '
-        '--- OBTEM O CLVENDA
+        '--- OBTEM O clDev
         '=======================================================
         Try
-            clV = GetVenda_PorID_OBJ(IDVenda)
+            clDev = GetDevolucao_PorID(IDDevolucao)
             '
-            If IsNothing(clV) Then Throw New Exception("Registro da Venda não foi encontrado...")
+            If IsNothing(clDev) Then Throw New Exception("Registro da Devolucao não foi encontrado...")
             '
         Catch ex As Exception
             Throw ex
@@ -236,33 +361,20 @@ Public Class DevolucaoSaidaBLL
         End Try
         '
         '--- VERIFICA MOVIMENTACAO ANTES DE EXCLUIR
-        If Not VerificaLiberacaoVenda(clV, "EXCLUIR") Then
+        If Not VerificaLiberacaoDevolucao(clDev, "EXCLUIR") Then
             Return False
         End If
         '
-        '--- GET ITEMS VENDA AND TROCA
+        '--- GET ITEMS DEVOLUCAO
         '==================================================================
         '
-        '--- get produtos | itens da VENDA | itens TROCA
+        '--- get produtos | itens da DEVOLUCAO
         Dim ItemBLL As New TransacaoItemBLL
         Dim lstItens As New List(Of clTransacaoItem)
-        Dim tBLL As New TrocaBLL
-        Dim lstItensTroca As New List(Of clTransacaoItem)
-        Dim Troca As clTroca = Nothing
         '
         Try
-            '--- get VENDA ITENS
-            lstItens = ItemBLL.GetTransacaoItens_List(IDVenda, IDFilial)
-            '
-            '--- get TROCA item
-            Troca = tBLL.GetTroca_PorIDVenda_clTroca(clV.IDVenda)
-            '
-            '--- GET TROCA ITENS
-            If Not IsNothing(Troca) Then
-                '
-                lstItensTroca = ItemBLL.GetTransacaoItens_List(Troca.IDTransacaoEntrada, IDFilial)
-                '
-            End If
+            '--- get DEVOLUCAO ITENS
+            lstItens = ItemBLL.GetTransacaoItens_List(IDDevolucao, IDFilial)
             '
         Catch ex As Exception
             '
@@ -276,10 +388,10 @@ Public Class DevolucaoSaidaBLL
         Dim ObjDB As New AcessoDados
         ObjDB.BeginTransaction()
         '
-        '--- DELETE ALL ITENS OF VENDA AND RESOLVE ESTOQUE
+        '--- DELETE ALL ITENS OF DEVOLUCAO AND RESOLVE ESTOQUE
         '==================================================================
         '
-        '--- delete all itens of venda
+        '--- delete all itens of DEVOLUCAO
         Try
             '
             For Each it In lstItens
@@ -297,19 +409,15 @@ Public Class DevolucaoSaidaBLL
         '--- DELETE ALL ARECEBER | PARCELAS | MOVIMENTACOES OF VENDA
         '==================================================================
         '
-        '--- GET IDAReceber vinculado a Venda
+        '--- GET IDAReceber vinculado a DEVOLUCAO
         Try
             '
             '--- if IDARECEBER NOT NOTHING
-            If Not IsNothing(clV.IDAReceber) Then
-                Dim pBLL As New ParcelaBLL
+            If Not IsNothing(clDev.IDAReceber) Then
                 Dim rBLL As New AReceberBLL
                 '
-                '--- DELETA PARCELAS
-                pBLL.Excluir_Parcelas_AReceber(clV.IDAReceber, ObjDB)
-                '
                 '--- DELETA ARECEBER
-                rBLL.Excluir_AReceber_Transacao(IDVenda, ObjDB)
+                rBLL.Excluir_AReceber_Transacao(IDDevolucao, clAReceber.EnumAReceberOrigem.DevolucaoSaida, ObjDB)
                 '
             End If
             '
@@ -325,13 +433,13 @@ Public Class DevolucaoSaidaBLL
         '==================================================================
         '
         '--- FRETE -> APAGAR -> MOVIMENTACAO | FRETE -> APAGAR
-        If Not IsNothing(clV.IDApagar) Then
+        If Not IsNothing(clDev.IDApagar) Then
             '
             Try
                 '
                 '--- DELETE MOVIMENTACOES DE FRETE
                 ObjDB.LimparParametros()
-                ObjDB.AdicionarParametros("@IDAPagar", clV.IDApagar)
+                ObjDB.AdicionarParametros("@IDAPagar", clDev.IDApagar)
                 '
                 myQuery = "DELETE FROM tblMovimentacoes WHERE Origem = 10 AND IDOrigem = @IDAPagar"
                 '
@@ -339,7 +447,7 @@ Public Class DevolucaoSaidaBLL
                 '
                 '--- DELETE A PAGAR DE FRETE
                 ObjDB.LimparParametros()
-                ObjDB.AdicionarParametros("@IDAPagar", clV.IDApagar)
+                ObjDB.AdicionarParametros("@IDAPagar", clDev.IDApagar)
                 '
                 myQuery = "DELETE FROM tblAPagar WHERE IDAPagar = @IDAPagar"
                 '
@@ -359,46 +467,11 @@ Public Class DevolucaoSaidaBLL
         Try
             '
             ObjDB.LimparParametros()
-            ObjDB.AdicionarParametros("@IDVenda", clV.IDVenda)
+            ObjDB.AdicionarParametros("@IDTransacao", clDev.IDDevolucao)
             '
-            myQuery = "DELETE tblFrete WHERE IDTransacao = @IDVenda"
+            myQuery = "DELETE tblFrete WHERE IDTransacao = @IDTransacao"
             '
             ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
-            '
-        Catch ex As Exception
-            '
-            ObjDB.RollBackTransaction()
-            Throw ex
-            Return False
-            '
-        End Try
-        '
-        '--- DELETE TROCA IF NECESSITY
-        '==================================================================
-        '
-        Try
-            '
-            If Not IsNothing(Troca) Then
-                '
-                '--- DELETE ITEMS/PRODUTOS DA TROCA
-                Try
-                    '
-                    For Each it In lstItensTroca
-                        ItemBLL.ExcluirItem(it, TransacaoItemBLL.EnumMovimento.ENTRADA, ObjDB)
-                    Next
-                    '
-                Catch ex As Exception
-                    '
-                    ObjDB.RollBackTransaction()
-                    Throw ex
-                    Return False
-                    '
-                End Try
-                '
-                '--- DELETE TROCA
-                tBLL.DeletaTrocaPorID(Troca.IDTroca, ObjDB)
-                '
-            End If
             '
         Catch ex As Exception
             '
@@ -414,9 +487,9 @@ Public Class DevolucaoSaidaBLL
         Try
             '
             ObjDB.LimparParametros()
-            ObjDB.AdicionarParametros("@IDVenda", clV.IDVenda)
+            ObjDB.AdicionarParametros("@IDTransacao", clDev.IDDevolucao)
             '
-            myQuery = "DELETE FROM tblTransacaoNotaFiscal WHERE IDTransacao = @IDVenda"
+            myQuery = "DELETE FROM tblTransacaoNotaFiscal WHERE IDTransacao = @IDTransacao"
             '
             ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
         Catch ex As Exception
@@ -433,9 +506,9 @@ Public Class DevolucaoSaidaBLL
         Try
             '
             ObjDB.LimparParametros()
-            ObjDB.AdicionarParametros("@IDVenda", clV.IDVenda)
+            ObjDB.AdicionarParametros("@IDDevolucao", clDev.IDDevolucao)
             '
-            myQuery = "DELETE FROM tblVenda where IDVenda = @IDVenda"
+            myQuery = "DELETE FROM tblDevolucaoSaida WHERE IDDevolucao = @IDDevolucao"
             '
             ObjDB.ExecutarManipulacao(CommandType.Text, myQuery)
             '
@@ -454,28 +527,27 @@ Public Class DevolucaoSaidaBLL
     End Function
     '
     '===========================================================================--
-    ' VERIFICA AS LIGACOES ANTES DE EXCLUIR UMA VENDA
+    ' VERIFICA AS LIGACOES ANTES DE EXCLUIR UMA DEVOLUCAO
     '===========================================================================--
-    Private Function VerificaLiberacaoVenda(clV As clVenda, Acao As String) As Boolean
+    Private Function VerificaLiberacaoDevolucao(clDev As clDevolucaoSaida, Acao As String) As Boolean
         '
         Dim myQuery As String
         Dim SQL As New SQLControl
         '
         '--- VERIFY TBLMOVIMENTACAO | ENTRADAS | RECEBIMENTOS
         '=======================================================
-        '--- 1 - Venda => AReceber => Movimentacoes
-        '--- 2 - Venda => AReceber => AReceberParcelas => Movimentacoes
-        '--- 3 - Venda => Frete => APagar => Movimentacoes
+        '--- 1 - Devolucao => AReceber => Movimentacoes
+        '--- 2 - Devolucao => Frete => APagar => Movimentacoes
         '==================================================================
         '
-        ' 1. --- verifica movimentacao de entrada da Venda antes de excluir
-        ' ORIGEM = 1 ( TBLTRANSACAO | TBLVENDA )
+        ' 1. --- verifica movimentacao de entrada da Devolucao antes de excluir
+        ' ORIGEM = 1 ( TBLTRANSACAO | TBLDEVOLUCAO )
         Try
             SQL.ClearParams()
-            SQL.AddParam("@IDVenda", clV.IDVenda)
+            SQL.AddParam("@IDDevolucao", clDev.IDDevolucao)
             '
             myQuery = "SELECT COUNT(*) FROM tblCaixaMovimentacao
-                       WHERE Origem = 1 AND IDOrigem = @IDVenda AND NOT IDCaixa IS NULL"
+                       WHERE Origem = 1 AND IDOrigem = @IDDevolucao AND NOT IDCaixa IS NULL"
             '
             '--- execute query
             SQL.ExecQuery(myQuery)
@@ -490,7 +562,7 @@ Public Class DevolucaoSaidaBLL
             Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
             '
             If quant > 0 Then
-                Throw New Exception("Não é possível " & Acao & " uma Venda que possui " &
+                Throw New Exception("Não é possível " & Acao & " uma Devolucao que possui " &
                                     "entradas/recebimentos que já foram incluídos em um caixa...")
                 Return False
             End If
@@ -500,53 +572,15 @@ Public Class DevolucaoSaidaBLL
             Return False
         End Try
         '
-        ' 2. --- verifica movimentacao de entrada das Parcelas antes de excluir
-        ' ORIGEM = 2 ( TBLARECEBERPARCELAS )
-        Try
-            SQL.ClearParams()
-            SQL.AddParam("@IDVenda", clV.IDVenda)
-            '
-            myQuery = "SELECT COUNT(*) FROM tblCaixaMovimentacao AS M " &
-                      "INNER JOIN tblAReceberParcela AS P " &
-                      "ON M.IDOrigem = P.IDAReceberParcela AND M.Origem = 2 " &
-                      "INNER JOIN tblAReceber AS R " &
-                      "ON P.IDAReceber = R.IDAReceber " &
-                      "INNER JOIN tblVenda AS V " &
-                      "ON V.IDVenda = R.IDOrigem AND R.Origem = 1 " &
-                      "WHERE V.IDVenda = @IDVenda AND NOT IDCaixa IS NULL"
-            '
-            '--- execute query
-            SQL.ExecQuery(myQuery)
-            '
-            '--- verify error
-            If SQL.HasException Then
-                Throw New Exception(SQL.Exception)
-                Return False
-            End If
-            '
-            '--- get count of data returned
-            Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
-            '
-            If quant > 0 Then
-                Throw New Exception("Não é possível " & Acao & " uma Venda que possui " &
-                                    "entradas/recebimentos que já foram incluídos em um caixa...")
-                Return False
-            End If
-            '
-        Catch ex As Exception
-            Throw ex
-            Return False
-        End Try
-        '
-        ' 3. --- verifica movimentacao de saida do frete antes de excluir
+        ' 2. --- verifica movimentacao de saida do frete antes de excluir
         ' FRETE => TBLAPAGAR => TBLMOVIMENTACAO
         '
-        If IsNothing(clV.IDApagar) Then Return True
+        If IsNothing(clDev.IDApagar) Then Return True
         '
         Try
             '
             SQL.ClearParams()
-            SQL.AddParam("@IDAPagar", clV.IDApagar)
+            SQL.AddParam("@IDAPagar", clDev.IDApagar)
             '
             myQuery = "SELECT COUNT(*) FROM tblCaixaMovimentacao
                        WHERE Origem = 10 AND IDOrigem = @IDAPagar AND NOT IDCaixa IS NULL"
@@ -564,7 +598,7 @@ Public Class DevolucaoSaidaBLL
             Dim quant As Integer = SQL.DBDT.Rows(0).Item(0)
             '
             If quant > 0 Then
-                Throw New Exception("Não é possível " & Acao & " uma Venda que possui " &
+                Throw New Exception("Não é possível " & Acao & " uma Devolucao que possui " &
                                     "saidas/pagamentos de FRETE que já foram incluídos em um caixa...")
                 Return False
             End If
@@ -580,20 +614,20 @@ Public Class DevolucaoSaidaBLL
     End Function
     '
     '=============================================================================
-    ' DESBLOQUEIA UMA VENDA BLOQUEADA
+    ' DESBLOQUEIA UMA DEVOLUCAO BLOQUEADA
     '=============================================================================
-    Public Function VendaDesbloquear(myVenda As clVenda) As Boolean
+    Public Function DevolucaoDesbloquear(myDev As clDevolucaoSaida) As Boolean
         '
-        If Not VerificaLiberacaoVenda(myVenda, "DESBLOQUEAR") Then Return False
+        If Not VerificaLiberacaoDevolucao(myDev, "DESBLOQUEAR") Then Return False
         '
         Try
             '--- altera a situacao da transacao atual
-            myVenda.IDSituacao = 2 'VENDA CONCLUÍDA
+            myDev.IDSituacao = 2 'VENDA CONCLUÍDA
             '
-            Dim obj As Object = AtualizaVenda_Procedure_ID(myVenda)
+            Dim obj As Object = Update_Devolucao(myDev)
             '
             If Not IsNumeric(obj) Then
-                myVenda.IDSituacao = 3
+                myDev.IDSituacao = 3
                 Throw New Exception(obj.ToString)
             End If
             '
@@ -607,7 +641,7 @@ Public Class DevolucaoSaidaBLL
     End Function
     '
     '===========================================================================--
-    ' CONVERT DATAROW DA DATATABLE VENDA EM UM CLVENDA 
+    ' CONVERT DATAROW DA DATATABLE DEVOLUCAO EM UMA CLDEVOLUCAO 
     '===========================================================================--
     Private Function ConvertDtRow_clDevolucao(r As DataRow) As clDevolucaoSaida
         '
@@ -616,39 +650,41 @@ Public Class DevolucaoSaidaBLL
         '--- tblDevolucaoSaida
         '-----------------------------------------------------------------------------------------------
         dev.IDDevolucao = IIf(IsDBNull(r("IDDevolucao")), Nothing, r("IDDevolucao"))
+        dev.ValorProdutos = IIf(IsDBNull(r("ValorProdutos")), 0, r("ValorProdutos"))
+        dev.ValorDescontos = IIf(IsDBNull(r("ValorDescontos")), 0, r("ValorDescontos"))
+        dev.ValorAcrescimos = IIf(IsDBNull(r("ValorAcrescimos")), 0, r("ValorAcrescimos"))
+        dev.Enviada = IIf(IsDBNull(r("Enviada")), Nothing, r("Enviada"))
+        dev.Creditada = IIf(IsDBNull(r("Creditada")), Nothing, r("Creditada"))
+        dev.IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
+        '
+        '--- tblTransacao
+        '-----------------------------------------------------------------------------------------------
         dev.IDPessoaDestino = IIf(IsDBNull(r("IDPessoaDestino")), Nothing, r("IDPessoaDestino"))
-        dev.Cadastro = IIf(IsDBNull(r("Cadastro")), String.Empty, r("Cadastro"))
-        dev.CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
-        dev.UF = IIf(IsDBNull(r("UF")), String.Empty, r("UF"))
-        dev.Cidade = IIf(IsDBNull(r("Cidade")), String.Empty, r("Cidade"))
         dev.IDPessoaOrigem = IIf(IsDBNull(r("IDPessoaOrigem")), Nothing, r("IDPessoaOrigem"))
         dev.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
+        dev.IDUser = IIf(IsDBNull(r("IDUser")), Nothing, r("IDUser"))
+        dev.CFOP = IIf(IsDBNull(r("CFOP")), String.Empty, r("CFOP"))
         dev.IDOperacao = IIf(IsDBNull(r("IDOperacao")), Nothing, r("IDOperacao"))
         dev.IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao"))
         dev.Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
-        dev.IDUser = IIf(IsDBNull(r("IDUser")), Nothing, r("IDUser"))
-        dev.CFOP = IIf(IsDBNull(r("CFOP")), String.Empty, r("CFOP"))
         dev.TransacaoData = IIf(IsDBNull(r("TransacaoData")), Nothing, r("TransacaoData"))
-        dev.IDDepartamento = IIf(IsDBNull(r("IDDepartamento")), Nothing, r("IDDepartamento"))
-        dev.IDVendedor = IIf(IsDBNull(r("IDVendedor")), Nothing, r("IDVendedor"))
-        dev.CobrancaTipo = IIf(IsDBNull(r("CobrancaTipo")), Nothing, r("CobrancaTipo"))
-        dev.AgregaDevolucao = IIf(IsDBNull(r("AgregaDevolucao")), False, r("AgregaDevolucao"))
-        dev.ValorProdutos = IIf(IsDBNull(r("ValorProdutos")), 0, r("ValorProdutos"))
-        dev.ValorFrete = IIf(IsDBNull(r("ValorFrete")), 0, r("ValorFrete"))
-        dev.ValorImpostos = IIf(IsDBNull(r("ValorImpostos")), 0, r("ValorImpostos"))
-        dev.ValorAcrescimos = IIf(IsDBNull(r("ValorAcrescimos")), 0, r("ValorAcrescimos"))
-        dev.ValorDevolucao = IIf(IsDBNull(r("ValorDevolucao")), 0, r("ValorDevolucao"))
-        dev.JurosMes = IIf(IsDBNull(r("JurosMes")), Nothing, r("JurosMes"))
+        '
+        '--- qryPessoaFisicaJuridica
+        '-----------------------------------------------------------------------------------------------
+        dev.Fornecedor = IIf(IsDBNull(r("Fornecedor")), String.Empty, r("Fornecedor"))
+        dev.CNP = IIf(IsDBNull(r("CNP")), String.Empty, r("CNP"))
+        dev.UF = IIf(IsDBNull(r("UF")), String.Empty, r("UF"))
+        dev.Cidade = IIf(IsDBNull(r("Cidade")), String.Empty, r("Cidade"))
+        dev.Transportadora = IIf(IsDBNull(r("Transportadora")), String.Empty, r("Transportadora"))
+        '
+        '--- Dados do tblObservacao
         dev.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
-        dev.IDVendaTipo = IIf(IsDBNull(r("IDVendaTipo")), Nothing, r("IDVendaTipo"))
+        '
         '--- Dados do tblAReceber
-        dev.IDAReceber = IIf(IsDBNull(r("IDAReceber")), Nothing, r("IDAReceber"))
         dev.SituacaoAReceber = IIf(IsDBNull(r("SituacaoAReceber")), Nothing, r("SituacaoAReceber"))
-        dev.IDPlano = IIf(IsDBNull(r("IDPlano")), Nothing, r("IDPlano"))
-        dev.IDCobrancaForma = IIf(IsDBNull(r("IDCobrancaForma")), Nothing, r("IDCobrancaForma"))
-        dev.CobrancaForma = IIf(IsDBNull(r("CobrancaForma")), String.Empty, r("CobrancaForma"))
         dev.ValorPagoTotal = IIf(IsDBNull(r("ValorPagoTotal")), Nothing, r("ValorPagoTotal"))
-        '--- Dados da tblVendaFrete
+        '
+        '--- Dados da tblFrete
         dev.IDTransportadora = IIf(IsDBNull(r("IDTransportadora")), Nothing, r("IDTransportadora"))
         dev.FreteTipo = IIf(IsDBNull(r("FreteTipo")), Nothing, r("FreteTipo"))
         dev.FreteValor = IIf(IsDBNull(r("FreteValor")), Nothing, r("FreteValor"))
@@ -660,11 +696,11 @@ Public Class DevolucaoSaidaBLL
     End Function
     '
     '===========================================================================--
-    ' GET LISTA VENDAS PARA FRMPROCURA RETORNA LIST OF CLVENDA
+    ' GET LISTA DEVOLUCAO PARA FRMPROCURA RETORNA LIST OF CLDEVOLUCAOSAIDA
     '===========================================================================--
-    Public Function GetVendaLista_Procura(IDFilial As Integer,
-                                          Optional dtInicial As Date? = Nothing,
-                                          Optional dtFinal As Date? = Nothing) As List(Of clVenda)
+    Public Function GetDevolucaoLista_Procura(IDFilial As Integer,
+                                              Optional dtInicial As Date? = Nothing,
+                                              Optional dtFinal As Date? = Nothing) As List(Of clDevolucaoSaida)
         '
         Dim sql As New SQLControl
         '
@@ -687,7 +723,7 @@ Public Class DevolucaoSaidaBLL
         End If
         '
         Try
-            Dim vndList As New List(Of clVenda)
+            Dim devList As New List(Of clDevolucaoSaida)
             '
             sql.ExecQuery(myQuery)
             '
@@ -695,69 +731,18 @@ Public Class DevolucaoSaidaBLL
                 Throw New Exception(sql.Exception)
             End If
             '
-            If sql.DBDT.Rows.Count = 0 Then Return vndList
+            If sql.DBDT.Rows.Count = 0 Then Return devList
             '
             For Each r As DataRow In sql.DBDT.Rows
-                Dim vnd As New clVenda
+                Dim dev As New clDevolucaoSaida
                 '
-                vnd = ConvertDtRow_clVenda(r)
+                dev = ConvertDtRow_clDevolucao(r)
                 '
-                vndList.Add(vnd)
+                devList.Add(dev)
                 '
             Next
             '
-            Return vndList
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
-    '=============================================================================
-    ' GET VENDA TIPOS DATATABLE COM OPTIONAL IDVENDATIPO
-    '=============================================================================
-    Public Function GetVendaTipo_DT(Optional IDVendaTipo As Byte? = Nothing) As DataTable
-        '
-        Dim objdb As New AcessoDados
-        Dim dt As New DataTable
-        Dim strSql As String
-        '
-        strSql = "SELECT * FROM tblVendaTipo"
-        '
-        If Not IsNothing(IDVendaTipo) Then
-            strSql = strSql & " WHERE IDVendaTipo = " & IDVendaTipo
-        End If
-        '
-        Try
-            dt = objdb.ExecuteConsultaSQL_DataTable(strSql)
-            Return dt
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
-    '=============================================================================
-    ' UPDATE A FUNCIONARIO / VENDEDOR DA VENDA
-    '=============================================================================
-    Public Function AtualizaVendaVendedor(myIDVenda As Integer, NewIDVendedor As Integer) As Boolean
-        '
-        Dim SQL As New SQLControl
-        SQL.AddParam("@IDVenda", myIDVenda)
-        SQL.AddParam("@IDVendedor", NewIDVendedor)
-        '
-        Dim myQuery As String = "UPDATE tblVenda SET IDVendedor = @IDVendedor WHERE IDVenda = @IDVenda"
-        '
-        Try
-            SQL.ExecQuery(myQuery)
-            '
-            '--- verifica erro
-            If SQL.HasException Then
-                Throw New Exception(SQL.Exception)
-            Else
-                Return True
-            End If
+            Return devList
             '
         Catch ex As Exception
             Throw ex

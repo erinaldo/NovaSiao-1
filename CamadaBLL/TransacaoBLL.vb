@@ -2,7 +2,7 @@
 
 Public Class TransacaoBLL
     '
-    Public Enum OperacaoEnum
+    Public Enum EnumOperacao
         Venda = 1 '--- Vendas
         Compra = 2 '--- Compras
         SimplesEntrada = 3 '--- Simples Entrada
@@ -13,24 +13,19 @@ Public Class TransacaoBLL
         ConsignacaoSaida = 8 '--- Quando a Filial devolve uma Consignação
     End Enum
     '
-    Public Enum CFOPUFDestino
+    Public Enum EnumCFOPUFDestino
         DentroDaUF = 0
         ForaDaUF = 1
     End Enum
     '
-    Public Enum TransacaoSituacao
+    Public Enum EnumTransacaoSituacao
         INICIADA = 1
         CONCLUIDA = 2
         BLOQUEADA = 3
     End Enum
     '
-    Public Enum MovimentoEstoque
-        ENTRADA
-        SAIDA
-    End Enum
-    '
     ' OBTER O VALORES CFOP DO CONFIG
-    Public Function ObterCFOP(Operacao As OperacaoEnum, UFDestino As CFOPUFDestino) As String
+    Public Function ObterCFOP(Operacao As EnumOperacao, UFDestino As EnumCFOPUFDestino) As String
         '
         Try
             Dim dt As DataTable = Get_Operacao_PeloID(Operacao)
@@ -41,7 +36,7 @@ Public Class TransacaoBLL
             '
             Dim r As DataRow = dt.Rows(0)
             '
-            If UFDestino = CFOPUFDestino.DentroDaUF Then
+            If UFDestino = EnumCFOPUFDestino.DentroDaUF Then
                 If IsDBNull(r("CFOPDentro")) OrElse String.IsNullOrEmpty(r("CFOPDentro")) Then
                     Throw New Exception("Não foi encontradado nenhum CFOP Dentro nessa operação comercial")
                 End If
@@ -59,7 +54,7 @@ Public Class TransacaoBLL
     End Function
     '
     ' OBTER DATATABLE DA OPERAÇÃO
-    Public Function Get_Operacao_PeloID(myOperacao As OperacaoEnum) As DataTable
+    Public Function Get_Operacao_PeloID(myOperacao As EnumOperacao) As DataTable
         Dim db As New AcessoDados
         Try
             Dim sql As String = "SELECT * FROM tblOperacao WHERE IDOperacao = " & CInt(myOperacao)
@@ -73,14 +68,14 @@ Public Class TransacaoBLL
     End Function
     '
     ' OBTER UMA LISTA DE OPERACAO
-    Public Function Get_Operacao_DT(Optional _movimento As MovimentoEstoque? = Nothing) As DataTable
+    Public Function Get_Operacao_DT(Optional _movimento As TransacaoItemBLL.EnumMovimento? = Nothing) As DataTable
         Dim db As New AcessoDados
         Dim sql As String
 
         If IsNothing(_movimento) Then
             sql = "SELECT * FROM tblOperacao"
         Else
-            If _movimento = MovimentoEstoque.ENTRADA Then
+            If _movimento = TransacaoItemBLL.EnumMovimento.ENTRADA Then
                 sql = "SELECT * FROM tblOperacao WHERE MovimentoEstoque = 'E'"
             Else
                 sql = "SELECT * FROM tblOperacao WHERE MovimentoEstoque = 'S'"

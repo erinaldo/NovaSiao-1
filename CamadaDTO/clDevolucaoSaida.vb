@@ -133,7 +133,8 @@ Public Class clDevolucaoSaida : Implements IEditableObject
     End Property
     '
     '--- PROPRIEDADES SOMENTE LEITURA
-    Public Property Cadastro
+    Public Property Fornecedor
+    Public Property Transportadora
     Public Property CNP
     Public Property Cidade
     Public Property UF

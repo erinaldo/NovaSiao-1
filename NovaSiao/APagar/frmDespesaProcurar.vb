@@ -9,7 +9,7 @@ Public Class frmDespesaProcurar
     Private ImgVndAtivo As Image = My.Resources.accept
     Private ImgVndLock As Image = My.Resources.lock
     Private _myMes As Date
-    Private _Sit As FlagEstado
+    Private _Sit As EnumFlagEstado
     '
     Private Property myMes() As DateTime
         Get
@@ -27,17 +27,17 @@ Public Class frmDespesaProcurar
         End Set
     End Property
     '
-    Public Property Sit() As FlagEstado
+    Public Property Sit() As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(ByVal value As FlagEstado)
+        Set(ByVal value As EnumFlagEstado)
             _Sit = value
             '
-            If value = FlagEstado.Alterado Then
+            If value = EnumFlagEstado.Alterado Then
                 btnProcurar.Enabled = True
                 dgvListagem.Columns.Clear()
-            ElseIf value = FlagEstado.RegistroSalvo Then
+            ElseIf value = enumFlagEstado.RegistroSalvo Then
                 btnProcurar.Enabled = False
             End If
             '
@@ -100,7 +100,7 @@ Public Class frmDespesaProcurar
             '
             dgvListagem.DataSource = despLista
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
         Catch ex As Exception
             MessageBox.Show("Ocorreu exceção ao obter a lista de Despesas..." & vbNewLine &
@@ -309,7 +309,7 @@ Public Class frmDespesaProcurar
         End If
         '
         If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(IDCredor), 0, IDCredor) Then
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         txtCredor.Focus()
@@ -332,7 +332,7 @@ Public Class frmDespesaProcurar
         End If
         '
         If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(IDDespesaTipo), 0, IDDespesaTipo) Then
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         txtDespesaTipo.Focus()
@@ -362,11 +362,11 @@ Public Class frmDespesaProcurar
             e.Handled = True
             Select Case ctr.Name
                 Case "txtCredor"
-                    If Not IsNothing(IDCredor) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(IDCredor) Then Sit = EnumFlagEstado.Alterado
                     txtCredor.Clear()
                     IDCredor = Nothing
                 Case "txtDespesaTipo"
-                    If Not IsNothing(IDDespesaTipo) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(IDDespesaTipo) Then Sit = EnumFlagEstado.Alterado
                     txtDespesaTipo.Clear()
                     IDDespesaTipo = Nothing
             End Select
@@ -379,8 +379,8 @@ Public Class frmDespesaProcurar
     '
     Private Sub txtDescricao_TextChanged(sender As Object, e As EventArgs) Handles txtDescricao.TextChanged
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub

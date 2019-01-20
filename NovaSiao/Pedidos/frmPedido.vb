@@ -4,7 +4,7 @@ Imports System.Xml
 '
 Public Class frmPedido
     Private _pedido As clPedido
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private bindPedido As New BindingSource
     Private _pedBLL As New PedidoBLL
     Private _strPedidoImportado As String = ""
@@ -13,7 +13,7 @@ Public Class frmPedido
     Private _ItensList As New List(Of clPedidoItem)
     Private bindItens As New BindingSource
     Private currentEditRow As Integer? = Nothing
-    Private _rowSit As FlagEstado
+    Private _rowSit As EnumFlagEstado
     Const rowHeight As Integer = 25 '--- define o tamanho da row no DataGridView
     '
     '--- Mensagens do Pedido
@@ -26,13 +26,13 @@ Public Class frmPedido
     '
 #Region "LOAD E PROPERTIES"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnCancelar.Enabled = False
@@ -40,14 +40,14 @@ Public Class frmPedido
                 btnExcluir.Enabled = True
                 lblID.Text = Format(_pedido.IDPedido, "0000")
                 formAmpliado = True
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnCancelar.Enabled = True
                 btnProcurar.Enabled = False
                 formAmpliado = True
                 btnExcluir.Enabled = False
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 txtFornecedor.Select()
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
@@ -73,14 +73,14 @@ Public Class frmPedido
             bindPedido.DataSource = _pedido
             '
             If Not IsNothing(_pedido.IDPedido) Then
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 GetItens()
                 PreencheItens()
                 GetMensagens()
                 PreencheMensagens()
                 VerificaBloqueio()
             Else
-                Sit = FlagEstado.NovoRegistro
+                Sit = EnumFlagEstado.NovoRegistro
             End If
             '
         End Set
@@ -132,7 +132,7 @@ Public Class frmPedido
     '--- DEFINE O TAMANHO DO FORM SE FOR NOVO REGISTRO
     Private Sub frmPedido_Shown(sender As Object, e As EventArgs) Handles Me.Shown
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             formAmpliado = False
         Else
             formAmpliado = True
@@ -201,8 +201,8 @@ Public Class frmPedido
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If bindPedido.Current.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If bindPedido.Current.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -489,27 +489,27 @@ Public Class frmPedido
     '--- BTN NOVO
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
         propPedido = New clPedido
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         txtFornecedor.Focus()
     End Sub
     '
     '--- BTN CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             btnFechar_Click(sender, e)
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             bindPedido.CancelEdit()
         End If
         '
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
     '--- BTN FECHAR
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
-        If Sit <> FlagEstado.RegistroSalvo Then
+        If Sit <> EnumFlagEstado.RegistroSalvo Then
             If MessageBox.Show("O Registro de Pedido inserido ou alterado ainda NÃO FOI SALVO..." & vbNewLine &
                                "Deseja salvar antes de sair?", "Salvr Registro",
                                MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -518,7 +518,7 @@ Public Class frmPedido
                 btnSalvar_Click(sender, e)
                 '
                 '--- verifica salvamento
-                If Sit <> FlagEstado.RegistroSalvo Then
+                If Sit <> EnumFlagEstado.RegistroSalvo Then
                     Exit Sub
                 End If
                 '
@@ -582,9 +582,9 @@ Public Class frmPedido
         txtTransportadora.DataBindings("Text").ReadValue()
         txtTelefoneATransportadora.DataBindings("Text").ReadValue()
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_pedido.IDTransportadora), 0, _pedido.IDTransportadora) Then
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End If
         '
@@ -617,9 +617,9 @@ Public Class frmPedido
         txtVendedorNome.DataBindings("text").ReadValue()
         txtTelefoneContato.DataBindings("text").ReadValue()
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             If IIf(IsNothing(oldIDFornecedor), 0, oldIDFornecedor) <> IIf(IsNothing(_pedido.IDFornecedor), 0, _pedido.IDFornecedor) Then
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End If
         '
@@ -643,9 +643,9 @@ Public Class frmPedido
         '
         Try
             '--- Salva mas antes define se é ATUALIZAR OU UM NOVO REGISTRO
-            If Sit = FlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
+            If Sit = EnumFlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
                 NewID = _pedBLL.Pedido_Inserir(_pedido)
-            ElseIf Sit = FlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
+            ElseIf Sit = EnumFlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
                 NewID = _pedBLL.Pedido_Alterar(_pedido)
             End If
         Catch ex As Exception
@@ -657,7 +657,7 @@ Public Class frmPedido
         '--- Verifica se houve Retorno da Função de Salvar
         If IsNumeric(NewID) AndAlso NewID <> 0 Then
             '--- Retorna o número de Registro
-            If Sit = FlagEstado.NovoRegistro Then
+            If Sit = EnumFlagEstado.NovoRegistro Then
                 _pedido.IDPedido = NewID
                 lblID.DataBindings("Tag").ReadValue()
             End If
@@ -665,7 +665,7 @@ Public Class frmPedido
             '--- Altera a Situação
             bindPedido.EndEdit()
             bindPedido.CurrencyManager.Refresh()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
             '--- Mensagem de Sucesso:
             MsgBox("Registro Salvo com sucesso!", vbInformation, "Registro Salvo")
@@ -775,11 +775,11 @@ Public Class frmPedido
             e.Handled = True
             Select Case ctr.Name
                 Case "txtFornecedor"
-                    If Not IsNothing(_pedido.IDPedido) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_pedido.IDPedido) Then Sit = EnumFlagEstado.Alterado
                     txtFornecedor.Clear()
                     _pedido.IDFornecedor = Nothing
                 Case "txtTransportadora"
-                    If Not IsNothing(_pedido.IDPedido) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_pedido.IDPedido) Then Sit = EnumFlagEstado.Alterado
                     txtTransportadora.Clear()
                     _pedido.IDTransportadora = Nothing
             End Select
@@ -831,9 +831,9 @@ Public Class frmPedido
         currentEditRow = e.RowIndex
         '
         If dgvItens.Rows(e.RowIndex).IsNewRow Then
-            _rowSit = FlagEstado.NovoRegistro
+            _rowSit = EnumFlagEstado.NovoRegistro
         Else
-            _rowSit = FlagEstado.Alterado
+            _rowSit = EnumFlagEstado.Alterado
         End If
         '
         If e.ColumnIndex = clnEstoqueIdeal.Index Then
@@ -866,14 +866,14 @@ Public Class frmPedido
     Private Sub dgvItens_RowValidating(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvItens.RowValidating
         '
         '--- verifica se é um ROW editado ou novo
-        If _rowSit = FlagEstado.NovoRegistro OrElse _rowSit = FlagEstado.Alterado Then
+        If _rowSit = EnumFlagEstado.NovoRegistro OrElse _rowSit = EnumFlagEstado.Alterado Then
             '
             '--- Verifica os valores inseridos
             If VerificaItem(e.RowIndex) = False Then
                 e.Cancel = True
                 'bindItens.CancelEdit()
             Else
-                If _rowSit = FlagEstado.NovoRegistro Then
+                If _rowSit = EnumFlagEstado.NovoRegistro Then
                     '
                     Try
                         Dim myItem As clPedidoItem = dgvItens.Rows(e.RowIndex).DataBoundItem
@@ -888,7 +888,7 @@ Public Class frmPedido
                         bindItens.CancelEdit()
                     End Try
                     '
-                ElseIf _rowSit = FlagEstado.Alterado Then
+                ElseIf _rowSit = EnumFlagEstado.Alterado Then
                     '
                     Try
                         ItemAlterar(dgvItens.Rows(e.RowIndex).DataBoundItem)
@@ -901,7 +901,7 @@ Public Class frmPedido
                 End If
                 '
                 bindItens.EndEdit()
-                _rowSit = FlagEstado.RegistroSalvo
+                _rowSit = EnumFlagEstado.RegistroSalvo
                 AtualizaTotalGeral()
                 '
             End If
@@ -1190,7 +1190,7 @@ Public Class frmPedido
         '
         If Not IsNothing(dgvItens.Rows(e.RowIndex).Cells(0).Value) Then
             currentEditRow = Nothing
-            _rowSit = FlagEstado.RegistroSalvo
+            _rowSit = EnumFlagEstado.RegistroSalvo
         End If
         '
     End Sub
@@ -1354,26 +1354,26 @@ Public Class frmPedido
     Private Sub dgvMensagens_RowValidating(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvMensagens.RowValidating
         '
         '--- verifica se é um ROW editado ou novo
-        Dim mySit As FlagEstado
+        Dim mySit As EnumFlagEstado
         Dim myMsn As clPedidoMensagem = DirectCast(dgvMensagens.Rows(e.RowIndex).DataBoundItem, clPedidoMensagem)
         '
         If IsNothing(myMsn) Then Exit Sub
         '
         If Not myMsn.IDPedidoMensagem Is Nothing Then
             If dgvMensagens.IsCurrentRowDirty Then
-                mySit = FlagEstado.Alterado
+                mySit = EnumFlagEstado.Alterado
             Else
-                mySit = FlagEstado.RegistroSalvo
+                mySit = EnumFlagEstado.RegistroSalvo
             End If
         Else
-            mySit = FlagEstado.NovoRegistro
+            mySit = EnumFlagEstado.NovoRegistro
         End If
         '
         '--- Verifica os valores inseridos
         If dgvMensagens.CurrentRow.Cells("clnMensagem").Value.ToString.Trim.Length = 0 Then
             e.Cancel = True
         Else
-            If mySit = FlagEstado.NovoRegistro Then
+            If mySit = EnumFlagEstado.NovoRegistro Then
                 '
                 Try
                     myMsn.IDPedido = _pedido.IDPedido
@@ -1384,7 +1384,7 @@ Public Class frmPedido
                     bindMensagem.CancelEdit()
                 End Try
                 '
-            ElseIf mySit = FlagEstado.Alterado Then
+            ElseIf mySit = EnumFlagEstado.Alterado Then
                 '
                 Try
                     MensagemAlterar(myMsn)
@@ -1646,7 +1646,7 @@ Public Class frmPedido
     Private Sub miImportarItens_Click(sender As Object, e As EventArgs) Handles miImportarItens.Click
         '
         '--- verifica se a situacao do pedido
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Não é possível importar pedido em um pedido que ainda não foi salvo...",
                             "Importar Pedido", MessageBoxButtons.OK, MessageBoxIcon.Information)
             Return

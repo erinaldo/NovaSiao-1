@@ -406,7 +406,7 @@ Public Class frmProdutoListagem
         Next
         '
         If IsNothing(frm) Then '--- o frmProduto não esta aberto
-            frm = New frmProduto(FlagAcao.EDITAR, clProd)
+            frm = New frmProduto(EnumFlagAcao.EDITAR, clProd)
             frm.MdiParent = frmPrincipal
             frm.StartPosition = FormStartPosition.CenterScreen
             Close()
@@ -431,7 +431,7 @@ Public Class frmProdutoListagem
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
         Dim prod As New clProduto
         '
-        Dim frm As New frmProduto(FlagAcao.INSERIR, prod)
+        Dim frm As New frmProduto(EnumFlagAcao.INSERIR, prod)
         frm.MdiParent = frmPrincipal
         frm.StartPosition = FormStartPosition.CenterScreen
         Close()

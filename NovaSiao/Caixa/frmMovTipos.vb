@@ -6,38 +6,38 @@ Public Class frmMovTipos
     '
     Private WithEvents dtTipos As DataTable
     Private WithEvents bindTipo As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     '
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
     '
 #Region "EVENTO LOAD E PROPRIEDADE SIT"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         '
         Get
             Return _Sit
         End Get
         '
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             '
             _Sit = value
             '
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = False
                 lstFormas.ReadOnly = False
                 '
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = True
                 lstFormas.ReadOnly = True
                 '
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 txtMovTipo.Select()
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
@@ -64,10 +64,10 @@ Public Class frmMovTipos
         If dtTipos.Rows.Count > 0 Then
             bindTipo.MoveFirst()
             PreencheDataBindings()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         Else
             bindTipo.AddNew()
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
             PreencheDataBindings()
         End If
         '
@@ -127,10 +127,10 @@ Public Class frmMovTipos
                                   ByVal e As BindingCompleteEventArgs)
         '
 
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             '
             If e.BindingCompleteContext = BindingCompleteContext.DataSourceUpdate Then
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
             '
         End If
@@ -146,7 +146,7 @@ Public Class frmMovTipos
         If Not IsDBNull(DirectCast(bindTipo.Current, DataRowView).Item("IDMovTipo")) Then
             '
             ' ALTERAR PARA REGISTRO SALVO
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
             ' VERIFICA O ATIVO BUTTON
             AtivoButtonImage()
@@ -232,7 +232,7 @@ Public Class frmMovTipos
     ' ATIVAR OU DESATIVAR FORMA BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR um Novo Tipo de Movimentação", "Desativar Tipo",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -250,8 +250,8 @@ Public Class frmMovTipos
         '
         lblIDMovTipo.Tag = Not lblIDMovTipo.Tag
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         AtivoButtonImage()
@@ -261,7 +261,7 @@ Public Class frmMovTipos
     ' BOTÃO CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         '
-        If Sit = FlagEstado.Alterado Then ' REGISTRO ALTERADO
+        If Sit = EnumFlagEstado.Alterado Then ' REGISTRO ALTERADO
             If MessageBox.Show("Deseja cancelar todas as alterações feitas no registro atual?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes Then
@@ -269,10 +269,10 @@ Public Class frmMovTipos
                 bindTipo.CancelEdit()
                 txtMovTipo.Focus()
                 AtivoButtonImage()
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 '
             End If
-        ElseIf Sit = FlagEstado.NovoRegistro Then ' REGISTRO NOVO
+        ElseIf Sit = EnumFlagEstado.NovoRegistro Then ' REGISTRO NOVO
             If lstFormas.Items.Count = 0 Then
                 MessageBox.Show("Não é possível cancelar porque não existe outro registro." & vbNewLine &
                                 "Se deseja sair apenas feche a janela!", "Cancelar Edição", MessageBoxButtons.OK,
@@ -281,7 +281,7 @@ Public Class frmMovTipos
             End If
             '
             bindTipo.RemoveCurrent()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
         End If
         '
@@ -302,7 +302,7 @@ Public Class frmMovTipos
         bindTipo.MoveLast()
         '
         '---altera o SIT
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         txtMovTipo.Focus()
         '
     End Sub
@@ -330,7 +330,7 @@ Public Class frmMovTipos
         Dim movBLL As New MovimentacaoBLL
         Dim row As DataRow = DirectCast(bindTipo.Current, DataRowView).Row
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             Try
                 Dim newID As Int16 = movBLL.MovTipo_Inserir(row("MovTipo"), row("Meio"))
                 '
@@ -338,7 +338,7 @@ Public Class frmMovTipos
                 lblIDMovTipo.DataBindings("Text").ReadValue()
                 DirectCast(bindTipo.Current, DataRowView).Row.AcceptChanges()
                 '
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 '
                 '---informa o usuário
                 MessageBox.Show("Registro Inserido com sucesso!", "Registro Salvo",
@@ -350,12 +350,12 @@ Public Class frmMovTipos
                                 MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             Try
                 movBLL.MovTipo_Update(row("IDMovTipo"), row("MovTipo"), row("Ativo"), row("Meio"))
                 '
                 DirectCast(bindTipo.Current, DataRowView).Row.AcceptChanges()
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 '
                 '---informa o usuário
                 MessageBox.Show("Registro Atualizado com sucesso!", "Registro Salvo",

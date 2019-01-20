@@ -6,18 +6,18 @@ Public Class frmDespesa
     Private _APagarList As New List(Of clAPagar)
     Private BindDespesa As New BindingSource
     Private BindAPagar As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registr
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registr
     Private VerificaAlteracao As Boolean = False
     '
 #Region "LOAD"
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
+                Case EnumFlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
                     lblSituacao.Text = "Finalizada"
                     lblSituacao.ForeColor = Color.White
                     '
@@ -38,7 +38,7 @@ Public Class frmDespesa
                     '--- listagem
                     dgvAPagar.ReadOnly = False
                     '
-                Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
+                Case EnumFlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     lblSituacao.Text = "Alterada"
                     lblSituacao.ForeColor = Color.Cyan
                     '
@@ -59,7 +59,7 @@ Public Class frmDespesa
                     '--- listagem
                     dgvAPagar.ReadOnly = False
                     '
-                Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
+                Case EnumFlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     lblSituacao.Text = "Nova"
                     lblSituacao.ForeColor = Color.Yellow
                     '
@@ -80,7 +80,7 @@ Public Class frmDespesa
                     '--- listagem
                     dgvAPagar.ReadOnly = False
                     '
-                Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
+                Case EnumFlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     lblSituacao.Text = "Bloqueada"
                     lblSituacao.ForeColor = Color.DarkRed
                     '
@@ -133,15 +133,15 @@ Public Class frmDespesa
             '--- Preenche Itens do A Pagar (parcelas)
             Preenche_APagar()
             '
-            '--- Atualiza o estado da Situacao: FLAGESTADO
+            '--- Atualiza o estado da Situacao: EnumFlagEstado
             If _Despesa.Bloqueada = True Then
-                Sit = FlagEstado.RegistroBloqueado
+                Sit = EnumFlagEstado.RegistroBloqueado
             ElseIf IsNothing(_Despesa.IDDespesa) Then
-                Sit = FlagEstado.NovoRegistro
+                Sit = EnumFlagEstado.NovoRegistro
                 _Despesa.IDFilial = Obter_FilialPadrao()
                 _Despesa.ApelidoFilial = ObterDefault("FilialDescricao")
             Else
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
             '
             '--- Permite a verificacao dos combo
@@ -196,8 +196,8 @@ Public Class frmDespesa
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _Despesa.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _Despesa.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         eProvider.Clear()
@@ -450,7 +450,7 @@ Public Class frmDespesa
         End If
         '
         '--- abre o form frmAPagar
-        Dim fPag As New frmAPagarItem(Me, clPag.APagarValor, _Despesa.DespesaData, clPag, FlagAcao.INSERIR)
+        Dim fPag As New frmAPagarItem(Me, clPag.APagarValor, _Despesa.DespesaData, clPag, EnumFlagAcao.INSERIR)
         fPag.ShowDialog()
         '
         If fPag.DialogResult = DialogResult.OK Then
@@ -464,7 +464,7 @@ Public Class frmDespesa
             '--- AtualizaTotalAPagar
             AtualizaTotalAPagar()
             '
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
             '
         End If
         '
@@ -487,13 +487,13 @@ Public Class frmDespesa
         If dgvAPagar.SelectedRows.Count = 0 Then Exit Sub
         '
         Dim PagAtual As clAPagar = dgvAPagar.SelectedRows(0).DataBoundItem
-        Dim fPag As New frmAPagarItem(Me, vl, _Despesa.DespesaData, PagAtual, FlagAcao.EDITAR)
+        Dim fPag As New frmAPagarItem(Me, vl, _Despesa.DespesaData, PagAtual, EnumFlagAcao.EDITAR)
         fPag.ShowDialog()
         '
         '--- AtualizaTotalAPagar
         AtualizaTotalAPagar()
         '
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
         '
     End Sub
     '
@@ -529,7 +529,7 @@ Public Class frmDespesa
         '--- AtualizaTotalAPagar
         AtualizaTotalAPagar()
         '
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
         '
     End Sub
     '
@@ -605,7 +605,7 @@ Public Class frmDespesa
         '
         If VerificaAlteracao = False Then Exit Sub
         '
-        If Sit = FlagEstado.RegistroBloqueado Then
+        If Sit = EnumFlagEstado.RegistroBloqueado Then
             Dim cmb As ComboBox = DirectCast(sender, ComboBox)
             '
             Select Case cmb.Name
@@ -631,7 +631,7 @@ Public Class frmDespesa
     ' FUNCAO QUE CONFERE REGISTRO BLOQUEADO E EMITE MENSAGEM PADRAO
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroBloqueado() As Boolean
-        If Sit = FlagEstado.RegistroBloqueado Then
+        If Sit = EnumFlagEstado.RegistroBloqueado Then
             MessageBox.Show("Esse registro de DESPESA está BLOQUEADO para alterações..." & vbNewLine &
                             "Não é possível adicionar ou alterar algum dado!",
                             "Registro Bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -759,7 +759,7 @@ Public Class frmDespesa
     Private Sub btnNova_Click(sender As Object, e As EventArgs) Handles btnNova.Click
         Dim desp As New clDespesa
         _APagarList.Clear()
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         '
         propDespesa = desp
         '
@@ -769,14 +769,14 @@ Public Class frmDespesa
 
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
-        If Sit = FlagEstado.Alterado Then '--- OPERAÇÃO DE CANCELAR
+        If Sit = EnumFlagEstado.Alterado Then '--- OPERAÇÃO DE CANCELAR
             BindDespesa.CancelEdit()
             '
             _APagarList.Clear()
             obterAPagar()
             BindAPagar.DataSource = _APagarList
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             txtCredor.Focus()
         Else '--- OPERACAO DE FECHAR
             Close()
@@ -870,7 +870,7 @@ Public Class frmDespesa
         '----------------------------------------------------------------------
         Dim dBLL As New DespesaBLL
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             Try
                 Dim newID As Integer = dBLL.Despesa_Inserir(_Despesa)
                 '
@@ -883,7 +883,7 @@ Public Class frmDespesa
                                 "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
                 Exit Sub
             End Try
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             Try
                 Dim newID As Integer = dBLL.Despesa_Alterar(_Despesa)
                 '
@@ -906,7 +906,7 @@ Public Class frmDespesa
         '----------------------------------------------------------------------
         MessageBox.Show("Registro Salvo com sucesso!",
                         "Registro Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         txtCredor.Focus()
         '
     End Sub
@@ -952,7 +952,7 @@ Public Class frmDespesa
             End If
             '
             '--- abre o form frmAPagar
-            Dim fPag As New frmAPagarItem(Me, clPag.APagarValor, _Despesa.DespesaData, clPag, FlagAcao.INSERIR)
+            Dim fPag As New frmAPagarItem(Me, clPag.APagarValor, _Despesa.DespesaData, clPag, EnumFlagAcao.INSERIR)
             fPag.ShowDialog()
             '
             '--- se a resposta Dialog não foi OK

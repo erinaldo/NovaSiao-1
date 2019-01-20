@@ -33,6 +33,9 @@
             Case "frmSimplesEntrada"
                 Me.DialogResult = DialogResult.OK
                 DirectCast(_formOrigem, frmSimplesEntrada).NovaSimples()
+            Case "frmDevolucaoSaida"
+                Me.DialogResult = DialogResult.OK
+                DirectCast(_formOrigem, frmDevolucaoSaida).NovaDevolucao()
             Case Else
                 Me.DialogResult = DialogResult.Cancel
         End Select
@@ -54,6 +57,9 @@
             Case "frmSimplesEntrada"
                 Me.DialogResult = DialogResult.OK
                 DirectCast(_formOrigem, frmSimplesEntrada).ProcuraSimples()
+            Case "frmDevolucaoSaida"
+                Me.DialogResult = DialogResult.OK
+                DirectCast(_formOrigem, frmDevolucaoSaida).ProcuraDevolucao()
             Case Else
                 Me.DialogResult = DialogResult.Cancel
         End Select

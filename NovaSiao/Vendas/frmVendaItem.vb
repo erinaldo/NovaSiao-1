@@ -4,8 +4,8 @@ Imports System.ComponentModel
 '
 Public Class frmVendaItem
     Private _clItem As clTransacaoItem
-    Private _acao As FlagAcao
-    Private _precoOrigem As precoOrigem
+    Private _acao As EnumFlagAcao
+    Private _precoOrigem As EnumPrecoOrigem
     Private _formOrigem As Form
     Private _filial As Integer?
     Private _IDAlterado As Boolean = False
@@ -13,7 +13,7 @@ Public Class frmVendaItem
     '
 #Region "NEW | PROPERTYS"
     '
-    Sub New(fOrigem As Form, pOrigem As precoOrigem, Filial As Integer, Item As clTransacaoItem)
+    Sub New(fOrigem As Form, pOrigem As EnumPrecoOrigem, Filial As Integer, Item As clTransacaoItem)
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -39,25 +39,25 @@ Public Class frmVendaItem
         propItem.IDFilial = Filial
         '
         If IsNothing(Item.IDTransacaoItem) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
-            propAcao = FlagAcao.INSERIR
+            propAcao = EnumFlagAcao.INSERIR
         Else
-            propAcao = FlagAcao.EDITAR
+            propAcao = EnumFlagAcao.EDITAR
         End If
         '
     End Sub
     '
     '--- Propriedade propAcao
-    Public Property propAcao() As FlagAcao
+    Public Property propAcao() As EnumFlagAcao
         Get
             Return _acao
         End Get
-        Set(ByVal value As FlagAcao)
+        Set(ByVal value As EnumFlagAcao)
             _acao = value
             '
-            If _acao = FlagAcao.INSERIR Then
+            If _acao = EnumFlagAcao.INSERIR Then
                 btnOK.Text = "&Inserir"
                 lblToolStripInfo.Text = "Inserindo Novo Item"
-            ElseIf _acao = FlagAcao.EDITAR Then
+            ElseIf _acao = EnumFlagAcao.EDITAR Then
                 btnOK.Text = "&Alterar"
                 lblToolStripInfo.Text = "Editando Item"
             End If
@@ -164,7 +164,7 @@ Public Class frmVendaItem
                 MessageBox.Show("Registro de Produto não encontrado..." & vbNewLine &
                                 "Favor digite um Registro válido.", "Reg. Inválido",
                                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                If _acao = FlagAcao.INSERIR Then txtRGProduto.Text = String.Empty
+                If _acao = EnumFlagAcao.INSERIR Then txtRGProduto.Text = String.Empty
                 txtRGProduto.Text = _clItem.RGProduto
                 e.Cancel = True
                 Return
@@ -183,9 +183,9 @@ Public Class frmVendaItem
                 .RGProduto = ItemProduto.RGProduto
                 '
                 '--- define o preco de VENDA OU DE COMPRA
-                If _precoOrigem = precoOrigem.PRECO_VENDA Then
+                If _precoOrigem = EnumPrecoOrigem.PRECO_VENDA Then
                     .Preco = ItemProduto.PVenda
-                ElseIf _precoOrigem = precoOrigem.PRECO_COMPRA Then
+                ElseIf _precoOrigem = EnumPrecoOrigem.PRECO_COMPRA Then
                     .Preco = ItemProduto.PCompra
                     .Desconto = ItemProduto.DescontoCompra
                 End If

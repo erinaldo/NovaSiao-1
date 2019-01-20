@@ -4,29 +4,29 @@ Imports System.ComponentModel
 '
 Public Class frmReserva
     Private _Reserva As clReserva
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private bindReserva As New BindingSource
     '
 #Region "LOAD E PROPERTIES"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnCancelar.Enabled = False
                 btnProcurar.Enabled = True
                 lblIDReserva.Text = Format(_Reserva.IDReserva, "0000")
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnCancelar.Enabled = True
                 btnProcurar.Enabled = False
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 txtFuncionario.Select()
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
@@ -50,9 +50,9 @@ Public Class frmReserva
             bindReserva.DataSource = _Reserva
             '
             If Not IsNothing(_Reserva.IDReserva) Then
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             Else
-                Sit = FlagEstado.NovoRegistro
+                Sit = EnumFlagEstado.NovoRegistro
             End If
             '
             VerificaProdutoConhecido()
@@ -121,8 +121,8 @@ Public Class frmReserva
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If bindReserva.Current.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If bindReserva.Current.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -153,27 +153,27 @@ Public Class frmReserva
     '--- BTN NOVO
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
         propReserva = New clReserva
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         txtFuncionario.Focus()
     End Sub
     '
     '--- BTN CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             btnProcurar_Click(btnCancelar, New EventArgs)
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             bindReserva.CancelEdit()
         End If
         '
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
     '--- BTN FECHAR
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
-        If Sit <> FlagEstado.RegistroSalvo Then
+        If Sit <> EnumFlagEstado.RegistroSalvo Then
             If MessageBox.Show("O Registro de Reserva inserido ou alterado ainda NÃO FOI SALVO..." & vbNewLine &
                                "Deseja realmente sair e perder as alterações?", "Registro Não foi Salvo",
                                MessageBoxButtons.YesNo, MessageBoxIcon.Question,
@@ -206,9 +206,9 @@ Public Class frmReserva
             _Reserva.IDFuncionario = frmF.IDEscolhido
         End If
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_Reserva.IDFuncionario), 0, _Reserva.IDFuncionario) Then
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End If
         '
@@ -229,9 +229,9 @@ Public Class frmReserva
             _Reserva.IDProdutoTipo = frmT.propIdTipo_Escolha
         End If
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_Reserva.IDProdutoTipo), 0, _Reserva.IDProdutoTipo) Then
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End If
         '
@@ -250,9 +250,9 @@ Public Class frmReserva
             txtAutor.Text = frmA.propAutorEscolhido
         End If
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             If oldAutor <> txtAutor.Text Then
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End If
         '
@@ -273,9 +273,9 @@ Public Class frmReserva
             _Reserva.IDFabricante = frmF.propIDFab_Escolha
         End If
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             If IIf(IsNothing(oldIDFabricante), 0, oldIDFabricante) <> IIf(IsNothing(_Reserva.IDFabricante), 0, _Reserva.IDFabricante) Then
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End If
         '
@@ -297,9 +297,9 @@ Public Class frmReserva
             _Reserva.IDFornecedor = frmF.propFornecedor_Escolha.IDPessoa
         End If
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             If IIf(IsNothing(oldIDFornecedor), 0, oldIDFornecedor) <> IIf(IsNothing(_Reserva.IDFornecedor), 0, _Reserva.IDFornecedor) Then
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
         End If
         '
@@ -323,9 +323,9 @@ Public Class frmReserva
         '
         Try
             '--- Salva mas antes define se é ATUALIZAR OU UM NOVO REGISTRO
-            If Sit = FlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
+            If Sit = EnumFlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
                 NewReservaID = reservaBLL.Reserva_Inserir(_Reserva)
-            ElseIf Sit = FlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
+            ElseIf Sit = EnumFlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
                 NewReservaID = reservaBLL.Reserva_Alterar(_Reserva)
             End If
         Catch ex As Exception
@@ -337,7 +337,7 @@ Public Class frmReserva
         '--- Verifica se houve Retorno da Função de Salvar
         If IsNumeric(NewReservaID) AndAlso NewReservaID <> 0 Then
             '--- Retorna o número de Registro
-            If Sit = FlagEstado.NovoRegistro Then
+            If Sit = EnumFlagEstado.NovoRegistro Then
                 _Reserva.IDReserva = NewReservaID
                 lblIDReserva.DataBindings("Tag").ReadValue()
             End If
@@ -345,7 +345,7 @@ Public Class frmReserva
             '--- Altera a Situação
             bindReserva.EndEdit()
             bindReserva.CurrencyManager.Refresh()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
             '--- Mensagem de Sucesso:
             MsgBox("Registro Salvo com sucesso!", vbInformation, "Registro Salvo")
@@ -501,7 +501,7 @@ Public Class frmReserva
             e.Handled = True
             Select Case ctr.Name
                 Case "txtProdutoTipo"
-                    If Not IsNothing(_Reserva.IDProdutoTipo) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_Reserva.IDProdutoTipo) Then Sit = EnumFlagEstado.Alterado
                     txtProdutoTipo.Clear()
                     _Reserva.IDProdutoTipo = Nothing
             End Select
@@ -544,7 +544,7 @@ Public Class frmReserva
         'sendo um PRODUTO CONHECIDO bloquear a edicao Do Produto, fabricante, tipo, etc
         If _Reserva.ProdutoConhecido = True Then
             '
-            If Sit <> FlagEstado.RegistroSalvo Then
+            If Sit <> EnumFlagEstado.RegistroSalvo Then
                 If _Reserva.RGProduto Is Nothing Then
                     _Reserva.Produto = String.Empty
                     _Reserva.IDProdutoTipo = Nothing
@@ -571,7 +571,7 @@ Public Class frmReserva
             '
         Else '--- PRODUTO DESCONHECIDO
             '
-            If Sit <> FlagEstado.RegistroSalvo Then
+            If Sit <> EnumFlagEstado.RegistroSalvo Then
                 _Reserva.RGProduto = Nothing
                 _Reserva.Produto = Nothing
                 _Reserva.IDFornecedor = Nothing
@@ -628,7 +628,7 @@ Public Class frmReserva
     '--- VALIDA O RGPRODUTO PARA OBTER OS DADOS DO PRODUTO
     Private Sub txtRGProduto_Validating(sender As Object, e As CancelEventArgs) Handles txtRGProduto.Validating
         '
-        If String.IsNullOrEmpty(txtRGProduto.Text) OrElse Sit = FlagEstado.RegistroSalvo Then Exit Sub
+        If String.IsNullOrEmpty(txtRGProduto.Text) OrElse Sit = EnumFlagEstado.RegistroSalvo Then Exit Sub
         '
         If Produto_ObterDados(txtRGProduto.Text) = False Then
             e.Cancel = True

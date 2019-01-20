@@ -7,20 +7,20 @@ Public Class frmCobrancaForma
     Dim _Sit As Byte
     '
     ' PROPRIEDADE SIT
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Sit = _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo
+                Case EnumFlagEstado.RegistroSalvo
                     btnSalvar.Enabled = False
                     btnFechar.Text = "&Fechar"
-                Case FlagEstado.Alterado
+                Case EnumFlagEstado.Alterado
                     btnSalvar.Enabled = True
                     btnFechar.Text = "&Cancelar"
-                Case FlagEstado.NovoRegistro
+                Case EnumFlagEstado.NovoRegistro
                     btnSalvar.Enabled = True
                     btnFechar.Text = "&Cancelar"
             End Select
@@ -30,7 +30,7 @@ Public Class frmCobrancaForma
     ' EVENTO LOAD
     Private Sub frmFabricante_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         PreencheListaFormas()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
     End Sub
     '
     ' PREENCHE LISTAGEM
@@ -103,8 +103,8 @@ Public Class frmCobrancaForma
     '
     ' CONTROLE DA LISTAGEM
     Private Sub dgvFormas_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvFormas.CellBeginEdit
-        If Sit <> FlagEstado.NovoRegistro Then
-            Sit = FlagEstado.Alterado
+        If Sit <> EnumFlagEstado.NovoRegistro Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -118,7 +118,7 @@ Public Class frmCobrancaForma
             If Not hit.Type = DataGridViewHitTestType.Cell Then Exit Sub
             '
             '---se for um novo registro
-            If Sit = FlagEstado.NovoRegistro Then
+            If Sit = EnumFlagEstado.NovoRegistro Then
                 MessageBox.Show("Salve o novo registro para depois alterar a ATIVAÇÃO de alguma Conta",
                                 "Desativar/Ativar Conta", MessageBoxButtons.OK,
                                 MessageBoxIcon.Information)
@@ -160,7 +160,7 @@ Public Class frmCobrancaForma
         PreencheListaImagem()
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     Private Sub DesativarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DesativarToolStripMenuItem.Click
@@ -179,14 +179,14 @@ Public Class frmCobrancaForma
         PreencheListaImagem()
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     ' BOTOES DO FORMULARIO
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
         '---adiciona novo ROW no datatable
         dtForma.Rows.Add()
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         ' seleciona a cell
         dgvFormas.Focus()
         dgvFormas.CurrentCell = dgvFormas.Rows(dgvFormas.Rows.Count - 1).Cells(1)
@@ -196,22 +196,22 @@ Public Class frmCobrancaForma
     End Sub
     '
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             Me.Close()
-        ElseIf Sit = FlagEstado.NovoRegistro Then
+        ElseIf Sit = enumFlagEstado.NovoRegistro Then
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
             dgvFormas.Rows.Remove(dgvFormas.CurrentRow)
             PreencheListaFormas()
-            Sit = FlagEstado.RegistroSalvo
-        ElseIf Sit = FlagEstado.Alterado Then
+            Sit = EnumFlagEstado.RegistroSalvo
+        ElseIf Sit = enumFlagEstado.Alterado Then
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
             dgvFormas.CancelEdit()
             PreencheListaFormas()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
     End Sub
     '
@@ -263,7 +263,7 @@ Public Class frmCobrancaForma
         '
         '---preencher a listagem com os novos valores
         PreencheListaFormas()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
     End Sub
     '
     ' VERIFICAR SE EXISTE UM REGISTRO COM A MESMA DESCRIÇÃO
@@ -322,12 +322,12 @@ Public Class frmCobrancaForma
     Private Sub TextBox_KeyPress(ByVal sender As System.Object, ByVal e As KeyPressEventArgs)
         '---Se o usuario pressionou a tecla ESC na edição ---
         If e.KeyChar = Convert.ToChar(27) Then
-            If Sit <> FlagEstado.RegistroSalvo Then
+            If Sit <> EnumFlagEstado.RegistroSalvo Then
                 e.Handled = True
                 '---cancela a adição do registro
-                If Sit = FlagEstado.NovoRegistro Then dgvFormas.Rows.Remove(dgvFormas.CurrentRow)
+                If Sit = EnumFlagEstado.NovoRegistro Then dgvFormas.Rows.Remove(dgvFormas.CurrentRow)
                 PreencheListaFormas()
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
         End If
     End Sub

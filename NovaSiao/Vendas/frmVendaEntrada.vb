@@ -5,7 +5,7 @@ Public Class frmVendaEntrada
     Private _formOrigem As Form
     Private _vlMaximo As Double
     Private _Pag As clMovimentacao
-    Private _Acao As FlagAcao
+    Private _Acao As EnumFlagAcao
     Private bindPag As New BindingSource
     '
     Private dtTipo As DataTable
@@ -19,7 +19,7 @@ Public Class frmVendaEntrada
     Sub New(fOrigem As Form,
             TranVlTotal As Double,
             Pag As clMovimentacao,
-            Acao As FlagAcao,
+            Acao As EnumFlagAcao,
             Optional Posicao As Point = Nothing)
         '
         ' This call is required by the designer.
@@ -363,9 +363,9 @@ Public Class frmVendaEntrada
                 _Pag.MovForma = lstItens.SelectedItems(0).Text
                 _Pag.IDMovForma = lstItens.SelectedItems(0).Value
                 '
-                If _Acao = FlagAcao.INSERIR Then
-                    DirectCast(_formOrigem, frmVendaVista).Pagamentos_Manipulacao(_Pag, FlagAcao.INSERIR)
-                ElseIf _Acao = FlagAcao.EDITAR Then
+                If _Acao = EnumFlagAcao.INSERIR Then
+                    DirectCast(_formOrigem, frmVendaVista).Pagamentos_Manipulacao(_Pag, EnumFlagAcao.INSERIR)
+                ElseIf _Acao = EnumFlagAcao.EDITAR Then
 
                 End If
                 '

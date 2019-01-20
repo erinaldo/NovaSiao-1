@@ -5,19 +5,19 @@ Public Class frmClientePJ
     '
 #Region "PRIVATE VARIAVEIS" ' DECLARAÇÃO DE VARIÁVEIS
     Private WithEvents _ClientePJ As clClientePJ
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private WithEvents BindingCliente As New BindingSource
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
-    Private _acao As FlagAcao
+    Private _acao As EnumFlagAcao
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnProcurar.Enabled = True
@@ -25,14 +25,14 @@ Public Class frmClientePJ
                 btnCancelar.Enabled = False
                 lblIDCliente.Text = Format(_ClientePJ.IDPessoa, "0000")
                 AtivoButtonImage()
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnProcurar.Enabled = False
                 btnImprimir.Enabled = True
                 btnCancelar.Enabled = True
                 AtivoButtonImage()
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 txtCadastroNome.Select()
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
@@ -51,7 +51,7 @@ Public Class frmClientePJ
     '
 #Region "FORM LOAD" ' FORM LOAD
     '
-    Public Sub New(myAcao As FlagAcao, myClientePJ As clClientePJ)
+    Public Sub New(myAcao As EnumFlagAcao, myClientePJ As clClientePJ)
         ' This call is required by the designer.
         InitializeComponent()
         ' Add any initialization after the InitializeComponent() call.
@@ -80,16 +80,16 @@ Public Class frmClientePJ
         End Set
     End Property
     '
-    Public Property propAcao As FlagAcao
+    Public Property propAcao As EnumFlagAcao
         Get
             Return _acao
         End Get
-        Set(value As FlagAcao)
+        Set(value As EnumFlagAcao)
             _acao = value
-            If value = FlagAcao.INSERIR Then
-                Sit = FlagEstado.NovoRegistro
-            ElseIf value = FlagAcao.EDITAR Then
-                Sit = FlagEstado.RegistroSalvo
+            If value = EnumFlagAcao.INSERIR Then
+                Sit = EnumFlagEstado.NovoRegistro
+            ElseIf value = enumFlagAcao.EDITAR Then
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
         End Set
     End Property
@@ -137,8 +137,8 @@ Public Class frmClientePJ
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _ClientePJ.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _ClientePJ.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -192,9 +192,9 @@ Public Class frmClientePJ
         '
         Try
             'Salva o Cliente, mas antes define se é ATUALIZAR OU UM NOVO REGISTRO
-            If Sit = FlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
+            If Sit = EnumFlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
                 NewCliID = cliPJ_BLL.SalvaNovoClientePJ_Procedure_ID(_ClientePJ)
-            ElseIf _Sit = FlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
+            ElseIf _Sit = EnumFlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
                 NewCliID = cliPJ_BLL.AtualizaClientePJ_Procedure_ID(_ClientePJ)
             End If
         Catch ex As Exception
@@ -205,13 +205,13 @@ Public Class frmClientePJ
         'Verifica se houve Retorno da Função de Salvar
         If NewCliID <> 0 Then
             'Retorna o número de Registro do Novo Aluno Cadastrado
-            If _Sit = FlagEstado.NovoRegistro Then
+            If _Sit = EnumFlagEstado.NovoRegistro Then
                 lblIDCliente.Tag = NewCliID
                 lblIDCliente.Text = Format(lblIDCliente.Tag, "D4")
             End If
             '
             'Altera a Situação
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             BindingCliente.CurrencyManager.EndCurrentEdit()
             '
             'Mensagem
@@ -396,7 +396,7 @@ Public Class frmClientePJ
             AddHandler _ClientePJ.AoAlterar, AddressOf HandlerAoAlterar
         End If
 
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
     End Sub
     '
     '-------------------------------------------------------------------------------------------------------
@@ -417,7 +417,7 @@ Public Class frmClientePJ
                 Dim cliBll As New ClientePF_BLL
                 '
                 Dim myCliPF As clClientePF = cliBll.GetClientePF_PorID(frm.propClienteID)
-                Dim frmCli As New frmClientePF(FlagAcao.EDITAR, myCliPF)
+                Dim frmCli As New frmClientePF(EnumFlagAcao.EDITAR, myCliPF)
                 frmCli.Show()
                 '
             ElseIf frm.propClienteTipo = 2 Then ' PESSOA JURÍDICA
@@ -427,7 +427,7 @@ Public Class frmClientePJ
                 '
                 Dim myCliPJ As clClientePJ = cliBLL.GetClientesPJ_PorID(frm.propClienteID)
                 propClientePJ = myCliPJ
-                propAcao = FlagAcao.EDITAR
+                propAcao = EnumFlagAcao.EDITAR
             End If
         Catch ex As Exception
             MessageBox.Show(ex.Message)
@@ -443,7 +443,7 @@ Public Class frmClientePJ
                            MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes Then
             BindingCliente.CancelEdit()
             txtCadastroNome.Focus()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
     End Sub
     '
@@ -451,7 +451,7 @@ Public Class frmClientePJ
     ' ATIVAR OU DESATIVAR CLIENTE BOTÃO
     '-------------------------------------------------------------------------------------------------------
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR um Cliente Novo", "Desativar Cliente",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -495,7 +495,7 @@ Public Class frmClientePJ
     ' FECHA O FORMULÁRIO
     '-------------------------------------------------------------------------------------------------------
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
-        If Sit <> FlagEstado.RegistroSalvo Then
+        If Sit <> EnumFlagEstado.RegistroSalvo Then
             If MessageBox.Show("Esse registro ainda não foi salvo..." & vbNewLine & vbNewLine &
                                "Se você fechar agora, todas as alterações feitas serão perdidas!" & vbNewLine &
                                "Tem certeza que você deseja fechar esse registro?", "Registro Alterado",

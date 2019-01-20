@@ -18,14 +18,14 @@ Public Class frmCartaoTipos
 #Region "NEW | PROPERTY"
     '
     ' PROPRIEDADE SIT
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Sit = _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo
+                Case EnumFlagEstado.RegistroSalvo
 
                     If _procura = True Then
                         btnSalvar.Enabled = True
@@ -39,12 +39,12 @@ Public Class frmCartaoTipos
                         btnFechar.Text = "&Fechar"
                     End If
 
-                Case FlagEstado.Alterado
+                Case EnumFlagEstado.Alterado
                     btnSalvar.Enabled = True
                     btnSalvar.Image = My.Resources.save
                     btnSalvar.Text = "&Salvar"
                     btnFechar.Text = "&Cancelar"
-                Case FlagEstado.NovoRegistro
+                Case EnumFlagEstado.NovoRegistro
                     btnSalvar.Enabled = True
                     btnSalvar.Image = My.Resources.save
                     btnSalvar.Text = "&Salvar"
@@ -72,7 +72,7 @@ Public Class frmCartaoTipos
         FormataListagem()
         '
         If dgvListagem.RowCount > 0 Then
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
             '--- Seleciona o IDPadrao caso houver
             If Not IsNothing(IDPadrao) Then
@@ -86,7 +86,7 @@ Public Class frmCartaoTipos
             End If
             '
         Else
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
         End If
         '
     End Sub
@@ -249,7 +249,7 @@ Public Class frmCartaoTipos
         End If
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
         '
     End Sub
     '
@@ -269,7 +269,7 @@ Public Class frmCartaoTipos
         End If
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
         '
     End Sub
     '
@@ -281,7 +281,7 @@ Public Class frmCartaoTipos
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
         '
         dtOrigem.Rows.Add()
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         '
         ' seleciona a cell
         dgvListagem.Focus()
@@ -293,7 +293,7 @@ Public Class frmCartaoTipos
     '
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click, btnClose.Click
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             '
             If _procura = True Then
                 DialogResult = DialogResult.Cancel
@@ -303,20 +303,20 @@ Public Class frmCartaoTipos
             '
             Close()
             '
-        ElseIf Sit = FlagEstado.NovoRegistro Then
+        ElseIf Sit = EnumFlagEstado.NovoRegistro Then
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
             dgvListagem.Rows.Remove(dgvListagem.CurrentRow)
             Get_Dados()
-            Sit = FlagEstado.RegistroSalvo
-        ElseIf Sit = FlagEstado.Alterado Then
+            Sit = EnumFlagEstado.RegistroSalvo
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
             dgvListagem.CancelEdit()
             Get_Dados()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
         '
     End Sub
@@ -328,7 +328,7 @@ Public Class frmCartaoTipos
     ' ESCOLHER ou SALVAR REGISTRO
     Private Sub btnSalvar_Click(sender As Object, e As EventArgs) Handles btnSalvar.Click
         '
-        If Sit <> FlagEstado.RegistroSalvo Or _procura = False Then
+        If Sit <> EnumFlagEstado.RegistroSalvo Or _procura = False Then
             '
             SalvarRegistro_Cartao()
             '
@@ -392,7 +392,7 @@ Public Class frmCartaoTipos
         '
         '---preencher a listagem com os novos valores
         Get_Dados()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
@@ -466,8 +466,8 @@ Public Class frmCartaoTipos
     '
     ' VALIDAÇÃO E MANUTENÇAO DA LISTAGEM
     Private Sub dgvListagem_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvListagem.CellBeginEdit
-        If Sit <> FlagEstado.NovoRegistro Then
-            Sit = FlagEstado.Alterado
+        If Sit <> EnumFlagEstado.NovoRegistro Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -512,19 +512,19 @@ Public Class frmCartaoTipos
     Private Sub TextBox_KeyPress(ByVal sender As System.Object, ByVal e As KeyPressEventArgs)
         '---Se o usuario pressionou a tecla ESC na edição ---
         If e.KeyChar = Convert.ToChar(27) Then
-            If Sit <> FlagEstado.RegistroSalvo Then
+            If Sit <> EnumFlagEstado.RegistroSalvo Then
                 e.Handled = True
                 '---cancela a adição do registro
-                If Sit = FlagEstado.NovoRegistro Then dgvListagem.Rows.Remove(dgvListagem.CurrentRow)
+                If Sit = EnumFlagEstado.NovoRegistro Then dgvListagem.Rows.Remove(dgvListagem.CurrentRow)
                 Get_Dados()
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
         End If
     End Sub
     '
     Private Sub dgvListagem_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvListagem.CellDoubleClick
         '
-        If _procura = True And Sit = FlagEstado.RegistroSalvo Then
+        If _procura = True And Sit = EnumFlagEstado.RegistroSalvo Then
             btnSalvar_Click(New Object, New EventArgs)
         End If
         '

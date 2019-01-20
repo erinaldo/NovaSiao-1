@@ -4,32 +4,32 @@ Imports System.ComponentModel
 '
 Public Class frmFornecedor
     Private _forn As clFornecedor
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private BindForn As New BindingSource
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
     '
 #Region "LOAD E PROPERTIES"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnCancelar.Enabled = False
                 btnProcurar.Enabled = True
                 txtCNPJ.ReadOnly = True
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = enumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnCancelar.Enabled = True
                 btnProcurar.Enabled = False
                 txtCNPJ.ReadOnly = True
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = enumFlagEstado.NovoRegistro Then
                 txtRazaoSocial.Select()
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
@@ -66,10 +66,10 @@ Public Class frmFornecedor
         PreencheDataBindings()
         '
         If Not IsNothing(_forn.IDPessoa) Then
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             lblID.Text = Format(_forn.IDPessoa, "0000")
         Else
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
             ' OBTER OS VALORES DEFAULT DOS CAMPOS
             _forn.Cidade = ObterDefault("Cidade")
             _forn.UF = ObterDefault("UF")
@@ -128,14 +128,14 @@ Public Class frmFornecedor
             ' LER O ID
             lblID.DataBindings.Item("Tag").ReadValue()
             ' ALTERAR PARA REGISTRO SALVO
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
         '
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If BindForn.Current.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If BindForn.Current.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -161,26 +161,26 @@ Public Class frmFornecedor
     '--- BTN NOVO
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
         propTransp = New clFornecedor
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         txtRazaoSocial.Focus()
     End Sub
     '
     '--- BTN CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             btnProcurar_Click(btnCancelar, New EventArgs)
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = enumFlagEstado.Alterado Then
             BindForn.CancelEdit()
         End If
         '
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
     '--- BTN PROCURAR
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode INATIVAR um Novo Fornecedor...", "Inativar Fornecedor",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -243,9 +243,9 @@ Public Class frmFornecedor
         '
         Try
             '--- Salva mas antes define se é ATUALIZAR OU UM NOVO REGISTRO
-            If Sit = FlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
+            If Sit = EnumFlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
                 NewFornID = fornBLL.SalvaNovoFornecedor_ID(_forn)
-            ElseIf Sit = FlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
+            ElseIf Sit = enumFlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
                 NewFornID = fornBLL.AtualizaFornecedor(_forn)
             End If
         Catch ex As Exception
@@ -257,13 +257,13 @@ Public Class frmFornecedor
         '--- Verifica se houve Retorno da Função de Salvar
         If IsNumeric(NewFornID) AndAlso NewFornID <> 0 Then
             '--- Retorna o número de Registro do Novo Cliente Cadastrado
-            If Sit = FlagEstado.NovoRegistro Then
+            If Sit = EnumFlagEstado.NovoRegistro Then
                 _forn.IDPessoa = NewFornID
                 lblID.DataBindings("Tag").ReadValue()
             End If
 
             '--- Altera a Situação
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             BindForn.EndEdit()
             BindForn.CurrencyManager.Refresh()
             '
@@ -334,7 +334,7 @@ Public Class frmFornecedor
     '--------------------------------------------------------------------------------------------------------------------------------------
     Private Sub txtCNPJ_Leave(sender As Object, e As EventArgs) Handles txtCNPJ.Leave
         '
-        If Sit <> FlagEstado.NovoRegistro Then Exit Sub
+        If Sit <> EnumFlagEstado.NovoRegistro Then Exit Sub
         '
         ' verifica somente os numeros do CPF
         Dim CNPJ As String = ""

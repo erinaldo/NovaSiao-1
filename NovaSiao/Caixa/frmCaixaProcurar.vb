@@ -5,7 +5,7 @@ Imports System.Drawing.Drawing2D
 Public Class frmCaixaProcurar
     Private cxLista As New List(Of clCaixa)
     Private _myMes As Date
-    Private _Sit As FlagEstado
+    Private _Sit As EnumFlagEstado
     '
     Private _IDFilial As Integer?
     Private _IDConta As Int16?

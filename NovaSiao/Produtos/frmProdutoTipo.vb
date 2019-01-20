@@ -16,14 +16,14 @@ Public Class frmProdutoTipo
 #Region "LOAD"
     '
     ' PROPRIEDADE SIT
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Sit = _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo
+                Case EnumFlagEstado.RegistroSalvo
                     btnSalvar.Enabled = False
                     If _formProcura <> ProcurarPor.None Then
                         btnFechar.Text = "&Escolher"
@@ -31,11 +31,11 @@ Public Class frmProdutoTipo
                         btnFechar.Text = "&Fechar"
                     End If
                     AtualizarTabs(True)
-                Case FlagEstado.Alterado
+                Case EnumFlagEstado.Alterado
                     btnSalvar.Enabled = True
                     btnFechar.Text = "&Cancelar"
                     AtualizarTabs(False)
-                Case FlagEstado.NovoRegistro
+                Case EnumFlagEstado.NovoRegistro
                     btnSalvar.Enabled = True
                     btnFechar.Text = "&Cancelar"
                     AtualizarTabs(False)
@@ -69,7 +69,7 @@ Public Class frmProdutoTipo
         '
         ' Add any initialization after the InitializeComponent() call.
         PreencheListaTipo()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         _formProcura = formProcura
         '
         '--- Determina o texto do Título dependendo da procura
@@ -126,7 +126,7 @@ Public Class frmProdutoTipo
     Private Sub PreencheListaTipo()
         Dim SQL As New SQLControl
         SQL.ExecQuery("SELECT * FROM tblProdutoTipo")
-        dtTipo = Sql.DBDT
+        dtTipo = SQL.DBDT
 
         dgvTipos.Columns.Clear()
         dgvTipos.AutoGenerateColumns = False
@@ -335,8 +335,8 @@ Public Class frmProdutoTipo
     ' AO EDITAR DOS DATAGRID
     Private Sub dgv_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvTipos.CellBeginEdit,
             dgvTipos.CellBeginEdit, dgvSubTipo.CellBeginEdit
-        If Sit <> FlagEstado.NovoRegistro Then
-            Sit = FlagEstado.Alterado
+        If Sit <> EnumFlagEstado.NovoRegistro Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -388,13 +388,13 @@ Public Class frmProdutoTipo
                 '---adiciona a imagem no NOVO ROW
                 dgvCategoria.CurrentRow.Cells(2).Value = ImgNew
         End Select
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
     End Sub
     ' BOTAO FECHAR
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
         '---pergunta ao usuário se deseja fechar
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             Me.Close()
             '
             If Application.OpenForms.Count = 1 Then
@@ -402,11 +402,11 @@ Public Class frmProdutoTipo
             End If
             '
             Exit Sub
-        ElseIf Sit = FlagEstado.NovoRegistro Then
+        ElseIf Sit = EnumFlagEstado.NovoRegistro Then
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
@@ -415,7 +415,7 @@ Public Class frmProdutoTipo
         '---efetua o cancelamento das edições feitas
         Select Case tabPrincipal.SelectedIndex
             Case 0
-                If Sit = FlagEstado.NovoRegistro Then
+                If Sit = EnumFlagEstado.NovoRegistro Then
                     dgvTipos.Rows.Remove(dgvTipos.CurrentRow)
                 Else
                     dgvTipos.CancelEdit()
@@ -423,7 +423,7 @@ Public Class frmProdutoTipo
                 '
                 PreencheListaTipo()
             Case 1
-                If Sit = FlagEstado.NovoRegistro Then
+                If Sit = EnumFlagEstado.NovoRegistro Then
                     dgvSubTipo.Rows.Remove(dgvSubTipo.CurrentRow)
                 Else
                     dgvSubTipo.CancelEdit()
@@ -431,7 +431,7 @@ Public Class frmProdutoTipo
                 '
                 PreencheListaSubTipo()
             Case 2
-                If Sit = FlagEstado.NovoRegistro Then
+                If Sit = EnumFlagEstado.NovoRegistro Then
                     dgvCategoria.Rows.Remove(dgvCategoria.CurrentRow)
                 Else
                     dgvCategoria.CancelEdit()
@@ -440,7 +440,7 @@ Public Class frmProdutoTipo
                 PreencheListaCategoria()
         End Select
         '
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
     End Sub
     ' BOTAO SALVAR
     Private Sub btnSalvar_Click(sender As Object, e As EventArgs) Handles btnSalvar.Click
@@ -504,7 +504,7 @@ Public Class frmProdutoTipo
         '
         '---preencher a listagem com os novos valores
         PreencheListaTipo()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
@@ -556,7 +556,7 @@ Public Class frmProdutoTipo
         '
         '---preencher a listagem com os novos valores
         PreencheListaSubTipo()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
@@ -610,7 +610,7 @@ Public Class frmProdutoTipo
         '
         '---preencher a listagem com os novos valores
         PreencheListaCategoria()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
     End Sub
     '
 #End Region
@@ -700,23 +700,23 @@ Public Class frmProdutoTipo
     Private Sub TextBox_KeyPress(ByVal sender As System.Object, ByVal e As KeyPressEventArgs)
         '---Se o usuario pressionou a tecla ESC na edição ---
         If e.KeyChar = Convert.ToChar(27) Then
-            If Sit <> FlagEstado.RegistroSalvo Then
+            If Sit <> EnumFlagEstado.RegistroSalvo Then
                 e.Handled = True
                 '
                 '---cancela a adição do registro
                 Select Case tabPrincipal.SelectedIndex
                     Case 0 ' cancela TIPO
-                        If Sit = FlagEstado.NovoRegistro Then dgvTipos.Rows.Remove(dgvTipos.CurrentRow)
+                        If Sit = EnumFlagEstado.NovoRegistro Then dgvTipos.Rows.Remove(dgvTipos.CurrentRow)
                         PreencheListaTipo()
                     Case 1 ' cancela SubTipo
-                        If Sit = FlagEstado.NovoRegistro Then dgvSubTipo.Rows.Remove(dgvSubTipo.CurrentRow)
+                        If Sit = EnumFlagEstado.NovoRegistro Then dgvSubTipo.Rows.Remove(dgvSubTipo.CurrentRow)
                         PreencheListaSubTipo()
                     Case 2 ' cancela Categoria
-                        If Sit = FlagEstado.NovoRegistro Then dgvCategoria.Rows.Remove(dgvCategoria.CurrentRow)
+                        If Sit = EnumFlagEstado.NovoRegistro Then dgvCategoria.Rows.Remove(dgvCategoria.CurrentRow)
                         PreencheListaCategoria()
                 End Select
                 '
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
         End If
     End Sub
@@ -839,7 +839,7 @@ Public Class frmProdutoTipo
                 AlterarAtivo(dgvCategoria, True)
         End Select
         '
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     Private Sub DesativarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DesativarToolStripMenuItem.Click
@@ -852,7 +852,7 @@ Public Class frmProdutoTipo
                 AlterarAtivo(dgvCategoria, False)
         End Select
         '
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     Private Sub AlterarAtivo(myList As DataGridView, myAtivo As Boolean)
@@ -879,7 +879,7 @@ Public Class frmProdutoTipo
         End If
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
 #End Region
     '

@@ -4,7 +4,7 @@ Imports CamadaBLL
 Public Class frmDespesaPeriodica
     Private _Despesa As clDespesaPeriodica
     Private BindDespesa As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registr
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registr
     Private VerificaAlteracao As Boolean = False
     Private dtVencimento As New DataTable
     '
@@ -24,14 +24,14 @@ Public Class frmDespesaPeriodica
         '
     End Sub
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
+                Case EnumFlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
                     '
                     '--- Botoes
                     btnNova.Enabled = True
@@ -47,7 +47,7 @@ Public Class frmDespesaPeriodica
                     txtDespesaValor.ReadOnly = False
                     txtDescricao.ReadOnly = False
                     '
-                Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
+                Case EnumFlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     '
                     '--- Botoes
                     btnNova.Enabled = False
@@ -63,7 +63,7 @@ Public Class frmDespesaPeriodica
                     txtDespesaValor.ReadOnly = False
                     txtDescricao.ReadOnly = False
                     '
-                Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
+                Case EnumFlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     '
                     '--- Botoes
                     btnNova.Enabled = False
@@ -79,7 +79,7 @@ Public Class frmDespesaPeriodica
                     txtDespesaValor.ReadOnly = False
                     txtDescricao.ReadOnly = False
                     '
-                Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
+                Case EnumFlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     '
                     '--- Botoes
                     btnNova.Enabled = True
@@ -121,13 +121,13 @@ Public Class frmDespesaPeriodica
             '
             '--- Atualiza o estado da Situacao: FLAGESTADO
             If _Despesa.Ativa = False Then
-                Sit = FlagEstado.RegistroBloqueado
+                Sit = EnumFlagEstado.RegistroBloqueado
             ElseIf IsNothing(_Despesa.IDDespesaPeriodica) Then
-                Sit = FlagEstado.NovoRegistro
+                Sit = EnumFlagEstado.NovoRegistro
                 _Despesa.IDFilial = Obter_FilialPadrao()
                 _Despesa.ApelidoFilial = ObterDefault("FilialDescricao")
             Else
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
             '
             '--- define a PERIODICIDADE
@@ -225,8 +225,8 @@ Public Class frmDespesaPeriodica
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _Despesa.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _Despesa.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         eProvider.Clear()
@@ -388,7 +388,7 @@ Public Class frmDespesaPeriodica
         '
         If VerificaAlteracao = False Then Exit Sub
         '
-        If Sit = FlagEstado.RegistroBloqueado Then
+        If Sit = EnumFlagEstado.RegistroBloqueado Then
             '
             Dim cmb As Control = DirectCast(sender, Control)
             VerificaAlteracao = False
@@ -417,7 +417,7 @@ Public Class frmDespesaPeriodica
     ' FUNCAO QUE CONFERE REGISTRO BLOQUEADO E EMITE MENSAGEM PADRAO
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroBloqueado() As Boolean
-        If Sit = FlagEstado.RegistroBloqueado Then
+        If Sit = EnumFlagEstado.RegistroBloqueado Then
             MessageBox.Show("Esse registro de DESPESA PERIODICA está BLOQUEADO para alterações..." & vbNewLine &
                             "Não é possível adicionar ou alterar algum dado!",
                             "Registro Bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -484,7 +484,7 @@ Public Class frmDespesaPeriodica
     Private Sub btnNova_Click(sender As Object, e As EventArgs) Handles btnNova.Click
         Dim desp As New clDespesaPeriodica
         '
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         '
         propDespesa = desp
         '
@@ -494,10 +494,10 @@ Public Class frmDespesaPeriodica
 
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
-        If Sit = FlagEstado.Alterado Then '--- OPERAÇÃO DE CANCELAR
+        If Sit = EnumFlagEstado.Alterado Then '--- OPERAÇÃO DE CANCELAR
             BindDespesa.CancelEdit()
             propPeriodicidade = _Despesa.Periodicidade
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             txtCredor.Focus()
         Else '--- OPERACAO DE FECHAR
             Close()
@@ -587,7 +587,7 @@ Public Class frmDespesaPeriodica
         '----------------------------------------------------------------------
         Dim dBLL As New DespesaPeriodicaBLL
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             '
             Try
                 Dim newID As Integer = dBLL.DespesaPeriodica_Inserir(_Despesa)
@@ -602,7 +602,7 @@ Public Class frmDespesaPeriodica
                 Exit Sub
             End Try
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             '
             Try
                 Dim newID As Integer = dBLL.DespesaPeriodica_Alterar(_Despesa)
@@ -623,7 +623,7 @@ Public Class frmDespesaPeriodica
         '----------------------------------------------------------------------
         MessageBox.Show("Registro Salvo com sucesso!",
                         "Registro Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information)
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         txtCredor.Focus()
         '
     End Sub

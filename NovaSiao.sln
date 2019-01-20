@@ -27,6 +27,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Material", "Material", "{C75CF875-BD09-49F3-82FF-255ACF69ABC6}"
 	ProjectSection(SolutionItems) = preProject
 		Material\DragAndDrop.txt = Material\DragAndDrop.txt
+		ENUM_List.txt = ENUM_List.txt
 		Material\Formulas.txt = Material\Formulas.txt
 		Material\LogoNovaSiao_Color.png = Material\LogoNovaSiao_Color.png
 		Material\LogoNovaSiao_Mono.png = Material\LogoNovaSiao_Mono.png

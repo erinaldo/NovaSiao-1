@@ -11,24 +11,24 @@ Public Class frmVendaVista
     Private bindVenda As New BindingSource
     Private bindItem As New BindingSource
     Private bindEnt As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private _IDFilial As Integer
     Private VerificaAlteracao As Boolean
     '
 #Region "LOAD"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         '
         Get
             Return _Sit
         End Get
         '
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             '
             _Sit = value
             Select Case _Sit
                 '
-                Case FlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
+                Case EnumFlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
                     lblSituacao.Text = "Finalizada"
                     btnFinalizar.Text = "&Fechar"
                     btnTroca.Enabled = True
@@ -41,7 +41,7 @@ Public Class frmVendaVista
                     btnExcluirVenda.Enabled = True
                     btnDesbloquearVenda.Enabled = False
                     '                    '
-                Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
+                Case EnumFlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     lblSituacao.Text = "Alterada"
                     btnFinalizar.Text = "&Finalizar"
                     btnTroca.Enabled = True
@@ -54,7 +54,7 @@ Public Class frmVendaVista
                     btnExcluirVenda.Enabled = True
                     btnDesbloquearVenda.Enabled = False
                     '
-                Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
+                Case EnumFlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     lblSituacao.Text = "Em Aberto"
                     btnFinalizar.Text = "&Finalizar"
                     btnTroca.Enabled = True
@@ -67,7 +67,7 @@ Public Class frmVendaVista
                     btnExcluirVenda.Enabled = True
                     btnDesbloquearVenda.Enabled = False
                     '
-                Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
+                Case EnumFlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     lblSituacao.Text = "Bloqueada"
                     btnFinalizar.Text = "&Fechar"
                     btnTroca.Enabled = False
@@ -128,16 +128,16 @@ Public Class frmVendaVista
                                 "com a Filial ao qual pertence essa Venda..." & vbNewLine &
                                 "Assim, não é possível realizar alterações nessa venda.",
                                 "Filial Divergente", MessageBoxButtons.OK, MessageBoxIcon.Information)
-                Sit = FlagEstado.RegistroBloqueado
+                Sit = EnumFlagEstado.RegistroBloqueado
             Else
                 '--- Atualiza o estado da Situacao: FLAGESTADO
                 Select Case _Venda.IDSituacao
                     Case 1 ' VENDA INICIADA
-                        Sit = FlagEstado.NovoRegistro
+                        Sit = EnumFlagEstado.NovoRegistro
                     Case 2 ' VENDA FINALIZADA
-                        Sit = FlagEstado.RegistroSalvo
+                        Sit = EnumFlagEstado.RegistroSalvo
                     Case 3 ' VENDA BLOQUEADA
-                        Sit = FlagEstado.RegistroBloqueado
+                        Sit = EnumFlagEstado.RegistroBloqueado
                     Case Else
                 End Select
             End If
@@ -193,8 +193,8 @@ Public Class frmVendaVista
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _Venda.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _Venda.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -380,7 +380,7 @@ Public Class frmVendaVista
         '--- Abre o frmItem
         '
         Dim newItem As New clTransacaoItem
-        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _IDFilial, newItem)
+        Dim fItem As New frmVendaItem(Me, EnumPrecoOrigem.PRECO_VENDA, _IDFilial, newItem)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -434,7 +434,7 @@ Public Class frmVendaVista
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
         '
         '--- Abre o frmItem
-        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_VENDA, _IDFilial, itmAtual)
+        Dim fitem As New frmVendaItem(Me, EnumPrecoOrigem.PRECO_VENDA, _IDFilial, itmAtual)
         fitem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -601,7 +601,7 @@ Public Class frmVendaVista
 #Region "BOTOES DE ACAO"
     '
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
-        If Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado Then
+        If Sit = EnumFlagEstado.NovoRegistro Or Sit = EnumFlagEstado.Alterado Then
             Dim vlReceber As Double = AtualizaTotalPago()
             '
             If vlReceber > 0 Then
@@ -649,7 +649,7 @@ Public Class frmVendaVista
     Private Sub lblVendaData_DoubleClick(sender As Object, e As EventArgs) _
         Handles lblVendaData.DoubleClick, btnData.Click
         '
-        Dim frmDt As New frmDataInformar("Informe a data da Venda", DataTipo.PassadoPresente, _Venda.TransacaoData, Me)
+        Dim frmDt As New frmDataInformar("Informe a data da Venda", EnumDataTipo.PassadoPresente, _Venda.TransacaoData, Me)
         frmDt.ShowDialog()
         '
         If frmDt.DialogResult <> DialogResult.OK Then Exit Sub
@@ -805,13 +805,13 @@ Public Class frmVendaVista
     Private Sub btnDesbloquearVenda_Click(sender As Object, e As EventArgs) Handles btnDesbloquearVenda.Click
         '
         '--- Verifica se registro esta bloqueado
-        If Sit <> FlagEstado.RegistroBloqueado Then Exit Sub
+        If Sit <> EnumFlagEstado.RegistroBloqueado Then Exit Sub
         '
         Try
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            If vndBLL.VendaDesbloquear(_Venda) Then Sit = FlagEstado.RegistroSalvo
+            If vndBLL.VendaDesbloquear(_Venda) Then Sit = EnumFlagEstado.RegistroSalvo
             '
         Catch ex As Exception
             MessageBox.Show("Uma exceção ocorreu ao Desbloquear Registro..." & vbNewLine &
@@ -989,9 +989,9 @@ Public Class frmVendaVista
         End If
     End Sub
     '
-    Public Sub Pagamentos_Manipulacao(clPag As clMovimentacao, Acao As FlagAcao)
+    Public Sub Pagamentos_Manipulacao(clPag As clMovimentacao, Acao As EnumFlagAcao)
         '
-        If Acao = FlagAcao.INSERIR Then
+        If Acao = EnumFlagAcao.INSERIR Then
             ' SE ACAO FOR INSERIR
             '----------------------------------------------------------------------------------------------
             '--- Insere o ITEM na lista
@@ -1048,7 +1048,7 @@ Public Class frmVendaVista
         Cursor = Cursors.WaitCursor
         '
         '--- abre o form frmPagamentos
-        Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, FlagAcao.INSERIR, pos)
+        Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, EnumFlagAcao.INSERIR, pos)
         fPag.ShowDialog()
         '
         '--- Ampulheta OFF
@@ -1073,7 +1073,7 @@ Public Class frmVendaVista
         '
         Dim PagAtual As clMovimentacao = dgvPagamentos.SelectedRows(0).DataBoundItem
         '
-        Dim fPag As New frmVendaEntrada(Me, AtualizaTotalGeral(), PagAtual, FlagAcao.EDITAR, pos)
+        Dim fPag As New frmVendaEntrada(Me, AtualizaTotalGeral(), PagAtual, EnumFlagAcao.EDITAR, pos)
         fPag.ShowDialog()
         '
         '--- AtualizaTotalPago
@@ -1170,7 +1170,7 @@ Public Class frmVendaVista
     Private Sub btnFinalizar_Click(sender As Object, e As EventArgs) Handles btnFinalizar.Click
         '
         '--- Verifica se a SITUACAO do registro permite salvar
-        If Sit = FlagEstado.Alterado OrElse Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.Alterado OrElse Sit = EnumFlagEstado.NovoRegistro Then
             '
             '--- Faz as VERIFICACOES DOS CAMPOS E VALORES
             If Verificar() = False Then Exit Sub
@@ -1225,7 +1225,7 @@ Public Class frmVendaVista
                 tBLL.CommitAcessoWithTransaction(myDBTran)
                 '
                 '--- ALTERA A SITUACAO DO REGISTRO ATUAL
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 '
             Catch ex As Exception
                 '
@@ -1459,7 +1459,7 @@ Public Class frmVendaVista
             clPag.IDMovimentacao = _MovEntradaList.Count + 1
             '
             '--- abre o form frmPagamentos
-            Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, FlagAcao.INSERIR, pos)
+            Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, EnumFlagAcao.INSERIR, pos)
             fPag.ShowDialog()
             '
             '--- Verifica se foi adiciona algum novo pagamento
@@ -1592,7 +1592,7 @@ Public Class frmVendaVista
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroBloqueado() As Boolean
         '
-        If Sit = FlagEstado.RegistroBloqueado Then
+        If Sit = EnumFlagEstado.RegistroBloqueado Then
             MessageBox.Show("Esse registro de Venda está BLOQUEADO para alterações..." & vbNewLine &
                             "Não é possível adicionar produtos ou alterar algum dado!",
                             "Registro Bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -1606,7 +1606,7 @@ Public Class frmVendaVista
     ' FUNCAO QUE CONFERE REGISTRO FINALIZADO E PERGUNTA SE DESEJA ALTERAR
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroFinalizado() As Boolean
-        If Not Sit = FlagEstado.RegistroSalvo Then Return False
+        If Not Sit = EnumFlagEstado.RegistroSalvo Then Return False
         '
         If MessageBox.Show("Esse registro de Venda já se encontra FINALIZADO..." & vbNewLine &
                            "Deseja realmente fazer alterações nesse registro?",
@@ -1748,7 +1748,7 @@ Public Class frmVendaVista
             '--- se houve alteracao
             If old_vlTroca <> If(IsNothing(_Troca), 0, _Troca.ValorTotal) Then
                 AtualizaTotalGeral()
-                Sit = FlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
             End If
             '
         Catch ex As Exception

@@ -46,7 +46,7 @@ Public Class frmOperacaoSaidaProcurar
     '
 #Region "EVENTO LOAD"
     '
-    Sub New(Optional Operacao As Byte = 1)
+    Sub New(Optional Operacao As TransacaoBLL.EnumOperacao = 1)
 
         ' This call is required by the designer.
         InitializeComponent()
@@ -78,7 +78,7 @@ Public Class frmOperacaoSaidaProcurar
         Dim dtOp As New DataTable
         '
         Try
-            dtOp = db.Get_Operacao_DT(TransacaoBLL.MovimentoEstoque.SAIDA)
+            dtOp = db.Get_Operacao_DT(TransacaoItemBLL.EnumMovimento.SAIDA)
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try

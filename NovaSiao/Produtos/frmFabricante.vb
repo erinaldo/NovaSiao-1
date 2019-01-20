@@ -11,20 +11,20 @@ Public Class frmFabricante
     'Property propFabricanteEscolhido As String
     '
     ' PROPRIEDADE SIT
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Sit = _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo
+                Case EnumFlagEstado.RegistroSalvo
                     btnSalvar.Enabled = False
                     btnFechar.Text = "&Fechar"
-                Case FlagEstado.Alterado
+                Case EnumFlagEstado.Alterado
                     btnSalvar.Enabled = True
                     btnFechar.Text = "&Cancelar"
-                Case FlagEstado.NovoRegistro
+                Case EnumFlagEstado.NovoRegistro
                     btnSalvar.Enabled = True
                     btnFechar.Text = "&Cancelar"
             End Select
@@ -51,7 +51,7 @@ Public Class frmFabricante
         End If
         '
         PreencheListaFabricante()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
@@ -140,8 +140,8 @@ Public Class frmFabricante
     '
     ' CONTROLE DA LISTAGEM
     Private Sub dgvFabricantes_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvFabricantes.CellBeginEdit
-        If Not Sit <> FlagEstado.NovoRegistro Then
-            Sit = FlagEstado.Alterado
+        If Not Sit <> EnumFlagEstado.NovoRegistro Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -188,7 +188,7 @@ Public Class frmFabricante
         dgvFabricantes.CurrentRow.Cells("Ativo").Value = ImgAtivo
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     Private Sub DesativarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DesativarToolStripMenuItem.Click
@@ -207,14 +207,14 @@ Public Class frmFabricante
         dgvFabricantes.CurrentRow.Cells("Ativo").Value = ImgInativo
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     ' BOTOES DO FORMULARIO
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
         '---adiciona novo ROW no datatable 
         dtFab.Rows.Add()
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         ' seleciona a cell
         dgvFabricantes.Focus()
         dgvFabricantes.CurrentCell = dgvFabricantes.Rows(dgvFabricantes.Rows.Count - 1).Cells(1)
@@ -226,14 +226,14 @@ Public Class frmFabricante
     ' SALVAR O REGISTRO
     '-----------------------------------------------------------------------------------------------
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             '--- Fecha o Form
             Me.Close()
             '
             '--- Verifica se existe outro form aberto para revelar o menuprincipal
             If Application.OpenForms.Count = 1 Then MostraMenuPrincipal()
             '
-        ElseIf Sit = FlagEstado.NovoRegistro Then
+        ElseIf Sit = EnumFlagEstado.NovoRegistro Then
             '--- questiona ao usuario
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
@@ -243,10 +243,10 @@ Public Class frmFabricante
             '
             '--- preenche novamente a listagem
             PreencheListaFabricante()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             PreencheListaImagem()
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             '--- questiona ao usuario
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
@@ -257,7 +257,7 @@ Public Class frmFabricante
             '
             '--- Preenche novamente a listagem
             PreencheListaFabricante()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             PreencheListaImagem()
             '
         End If
@@ -312,7 +312,7 @@ Public Class frmFabricante
         '
         '---preencher a listagem com os novos valores
         PreencheListaFabricante()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         PreencheListaImagem()
     End Sub
     '
@@ -375,12 +375,12 @@ Public Class frmFabricante
     Private Sub TextBox_KeyPress(ByVal sender As System.Object, ByVal e As KeyPressEventArgs)
         '---Se o usuario pressionou a tecla ESC na edição ---
         If e.KeyChar = Convert.ToChar(27) Then
-            If Sit <> FlagEstado.RegistroSalvo Then
+            If Sit <> EnumFlagEstado.RegistroSalvo Then
                 e.Handled = True
                 '---cancela a adição do registro
-                If Sit = FlagEstado.NovoRegistro Then dgvFabricantes.Rows.Remove(dgvFabricantes.CurrentRow)
+                If Sit = EnumFlagEstado.NovoRegistro Then dgvFabricantes.Rows.Remove(dgvFabricantes.CurrentRow)
                 PreencheListaFabricante()
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
         End If
     End Sub

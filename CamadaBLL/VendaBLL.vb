@@ -93,7 +93,6 @@ Public Class VendaBLL
                                                Optional myDB As Object = Nothing) As String
         '
         Dim objDB As AcessoDados = If(myDB, New AcessoDados)
-        Dim Conn As New SqlCommand
         '
         'Limpa os Parâmetros
         objDB.LimparParametros()
@@ -198,7 +197,6 @@ Public Class VendaBLL
     Public Function SalvaNovaVenda_Procedure_DT(ByVal _vnd As clVenda) As DataTable
         '
         Dim objDB As New AcessoDados
-        Dim Conn As New SqlCommand
         '
         'Adiciona os Parâmetros
         objDB.LimparParametros()
@@ -329,7 +327,7 @@ Public Class VendaBLL
                 pBLL.Excluir_Parcelas_AReceber(clV.IDAReceber, ObjDB)
                 '
                 '--- DELETA ARECEBER
-                rBLL.Excluir_AReceber_Transacao(IDVenda, ObjDB)
+                rBLL.Excluir_AReceber_Transacao(IDVenda, clAReceber.EnumAReceberOrigem.Venda, ObjDB)
                 '
             End If
             '

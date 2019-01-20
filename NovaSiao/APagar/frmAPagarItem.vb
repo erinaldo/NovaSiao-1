@@ -3,7 +3,7 @@ Imports CamadaBLL
 
 Public Class frmAPagarItem
     Private _clAPag As clAPagar
-    Private _acao As FlagAcao
+    Private _acao As EnumFlagAcao
     Private _dtMinima As Date
     Private _formOrigem As Form
     Private _vlMaximo As Double
@@ -15,7 +15,7 @@ Public Class frmAPagarItem
     '-------------------------------------------------------------------------------------------------
     '
     Sub New(fOrigem As Form, VlMax As Double, dataMinima As Date,
-            APagar As clAPagar, Acao As FlagAcao,
+            APagar As clAPagar, Acao As EnumFlagAcao,
             Optional Posicao As Point = Nothing)
 
         ' This call is required by the designer.
@@ -38,18 +38,18 @@ Public Class frmAPagarItem
     End Sub
     '
     '--- Propriedade propAcao
-    Public Property propAcao() As FlagAcao
+    Public Property propAcao() As EnumFlagAcao
         Get
             Return _acao
         End Get
-        Set(ByVal value As FlagAcao)
+        Set(ByVal value As EnumFlagAcao)
             _acao = value
             '
-            If _acao = FlagAcao.INSERIR Then
+            If _acao = EnumFlagAcao.INSERIR Then
                 btnOK.Text = "&Inserir"
                 lblToolStripInfo.Text = "Inserindo Nova Parcela"
                 lblTitulo.Text = "Inserir Cobrança"
-            ElseIf _acao = FlagAcao.EDITAR Then
+            ElseIf _acao = EnumFlagAcao.EDITAR Then
                 btnOK.Text = "&Alterar"
                 lblToolStripInfo.Text = "Editando Parcela"
                 lblTitulo.Text = "Editar Cobrança"

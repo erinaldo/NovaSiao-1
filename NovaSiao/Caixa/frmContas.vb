@@ -20,14 +20,14 @@ Public Class frmContas
 #Region "LOAD | PROPERTYS"
     '
     ' PROPRIEDADE SIT
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Sit = _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo
+                Case EnumFlagEstado.RegistroSalvo
                     '
                     btnNovo.Enabled = True
                     btnSalvar.Enabled = False
@@ -36,7 +36,7 @@ Public Class frmContas
                     btnFechar.Text = "&Fechar"
                     lstItens.ReadOnly = False
                     '
-                Case FlagEstado.Alterado
+                Case EnumFlagEstado.Alterado
                     '
                     btnNovo.Enabled = False
                     btnSalvar.Enabled = True
@@ -45,7 +45,7 @@ Public Class frmContas
                     btnFechar.Text = "&Cancelar"
                     lstItens.ReadOnly = True
                                         '
-                Case FlagEstado.NovoRegistro
+                Case EnumFlagEstado.NovoRegistro
                     '
                     btnNovo.Enabled = False
                     btnSalvar.Enabled = True
@@ -89,11 +89,11 @@ Public Class frmContas
         If listConta.Count > 0 Then
             bindConta.MoveFirst()
             PreencheDataBindings()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
         Else
             bindConta.AddNew()
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
             PreencheDataBindings()
         End If
         '
@@ -152,8 +152,8 @@ Public Class frmContas
     '
     Private Sub Handler_AoAlterar()
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub
@@ -174,7 +174,7 @@ Public Class frmContas
                 lblIDConta.DataBindings.Item("text").ReadValue()
                 '
                 ' ALTERAR PARA REGISTRO SALVO
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 '
                 ' VERIFICA O ATIVO BUTTON
                 AtivoButtonImage()
@@ -256,7 +256,7 @@ Public Class frmContas
         bindConta.MoveLast()
         '
         '---altera o SIT
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         '
         '---focus
         txtConta.Focus()
@@ -265,7 +265,7 @@ Public Class frmContas
     '
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             '
             Close()
             '
@@ -273,7 +273,7 @@ Public Class frmContas
                 MostraMenuPrincipal()
             End If
             '
-        ElseIf Sit = FlagEstado.NovoRegistro Then
+        ElseIf Sit = EnumFlagEstado.NovoRegistro Then
             '
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
@@ -282,9 +282,9 @@ Public Class frmContas
             bindConta.CancelEdit()
             bindConta.MoveFirst()
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             '
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
@@ -293,7 +293,7 @@ Public Class frmContas
             bindConta.CancelEdit()
             AtivoButtonImage()
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
         End If
         '
@@ -306,7 +306,7 @@ Public Class frmContas
     ' ATIVAR OU DESATIVAR USUARIO BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR uma Nova Conta", "Desativar Conta",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -335,8 +335,8 @@ Public Class frmContas
         _conta.BeginEdit()
         _conta.Ativo = Not _conta.Ativo
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         AtivoButtonImage()
@@ -368,7 +368,7 @@ Public Class frmContas
     ' SALVAR REGISTRO
     Private Sub btnSalvar_Click(sender As Object, e As EventArgs) Handles btnSalvar.Click
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             ' verifica preenchimento
             If Not VerificaControles() Then Return
             '
@@ -378,7 +378,7 @@ Public Class frmContas
             '-- salva novo
             SalvarNovoRegistro()
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             ' verifica preenchimento
             If Not VerificaControles() Then Return
             '
@@ -410,7 +410,7 @@ Public Class frmContas
             bindConta.EndEdit()
             bindConta.ResetBindings(False)
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
             MessageBox.Show("Sucesso ao salvar registro de Nova Conta",
                             "Registro Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -437,7 +437,7 @@ Public Class frmContas
             '
             mBLL.Conta_Update(_conta)
             bindConta.EndEdit()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
             MessageBox.Show("Sucesso ao salvar alteração de registro da Conta",
                             "Registro Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information)

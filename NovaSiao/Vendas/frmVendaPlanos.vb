@@ -6,32 +6,32 @@ Public Class frmVendaPlanos
     Private dtPlanos As DataTable
     Private mySQL As New SQLControl
     Private WithEvents bindPlanos As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
     '
 #Region "EVENTO LOAD E PROPRIEDADE SIT"
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = False
                 AtivoButtonImage()
                 lstPlanos.ReadOnly = False
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = enumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = True
                 AtivoButtonImage()
                 lstPlanos.ReadOnly = True
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = enumFlagEstado.NovoRegistro Then
                 txtPlano.Select()
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
@@ -54,7 +54,7 @@ Public Class frmVendaPlanos
         '
         If dtPlanos.Rows.Count > 0 Then
             bindPlanos.MoveFirst()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             PreencheDataBindings()
             Handler_PositionChanged()
         Else
@@ -98,8 +98,8 @@ Public Class frmVendaPlanos
     End Sub
     '
     Private Sub Handler_ColumnChanging(sender As Object, e As DataColumnChangeEventArgs)
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -134,7 +134,7 @@ Public Class frmVendaPlanos
             'bindPlanos.Position = bindPlanos.Find("IDPlano", lstPlanos.SelectedItems(0).Text)
             '
             '---ALTERA O SIT
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
     End Sub
 
@@ -169,7 +169,7 @@ Public Class frmVendaPlanos
     '
     ' ATIVAR OU DESATIVAR USUARIO BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR um Plano Novo", "Desativar Plano",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -189,8 +189,8 @@ Public Class frmVendaPlanos
         '
         r("Ativo") = Not r("Ativo")
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         AtivoButtonImage()
@@ -198,16 +198,16 @@ Public Class frmVendaPlanos
     '
     ' BOTÃO CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
-        If Sit = FlagEstado.Alterado Then ' REGISTRO ALTERADO
+        If Sit = EnumFlagEstado.Alterado Then ' REGISTRO ALTERADO
             If MessageBox.Show("Deseja cancelar todas as alterações feitas no registro atual?",
                    "Cancelar Alterações", MessageBoxButtons.YesNo,
                    MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
             bindPlanos.CancelEdit()
             dtPlanos.RejectChanges()
             txtPlano.Focus()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             Handler_PositionChanged()
-        ElseIf Sit = FlagEstado.NovoRegistro Then ' REGISTRO NOVO
+        ElseIf Sit = enumFlagEstado.NovoRegistro Then ' REGISTRO NOVO
             If lstPlanos.Items.Count = 1 Then
                 MessageBox.Show("Não é possível cancelar porque não existe outro registro." & vbNewLine &
                                 "Se deseja sair apenas feche a janela!", "Cancelar Edição", MessageBoxButtons.OK,
@@ -215,7 +215,7 @@ Public Class frmVendaPlanos
                 Exit Sub
             End If
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             Handler_PositionChanged()
             bindPlanos.RemoveCurrent()
             bindPlanos.MoveFirst()
@@ -237,7 +237,7 @@ Public Class frmVendaPlanos
         dtPlanos.Rows.Add(row)
         bindPlanos.MoveLast()
         '---altera o SIT
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         '
     End Sub
     '
@@ -260,12 +260,12 @@ Public Class frmVendaPlanos
         mySQL.AddParam("@Meses", IIf(String.IsNullOrEmpty(txtMeses.Text), DBNull.Value, txtMeses.Text))
         mySQL.AddParam("@Ativo", dtPlanos.Rows(bindPlanos.Position)("Ativo"))
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             '---salva o NOVO registro
             mySQL.ExecQuery("INSERT INTO tblVendaPlanos " &
                             "(Plano, Entrada, ComJuros, Meses, Ativo) " &
                             "VALUES (@Plano, @Entrada, @ComJuros, @Meses, @Ativo);", True)
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = enumFlagEstado.Alterado Then
             '---atualiza o registro ALTERADO
             mySQL.ExecQuery("UPDATE tblVendaPlanos " &
                           "SET Plano=@Plano, Entrada=@Entrada, ComJuros=@ComJuros, " &
@@ -277,7 +277,7 @@ Public Class frmVendaPlanos
                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         Else
             '---retorna o novo ID
-            If Sit = FlagEstado.NovoRegistro Then
+            If Sit = EnumFlagEstado.NovoRegistro Then
                 If mySQL.DBDT.Rows.Count > 0 Then
                     Dim r As DataRow = mySQL.DBDT.Rows(0)
                     lblIDPlano.Text = Format(r("LastID"), "00")
@@ -286,7 +286,7 @@ Public Class frmVendaPlanos
             '---finaliza a edição
             bindPlanos.EndEdit()
             PreencheListagem()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '---informa o usuário
             MessageBox.Show("Registro salvo com sucesso!", "Registro Salvo",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -313,7 +313,7 @@ Public Class frmVendaPlanos
         MsgBox("Ainda não implementado")
     End Sub
 #End Region
-
+    '
 #Region "OUTRAS FUNCOES"
     ' ALTERA A IMAGEM E O TEXTO DO BOTÃO ATIVO E DESATIVO
     Private Sub AtivoButtonImage()
@@ -349,4 +349,5 @@ Public Class frmVendaPlanos
         toolTip1.SetToolTip(gbEntrada, "Marque sim se esse plano tem pagamento na Entrada")
     End Sub
 #End Region
+    '
 End Class

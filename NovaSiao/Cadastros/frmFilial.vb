@@ -13,14 +13,14 @@ Public Class frmFilial
 #Region "LOAD | NEW"
     '
     ' PROPRIEDADE SIT
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Sit = _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo
+                Case EnumFlagEstado.RegistroSalvo
                     '
                     If _formEscolha = True Then
                         btnNovo.Enabled = False
@@ -36,13 +36,13 @@ Public Class frmFilial
                         btnFechar.Text = "&Fechar"
                     End If
                     '
-                Case FlagEstado.Alterado
+                Case EnumFlagEstado.Alterado
                     btnNovo.Enabled = False
                     btnSalvar.Enabled = True
                     btnSalvar.Text = "&Salvar"
                     btnSalvar.Image = My.Resources.save
                     btnFechar.Text = "&Cancelar"
-                Case FlagEstado.NovoRegistro
+                Case EnumFlagEstado.NovoRegistro
                     btnNovo.Enabled = False
                     btnSalvar.Enabled = True
                     btnSalvar.Text = "&Salvar"
@@ -68,7 +68,7 @@ Public Class frmFilial
             lblTitulo.Text = "Escolher Filial"
         End If
         '
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
@@ -175,7 +175,7 @@ Public Class frmFilial
         '
         If e.ColumnIndex = 1 Then Exit Sub
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             EscolherRegistro()
         End If
         '
@@ -186,17 +186,17 @@ Public Class frmFilial
 #Region "BUTTONS FUNCTION"
     '
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             DialogResult = DialogResult.Cancel
             Me.Close()
-        ElseIf Sit = FlagEstado.NovoRegistro Then
+        ElseIf Sit = enumFlagEstado.NovoRegistro Then
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
             dgvFiliais.Rows.Remove(dgvFiliais.CurrentRow)
             PreencheFiliais()
-            Sit = FlagEstado.RegistroSalvo
-        ElseIf Sit = FlagEstado.Alterado Then
+            Sit = EnumFlagEstado.RegistroSalvo
+        ElseIf Sit = enumFlagEstado.Alterado Then
             If MessageBox.Show("Deseja cancelar todas as alterações realizadas?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
@@ -204,14 +204,14 @@ Public Class frmFilial
             dgvFiliais.CancelEdit()
             'dgvFiliais.ClearSelection()
             PreencheFiliais()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
     End Sub
     '
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
         '---adiciona novo ROW no datatable 
         dtFil.Rows.Add()
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         ' seleciona a cell
         dgvFiliais.Focus()
         dgvFiliais.CurrentCell = dgvFiliais.Rows(dgvFiliais.Rows.Count - 1).Cells(1)
@@ -283,20 +283,20 @@ Public Class frmFilial
     Private Sub TextBox_KeyPress(ByVal sender As System.Object, ByVal e As KeyPressEventArgs)
         '---Se o usuario pressionou a tecla ESC na edição ---
         If e.KeyChar = Convert.ToChar(27) Then
-            If Sit <> FlagEstado.RegistroSalvo Then
+            If Sit <> EnumFlagEstado.RegistroSalvo Then
                 e.Handled = True
                 '---cancela a adição do registro
-                If Sit = FlagEstado.NovoRegistro Then dgvFiliais.Rows.Remove(dgvFiliais.CurrentRow)
+                If Sit = EnumFlagEstado.NovoRegistro Then dgvFiliais.Rows.Remove(dgvFiliais.CurrentRow)
                 PreencheFiliais()
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
         End If
     End Sub
     '
     ' CONTROLE DA LISTAGEM
     Private Sub dgvFiliais_CellBeginEdit(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvFiliais.CellBeginEdit
-        If Not Sit <> FlagEstado.NovoRegistro Then
-            Sit = FlagEstado.Alterado
+        If Not Sit <> EnumFlagEstado.NovoRegistro Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -308,7 +308,7 @@ Public Class frmFilial
     '-----------------------------------------------------------------------------------------------
     Private Sub btnSalvar_Click(sender As Object, e As EventArgs) Handles btnSalvar.Click
         '
-        If (_formEscolha = False) Or (_formEscolha = True And Sit <> FlagEstado.RegistroSalvo) Then
+        If (_formEscolha = False) Or (_formEscolha = True And Sit <> EnumFlagEstado.RegistroSalvo) Then
             SalvarAlteracoes()
         Else
             EscolherRegistro()
@@ -357,7 +357,7 @@ Public Class frmFilial
         '
         '---preencher a listagem com os novos valores
         PreencheFiliais()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
@@ -434,7 +434,7 @@ Public Class frmFilial
         End If
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     Private Sub DesativarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DesativarToolStripMenuItem.Click
@@ -451,7 +451,7 @@ Public Class frmFilial
         End If
         '
         '--- atualiza os botoes
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
 #End Region

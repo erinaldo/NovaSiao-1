@@ -6,7 +6,7 @@ Public Class frmAPagarProcurar
     Private pagLista As New List(Of clAPagar)
     Private _myMes As Date
     Private SituacaoAtual As Byte? '--- property
-    Private _Sit As FlagEstado
+    Private _Sit As EnumFlagEstado
     '
 #Region "PROPERTY E EVENTO LOAD"
     '
@@ -26,17 +26,17 @@ Public Class frmAPagarProcurar
         End Set
     End Property
     '
-    Public Property Sit() As FlagEstado
+    Public Property Sit() As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(ByVal value As FlagEstado)
+        Set(ByVal value As EnumFlagEstado)
             _Sit = value
             '
-            If value = FlagEstado.Alterado Then
+            If value = EnumFlagEstado.Alterado Then
                 btnProcurar.Enabled = True
                 dgvListagem.Columns.Clear()
-            ElseIf value = FlagEstado.RegistroSalvo Then
+            ElseIf value = EnumFlagEstado.RegistroSalvo Then
                 btnProcurar.Enabled = False
             End If
             '
@@ -223,7 +223,7 @@ Public Class frmAPagarProcurar
             '--- define o souce da listagem
             dgvListagem.DataSource = pagLista
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
             '
         Catch ex As Exception
@@ -449,16 +449,16 @@ Public Class frmAPagarProcurar
     '
     Private Sub txtDescricao_TextChanged(sender As Object, e As EventArgs) Handles txtCredorCadastro.TextChanged
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub
     '
     Private Sub cmbCobrancaForma_SelectedIndexChanged(sender As Object, e As EventArgs)
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub

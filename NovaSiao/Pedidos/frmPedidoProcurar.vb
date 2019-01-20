@@ -625,7 +625,7 @@ Public Class frmPedidoProcurar
     Private Sub miEnviado_Click(sender As Object, e As EventArgs) Handles miEnviado.Click
         '
         Dim dt As Date? = DataInformar("Informe a Data de Envio do Pedido...",
-                                       DataTipo.PassadoPresente,
+                                       EnumDataTipo.PassadoPresente,
                                        Today, Me)
         '
         If IsNothing(dt) Then
@@ -650,7 +650,7 @@ Public Class frmPedidoProcurar
     Private Sub miRecebido_Click(sender As Object, e As EventArgs) Handles miRecebido.Click
         '
         Dim dt As Date? = DataInformar("Informe a Data que o Pedido foi recebido...",
-                                       DataTipo.PassadoPresente, Today, Me)
+                                       EnumDataTipo.PassadoPresente, Today, Me)
         '
         If IsNothing(dt) Then
             Exit Sub
@@ -691,7 +691,7 @@ Public Class frmPedidoProcurar
     Private Sub miAlteraData_Click(sender As Object, e As EventArgs) Handles miAlteraData.Click
         '
         Dim dt As Date? = DataInformar("Informe a nova Data de Revisão do Pedido...",
-                                       DataTipo.FuturoPresente, Today, Me)
+                                       EnumDataTipo.FuturoPresente, Today, Me)
         '
         If IsNothing(dt) Then
             Exit Sub

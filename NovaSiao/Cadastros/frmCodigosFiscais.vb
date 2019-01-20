@@ -20,14 +20,14 @@ Public Class frmCodigosFiscais
     End Sub
     '
     ' PROPRIEDADE SIT
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Sit = _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo
+                Case EnumFlagEstado.RegistroSalvo
                     btnSalvar.Enabled = False
                     btnFechar.Text = "&Fechar"
                     btnNovo.Enabled = True
@@ -35,14 +35,14 @@ Public Class frmCodigosFiscais
                     btnEscolher.Enabled = True
                     btnExcluir.Enabled = True
                     EmEdicao = Nothing
-                Case FlagEstado.Alterado
+                Case EnumFlagEstado.Alterado
                     btnSalvar.Enabled = True
                     btnFechar.Text = "&Cancelar"
                     btnNovo.Enabled = False
                     btnEditar.Enabled = False
                     btnEscolher.Enabled = False
                     btnExcluir.Enabled = False
-                Case FlagEstado.NovoRegistro
+                Case EnumFlagEstado.NovoRegistro
                     btnSalvar.Enabled = True
                     btnFechar.Text = "&Cancelar"
                     btnNovo.Enabled = False
@@ -132,14 +132,14 @@ Public Class frmCodigosFiscais
         If btnFechar.Text = "&Fechar" Then
             DialogResult = DialogResult.Cancel
         Else
-            If Sit = FlagEstado.NovoRegistro Then
+            If Sit = EnumFlagEstado.NovoRegistro Then
                 For Each r As DataRow In dtCod.Rows
                     If r.RowState = DataRowState.Added Then
                         dtCod.Rows.Remove(r)
                         Exit For
                     End If
                 Next
-            ElseIf Sit = FlagEstado.Alterado Then
+            ElseIf Sit = enumFlagEstado.Alterado Then
                 dgvCFOP.CancelEdit()
                 dtCod.RejectChanges()
                 dgvCFOP.CurrentCell = dgvCFOP.Rows(0).Cells(0)
@@ -149,7 +149,7 @@ Public Class frmCodigosFiscais
                 PreencheListagem()
                 FormataListagem()
             End If
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
     End Sub
     '
@@ -163,7 +163,7 @@ Public Class frmCodigosFiscais
         '
         dgvCFOP.BeginEdit(True)
         dtCod.Rows(dgvCFOP.CurrentCell.RowIndex).SetModified()
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
         EmEdicao = dgvCFOP.CurrentCell.RowIndex
         '
     End Sub
@@ -204,7 +204,7 @@ Public Class frmCodigosFiscais
         dgvCFOP.CurrentCell = dgvCFOP.Rows(dgvCFOP.Rows.Count - 1).Cells(0)
         dgvCFOP.BeginEdit(True)
         EmEdicao = dgvCFOP.CurrentCell.RowIndex
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
     End Sub
     '
     '--- QUANDO ENTRA NA ROW DE EDICAO PERMITE EDITAR
@@ -220,6 +220,7 @@ Public Class frmCodigosFiscais
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
         End If
     End Sub
+    '
 #Region "SALVAR REGISTRO"
     '
     ' SALVAR O REGISTRO
@@ -306,7 +307,7 @@ Public Class frmCodigosFiscais
                     '
                     '---preencher a listagem com os novos valores
                     PreencheListagem()
-                    Sit = FlagEstado.RegistroSalvo
+                    Sit = EnumFlagEstado.RegistroSalvo
                     FormataListagem()
                 Else
                     MessageBox.Show("Ocorreu um erro ao salvar o registro..." & vbNewLine &
@@ -408,4 +409,5 @@ Public Class frmCodigosFiscais
     End Sub
     '
 #End Region
+    '
 End Class

@@ -6,7 +6,7 @@ Public Class frmCredor
     Private _Tipo As Byte
     Property _Credor As clCredor
     Private BindCred As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private VerificaAlteracao As Boolean = False
     Private _formOrigem As Form
     '
@@ -60,19 +60,19 @@ Public Class frmCredor
         End Set
     End Property
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 txtCNP.ReadOnly = True
                 btnSalvar.Enabled = False
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = enumFlagEstado.Alterado Then
                 txtCNP.ReadOnly = True
                 btnSalvar.Enabled = True
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = enumFlagEstado.NovoRegistro Then
                 txtCNP.ReadOnly = False
                 btnSalvar.Enabled = True
             End If
@@ -95,9 +95,9 @@ Public Class frmCredor
         '--- verifica se o é um NOVO CREDOR
         If IsNothing(_Credor.IDPessoa) Then
             propTipo = 0
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
         Else
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
         '
         AddHandler cmbCredorTipo.SelectedIndexChanged, AddressOf cmbCredorTipo_SelectedIndexChanged
@@ -141,8 +141,8 @@ Public Class frmCredor
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _Credor.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _Credor.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -191,7 +191,7 @@ Public Class frmCredor
         '
         If _Credor.CredorTipo = 0 Or _Credor.CredorTipo = 3 Then Exit Sub
         '
-        If Sit <> FlagEstado.NovoRegistro Then
+        If Sit <> EnumFlagEstado.NovoRegistro Then
             VerificaAlteracao = False
             cmbCredorTipo.SelectedValue = IIf(IsNothing(_Credor.CredorTipo), -1, _Credor.CredorTipo)
             VerificaAlteracao = True
@@ -203,7 +203,7 @@ Public Class frmCredor
     ' CRIA UM ATALHO PARA OS COMBO BOX
     '------------------------------------------------------------------------------------------
     Private Sub cmbTipo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles cmbCredorTipo.KeyPress
-        If Char.IsNumber(e.KeyChar) AndAlso Sit = FlagEstado.NovoRegistro Then
+        If Char.IsNumber(e.KeyChar) AndAlso Sit = EnumFlagEstado.NovoRegistro Then
             e.Handled = True
             '
             Dim dt As DataTable = cmbCredorTipo.DataSource
@@ -379,9 +379,9 @@ Public Class frmCredor
         If VerificaControles() = False Then Exit Sub
         '
         Select Case Sit
-            Case FlagEstado.NovoRegistro
+            Case EnumFlagEstado.NovoRegistro
                 InserirNovoRegistro() '--- INSERIR NOVO REGISTRO
-            Case FlagEstado.Alterado
+            Case EnumFlagEstado.Alterado
                 AlterarRegistro() '--- ALTERAR REGISTRO
         End Select
         '
@@ -396,7 +396,7 @@ Public Class frmCredor
             '
             _Credor.IDPessoa = newID
             lblIDCredor.DataBindings.Item("Text").ReadValue()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             MessageBox.Show("Registro Salvo com sucesso!", "Sucesso",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             '
@@ -424,7 +424,7 @@ Public Class frmCredor
             '
             MessageBox.Show("Registro Alterado com sucesso!", "Sucesso",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             btnFechar.Focus()
             '
         Catch ex As Exception

@@ -4,25 +4,25 @@ Imports CamadaDTO
 Public Class frmDespesaTipo
     Private _DTipo As clDespesaTipo
     Private BindTipo As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private VerificaAlteracao As Boolean = False
     Private _formOrigem As Form
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnFechar.Text = "&Fechar"
 
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = enumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnFechar.Text = "&Cancelar"
 
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = enumFlagEstado.NovoRegistro Then
                 btnSalvar.Enabled = True
                 btnFechar.Text = "&Cancelar"
 
@@ -43,9 +43,9 @@ Public Class frmDespesaTipo
         '
         '--- verifica se o é um NOVO CREDOR
         If IsNothing(_DTipo.IDDespesaTipo) Then
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
         Else
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
         '
         VerificaAlteracao = True
@@ -73,8 +73,8 @@ Public Class frmDespesaTipo
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _DTipo.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _DTipo.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -148,7 +148,7 @@ Public Class frmDespesaTipo
     ' CRIA UM ATALHO PARA OS COMBO BOX
     '------------------------------------------------------------------------------------------
     Private Sub cmbTipo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles cmbPeriodicidade.KeyPress, cmbVariacao.KeyPress
-        If Char.IsNumber(e.KeyChar) AndAlso Sit = FlagEstado.NovoRegistro Then
+        If Char.IsNumber(e.KeyChar) AndAlso Sit = EnumFlagEstado.NovoRegistro Then
             e.Handled = True
             '
             Dim cmb As ComboBox = DirectCast(sender, ComboBox)
@@ -172,12 +172,12 @@ Public Class frmDespesaTipo
     '--- BTN FECHAR
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             Close()
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = enumFlagEstado.Alterado Then
             BindTipo.CancelEdit()
-            Sit = FlagEstado.RegistroSalvo
-        ElseIf Sit = FlagEstado.NovoRegistro Then
+            Sit = EnumFlagEstado.RegistroSalvo
+        ElseIf Sit = enumFlagEstado.NovoRegistro Then
             If MessageBox.Show("Deseja cancelar Inserir no Tipo de Despesa?", "Cancelar",
                                MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                                MessageBoxDefaultButton.Button2) = DialogResult.No Then
@@ -194,9 +194,9 @@ Public Class frmDespesaTipo
         If VerificaControles() = False Then Exit Sub
         '
         Select Case Sit
-            Case FlagEstado.NovoRegistro
+            Case EnumFlagEstado.NovoRegistro
                 InserirNovoRegistro() '--- INSERIR NOVO REGISTRO
-            Case FlagEstado.Alterado
+            Case EnumFlagEstado.Alterado
                 AlterarRegistro() '--- ALTERAR REGISTRO
         End Select
         '
@@ -211,7 +211,7 @@ Public Class frmDespesaTipo
             '
             _DTipo.IDDespesaTipo = newID
             lblID.DataBindings.Item("Text").ReadValue()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             MessageBox.Show("Registro Salvo com sucesso!", "Sucesso",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             DialogResult = DialogResult.OK
@@ -232,7 +232,7 @@ Public Class frmDespesaTipo
             '
             MessageBox.Show("Registro Alterado com sucesso!", "Sucesso",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             DialogResult = DialogResult.OK
             '
         Catch ex As Exception

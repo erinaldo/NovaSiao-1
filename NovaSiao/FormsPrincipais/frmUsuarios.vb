@@ -8,17 +8,17 @@ Public Class frmUsuarios
     Private _user As clUsuario
     Private listUser As List(Of clUsuario)
     Private WithEvents bindUser As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
 #Region "EVENTO LOAD E PROPRIEDADE SIT"
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnExcluir.Enabled = True
@@ -26,14 +26,14 @@ Public Class frmUsuarios
                 lblIdUser.Text = Format(_user.IdUser, "0000")
                 AtivoButtonImage()
                 blvUsuarios.ReadOnly = False
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = True
                 AtivoButtonImage()
                 blvUsuarios.ReadOnly = True
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 txtUsuarioApelido.Select()
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
@@ -55,11 +55,11 @@ Public Class frmUsuarios
         If listUser.Count > 0 Then
             bindUser.MoveFirst()
             _user = listUser(0)
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         Else
             bindUser.AddNew()
             _user = New clUsuario
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
         End If
 
         bindUser.DataSource = _user
@@ -92,8 +92,8 @@ Public Class frmUsuarios
         e.Value = Format(e.Value, "0000")
     End Sub
     Private Sub HandlerAoAlterar()
-        If _user.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _user.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     Private Sub CarregaComboAcesso()
@@ -148,7 +148,7 @@ Public Class frmUsuarios
             ' ADD HANDLER PARA DATABINGS
             AddHandler _user.AoAlterar, AddressOf HandlerAoAlterar
             ' ALTERA O SIT
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
     End Sub
 
@@ -192,7 +192,7 @@ Public Class frmUsuarios
 #Region "ACAO DOS BOTOES"
     ' ATIVAR OU DESATIVAR USUARIO BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR um Usuário Novo", "Desativar Usuário",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -219,18 +219,18 @@ Public Class frmUsuarios
     ' BOTÃO CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
 
-        If Sit = FlagEstado.Alterado Then ' REGISTRO ALTERADO
+        If Sit = EnumFlagEstado.Alterado Then ' REGISTRO ALTERADO
             If MessageBox.Show("Deseja cancelar todas as alterações feitas no registro atual?",
                    "Cancelar Alterações", MessageBoxButtons.YesNo,
                    MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes Then
                 bindUser.CancelEdit()
                 txtUsuarioApelido.Focus()
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
             End If
-        ElseIf Sit = FlagEstado.NovoRegistro Then ' REGISTRO NOVO
+        ElseIf Sit = EnumFlagEstado.NovoRegistro Then ' REGISTRO NOVO
             If blvUsuarios.Items.Count = 0 Then Exit Sub
 
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             _user = listUser(0)
             bindUser.CancelEdit()
             bindUser.DataSource = _user
@@ -247,7 +247,7 @@ Public Class frmUsuarios
         _user = New clUsuario
         bindUser.DataSource = _user
 
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         lblIdUser.Text = "NOVO"
     End Sub
     ' BOTÃO FECHAR
@@ -271,14 +271,14 @@ Public Class frmUsuarios
         Dim uBLL As New UsuarioBLL
         Dim newID As Integer
 
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             Try
                 newID = uBLL.SalvaNovoUsuario_Procedure_ID(_user)
             Catch ex As Exception
                 MessageBox.Show(ex.Message)
                 Exit Sub
             End Try
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             Try
                 newID = uBLL.AtualizaUsuario_Procedure_ID(_user)
             Catch ex As Exception
@@ -292,7 +292,7 @@ Public Class frmUsuarios
             bindUser.EndEdit()
             listUser = uBLL.GetUsuarios
             PreencheListagem()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             MessageBox.Show("Registro de Usuário salvo com sucesso!", "Registro Salvo",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
@@ -330,7 +330,7 @@ Public Class frmUsuarios
             MessageBox.Show("Usuário Excluído com sucesso!", "Usuário Excluído", MessageBoxButtons.OK, MessageBoxIcon.Information)
             listUser = uBLL.GetUsuarios
             PreencheListagem()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         Catch ex As Exception
             MessageBox.Show(ex.Message)
             Exit Sub
@@ -348,7 +348,7 @@ Public Class frmUsuarios
         Else
             MessageBox.Show("O Valor digitado não existe na listagem" & vbNewLine &
                              "Favor escolher um item da listagem...", "Escolha um item", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            If Sit <> FlagEstado.NovoRegistro AndAlso Not String.IsNullOrEmpty(DirectCast(sender, ComboBox).Text) Then
+            If Sit <> EnumFlagEstado.NovoRegistro AndAlso Not String.IsNullOrEmpty(DirectCast(sender, ComboBox).Text) Then
                 e.Cancel = True
                 DirectCast(sender, ComboBox).Focus()
                 SendKeys.Send("%{DOWN}")

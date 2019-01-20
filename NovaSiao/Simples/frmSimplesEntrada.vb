@@ -12,7 +12,7 @@ Public Class frmSimplesEntrada
     Private bindAPagar As New BindingSource
     Private bindNota As New BindingSource
     '
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private _Filial As Integer
     Private VerificaAlteracao As Boolean
     Private _TotalGeral As Decimal
@@ -20,32 +20,32 @@ Public Class frmSimplesEntrada
     '
 #Region "LOAD"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
+                Case EnumFlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
                     lblSituacao.Text = "Finalizada"
                     btnFinalizar.Text = "&Fechar"
                     '
                     txtObservacao.ReadOnly = False
                     '
-                Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
+                Case EnumFlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     lblSituacao.Text = "Alterada"
                     btnFinalizar.Text = "&Finalizar"
                     '
                     txtObservacao.ReadOnly = False
                     '
-                Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
+                Case EnumFlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     lblSituacao.Text = "Em Aberto"
                     btnFinalizar.Text = "&Finalizar"
                     '
                     txtObservacao.ReadOnly = False
                     '
-                Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
+                Case EnumFlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     lblSituacao.Text = "Bloqueada"
                     btnFinalizar.Text = "&Fechar"
                     '
@@ -90,14 +90,14 @@ Public Class frmSimplesEntrada
             '--- Preenche Notas Fiscais
             Preenche_Notas()
             '
-            '--- Atualiza o estado da Situacao: FLAGESTADO
+            '--- Atualiza o estado da Situacao: EnumFlagEstado
             Select Case _Simples.IDSituacao
                 Case 1 ' COMPRA INICIADA
-                    Sit = FlagEstado.NovoRegistro
+                    Sit = EnumFlagEstado.NovoRegistro
                 Case 2 ' COMPRA FINALIZADA
-                    Sit = FlagEstado.RegistroSalvo
+                    Sit = EnumFlagEstado.RegistroSalvo
                 Case 3 ' COMPRA BLOQUEADA
-                    Sit = FlagEstado.RegistroBloqueado
+                    Sit = EnumFlagEstado.RegistroBloqueado
                 Case Else
             End Select
             '
@@ -168,8 +168,8 @@ Public Class frmSimplesEntrada
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _Simples.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _Simples.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '

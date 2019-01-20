@@ -7,20 +7,20 @@ Public Class frmFuncionario
     Private WithEvents t As New Timer
     Const Tmax = 535
     Const Tmin = 455
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private WithEvents listFunc As New List(Of clFuncionario)
     Private WithEvents bindFunc As New BindingSource
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
     Private Opening As Boolean = True
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 dgvFuncionarios.Enabled = True
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
@@ -28,14 +28,14 @@ Public Class frmFuncionario
                 lblIDFuncionario.Text = Format(lblIDFuncionario.Tag, "0000")
                 txtCPF.ReadOnly = True
                 AtivoButtonImage()
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 dgvFuncionarios.Enabled = True
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnCancelar.Enabled = True
                 txtCPF.ReadOnly = True
                 AtivoButtonImage()
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 dgvFuncionarios.Enabled = False
                 txtFuncionario.Select()
                 btnSalvar.Enabled = True
@@ -68,11 +68,11 @@ Public Class frmFuncionario
         If listFunc.Count = 0 Then
             bindFunc.AddNew()
             PreencheDataBindings()
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
         Else
             bindFunc.MoveFirst()
             PreencheDataBindings()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
         '
         ' preencher a listagem
@@ -135,14 +135,14 @@ Public Class frmFuncionario
             ' LER O ID
             lblIDFuncionario.DataBindings.Item("Tag").ReadValue()
             ' ALTERAR PARA REGISTRO SALVO
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
         End If
         '
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If bindFunc.Current.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If bindFunc.Current.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -248,7 +248,7 @@ Public Class frmFuncionario
         If VerificaDados() = False Then Exit Sub
         '
         '--- verifica se o vendedor foi desabilitado e se existem vendas no ID
-        If Sit = FlagEstado.Alterado AndAlso Not chkVendas.Checked Then
+        If Sit = EnumFlagEstado.Alterado AndAlso Not chkVendas.Checked Then
             Dim qdeVendas As Integer = DesabilitaVendedor_Verificacao()
             '
             If qdeVendas > 0 Then
@@ -273,9 +273,9 @@ Public Class frmFuncionario
         '
         Try
             '--- Salva mas antes define se é ATUALIZAR OU UM NOVO REGISTRO
-            If Sit = FlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
+            If Sit = EnumFlagEstado.NovoRegistro Then 'Nesse caso é um NOVO REGISTRO
                 NewFuncID = func_BLL.SalvaNovoFuncionario_Procedure_ID(bindFunc.CurrencyManager.Current)
-            ElseIf Sit = FlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
+            ElseIf Sit = EnumFlagEstado.Alterado Then 'Nesse caso é um REGISTRO EDITADO
                 NewFuncID = func_BLL.AtualizaFuncionario_Procedure_ID(bindFunc.CurrencyManager.Current)
             End If
         Catch ex As Exception
@@ -287,13 +287,13 @@ Public Class frmFuncionario
         '--- Verifica se houve Retorno da Função de Salvar
         If IsNumeric(NewFuncID) AndAlso NewFuncID <> 0 Then
             '--- Retorna o número de Registro do Novo Cliente Cadastrado
-            If _Sit = FlagEstado.NovoRegistro Then
+            If _Sit = EnumFlagEstado.NovoRegistro Then
                 DirectCast(bindFunc.Current, clFuncionario).IDPessoa = NewFuncID
                 lblIDFuncionario.Tag = NewFuncID
             End If
 
             '--- Altera a Situação
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             bindFunc.EndEdit()
             bindFunc.CurrencyManager.Refresh()
             '
@@ -410,7 +410,7 @@ Public Class frmFuncionario
     '--- FUNCAO QUE VERIFICA SE O FUNCIONARIO/VENDEDOR POSSUI ALGUM REGISTRO DE VENDA ASSOCIADO A ELE
     '-------------------------------------------------------------------------------------------------------
     Private Function DesabilitaVendedor_Verificacao() As Integer
-        If chkVendas.Checked = False AndAlso Sit <> FlagEstado.NovoRegistro Then
+        If chkVendas.Checked = False AndAlso Sit <> EnumFlagEstado.NovoRegistro Then
             Dim fBLL As New FuncionarioBLL
             Dim qdeVendas As Integer?
             '
@@ -490,7 +490,7 @@ Public Class frmFuncionario
     '--------------------------------------------------------------------------------------------------------------------------------------
     Private Sub txtCPF_Leave(sender As Object, e As EventArgs) Handles txtCPF.Leave
         '
-        If Sit <> FlagEstado.NovoRegistro Then Exit Sub
+        If Sit <> EnumFlagEstado.NovoRegistro Then Exit Sub
         '
         ' verifica somente os numeros do CPF
         Dim CPF As String = ""
@@ -607,7 +607,7 @@ Public Class frmFuncionario
     '-----------------------------------------------------------------------------------------------------
     Private Sub dgvFuncionarios_RowValidating(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvFuncionarios.RowValidating
         '
-        If Sit = FlagEstado.Alterado Then
+        If Sit = EnumFlagEstado.Alterado Then
             If MessageBox.Show("Esse registro foi alterado..." & vbNewLine &
                                "Se você alterar para outro registro irá perder todas as alterações feitas" &
                                vbNewLine & vbNewLine & "DESEJA SALVAR AS ALTERAÇÕES REALIZADAS?",
@@ -636,12 +636,12 @@ Public Class frmFuncionario
         listFunc.Add(New clFuncionario)
         bindFunc.MoveLast()
         dgvFuncionarios.ClearSelection()
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         txtFuncionario.Focus()
     End Sub
     '
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             If bindFunc.Count = 1 Then
                 MessageBox.Show("Você não pode cancelar a inserção no primeiro registro de Funcionários" & vbNewLine &
                                 "Se quiser sair pressione o botão 'FECHAR'", "Primeiro Registro",
@@ -652,11 +652,11 @@ Public Class frmFuncionario
             bindFunc.RemoveCurrent()
             bindFunc.MoveLast()
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             bindFunc.CancelEdit()
         End If
         '
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         '
     End Sub
     '
@@ -680,7 +680,7 @@ Public Class frmFuncionario
     '
     ' ATIVAR OU DESATIVAR USUARIO BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR um Funcionário Novo", "Desativar Funcionário",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub

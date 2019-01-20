@@ -1,12 +1,12 @@
 ﻿Public Class frmDataInformar
     '
-    Private _DataTipo As DataTipo
+    Private _DataTipo As EnumDataTipo
     Private _formOrigem As Form
     Property propDataInfo As Date? = Nothing
     '
 #Region "NEW | LOAD"
     '
-    Sub New(SubTitulo As String, myDataTipo As DataTipo, DataPadrao As Date, formOrigem As Form)
+    Sub New(SubTitulo As String, myDataTipo As EnumDataTipo, DataPadrao As Date, formOrigem As Form)
         '
         ' This call is required by the designer.
         InitializeComponent()
@@ -29,16 +29,16 @@
     End Sub
     '
     '--- DEFINIR AS DATAS LIMITES PELO DataTipo
-    Private Sub DefinirDataLimite(dataTipo As DataTipo)
+    Private Sub DefinirDataLimite(dataTipo As EnumDataTipo)
         '
         Select Case dataTipo
-            Case DataTipo.Passado
+            Case 1 '--- PASSADO
                 dtpDateInfo.MaxDate = Now.AddDays(-1)
-            Case DataTipo.PassadoPresente
+            Case 2 '--- PRESENTE
                 dtpDateInfo.MaxDate = Now
-            Case DataTipo.Futuro
+            Case 3 '--- FUTURO
                 dtpDateInfo.MinDate = Now.AddDays(1)
-            Case DataTipo.FuturoPresente
+            Case 4 '-- FUTURO PRESENTE
                 dtpDateInfo.MinDate = Now
         End Select
         '

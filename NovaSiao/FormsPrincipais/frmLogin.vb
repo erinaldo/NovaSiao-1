@@ -75,7 +75,7 @@ Public Class frmLogin
                     Logado = True
                     ' Bem-vindo
                     MessageBox.Show("Seja Bem-Vindo: " & txtApelido.Text.ToUpper & vbNewLine & vbNewLine &
-                                    "Acesso: " & CType(r("UsuarioAcesso"), AcessoTipo).ToString.ToUpper,
+                                    "Acesso: " & CType(r("UsuarioAcesso"), EnumAcessoTipo).ToString.ToUpper,
                                     Fantasia, MessageBoxButtons.OK, MessageBoxIcon.Information)
                     Me.DialogResult = DialogResult.Yes
                     Me.Close()

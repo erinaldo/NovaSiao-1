@@ -6,7 +6,7 @@ Imports System.ComponentModel
 Public Class frmClienteAtividades
     'Private SQL As New SQLControl
     Private dtAtiv As New DataTable
-    Private Sit As FlagEstado
+    Private Sit As EnumFlagEstado
     '
     'EVENTO LOAD
     Private Sub frmClienteAtividades_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -19,10 +19,10 @@ Public Class frmClienteAtividades
         '
         ' ALTERA A SITUAÇÃO DO REGISTRO
         If dtAtiv.Rows.Count = 0 Then
-            AlteraSit(FlagEstado.NovoRegistro)
+            AlteraSit(EnumFlagEstado.NovoRegistro)
             btnNovo_Click(New Object, New System.EventArgs)
         Else
-            AlteraSit(FlagEstado.RegistroSalvo)
+            AlteraSit(EnumFlagEstado.RegistroSalvo)
         End If
         '
     End Sub
@@ -61,7 +61,7 @@ Public Class frmClienteAtividades
             MessageBox.Show(ex.Message)
         End Try
         '
-        AlteraSit(FlagEstado.RegistroSalvo)
+        AlteraSit(EnumFlagEstado.RegistroSalvo)
         '
     End Sub
 
@@ -151,19 +151,19 @@ Public Class frmClienteAtividades
             If txtAtividade.Text <> Reg(0)("Atividade") OrElse
                 cmbClienteTipo.SelectedValue <> Reg(0)("ClienteTipo") OrElse
                 cmbVendaTipo.SelectedValue <> Reg(0)("IDVendaTipo") Then
-                AlteraSit(FlagEstado.Alterado)
+                AlteraSit(EnumFlagEstado.Alterado)
             End If
         End If
         '
     End Sub
     '
     Private Sub txtAtividade_TextChanged(sender As Object, e As EventArgs) Handles txtAtividade.TextChanged
-        If Sit = FlagEstado.NovoRegistro Then Exit Sub
+        If Sit = EnumFlagEstado.NovoRegistro Then Exit Sub
         RegAlterado()
     End Sub
     '
     Private Sub cmbClienteTipo_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles cmbClienteTipo.SelectionChangeCommitted, cmbVendaTipo.SelectionChangeCommitted
-        If Sit = FlagEstado.NovoRegistro Then Exit Sub
+        If Sit = EnumFlagEstado.NovoRegistro Then Exit Sub
         RegAlterado()
     End Sub
     '
@@ -182,36 +182,36 @@ Public Class frmClienteAtividades
         '
         ' ADICIONA OS PARÂMETROS
         sql.AddParam("@RGAtividade", lblRG.Text)
-        SQL.AddParam("@Atividade", txtAtividade.Text)
-        SQL.AddParam("@ClienteTipo", cmbClienteTipo.SelectedValue)
+        sql.AddParam("@Atividade", txtAtividade.Text)
+        sql.AddParam("@ClienteTipo", cmbClienteTipo.SelectedValue)
         sql.AddParam("@IDVendaTipo", cmbVendaTipo.SelectedValue)
 
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             'PARA UM REGISTRO NOVO - INSERT
             sql.ExecQuery("INSERT INTO tblClienteAtividade " &
               "(RGAtividade, Atividade, ClienteTipo, IDVendaTipo) " &
               "VALUES (@RGAtividade, @Atividade, @ClienteTipo, @IDVendaTipo);")
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             'PARA UM REGISTRO ALTERADO - UPDATE
             sql.ExecQuery("UPDATE tblClienteAtividade " &
                           "SET Atividade=@Atividade, ClienteTipo=@ClienteTipo, IDVendaTipo=@IDVendaTipo " &
                           "WHERE RGAtividade=@RGAtividade;")
         End If
 
-        If SQL.HasException(True) Then Exit Sub
+        If sql.HasException(True) Then Exit Sub
 
         MessageBox.Show("Esse Registro foi SALVO com sucesso!", "Registro Salvo", MessageBoxButtons.OK, MessageBoxIcon.Information)
 
         btnFechar.Focus()
         PreencheLista()
-        AlteraSit(FlagEstado.RegistroSalvo)
+        AlteraSit(EnumFlagEstado.RegistroSalvo)
 
     End Sub
 
     ' NOVO REGISTRO
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
 
-        AlteraSit(FlagEstado.NovoRegistro)
+        AlteraSit(EnumFlagEstado.NovoRegistro)
         lblRG.Text = Format(FindMaxRG(), "0000") ' OBTÉM O MAIOR REGISTRO
         txtAtividade.Text = ""
         cmbClienteTipo.SelectedValue = vbNull
@@ -231,14 +231,14 @@ Public Class frmClienteAtividades
             Dim sql As New SQLControl
             '
             sql.ExecQuery("DELETE FROM ClienteAtividade where RGAtividade = " & CInt(lblRG.Text))
-            If Sql.HasException(False) Then
+            If sql.HasException(False) Then
                 MessageBox.Show("Essa Atividade não pôde ser excluída porque existem Clientes que estão cadastrados nela..." & vbNewLine &
                                 "Altere todos os Clientes que estão cadastrados nessa atividade e depois tente excluir novamente",
                                 "Excluir Atividade", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                 Exit Sub
             End If
             PreencheLista()
-            AlteraSit(FlagEstado.RegistroSalvo)
+            AlteraSit(EnumFlagEstado.RegistroSalvo)
             MessageBox.Show("Atividade excluída com sucesso!", "Atividade Excluída", MessageBoxButtons.OK, MessageBoxIcon.Information)
         Catch ex As Exception
             MessageBox.Show(ex.Message)
@@ -248,9 +248,9 @@ Public Class frmClienteAtividades
 
     ' CANCELAR EDITAR OU ADICIONAR
     Private Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
-        If Sit = FlagEstado.Alterado Then
+        If Sit = EnumFlagEstado.Alterado Then
             PreencheCampos(lblRG.Text)
-        ElseIf Sit = FlagEstado.NovoRegistro Then
+        ElseIf Sit = EnumFlagEstado.NovoRegistro Then
             PreencheLista()
         End If
     End Sub
@@ -261,31 +261,31 @@ Public Class frmClienteAtividades
         '
         sql.ExecQuery("SELECT * FROM tblClienteAtividade;")
         '
-        If Sql.RecordCount < 1 Then
+        If sql.RecordCount < 1 Then
             Return 1
         Else
-            Return Sql.DBDT.AsEnumerable().Max(Function(r) r.Field(Of Byte)("RGAtividade")) + 1
+            Return sql.DBDT.AsEnumerable().Max(Function(r) r.Field(Of Byte)("RGAtividade")) + 1
         End If
         '
     End Function
 
     ' ALTERA CONTROLES PELO SIT
-    Private Sub AlteraSit(mySIT As FlagEstado)
+    Private Sub AlteraSit(mySIT As EnumFlagEstado)
         Select Case mySIT
-            Case FlagEstado.RegistroSalvo
-                Sit = FlagEstado.RegistroSalvo
+            Case EnumFlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnExcluir.Enabled = True
                 btnCancel.Enabled = False
-            Case FlagEstado.Alterado
-                Sit = FlagEstado.Alterado
+            Case EnumFlagEstado.Alterado
+                Sit = EnumFlagEstado.Alterado
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnExcluir.Enabled = False
                 btnCancel.Enabled = True
-            Case FlagEstado.NovoRegistro
-                Sit = FlagEstado.NovoRegistro
+            Case EnumFlagEstado.NovoRegistro
+                Sit = EnumFlagEstado.NovoRegistro
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnExcluir.Enabled = False
@@ -328,7 +328,7 @@ Public Class frmClienteAtividades
         Else
             MessageBox.Show("O Valor digitado não existe na listagem" & vbNewLine &
                              "Favor escolher um item da listagem...", "Escolha um item", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            If Sit <> FlagEstado.NovoRegistro AndAlso Not String.IsNullOrEmpty(DirectCast(sender, ComboBox).Text) Then
+            If Sit <> EnumFlagEstado.NovoRegistro AndAlso Not String.IsNullOrEmpty(DirectCast(sender, ComboBox).Text) Then
                 e.Cancel = True
                 DirectCast(sender, ComboBox).Focus()
                 SendKeys.Send("%{DOWN}")

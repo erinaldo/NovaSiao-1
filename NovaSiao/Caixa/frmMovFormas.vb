@@ -8,7 +8,7 @@ Public Class frmMovFormas
     Private WithEvents listMovFormas As New List(Of clMovForma)
     Private WithEvents bindMovForma As New BindingSource
     Private _MovForma As clMovForma
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     '
     Private AtivarImage As Image = My.Resources.Switch_ON_PEQ
     Private DesativarImage As Image = My.Resources.Switch_OFF_PEQ
@@ -18,29 +18,29 @@ Public Class frmMovFormas
     '
 #Region "EVENTO LOAD E PROPRIEDADE SIT"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             '
             _Sit = value
             '
-            If _Sit = FlagEstado.RegistroSalvo Then
+            If _Sit = EnumFlagEstado.RegistroSalvo Then
                 btnSalvar.Enabled = False
                 btnNovo.Enabled = True
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = False
                 lstFormas.ReadOnly = False
                 '
-            ElseIf _Sit = FlagEstado.Alterado Then
+            ElseIf _Sit = EnumFlagEstado.Alterado Then
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
                 btnExcluir.Enabled = True
                 btnCancelar.Enabled = True
                 lstFormas.ReadOnly = True
                 '
-            ElseIf _Sit = FlagEstado.NovoRegistro Then
+            ElseIf _Sit = EnumFlagEstado.NovoRegistro Then
                 txtMovForma.Select()
                 btnSalvar.Enabled = True
                 btnNovo.Enabled = False
@@ -76,12 +76,12 @@ Public Class frmMovFormas
         If listMovFormas.Count > 0 Then
             bindMovForma.MoveFirst()
             PreencheDataBindings()
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
         Else
             bindMovForma.AddNew()
             DirectCast(bindMovForma.Current, clMovForma).IDFilial = _IDFilial
-            Sit = FlagEstado.NovoRegistro
+            Sit = EnumFlagEstado.NovoRegistro
             PreencheDataBindings()
         End If
         '
@@ -149,8 +149,8 @@ Public Class frmMovFormas
     '
     Private Sub Handler_AoAlterar()
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
     End Sub
@@ -172,7 +172,7 @@ Public Class frmMovFormas
             lblIDMovForma.DataBindings.Item("text").ReadValue()
             '
             ' ALTERAR PARA REGISTRO SALVO
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             _MovForma.RegistroAlterado = False
             '
             ' VERIFICA O ATIVO BUTTON
@@ -242,7 +242,7 @@ Public Class frmMovFormas
     ' ATIVAR OU DESATIVAR FORMA BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR uma Nova Forma de Entrada", "Desativar Forma",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
@@ -261,8 +261,8 @@ Public Class frmMovFormas
         DirectCast(bindMovForma.Current, clMovForma).BeginEdit()
         _MovForma.Ativo = Not _MovForma.Ativo
         '
-        If Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
         '
         AtivoButtonImage()
@@ -272,7 +272,7 @@ Public Class frmMovFormas
     ' BOTÃO CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         '
-        If Sit = FlagEstado.Alterado Then ' REGISTRO ALTERADO
+        If Sit = EnumFlagEstado.Alterado Then ' REGISTRO ALTERADO
             If MessageBox.Show("Deseja cancelar todas as alterações feitas no registro atual?",
                                "Cancelar Alterações", MessageBoxButtons.YesNo,
                                MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) = DialogResult.Yes Then
@@ -280,10 +280,10 @@ Public Class frmMovFormas
                 bindMovForma.CancelEdit()
                 txtMovForma.Focus()
                 VerificaCartaoTipo()
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 '
             End If
-        ElseIf Sit = FlagEstado.NovoRegistro Then ' REGISTRO NOVO
+        ElseIf Sit = EnumFlagEstado.NovoRegistro Then ' REGISTRO NOVO
             If lstFormas.Items.Count = 0 Then
                 MessageBox.Show("Não é possível cancelar porque não existe outro registro." & vbNewLine &
                                 "Se deseja sair apenas feche a janela!", "Cancelar Edição", MessageBoxButtons.OK,
@@ -291,7 +291,7 @@ Public Class frmMovFormas
                 Exit Sub
             End If
             '
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             bindMovForma.RemoveCurrent()
             '
         End If
@@ -317,7 +317,7 @@ Public Class frmMovFormas
         bindMovForma.MoveLast()
         '
         '---altera o SIT
-        Sit = FlagEstado.NovoRegistro
+        Sit = EnumFlagEstado.NovoRegistro
         VerificaCartaoTipo()
         txtMovForma.Focus()
         '
@@ -455,14 +455,14 @@ Public Class frmMovFormas
         '
         Dim movBLL As New MovimentacaoBLL
         '
-        If Sit = FlagEstado.NovoRegistro Then
+        If Sit = EnumFlagEstado.NovoRegistro Then
             Try
                 Dim newID As Int16 = movBLL.MovForma_Inserir(_MovForma)
                 '
                 _MovForma.IDMovForma = newID
                 lblIDMovForma.DataBindings("Text").ReadValue()
                 '
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 bindMovForma.EndEdit()
                 bindMovForma.ResetBindings(True)
                 '
@@ -476,11 +476,11 @@ Public Class frmMovFormas
                                 MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
             '
-        ElseIf Sit = FlagEstado.Alterado Then
+        ElseIf Sit = EnumFlagEstado.Alterado Then
             Try
                 movBLL.MovForma_Update(_MovForma)
                 '
-                Sit = FlagEstado.RegistroSalvo
+                Sit = EnumFlagEstado.RegistroSalvo
                 bindMovForma.EndEdit()
                 '
                 '---informa o usuário
@@ -618,15 +618,15 @@ Public Class frmMovFormas
             e.Handled = True
             Select Case ctr.Name
                 Case "txtConta"
-                    If Not IsNothing(_MovForma.IDContaPadrao) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_MovForma.IDContaPadrao) Then Sit = EnumFlagEstado.Alterado
                     txtConta.Clear()
                     _MovForma.IDContaPadrao = Nothing
                 Case "txtMovTipo"
-                    If Not IsNothing(_MovForma.IDMovTipo) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_MovForma.IDMovTipo) Then Sit = EnumFlagEstado.Alterado
                     txtMovTipo.Clear()
                     _MovForma.IDMovTipo = Nothing
                 Case "txtCartao"
-                    If Not IsNothing(_MovForma.IDCartao) Then Sit = FlagEstado.Alterado
+                    If Not IsNothing(_MovForma.IDCartao) Then Sit = EnumFlagEstado.Alterado
                     txtCartao.Clear()
                     _MovForma.IDCartao = Nothing
                     VerificaCartaoTipo()

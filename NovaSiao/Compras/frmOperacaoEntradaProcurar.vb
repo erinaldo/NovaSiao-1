@@ -77,7 +77,7 @@ Public Class frmOperacaoEntradaProcurar
         Dim dtOp As New DataTable
         '
         Try
-            dtOp = db.Get_Operacao_DT(TransacaoBLL.MovimentoEstoque.ENTRADA)
+            dtOp = db.Get_Operacao_DT(TransacaoItemBLL.EnumMovimento.ENTRADA)
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try

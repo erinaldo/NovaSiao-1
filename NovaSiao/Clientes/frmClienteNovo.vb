@@ -72,11 +72,11 @@ Public Class frmClienteNovo
             ' Abre o ClientePF se já não estiver aberto
             If Application.OpenForms.OfType(Of frmClientePF)().Count() = 0 Then
                 If Not IsNothing(DirectCast(cli, clClientePF).IDPessoa) Then
-                    Dim frmPF As New frmClientePF(FlagAcao.EDITAR, DirectCast(cli, clClientePF))
+                    Dim frmPF As New frmClientePF(EnumFlagAcao.EDITAR, DirectCast(cli, clClientePF))
                     frmPF.MdiParent = frmPrincipal
                     frmPF.Show()
                 Else
-                    Dim frmPF As New frmClientePF(FlagAcao.INSERIR, DirectCast(cli, clClientePF))
+                    Dim frmPF As New frmClientePF(EnumFlagAcao.INSERIR, DirectCast(cli, clClientePF))
                     frmPF.MdiParent = frmPrincipal
                     frmPF.Show()
                 End If
@@ -84,11 +84,11 @@ Public Class frmClienteNovo
                 Dim frmPF As frmClientePF = Application.OpenForms.OfType(Of frmClientePF).First
                 '
                 If Not IsNothing(DirectCast(cli, clClientePF).IDPessoa) Then
-                    frmPF.propAcao = FlagAcao.EDITAR
+                    frmPF.propAcao = EnumFlagAcao.EDITAR
                     frmPF.propClientePF = DirectCast(cli, clClientePF)
                     frmPF.Show()
                 Else
-                    frmPF.propAcao = FlagAcao.INSERIR
+                    frmPF.propAcao = EnumFlagAcao.INSERIR
                     frmPF.propClientePF = DirectCast(cli, clClientePF)
                     frmPF.Show()
                 End If
@@ -100,21 +100,21 @@ Public Class frmClienteNovo
             ' Abre o ClientePJ se já não estiver aberto
             If Application.OpenForms.OfType(Of frmClientePJ)().Count() = 0 Then
                 If Not IsNothing(DirectCast(cli, clClientePJ).RGCliente) Then '--- verifica se já é cliente cadastrado
-                    Dim frmPJ As New frmClientePJ(FlagAcao.EDITAR, DirectCast(cli, clClientePJ))
+                    Dim frmPJ As New frmClientePJ(EnumFlagAcao.EDITAR, DirectCast(cli, clClientePJ))
                     frmPJ.Show()
                 Else
-                    Dim frmPJ As New frmClientePJ(FlagAcao.INSERIR, DirectCast(cli, clClientePJ))
+                    Dim frmPJ As New frmClientePJ(EnumFlagAcao.INSERIR, DirectCast(cli, clClientePJ))
                     frmPJ.Show()
                 End If
             Else
                 Dim frmPJ As frmClientePJ = Application.OpenForms.OfType(Of frmClientePJ).First
                 '
                 If Not IsNothing(DirectCast(cli, clClientePJ).RGCliente) Then '--- verifica se já é cliente cadastrado
-                    frmPJ.propAcao = FlagAcao.EDITAR
+                    frmPJ.propAcao = EnumFlagAcao.EDITAR
                     frmPJ.propClientePJ = DirectCast(cli, clClientePJ)
                     frmPJ.Show()
                 Else
-                    frmPJ.propAcao = FlagAcao.INSERIR
+                    frmPJ.propAcao = EnumFlagAcao.INSERIR
                     frmPJ.propClientePJ = DirectCast(cli, clClientePJ)
                     frmPJ.Show()
                 End If

@@ -42,12 +42,12 @@ Public Class AcaoGlobal
                 .IDPessoaDestino = IDCli
                 .IDPessoaOrigem = Obter_FilialPadrao()
                 .IDOperacao = 1
-                .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA
+                .IDSituacao = TransacaoBLL.EnumTransacaoSituacao.INICIADA
                 .IDUser = UsuarioAcesso(0)
                 If UFCli = ObterDefault("UF") Then
-                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.OperacaoEnum.Venda, TransacaoBLL.CFOPUFDestino.DentroDaUF)
+                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.EnumOperacao.Venda, TransacaoBLL.EnumCFOPUFDestino.DentroDaUF)
                 Else
-                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.OperacaoEnum.Venda, TransacaoBLL.CFOPUFDestino.ForaDaUF)
+                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.EnumOperacao.Venda, TransacaoBLL.EnumCFOPUFDestino.ForaDaUF)
                 End If
                 .TransacaoData = ObterDefault("DataPadrao")
                 .IDDepartamento = 1
@@ -118,9 +118,9 @@ Public Class AcaoGlobal
             .IDPessoaOrigem = Obter_FilialPadrao()
             .ApelidoFilial = FilialPadrao
             .IDOperacao = 1
-            .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA
+            .IDSituacao = TransacaoBLL.EnumTransacaoSituacao.INICIADA
             .IDUser = UsuarioAcesso(0)
-            .CFOP = tranBLL.ObterCFOP(TransacaoBLL.OperacaoEnum.Venda, TransacaoBLL.CFOPUFDestino.DentroDaUF)
+            .CFOP = tranBLL.ObterCFOP(TransacaoBLL.EnumOperacao.Venda, TransacaoBLL.EnumCFOPUFDestino.DentroDaUF)
             .TransacaoData = VendaData
             .IDDepartamento = 1
             .IDVendedor = IDFunc
@@ -186,12 +186,12 @@ Public Class AcaoGlobal
                 .IDPessoaDestino = Obter_FilialPadrao()
                 .IDPessoaOrigem = IDFornecedor
                 .IDOperacao = 2
-                .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA
+                .IDSituacao = TransacaoBLL.EnumTransacaoSituacao.INICIADA
                 .IDUser = UsuarioAcesso(0)
                 If FornecedorUF = ObterDefault("UF") Then
-                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.OperacaoEnum.Compra, TransacaoBLL.CFOPUFDestino.DentroDaUF)
+                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.EnumOperacao.Compra, TransacaoBLL.EnumCFOPUFDestino.DentroDaUF)
                 Else
-                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.OperacaoEnum.Compra, TransacaoBLL.CFOPUFDestino.ForaDaUF)
+                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.EnumOperacao.Compra, TransacaoBLL.EnumCFOPUFDestino.ForaDaUF)
                 End If
                 .TransacaoData = ObterDefault("DataPadrao")
                 .CobrancaTipo = 0 '--- sem Cobrança
@@ -265,7 +265,7 @@ Public Class AcaoGlobal
             .IDPessoaOrigem = IDFilialPadrao,
             .IDOperacao = 4, '--- SIMPLES SAIDA
             .CFOP = 1152,
-            .IDSituacao = TransacaoBLL.TransacaoSituacao.INICIADA,
+            .IDSituacao = TransacaoBLL.EnumTransacaoSituacao.INICIADA,
             .IDUser = UsuarioAcesso(0),
             .TransacaoData = ObterDefault("DataPadrao")}
         '
@@ -288,6 +288,13 @@ Public Class AcaoGlobal
         '
         Return newSimples
         '
+    End Function
+    '
+    '================================================================================
+    ' EFETUA NOVA DEVOLUCAO SAIDA
+    '================================================================================
+    Public Function DevolucaoSaida_Nova() As clDevolucaoSaida
+
     End Function
     '
 End Class

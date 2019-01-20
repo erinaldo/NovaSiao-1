@@ -10,42 +10,42 @@ Public Class frmSimplesSaida
     Private bindSimples As New BindingSource
     Private bindItem As New BindingSource
     Private bindParc As New BindingSource
-    Private _Sit As FlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
+    Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private _Filial As Integer
     Private VerificaAlteracao As Boolean
     Private Taxa As Double?
     '
 #Region "LOAD | PROPERTYS"
     '
-    Private Property Sit As FlagEstado
+    Private Property Sit As EnumFlagEstado
         Get
             Return _Sit
         End Get
-        Set(value As FlagEstado)
+        Set(value As EnumFlagEstado)
             _Sit = value
             Select Case _Sit
-                Case FlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
+                Case EnumFlagEstado.RegistroSalvo '--- REGISTRO FINALIZADO | NÃO BLOQUEADO
                     lblSituacao.Text = "Finalizada"
                     btnFinalizar.Text = "&Fechar"
                     '
                     btnData.Enabled = True
                     txtObservacao.ReadOnly = False
                     '
-                Case FlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
+                Case EnumFlagEstado.Alterado '--- REGISTRO FINALIZADO ALTERADO
                     lblSituacao.Text = "Alterada"
                     btnFinalizar.Text = "&Finalizar"
                     '
                     btnData.Enabled = True
                     txtObservacao.ReadOnly = False
                     '
-                Case FlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
+                Case EnumFlagEstado.NovoRegistro '--- REGISTRO NÃO FINALIZADO
                     lblSituacao.Text = "Em Aberto"
                     btnFinalizar.Text = "&Finalizar"
                     '
                     btnData.Enabled = True
                     txtObservacao.ReadOnly = False
                     '
-                Case FlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
+                Case EnumFlagEstado.RegistroBloqueado '--- REGISTRO BLOQUEADO PARA ALTERACOES
                     lblSituacao.Text = "Bloqueada"
                     btnFinalizar.Text = "&Fechar"
                     '
@@ -90,14 +90,14 @@ Public Class frmSimplesSaida
             Preenche_AReceber()
             cmbIDPlano.SelectedValue = IIf(IsNothing(_Simples.IDPlano), -1, _Simples.IDPlano)
             '
-            '--- Atualiza o estado da Situacao: FLAGESTADO
+            '--- Atualiza o estado da Situacao: EnumFlagEstado
             Select Case _Simples.IDSituacao
                 Case 1 ' SIMPLES INICIADA
-                    Sit = FlagEstado.NovoRegistro
+                    Sit = EnumFlagEstado.NovoRegistro
                 Case 2 ' SIMPLES FINALIZADA
-                    Sit = FlagEstado.RegistroSalvo
+                    Sit = EnumFlagEstado.RegistroSalvo
                 Case 3 ' SIMPLES BLOQUEADA
-                    Sit = FlagEstado.RegistroBloqueado
+                    Sit = EnumFlagEstado.RegistroBloqueado
                 Case Else
             End Select
             '
@@ -167,8 +167,8 @@ Public Class frmSimplesSaida
     End Sub
     '
     Private Sub HandlerAoAlterar()
-        If _Simples.RegistroAlterado = True And Sit = FlagEstado.RegistroSalvo Then
-            Sit = FlagEstado.Alterado
+        If _Simples.RegistroAlterado = True And Sit = EnumFlagEstado.RegistroSalvo Then
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
@@ -373,7 +373,7 @@ Public Class frmSimplesSaida
         '
         '--- Abre o frmItem
         Dim newItem As New clTransacaoItem
-        Dim fItem As New frmVendaItem(Me, precoOrigem.PRECO_COMPRA, _Filial, newItem)
+        Dim fItem As New frmVendaItem(Me, EnumPrecoOrigem.PRECO_COMPRA, _Filial, newItem)
         fItem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -428,7 +428,7 @@ Public Class frmSimplesSaida
         itmAtual = dgvItens.SelectedRows(0).DataBoundItem
         '
         '--- Abre o frmItem
-        Dim fitem As New frmVendaItem(Me, precoOrigem.PRECO_COMPRA, _Filial, itmAtual)
+        Dim fitem As New frmVendaItem(Me, EnumPrecoOrigem.PRECO_COMPRA, _Filial, itmAtual)
         fitem.ShowDialog()
         '
         '--- Verifica o retorno do Dialog
@@ -620,7 +620,7 @@ Public Class frmSimplesSaida
 #Region "BOTOES DE ACAO"
     '
     Private Sub btnClose_Click(sender As Object, e As EventArgs) Handles btnClose.Click
-        If Sit = FlagEstado.NovoRegistro Or Sit = FlagEstado.Alterado Then
+        If Sit = EnumFlagEstado.NovoRegistro Or Sit = EnumFlagEstado.Alterado Then
             If MessageBox.Show("ALTERAÇÕES DA Simples Saída NÃO SERÃO SALVAS!" & vbNewLine & vbNewLine &
                                "Se você fechar agora essa Simples Saída," & vbNewLine &
                                "todas alterações serão perdidas," & vbNewLine &
@@ -644,7 +644,7 @@ Public Class frmSimplesSaida
     Private Sub lblTransacaoData_DoubleClick(sender As Object, e As EventArgs) _
         Handles lblTransacaoData.DoubleClick, btnData.Click
         '
-        Dim frmDt As New frmDataInformar("Informe a data da Simples Saída", DataTipo.PassadoPresente, _Simples.TransacaoData, Me)
+        Dim frmDt As New frmDataInformar("Informe a data da Simples Saída", EnumDataTipo.PassadoPresente, _Simples.TransacaoData, Me)
         frmDt.ShowDialog()
         '
         If frmDt.DialogResult <> DialogResult.OK Then Exit Sub
@@ -1001,7 +1001,7 @@ Public Class frmSimplesSaida
         clPar.Letra = myLetra.ToString
         '
         '--- abre o form frmAReceber
-        Dim fRec As New frmAReceberItem(Me, vl, _Simples.TransacaoData, clPar, FlagAcao.INSERIR, pos)
+        Dim fRec As New frmAReceberItem(Me, vl, _Simples.TransacaoData, clPar, EnumFlagAcao.INSERIR, pos)
         fRec.ShowDialog()
         '
         If fRec.DialogResult = DialogResult.OK Then
@@ -1016,7 +1016,7 @@ Public Class frmSimplesSaida
             '
             '--- AtualizaTotalAReceber
             AtualizaTotalAReceber()
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
             '
         End If
         '
@@ -1034,12 +1034,12 @@ Public Class frmSimplesSaida
         If dgvAReceber.SelectedRows.Count = 0 Then Exit Sub
         '
         Dim ParcAtual As clAReceberParcela = dgvAReceber.SelectedRows(0).DataBoundItem
-        Dim fRec As New frmAReceberItem(Me, AtualizaTotalGeral(), _Simples.TransacaoData, ParcAtual, FlagAcao.EDITAR, pos)
+        Dim fRec As New frmAReceberItem(Me, AtualizaTotalGeral(), _Simples.TransacaoData, ParcAtual, EnumFlagAcao.EDITAR, pos)
         fRec.ShowDialog()
         '
         '--- AtualizaTotalAReceber
         AtualizaTotalAReceber()
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     Private Sub Parcela_Excluir()
@@ -1070,7 +1070,7 @@ Public Class frmSimplesSaida
         dgvAReceber.DataSource = bindParc
         '--- AtualizaTotalAReceber
         AtualizaTotalAReceber()
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     Private Sub cmbIDPlano_SelectedValueChanged(sender As Object, e As EventArgs) Handles cmbIDPlano.SelectedValueChanged
@@ -1079,7 +1079,7 @@ Public Class frmSimplesSaida
         If Not IsNumeric(cmbIDPlano.SelectedValue) OrElse VerificaAlteracao = False Then Exit Sub
         '
         '--- Se o registro da simples saida esta bloqueado não permite alteracao
-        If Sit = FlagEstado.RegistroBloqueado Then
+        If Sit = EnumFlagEstado.RegistroBloqueado Then
             VerificaAlteracao = False
             cmbIDPlano.SelectedValue = If(_Simples.IDPlano, -1)
             VerificaAlteracao = True
@@ -1163,7 +1163,7 @@ Public Class frmSimplesSaida
         '
         '--- Atualiza o Total do AReceber
         AtualizaTotalAReceber()
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
     ' ALTERA A COR DO DATAGRIDVIEW ARECEBER QUANDO GANHA OU PERDE O FOCO
@@ -1190,7 +1190,7 @@ Public Class frmSimplesSaida
     Private Sub btnFinalizar_Click(sender As Object, e As EventArgs) Handles btnFinalizar.Click
         '
         '--- Verifica se a SITUACAO do registro permite salvar
-        If Not (Sit = FlagEstado.Alterado Or Sit = FlagEstado.NovoRegistro) Then
+        If Not (Sit = EnumFlagEstado.Alterado Or Sit = EnumFlagEstado.NovoRegistro) Then
             '
             '--- Cria arquivo XML ou gera Simples Entrada Automatica
             VerificaXML_AND_SimplesEntrada()
@@ -1222,7 +1222,7 @@ Public Class frmSimplesSaida
             simplesBLL.AtualizaSimplesSaida_Procedure_DT(_Simples)
             '
             '--- ALTERA A SITUACAO DO REGISTRO ATUAL
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             '
             '--- PERGUNTA AO USUÁRIO SE DESEJA FECHAR
             If MessageBox.Show("Registro SALVO com sucesso!!! " &
@@ -1443,7 +1443,7 @@ Public Class frmSimplesSaida
     ' FUNCAO QUE CONFERE REGISTRO BLOQUEADO E EMITE MENSAGEM PADRAO
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroBloqueado() As Boolean
-        If Sit = FlagEstado.RegistroBloqueado Then
+        If Sit = EnumFlagEstado.RegistroBloqueado Then
             MessageBox.Show("Esse registro de Simples Saída está BLOQUEADO para alterações..." & vbNewLine &
                             "Não é possível adicionar produtos ou alterar algum dado!",
                             "Registro Bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Information)
@@ -1456,7 +1456,7 @@ Public Class frmSimplesSaida
     ' FUNCAO QUE CONFERE REGISTRO FINALIZADO E PERGUNTA SE DESEJA ALTERAR
     '-----------------------------------------------------------------------------------------------------
     Private Function RegistroFinalizado() As Boolean
-        If Sit = FlagEstado.RegistroSalvo Then
+        If Sit = EnumFlagEstado.RegistroSalvo Then
             If MessageBox.Show("Esse registro de Simples Saída já se encontra FINALIZADO..." & vbNewLine &
                                "Deseja realmente fazer alterações nesse registro?",
                                "Registro Finalizado", MessageBoxButtons.YesNo, MessageBoxIcon.Question,

@@ -2,7 +2,7 @@
 '
 Public Class frmPedidoMensagens
     Const _defaultRowHeight As Integer = 30 '--- altura da ROW
-    Private Sit As FlagEstado
+    Private Sit As EnumFlagEstado
     Private _formOrigem As Form
     '
 #Region "LOAD | NEW"
@@ -16,7 +16,7 @@ Public Class frmPedidoMensagens
         ' Add any initialization after the InitializeComponent() call.
         FormataMensagens()
         If LerConfigXML() = False Then Close()
-        Sit = FlagEstado.RegistroSalvo
+        Sit = EnumFlagEstado.RegistroSalvo
         _formOrigem = frmOrigem
         '
     End Sub
@@ -137,13 +137,13 @@ Public Class frmPedidoMensagens
     Private Sub dgvMensagens_RowValidating(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvMensagens.RowValidating
         If dgvMensagens.IsCurrentRowDirty Then
             btnSalvar.Enabled = True
-            Sit = FlagEstado.Alterado
+            Sit = EnumFlagEstado.Alterado
         End If
     End Sub
     '
     Private Sub dgvMensagens_UserDeletedRow(sender As Object, e As DataGridViewRowEventArgs) Handles dgvMensagens.UserDeletedRow
         btnSalvar.Enabled = True
-        Sit = FlagEstado.Alterado
+        Sit = EnumFlagEstado.Alterado
     End Sub
     '
 #End Region
@@ -154,7 +154,7 @@ Public Class frmPedidoMensagens
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         '
         '--- pergunta ao usuário
-        If Sit <> FlagEstado.RegistroSalvo Then
+        If Sit <> EnumFlagEstado.RegistroSalvo Then
             '
             If MessageBox.Show("As alterações feitas ainda não foram salvas." & vbNewLine &
                                "Todas as alterações serão perdidas..." & vbNewLine &
@@ -177,7 +177,7 @@ Public Class frmPedidoMensagens
     Private Sub btnSalvar_Click(sender As Object, e As EventArgs) Handles btnSalvar.Click
         '
         If SalvarXML() = True Then
-            Sit = FlagEstado.RegistroSalvo
+            Sit = EnumFlagEstado.RegistroSalvo
             btnSalvar.Enabled = False
             '
             MessageBox.Show("Mensagens salvas com sucesso!", "Salvar",

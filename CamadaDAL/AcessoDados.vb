@@ -144,7 +144,6 @@ Public Class AcessoDados
             '
         Catch ex As Exception
             '
-            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try
@@ -182,7 +181,6 @@ Public Class AcessoDados
             '
         Catch ex As Exception
             '
-            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try
@@ -218,7 +216,6 @@ Public Class AcessoDados
             '
         Catch ex As Exception
             '
-            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try
@@ -262,7 +259,6 @@ Public Class AcessoDados
             '
         Catch ex As Exception
             '
-            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try
@@ -306,7 +302,6 @@ Public Class AcessoDados
             '
         Catch ex As SqlException
             '
-            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try
@@ -343,7 +338,6 @@ Public Class AcessoDados
             '
         Catch ex As Exception
             '
-            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try
@@ -391,7 +385,6 @@ Public Class AcessoDados
             '
         Catch ex As Exception
             '
-            If isTran Then RollBackTransaction()
             Throw ex
             '
         End Try

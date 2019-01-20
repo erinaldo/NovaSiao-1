@@ -84,10 +84,11 @@ Public Class clAReceber : Implements IEditableObject
         End Get
     End Property
     '
-    Public Enum AReceberOrigem
-        Transacao = 1 ' IDOrigem: tblTransacao
+    Public Enum EnumAReceberOrigem
+        Venda = 1           ' IDOrigem : tblVenda
         Refinanciamento = 2 ' IDOrigem : tblRefinanciamento
-        SimplesSaida = 3 ' IDOrigem : tblSimples
+        SimplesSaida = 3    ' IDOrigem : tblSimples
+        DevolucaoSaida = 4  ' IDOrigem : tblDevolucaoSaida
     End Enum
     '
 #End Region
@@ -121,11 +122,11 @@ Public Class clAReceber : Implements IEditableObject
     End Property
     '
     '--- Propriedade Origem
-    Public Property Origem() As AReceberOrigem
+    Public Property Origem() As EnumAReceberOrigem
         Get
             Return ReceberData._Origem
         End Get
-        Set(ByVal value As AReceberOrigem)
+        Set(ByVal value As EnumAReceberOrigem)
             If value <> ReceberData._Origem Then
                 RaiseEvent AoAlterar()
             End If
