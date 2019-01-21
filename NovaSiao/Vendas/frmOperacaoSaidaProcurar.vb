@@ -28,9 +28,11 @@ Public Class frmOperacaoSaidaProcurar
     End Property
     '
     Private Property propOperacao As Byte
+        '
         Get
             Return _Operacao
         End Get
+        '
         Set(value As Byte)
             '
             _Operacao = value
@@ -171,7 +173,7 @@ Public Class frmOperacaoSaidaProcurar
             '
         Catch ex As Exception
             MessageBox.Show("Em erro ao obter a lista de Operações de Simples Saídas..." & vbNewLine &
-            ex.Message, "Falha no Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                            ex.Message, "Falha no Sistema", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Finally
             '
             '--- Ampulheta OFF
@@ -182,8 +184,38 @@ Public Class frmOperacaoSaidaProcurar
     End Sub
     '
     Private Sub GetList_Devolucao()
-        SourceList = Nothing
-        dgvListagem.DataSource = Nothing
+        '
+        Dim dBLL As New DevolucaoSaidaBLL
+        '
+        '--- consulta o banco de dados
+        Try
+            '
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            '--- verifica o filtro das datas
+            If chkPeriodoTodos.Checked = True Then
+                SourceList = dBLL.GetDevolucaoLista_Procura(Obter_FilialPadrao)
+            Else
+                Dim f As New FuncoesUtilitarias
+                Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
+                Dim dtFinal As Date = f.LastDayOfMonth(myMes)
+                '
+                SourceList = dBLL.GetDevolucaoLista_Procura(Obter_FilialPadrao, dtInicial, dtFinal)
+            End If
+            '
+            dgvListagem.DataSource = SourceList
+            '
+        Catch ex As Exception
+            MessageBox.Show("Em erro ao obter a lista de Operações de Devolução de Saída..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+            '
+        End Try
+        '
     End Sub
     '
     Private Sub GetList_Consignacao()
@@ -424,6 +456,96 @@ Public Class frmOperacaoSaidaProcurar
         '--- limpa as colunas do datagrid
         dgvListagem.Columns.Clear()
         '
+        ' (0) COLUNA REG
+        dgvListagem.Columns.Add("IDDevolucao", "Reg.")
+        With dgvListagem.Columns("IDDevolucao")
+            .DataPropertyName = "IDDevolucao"
+            .Width = 50
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Format = "0000"
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+        End With
+        '
+        ' (1) COLUNA TRANSACAODATA
+        dgvListagem.Columns.Add("TransacaoData", "Data")
+        With dgvListagem.Columns("TransacaoData")
+            .DataPropertyName = "TransacaoData"
+            .Width = 100
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
+            '.DefaultCellStyle.Font = New Font("Arial Narrow", 12)
+        End With
+        '
+        ' (2) COLUNA FORNECEDOR
+        dgvListagem.Columns.Add("Fornecedor", "Fornecedor")
+        With dgvListagem.Columns("Fornecedor")
+            .DataPropertyName = "Fornecedor"
+            .Width = 350
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+        End With
+        '
+        ' (3) COLUNA VALORTOTAL
+        dgvListagem.Columns.Add("ValorTotal", "Valor Total")
+        With dgvListagem.Columns("ValorTotal")
+            .DataPropertyName = "ValorTotal"
+            .Width = 100
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .DefaultCellStyle.Format = "C"
+        End With
+        '
+        ' (4) COLUNA ENVIADA
+        Dim colImageEnviada As New DataGridViewImageColumn
+        With colImageEnviada
+            .HeaderText = "Enviada"
+            .Resizable = False
+            .Width = 80
+        End With
+        dgvListagem.Columns.Add(colImageEnviada)
+        '
+        ' (5) COLUNA CREDITADA
+        Dim colImageCreditada As New DataGridViewImageColumn
+        With colImageCreditada
+            .HeaderText = "Creditada"
+            .Resizable = False
+            .Width = 80
+        End With
+        dgvListagem.Columns.Add(colImageCreditada)
+        '
+        ' (6) COLUNA IMAGEM SITUACAO
+        Dim colImage As New DataGridViewImageColumn
+        With colImage
+            .HeaderText = "Sit."
+            .Resizable = False
+            .Width = 80
+        End With
+        dgvListagem.Columns.Add(colImage)
+        '
+        ' (7) COLUNA SITUAÇÃO
+        dgvListagem.Columns.Add("Situacao", "Situação")
+        With dgvListagem.Columns("Situacao")
+            .DataPropertyName = "IDSituacao"
+            .Width = 0
+            .Resizable = DataGridViewTriState.False
+            .Visible = False
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+        End With
+        '
     End Sub
     '
     Private Sub PreencheColunas_Consignacao()
@@ -442,13 +564,37 @@ Public Class frmOperacaoSaidaProcurar
     '--- ALTERA AS ETIQUETAS PARA COMBINAR COM A LISTAGEM
     Private Sub AlteraEtiquetas()
         '
+        Dim r As New Rectangle
+        '
         Try
             lbl1.Text = dgvListagem.Columns(0).HeaderText
             lbl2.Text = dgvListagem.Columns(1).HeaderText
             lbl3.Text = dgvListagem.Columns(2).HeaderText
+            '
             lbl4.Text = dgvListagem.Columns(3).HeaderText
+            r = dgvListagem.GetCellDisplayRectangle(3, 0, False)
+            lbl4.Width = r.Width
+            lbl4.Location = New Point(r.X, lbl4.Location.Y)
+            lbl4.TextAlign = ContentAlignment.MiddleCenter
+            '
             lbl5.Text = dgvListagem.Columns(4).HeaderText
+            r = dgvListagem.GetCellDisplayRectangle(4, 0, False)
+            lbl5.Width = r.Width
+            lbl5.Location = New Point(r.X, lbl5.Location.Y)
+            lbl5.TextAlign = ContentAlignment.MiddleCenter
+            '
             lbl6.Text = dgvListagem.Columns(5).HeaderText
+            r = dgvListagem.GetCellDisplayRectangle(5, 0, False)
+            lbl6.Width = r.Width
+            lbl6.Location = New Point(r.X, lbl6.Location.Y)
+            lbl6.TextAlign = ContentAlignment.MiddleCenter
+            '
+            lbl7.Text = dgvListagem.Columns(6).HeaderText
+            r = dgvListagem.GetCellDisplayRectangle(6, 0, False)
+            lbl7.Width = r.Width
+            lbl7.Location = New Point(r.X, lbl7.Location.Y)
+            lbl7.TextAlign = ContentAlignment.MiddleCenter
+            '
         Catch ex As Exception
             lbl1.Text = ""
             lbl2.Text = ""
@@ -456,6 +602,7 @@ Public Class frmOperacaoSaidaProcurar
             lbl4.Text = ""
             lbl5.Text = ""
             lbl6.Text = ""
+            lbl7.Text = ""
         End Try
         '
     End Sub
@@ -471,6 +618,8 @@ Public Class frmOperacaoSaidaProcurar
                 dgvListagem.DataSource = DirectCast(SourceList, List(Of clVenda)).FindAll(AddressOf FindCadastro)
             Case 4 '--- SIMPLES SAIDA
                 dgvListagem.DataSource = DirectCast(SourceList, List(Of clSimplesSaida)).FindAll(AddressOf FindCadastro)
+            Case 6 '--- DEVOLUCAO DE COMPRA
+                dgvListagem.DataSource = DirectCast(SourceList, List(Of clDevolucaoSaida)).FindAll(AddressOf FindCadastro)
         End Select
 
     End Sub
@@ -495,24 +644,60 @@ Public Class frmOperacaoSaidaProcurar
         '
     End Function
     '
-    '--- FORMATA O DATAGRID COM TEXTO E IMAGENS
-    Private Sub dgvListagem_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvListagem.CellFormatting
+    Private Function FindCadastro(ByVal d As clDevolucaoSaida) As Boolean
         '
-        If e.ColumnIndex = 5 Then '--- coluna Cobrança tipo
-            Select Case e.Value
-                Case 0
-                    e.Value = "Sem Cobrança"
-                Case 1
-                    e.Value = "À Vista"
-                Case 2
-                    e.Value = "À Prazo"
-            End Select
+        If (d.Fornecedor.ToLower Like "*" & txtProcura.Text.ToLower & "*") Then
+            Return True
+        Else
+            Return False
         End If
         '
-        If e.ColumnIndex = 2 Then '--- coluna Razão Social
-            If IsDBNull(e.Value) Then
-                e.Value = "VENDA À VISTA"
+    End Function
+    '
+    '--- FORMATA O DATAGRID COM TEXTO E IMAGENS
+    Private Sub dgvListagem_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvListagem.CellFormatting
+        ' 
+        If propOperacao = 1 Then '--- SE FOR VENDA
+            '
+            If e.ColumnIndex = 5 Then '--- coluna Cobrança tipo
+                Select Case e.Value
+                    Case 0
+                        e.Value = "Sem Cobrança"
+                    Case 1
+                        e.Value = "À Vista"
+                    Case 2
+                        e.Value = "À Prazo"
+                End Select
             End If
+            '
+            If e.ColumnIndex = 2 Then '--- coluna Razão Social
+                If IsDBNull(e.Value) Then
+                    e.Value = "VENDA À VISTA"
+                End If
+            End If
+            '
+        End If
+        '
+        If e.ColumnIndex = 4 AndAlso propOperacao = 6 Then '--- Se for DEVOLUCAO
+            '--- altera a IMAGEM da coluna 4
+            Select Case DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clDevolucaoSaida).Enviada
+                Case 0
+                    e.Value = ImgVndInativo
+                Case 1
+                    e.Value = ImgVndAtivo
+            End Select
+            '
+        End If
+        '
+        If e.ColumnIndex = 5 AndAlso propOperacao = 6 Then '--- Se for DEVOLUCAO
+            '--- altera a IMAGEM da coluna 4
+            Select Case DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clDevolucaoSaida).Creditada
+                Case 0
+                    e.Value = ImgVndInativo
+                Case 1
+                    e.Value = ImgVndAtivo
+            End Select
+            '
         End If
         '
         '--- altera a IMAGEM da coluna 6
@@ -525,7 +710,7 @@ Public Class frmOperacaoSaidaProcurar
                 Case 4 '--- SIMPLES SAIDA
                     sit = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clSimplesSaida).IDSituacao
                 Case 6 '--- DEVOLUCAO DE COMPRA
-
+                    sit = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clDevolucaoSaida).IDSituacao
                 Case 8 '--- DEVOLUCAO DE CONSIGNACAO
 
             End Select
@@ -538,6 +723,7 @@ Public Class frmOperacaoSaidaProcurar
                 Case 3
                     e.Value = ImgVndLock
             End Select
+            '
         End If
         '
     End Sub
@@ -589,7 +775,15 @@ Public Class frmOperacaoSaidaProcurar
                     frm.Show()
                 '
                 Case 6 ' DEVOLUÇÃO DE COMPRA
-
+                    Dim _dev As clDevolucaoSaida = dgvListagem.SelectedRows(0).DataBoundItem
+                    '
+                    Dim frm As New frmDevolucaoSaida(_dev) With {
+                        .MdiParent = frmPrincipal,
+                        .StartPosition = FormStartPosition.CenterScreen
+                    }
+                    Close()
+                    frm.Show()
+                '
                 Case 8 'DEVOLUÇÃO DE CONSIGNAÇÃO
 
 

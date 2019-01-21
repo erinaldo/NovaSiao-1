@@ -262,7 +262,7 @@ Public Class clDevolucaoSaida : Implements IEditableObject
     '--- Propriedade TotalVenda
     ReadOnly Property ValorTotal() As Decimal
         Get
-            Return ValorProdutos + ValorDescontos + ValorAcrescimos
+            Return ValorProdutos + ValorAcrescimos - ValorDescontos
         End Get
     End Property
     '

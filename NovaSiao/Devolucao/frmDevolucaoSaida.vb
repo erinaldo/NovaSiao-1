@@ -15,6 +15,8 @@ Public Class frmDevolucaoSaida
     Private _IDFilial As Integer
     Private VerificaAlteracao As Boolean
     '
+    Dim EP As New ErrorProvider
+    '
 #Region "LOAD"
     '
     Private Property Sit As EnumFlagEstado
@@ -175,7 +177,7 @@ Public Class frmDevolucaoSaida
     '
     Private Sub PreencheDataBinding()
         '
-        lblCliente.DataBindings.Add("Text", bindDev, "Cadastro", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblCliente.DataBindings.Add("Text", bindDev, "Fornecedor", True, DataSourceUpdateMode.OnPropertyChanged)
         lblIDDevolucao.DataBindings.Add("Text", bindDev, "IDDevolucao", True, DataSourceUpdateMode.OnPropertyChanged)
         lblFilial.DataBindings.Add("Text", bindDev, "ApelidoFilial", True, DataSourceUpdateMode.OnPropertyChanged)
         lblTransacaoData.DataBindings.Add("Text", bindDev, "TransacaoData", True, DataSourceUpdateMode.OnPropertyChanged)
@@ -904,7 +906,8 @@ Public Class frmDevolucaoSaida
     '
     ' CONVERTE ENTER EM TAB DE ALGUNS CONTROLES
     '---------------------------------------------------------------------------------------------------
-    Private Sub Text_KeyDown(sender As Object, e As KeyEventArgs) Handles txtValorAcrescimos.KeyDown, txtFreteValor.KeyDown,
+    Private Sub Text_KeyDown(sender As Object, e As KeyEventArgs) Handles txtValorAcrescimos.KeyDown,
+        txtFreteValor.KeyDown, txtValorDescontos.KeyDown,
         txtVolumes.KeyDown, txtObservacao.KeyDown
         '
         '--- Se for o campo observacao, verifica se esta preenchido com algum texto
@@ -994,6 +997,8 @@ Public Class frmDevolucaoSaida
                 '
                 MessageBox.Show("Uma exceção ocorreu ao Salvar a Devolução..." & vbNewLine &
                                 ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+                Exit Sub
+                '
             Finally
                 '--- Ampulheta OFF
                 Cursor = Cursors.Default
@@ -1122,6 +1127,35 @@ Public Class frmDevolucaoSaida
             txtValorAcrescimos.Validated, txtValorDescontos.Validated
         '
         AtualizaTotalGeral()
+        '
+    End Sub
+    '
+    '--- VERIFICA O SE O NOVO VALOR INSERIDO TORNARIA O TOTAL NEGATIVO
+    Private Sub txtValorDescontos_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtValorDescontos.Validating
+        Dim t As Decimal = _Dev.ValorProdutos + _Dev.ValorAcrescimos
+        '
+        If t - txtValorDescontos.Text < 0 Then
+            '--- EMITE O ERROR PROVIDER
+            EP.SetError(sender, "Valor não pode ser maior que: R$ " & Format(t, "#,##.00"))
+            txtValorDescontos.Text = t
+            e.Cancel = True
+        Else
+            EP.Clear()
+        End If
+        '
+    End Sub
+    '
+    Private Sub txtValorAcrescimos_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtValorAcrescimos.Validating
+        Dim t As Decimal = _Dev.ValorProdutos - _Dev.ValorDescontos
+        '
+        If t + txtValorAcrescimos.Text < 0 Then
+            '--- EMITE O ERROR PROVIDER
+            EP.SetError(sender, "Valor não pode ser menor que: R$ " & Format(Math.Abs(t), "#,##.00"))
+            txtValorAcrescimos.Text = Math.Abs(t)
+            e.Cancel = True
+        Else
+            EP.Clear()
+        End If
         '
     End Sub
     '

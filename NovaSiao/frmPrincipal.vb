@@ -737,6 +737,21 @@ Public Class frmPrincipal
         '
     End Sub
     '
+    Private Sub miNovaDevolucaoSaida_Click(sender As Object, e As EventArgs) Handles miNovaDevolucaoSaida.Click
+        '
+        Dim a As New AcaoGlobal
+        Dim obj As Object = a.DevolucaoSaida_Nova
+        '
+        If IsNothing(obj) Then Exit Sub
+        '
+        OcultaMenuPrincipal()
+        Dim f As New frmDevolucaoSaida(obj)
+        f.MdiParent = Me
+        f.StartPosition = FormStartPosition.CenterScreen
+        f.Show()
+        '
+    End Sub
+    '
 #End Region
     '
     '========================================================================================================

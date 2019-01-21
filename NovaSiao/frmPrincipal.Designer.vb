@@ -110,6 +110,7 @@ Partial Class frmPrincipal
         Me.Label2 = New System.Windows.Forms.Label()
         Me.lblHora = New System.Windows.Forms.Label()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
+        Me.miNovaDevolucaoSaida = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsPrincipal.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SContainerPrincipal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -316,7 +317,7 @@ Partial Class frmPrincipal
         'tsbVendas
         '
         Me.tsbVendas.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbVendas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaVendaVista, Me.miNovaVendaPrazo, Me.miProcurarOperacaoSaida, Me.ToolStripSeparator5, Me.miProcurarTroca, Me.ToolStripSeparator18, Me.miNovaSimplesSaida})
+        Me.tsbVendas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miNovaVendaVista, Me.miNovaVendaPrazo, Me.ToolStripSeparator18, Me.miNovaSimplesSaida, Me.miNovaDevolucaoSaida, Me.ToolStripSeparator5, Me.miProcurarOperacaoSaida, Me.miProcurarTroca})
         Me.tsbVendas.Image = CType(resources.GetObject("tsbVendas.Image"), System.Drawing.Image)
         Me.tsbVendas.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbVendas.Name = "tsbVendas"
@@ -870,6 +871,14 @@ Partial Class frmPrincipal
         Me.Timer1.Enabled = True
         Me.Timer1.Interval = 600
         '
+        'miNovaDevolucaoSaida
+        '
+        Me.miNovaDevolucaoSaida.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
+        Me.miNovaDevolucaoSaida.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miNovaDevolucaoSaida.Name = "miNovaDevolucaoSaida"
+        Me.miNovaDevolucaoSaida.Size = New System.Drawing.Size(234, 30)
+        Me.miNovaDevolucaoSaida.Text = "Nova Devolução"
+        '
         'frmPrincipal
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(96.0!, 96.0!)
@@ -988,4 +997,5 @@ Partial Class frmPrincipal
     Friend WithEvents miSimplesEntrada As ToolStripMenuItem
     Friend WithEvents miAReceberMovInterna As ToolStripMenuItem
     Friend WithEvents miAPagarMovInterna As ToolStripMenuItem
+    Friend WithEvents miNovaDevolucaoSaida As ToolStripMenuItem
 End Class

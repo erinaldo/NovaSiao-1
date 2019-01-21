@@ -124,12 +124,12 @@ Public Class DevolucaoSaidaBLL
         objDB.AdicionarParametros("@Enviada", _dev.Enviada)
         objDB.AdicionarParametros("@Creditada", _dev.Creditada)
         '
-        myQuery = "UPDATE tblDevolucao " &
+        myQuery = "UPDATE tblDevolucaoSaida " &
                   "SET ValorProdutos = @ValorProdutos, " &
                   "ValorAcrescimos = @ValorAcrescimos, " &
-                  "ValorDescontos = @ValorDescontos " &
-                  "TotalDevolucao = @ValorTotal " &
-                  "Enviada = @Enviada " &
+                  "ValorDescontos = @ValorDescontos, " &
+                  "TotalDevolucao = @ValorTotal, " &
+                  "Enviada = @Enviada, " &
                   "Creditada = @Creditada " &
                   "WHERE IDDevolucao = @IDDevolucao"
         '
@@ -247,12 +247,13 @@ Public Class DevolucaoSaidaBLL
         myQuery = "INSERT INTO tblTransacao (" &
                   "IDPessoaOrigem, IDPessoaDestino, IDOperacao, IDSituacao, TransacaoData, CFOP, IDUser ) " &
                   "VALUES (" &
-                  "@IDPessoaOrigem, @IDPessoaDestino, 6, 0, @TransacaoData, @CFOP, @IDUser )"
+                  "@IDPessoaOrigem, @IDPessoaDestino, 6, 1, @TransacaoData, @CFOP, @IDUser )"
         '
         Try
             objDB.ExecutarManipulacao(CommandType.Text, myQuery)
             '
             '--- obter NewID
+            objDB.LimparParametros()
             myQuery = "SELECT @@IDENTITY As LastID;"
             Dim dt As DataTable = objDB.ExecutarConsulta(CommandType.Text, myQuery)
             '
@@ -282,6 +283,7 @@ Public Class DevolucaoSaidaBLL
             objDB.ExecutarManipulacao(CommandType.Text, myQuery)
             '
             '--- obter NewID
+            objDB.LimparParametros()
             myQuery = "SELECT @@IDENTITY As LastID;"
             Dim dt As DataTable = objDB.ExecutarConsulta(CommandType.Text, myQuery)
             '
@@ -309,6 +311,7 @@ Public Class DevolucaoSaidaBLL
         '
         Try
             objDB.ExecutarManipulacao(CommandType.Text, myQuery)
+            objDB.CommitTransaction()
         Catch ex As Exception
             objDB.RollBackTransaction()
             Throw ex

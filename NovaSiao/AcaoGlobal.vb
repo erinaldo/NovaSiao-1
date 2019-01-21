@@ -294,7 +294,65 @@ Public Class AcaoGlobal
     ' EFETUA NOVA DEVOLUCAO SAIDA
     '================================================================================
     Public Function DevolucaoSaida_Nova() As clDevolucaoSaida
-
+        '
+        '--- Questiona o FORNECEDOR
+        Dim fForn As New frmFornecedorProcurar(True)
+        fForn.ShowDialog()
+        If fForn.DialogResult = DialogResult.Cancel Then Return Nothing
+        '
+        Dim IDFornecedor As Integer = fForn.propFornecedor_Escolha.IDPessoa
+        Dim FornecedorUF As String = fForn.propFornecedor_Escolha.UF
+        '
+        '--- Pergunta ao Usuário se Deseja inserir nova DEVOLUCAO
+        If MessageBox.Show("Você deseja realmente criar uma NOVA DEVOLUÇÃO?",
+                           "Inserir Nova Devolução", MessageBoxButtons.OKCancel,
+                           MessageBoxIcon.Question) = DialogResult.Cancel Then
+            Return Nothing
+        End If
+        '
+        '--- Insere um novo Registro de DEVOLUCAO
+        '---------------------------------------------------------------------------------------
+        Dim devBLL As New DevolucaoSaidaBLL
+        Dim newDev As New clDevolucaoSaida
+        Dim tranBLL As New TransacaoBLL
+        '
+        Try
+            '--- Define os valores iniciais
+            With newDev
+                .IDPessoaDestino = IDFornecedor
+                .IDPessoaOrigem = Obter_FilialPadrao()
+                .IDOperacao = 6
+                .IDSituacao = TransacaoBLL.EnumTransacaoSituacao.INICIADA
+                .IDUser = UsuarioAcesso(0)
+                If FornecedorUF = ObterDefault("UF") Then
+                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.EnumOperacao.Compra, TransacaoBLL.EnumCFOPUFDestino.DentroDaUF)
+                Else
+                    .CFOP = tranBLL.ObterCFOP(TransacaoBLL.EnumOperacao.Compra, TransacaoBLL.EnumCFOPUFDestino.ForaDaUF)
+                End If
+                .TransacaoData = ObterDefault("DataPadrao")
+                .FreteTipo = 0 '--- sem frete
+                .ValorDescontos = 0
+                .ValorAcrescimos = 0
+                .Observacao = ""
+            End With
+            '
+            newDev = devBLL.Insert_Devolucao(newDev)
+            '
+            If IsNothing(newDev) Then
+                MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Devolução",
+                                "Inserir Nova Devolução", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                Return Nothing
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Um erro ocorreu ao salvar ao Inserir Devolução" & vbNewLine &
+                            vbNewLine & ex.Message,
+                            "Inserir Nova Devolução", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+            Return Nothing
+        End Try
+        '
+        Return newDev
+        '
     End Function
     '
 End Class

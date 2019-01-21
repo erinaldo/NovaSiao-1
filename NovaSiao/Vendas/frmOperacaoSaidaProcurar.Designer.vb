@@ -32,6 +32,10 @@ Partial Class frmOperacaoSaidaProcurar
         Me.chkPeriodoTodos = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.dgvListagem = New System.Windows.Forms.DataGridView()
+        Me.ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.VendaData = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.CadastroNome = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.ApelidoFuncionario = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnEscolher = New System.Windows.Forms.Button()
         Me.pnlVenda = New System.Windows.Forms.Panel()
@@ -49,10 +53,6 @@ Partial Class frmOperacaoSaidaProcurar
         Me.DataGridViewTextBoxColumn2 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DataGridViewTextBoxColumn3 = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.DataGridViewTextBoxColumn4 = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.VendaData = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.CadastroNome = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ApelidoFuncionario = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.cmbOperacao = New Controles.ComboBox_OnlyValues()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
@@ -211,6 +211,33 @@ Partial Class frmOperacaoSaidaProcurar
         Me.dgvListagem.Size = New System.Drawing.Size(920, 368)
         Me.dgvListagem.TabIndex = 5
         '
+        'ID
+        '
+        Me.ID.HeaderText = "Reg."
+        Me.ID.Name = "ID"
+        Me.ID.ReadOnly = True
+        Me.ID.Width = 50
+        '
+        'VendaData
+        '
+        Me.VendaData.HeaderText = "Data"
+        Me.VendaData.Name = "VendaData"
+        Me.VendaData.ReadOnly = True
+        '
+        'CadastroNome
+        '
+        Me.CadastroNome.HeaderText = "Nome / Razão Social"
+        Me.CadastroNome.Name = "CadastroNome"
+        Me.CadastroNome.ReadOnly = True
+        Me.CadastroNome.Width = 300
+        '
+        'ApelidoFuncionario
+        '
+        Me.ApelidoFuncionario.HeaderText = "Vendedor"
+        Me.ApelidoFuncionario.Name = "ApelidoFuncionario"
+        Me.ApelidoFuncionario.ReadOnly = True
+        Me.ApelidoFuncionario.Width = 150
+        '
         'btnCancelar
         '
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
@@ -250,7 +277,6 @@ Partial Class frmOperacaoSaidaProcurar
         '
         'lbl7
         '
-        Me.lbl7.AutoSize = True
         Me.lbl7.BackColor = System.Drawing.Color.Transparent
         Me.lbl7.Location = New System.Drawing.Point(833, 4)
         Me.lbl7.Name = "lbl7"
@@ -260,7 +286,6 @@ Partial Class frmOperacaoSaidaProcurar
         '
         'lbl6
         '
-        Me.lbl6.AutoSize = True
         Me.lbl6.BackColor = System.Drawing.Color.Transparent
         Me.lbl6.Location = New System.Drawing.Point(740, 4)
         Me.lbl6.Name = "lbl6"
@@ -270,7 +295,6 @@ Partial Class frmOperacaoSaidaProcurar
         '
         'lbl5
         '
-        Me.lbl5.AutoSize = True
         Me.lbl5.BackColor = System.Drawing.Color.Transparent
         Me.lbl5.Location = New System.Drawing.Point(647, 4)
         Me.lbl5.Name = "lbl5"
@@ -290,7 +314,6 @@ Partial Class frmOperacaoSaidaProcurar
         '
         'lbl3
         '
-        Me.lbl3.AutoSize = True
         Me.lbl3.BackColor = System.Drawing.Color.Transparent
         Me.lbl3.Location = New System.Drawing.Point(183, 4)
         Me.lbl3.Name = "lbl3"
@@ -300,7 +323,6 @@ Partial Class frmOperacaoSaidaProcurar
         '
         'lbl4
         '
-        Me.lbl4.AutoSize = True
         Me.lbl4.BackColor = System.Drawing.Color.Transparent
         Me.lbl4.Location = New System.Drawing.Point(481, 4)
         Me.lbl4.Name = "lbl4"
@@ -310,7 +332,6 @@ Partial Class frmOperacaoSaidaProcurar
         '
         'lbl2
         '
-        Me.lbl2.AutoSize = True
         Me.lbl2.BackColor = System.Drawing.Color.Transparent
         Me.lbl2.Location = New System.Drawing.Point(110, 4)
         Me.lbl2.Name = "lbl2"
@@ -321,7 +342,7 @@ Partial Class frmOperacaoSaidaProcurar
         'pnlMes
         '
         Me.pnlMes.Controls.Add(Me.dtMes)
-        Me.pnlMes.Location = New System.Drawing.Point(636, 130)
+        Me.pnlMes.Location = New System.Drawing.Point(686, 360)
         Me.pnlMes.Name = "pnlMes"
         Me.pnlMes.Size = New System.Drawing.Size(234, 166)
         Me.pnlMes.TabIndex = 10
@@ -372,33 +393,6 @@ Partial Class frmOperacaoSaidaProcurar
         Me.DataGridViewTextBoxColumn4.HeaderText = "Vendedor"
         Me.DataGridViewTextBoxColumn4.Name = "DataGridViewTextBoxColumn4"
         Me.DataGridViewTextBoxColumn4.Width = 150
-        '
-        'ID
-        '
-        Me.ID.HeaderText = "Reg."
-        Me.ID.Name = "ID"
-        Me.ID.ReadOnly = True
-        Me.ID.Width = 50
-        '
-        'VendaData
-        '
-        Me.VendaData.HeaderText = "Data"
-        Me.VendaData.Name = "VendaData"
-        Me.VendaData.ReadOnly = True
-        '
-        'CadastroNome
-        '
-        Me.CadastroNome.HeaderText = "Nome / Razão Social"
-        Me.CadastroNome.Name = "CadastroNome"
-        Me.CadastroNome.ReadOnly = True
-        Me.CadastroNome.Width = 300
-        '
-        'ApelidoFuncionario
-        '
-        Me.ApelidoFuncionario.HeaderText = "Vendedor"
-        Me.ApelidoFuncionario.Name = "ApelidoFuncionario"
-        Me.ApelidoFuncionario.ReadOnly = True
-        Me.ApelidoFuncionario.Width = 150
         '
         'cmbOperacao
         '
