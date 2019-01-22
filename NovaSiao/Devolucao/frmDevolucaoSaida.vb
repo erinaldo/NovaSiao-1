@@ -7,9 +7,11 @@ Public Class frmDevolucaoSaida
     Private _Dev As clDevolucaoSaida
     '
     Private _ItensList As New List(Of clTransacaoItem)
+    Private _MovEntradaList As New List(Of clMovimentacao)
     '
     Private bindDev As New BindingSource
     Private bindItem As New BindingSource
+    Private bindEnt As New BindingSource
     '
     Private _Sit As EnumFlagEstado '= 1:Registro Salvo; 2:Registro Alterado; 3:Novo registro
     Private _IDFilial As Integer
@@ -105,6 +107,8 @@ Public Class frmDevolucaoSaida
             _Dev = value
             _IDFilial = _Dev.IDPessoaOrigem
             obterItens()
+            obterCreditos()
+            bindEnt.DataSource = _MovEntradaList
             bindItem.DataSource = _ItensList
             dgvItens.DataSource = bindItem
             '
@@ -119,6 +123,9 @@ Public Class frmDevolucaoSaida
             '
             '--- Preenche os Itens da Devolucao
             PreencheItens()
+            '
+            '--- Preenche Itens dgvEntradas (creditos)
+            Preenche_Creditos()
             '
             '--- Atualiza o estado da Situacao: FLAGESTADO
             Select Case _Dev.IDSituacao
@@ -602,6 +609,321 @@ Public Class frmDevolucaoSaida
         Editar_Item()
     End Sub
     '
+#End Region
+    '
+#Region "CONTROLE DO GRID CREDITOS"
+    '
+    '============================================================================================================
+    ' CREDITOS CONTROLES
+    '============================================================================================================
+    '
+    '--- RETORNA TODOS OS CREDITOS
+    Private Sub obterCreditos()
+        Dim pBLL As New MovimentacaoBLL
+        Try
+            _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Transacao, _Dev.IDDevolucao)
+            '
+            '--- Atualiza o label TOTAL PAGO
+            AtualizaTotalCreditos()
+            '
+        Catch ex As Exception
+            MessageBox.Show("Um execeção ocorreu ao obter os Créditos/Entradas da Devolução:" & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+        '
+    End Sub
+    '
+    '--- Preenche o DataGrid Creditos
+    Private Sub Preenche_Creditos()
+        '
+        With dgvEntradas
+            '
+            '--- limpa as colunas do datagrid
+            .Columns.Clear()
+            .AutoGenerateColumns = False
+            '
+            ' altera as propriedades importantes
+            .MultiSelect = False
+            .SelectionMode = DataGridViewSelectionMode.FullRowSelect
+            .ColumnHeadersVisible = True
+            .AllowUserToResizeRows = False
+            .AllowUserToResizeColumns = False
+            .RowHeadersVisible = True
+            .RowHeadersWidth = 30
+            .RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
+            .AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
+            .StandardTab = True
+            '
+            '--- configura o DataSource
+            .DataSource = bindEnt
+            If .Rows.Count > 0 Then .CurrentCell = .Rows(.Rows.Count).Cells(1)
+        End With
+        '
+        '--- formata as colunas do datagrid
+        FormataGrid_Pagamentos()
+        '
+    End Sub
+    '
+    Private Sub FormataGrid_Pagamentos()
+        '
+        Dim cellStyleCur As New DataGridViewCellStyle
+        cellStyleCur.Format = "c"
+        cellStyleCur.NullValue = Nothing
+        cellStyleCur.Alignment = DataGridViewContentAlignment.MiddleRight
+        '
+        ' (1) COLUNA MovData
+        dgvEntradas.Columns.Add("clnMovData", "Data")
+        With dgvEntradas.Columns("clnMovData")
+            .DataPropertyName = "MovData"
+            .Width = 90
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .DefaultCellStyle.Format = "d"
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+        End With
+        '
+        ' (2) COLUNA CONTA DE CREDITO
+        dgvEntradas.Columns.Add("clnConta", "Conta")
+        With dgvEntradas.Columns("clnConta")
+            .DataPropertyName = "Conta"
+            .Width = 200
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+            '.DefaultCellStyle.Font = New Font("Arial Narrow", 12)
+        End With
+        '
+        ' (3) COLUNA VALOR
+        dgvEntradas.Columns.Add("clnMovValor", "Valor")
+        With dgvEntradas.Columns("clnMovValor")
+            .DefaultCellStyle = cellStyleCur
+            .DataPropertyName = "MovValor"
+            .Width = 100
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight
+        End With
+        '
+    End Sub
+    '
+    Private Sub dgvEntradas_KeyDown(sender As Object, e As KeyEventArgs) Handles dgvEntradas.KeyDown
+        '
+        If e.KeyCode = Keys.Add Then
+            '
+            e.Handled = True
+            '
+            'If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+            'If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
+            '
+            Creditos_Adicionar()
+            '
+        ElseIf e.KeyCode = Keys.Enter Then
+            '
+            e.Handled = True
+            '
+            'If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+            'If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
+            '
+            Creditos_Editar()
+            '
+        ElseIf e.KeyCode = Keys.Delete Then
+            '
+            e.Handled = True
+            '
+            If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+            If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
+            '
+            Creditos_Excluir()
+            '
+        End If
+    End Sub
+    '
+    '--- FUNCAO EXTERNA
+    'Public Sub Creditos_Manipulacao(clPag As clMovimentacao, Acao As EnumFlagAcao)
+    '    '
+    '    If Acao = EnumFlagAcao.INSERIR Then
+    '        '
+    '        ' SE ACAO FOR INSERIR
+    '        '----------------------------------------------------------------------------------------------
+    '        '--- Insere o ITEM na lista
+    '        _MovEntradaList.Add(clPag)
+    '        bindEnt.ResetBindings(False)
+    '        '
+    '        '--- Atualiza o DataGrid
+    '        dgvEntradas.DataSource = bindEnt
+    '        bindEnt.MoveLast()
+    '        '
+    '    End If
+    '    '
+    'End Sub
+    '
+    Private Sub Creditos_Adicionar()
+        '
+        If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+        '
+        '--- Atualiza o Valor do Total Geral
+        Dim vl As Double = AtualizaTotalGeral()
+        '
+        '--- Verifica se o valor dos itens é maior que zero
+        If vl = 0 Then
+            MessageBox.Show("Não é possivel realizar Creditos de Devolução" & vbNewLine &
+                            "Quando o valor da Devolução ainda é igual a Zero..." & vbNewLine &
+                            "Adicione produtos primeiro e depois tente novamente.", "Novo Crédito",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Exit Sub
+        End If
+        '
+        '--- Verifica se o ValorCreditado já é suficiente
+        If AtualizaTotalCreditos() >= vl Then
+            MessageBox.Show("Não é possivel adicionar novo Crédito de Devolução," & vbNewLine &
+                            "porque o valor dos Créditos recebidos já é igual ao valor total da Devolução",
+                            "Novo Crédito",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            Exit Sub
+        End If
+        '
+        '--- posiciona o form
+        Dim pos As Point = dgvEntradas.PointToScreen(Point.Empty)
+        pos = New Point(pos.X + dgvEntradas.Width - 10, pos.Y)
+        '
+        '--- cria nova Entrada
+        Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Transacao, EnumMovimento.Entrada)
+        Dim vlMax As Double = vl - _MovEntradaList.Sum(Function(x) x.MovValor)
+        '
+        clPag.MovValor = vlMax
+        clPag.Origem = 1
+        clPag.IDOrigem = _Venda.IDVenda
+        clPag.MovData = _Venda.TransacaoData
+        clPag.IDConta = Obter_ContaPadrao()
+        clPag.IDMovimentacao = _MovEntradaList.Count + 1
+        '
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
+        '--- abre o form frmPagamentos
+        Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, EnumFlagAcao.INSERIR, pos)
+        fPag.ShowDialog()
+        '
+        '--- Ampulheta OFF
+        Cursor = Cursors.Default
+        '
+        '--- AtualizaTotalCreditado
+        AtualizaTotalCreditos()
+        '
+    End Sub
+    '
+    Private Sub Creditos_Editar()
+        '
+        If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+        If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
+        '
+        '--- posiciona o form
+        Dim pos As Point = dgvEntradas.PointToScreen(Point.Empty)
+        pos = New Point(pos.X + dgvEntradas.Width - 10, pos.Y)
+        '
+        '--- GET Pagamentos do DataGrid
+        If dgvEntradas.SelectedRows.Count = 0 Then Exit Sub
+        '
+        Dim PagAtual As clMovimentacao = dgvEntradas.SelectedRows(0).DataBoundItem
+        '
+        Dim fPag As New frmVendaEntrada(Me, AtualizaTotalGeral(), PagAtual, EnumFlagAcao.EDITAR, pos)
+        fPag.ShowDialog()
+        '
+        '--- AtualizaTotalPago
+        AtualizaTotalCreditos()
+    End Sub
+    '
+    Private Sub Creditos_Excluir()
+        '
+        '--- verifica se existe alguma parcela selecionada
+        If dgvEntradas.SelectedRows.Count = 0 Then Exit Sub
+        '
+        '--- seleciona a parcela
+        Dim PagAtual As clMovimentacao
+        PagAtual = dgvEntradas.SelectedRows(0).DataBoundItem
+        '
+        '--- pergunta ao usuário se deseja excluir o item
+        If MessageBox.Show("Deseja realmente REMOVER esse Crédito de Devolução?", "Excluir Crédito",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question,
+                           MessageBoxDefaultButton.Button2) = DialogResult.No Then
+            Exit Sub
+        End If
+        '
+        '--- envia o comando para excluir a parcela
+        '
+        Dim i As Integer = dgvEntradas.SelectedRows(0).Index
+        '
+        '--- Atualiza o ITEM da lista
+        _MovEntradaList.RemoveAt(i)
+        '
+        '--- Atualiza a contagem dos itens
+        i = 1
+        '
+        For Each pg As clMovimentacao In _MovEntradaList
+            pg.IDMovimentacao = i
+            i += 1
+        Next
+        '
+        bindEnt.ResetBindings(False)
+        '--- Atualiza o DataGrid
+        dgvEntradas.DataSource = bindEnt
+        '--- AtualizaTotalPago
+        AtualizaTotalCreditos()
+        '
+    End Sub
+    '
+    ' ALTERA A COR DO DATAGRIDVIEW QUANDO GANHA OU PERDE O FOCO
+    '-----------------------------------------------------------------------------------------------------
+    Private Sub dgv_GotFocus(sender As Object, e As EventArgs) Handles dgvEntradas.GotFocus
+        '
+        Dim c As Color = Color.FromArgb(209, 215, 220)
+        sender.BackgroundColor = c
+        DirectCast(sender, DataGridView).BorderStyle = BorderStyle.Fixed3D
+        '
+    End Sub
+    '
+    Private Sub dgv_LostFocus(sender As Object, e As EventArgs) Handles dgvEntradas.LostFocus
+        '
+        Dim c As Color = Color.FromArgb(224, 232, 243)
+        sender.BackgroundColor = c
+        DirectCast(sender, DataGridView).BorderStyle = BorderStyle.None
+        '
+    End Sub
+    '
+    ' CONTROLA O MENU NO DATAGRID PAGAMENTOS
+    '-----------------------------------------------------------------------------------------------------
+    Private Sub dgvEntradas_MouseDown(sender As Object, e As MouseEventArgs) Handles dgvEntradas.MouseDown
+        If e.Button = MouseButtons.Right Then
+            'Dim c As Control = DirectCast(sender, Control)
+            Dim hit As DataGridView.HitTestInfo = dgvEntradas.HitTest(e.X, e.Y)
+            dgvEntradas.ClearSelection()
+            '
+            If Not hit.Type = DataGridViewHitTestType.Cell Then Exit Sub
+            '
+            ' seleciona o ROW
+            dgvEntradas.CurrentCell = dgvEntradas.Rows(hit.RowIndex).Cells(1)
+            dgvEntradas.Rows(hit.RowIndex).Selected = True
+            dgvEntradas.Focus()
+            '
+            mnuContexto.Show(dgvEntradas, e.Location)
+            '
+        End If
+    End Sub
+    '
+    Private Sub dgvAReceber_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvEntradas.CellDoubleClick
+        Creditos_Editar()
+    End Sub
+    '
+    '============================================================================================================
 #End Region
     '
 #Region "MENU CONTEXTO"
@@ -1117,6 +1439,24 @@ Public Class frmDevolucaoSaida
             _Dev.ValorProdutos = T
             Return T
         Else
+            Return 0
+        End If
+    End Function
+    '
+    ' ATUALIZA O TOTAL DOS CREDITOS
+    '-----------------------------------------------------------------------------------------------------
+    Private Function AtualizaTotalCreditos() As Double
+        If _MovEntradaList.Count > 0 Then
+            Dim T As Double = 0
+            '
+            For Each p As clMovimentacao In _MovEntradaList
+                T = T + p.MovValor
+            Next
+            '
+            lblTotalPago.Text = Format(T, "c")
+            Return T
+        Else
+            lblTotalPago.Text = Format(0, "c")
             Return 0
         End If
     End Function
