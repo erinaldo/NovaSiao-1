@@ -1,9 +1,10 @@
 ﻿Imports System.ComponentModel
 '
 Public Enum EnumMovimentacaoOrigem
-    Transacao = 1       ' IDOrigem  :   tblTransacao
+    Venda = 1           ' IDOrigem  :   tblVenda
     AReceberParcela = 2 ' IDOrigem  :   tblAReceberParcela
     Creditos = 3        ' IDOrigem  :   tblCreditos
+    Devolucao = 4       ' IDOrigem  :   tblDevolucao
     APagar = 10         ' IDOrigem  :   tblAPagar
 End Enum
 '

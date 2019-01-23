@@ -868,7 +868,7 @@ Public Class frmVendaVista
     Private Sub obterPagamentos()
         Dim pBLL As New MovimentacaoBLL
         Try
-            _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Transacao, _Venda.IDVenda)
+            _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Venda, _Venda.IDVenda)
             '--- Atualiza o label TOTAL PAGO
             AtualizaTotalPago()
         Catch ex As Exception
@@ -1034,7 +1034,7 @@ Public Class frmVendaVista
         pos = New Point(pos.X + dgvPagamentos.Width - 10, pos.Y)
         '
         '--- cria nova Entrada
-        Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Transacao, EnumMovimento.Entrada)
+        Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Venda, EnumMovimento.Entrada)
         Dim vlMax As Double = vl - _MovEntradaList.Sum(Function(x) x.MovValor)
         '
         clPag.MovValor = vlMax
@@ -1376,7 +1376,7 @@ Public Class frmVendaVista
             '
             If Not PagGroupList.Exists(Function(x) x.IDMovForma = pagItem.IDMovForma) Then
                 '--- cria nova Entrada
-                Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Transacao, EnumMovimento.Entrada)
+                Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Venda, EnumMovimento.Entrada)
                 '
                 clPag.MovValor = 0
                 clPag.Origem = 1

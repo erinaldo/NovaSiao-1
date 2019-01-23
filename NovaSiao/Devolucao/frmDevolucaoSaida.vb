@@ -621,7 +621,7 @@ Public Class frmDevolucaoSaida
     Private Sub obterCreditos()
         Dim pBLL As New MovimentacaoBLL
         Try
-            _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Transacao, _Dev.IDDevolucao)
+            _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Venda, _Dev.IDDevolucao)
             '
             '--- Atualiza o label TOTAL PAGO
             AtualizaTotalCreditos()
@@ -746,23 +746,23 @@ Public Class frmDevolucaoSaida
     End Sub
     '
     '--- FUNCAO EXTERNA
-    'Public Sub Creditos_Manipulacao(clPag As clMovimentacao, Acao As EnumFlagAcao)
-    '    '
-    '    If Acao = EnumFlagAcao.INSERIR Then
-    '        '
-    '        ' SE ACAO FOR INSERIR
-    '        '----------------------------------------------------------------------------------------------
-    '        '--- Insere o ITEM na lista
-    '        _MovEntradaList.Add(clPag)
-    '        bindEnt.ResetBindings(False)
-    '        '
-    '        '--- Atualiza o DataGrid
-    '        dgvEntradas.DataSource = bindEnt
-    '        bindEnt.MoveLast()
-    '        '
-    '    End If
-    '    '
-    'End Sub
+    Public Sub Creditos_Manipulacao(clMov As clMovimentacao, acao As EnumFlagAcao)
+        '
+        If acao = EnumFlagAcao.INSERIR Then
+            '
+            ' se acao for inserir
+            '----------------------------------------------------------------------------------------------
+            '--- insere o item na lista
+            _MovEntradaList.Add(clMov)
+            bindEnt.ResetBindings(False)
+            '
+            '--- atualiza o datagrid
+            dgvEntradas.DataSource = bindEnt
+            bindEnt.MoveLast()
+            '
+        End If
+        '
+    End Sub
     '
     Private Sub Creditos_Adicionar()
         '
@@ -795,21 +795,22 @@ Public Class frmDevolucaoSaida
         pos = New Point(pos.X + dgvEntradas.Width - 10, pos.Y)
         '
         '--- cria nova Entrada
-        Dim clPag As New clMovimentacao(EnumMovimentacaoOrigem.Transacao, EnumMovimento.Entrada)
+        Dim clMov As New clMovimentacao(EnumMovimentacaoOrigem.Devolucao, EnumMovimento.Entrada)
         Dim vlMax As Double = vl - _MovEntradaList.Sum(Function(x) x.MovValor)
         '
-        clPag.MovValor = vlMax
-        clPag.Origem = 1
-        clPag.IDOrigem = _Venda.IDVenda
-        clPag.MovData = _Venda.TransacaoData
-        clPag.IDConta = Obter_ContaPadrao()
-        clPag.IDMovimentacao = _MovEntradaList.Count + 1
+        clMov.MovValor = vlMax
+        clMov.Origem = 1
+        clMov.IDOrigem = _Dev.IDDevolucao
+        clMov.MovData = _Dev.TransacaoData
+        clMov.IDConta = Obter_ContaPadrao()
+        clMov.IDFilial = Obter_FilialPadrao()
+        clMov.IDMovimentacao = _MovEntradaList.Count + 1
         '
         '--- Ampulheta ON
         Cursor = Cursors.WaitCursor
         '
         '--- abre o form frmPagamentos
-        Dim fPag As New frmVendaEntrada(Me, vlMax, clPag, EnumFlagAcao.INSERIR, pos)
+        Dim fPag As New frmDevolucaoCredito(Me, vlMax, clMov, EnumFlagAcao.INSERIR, pos)
         fPag.ShowDialog()
         '
         '--- Ampulheta OFF

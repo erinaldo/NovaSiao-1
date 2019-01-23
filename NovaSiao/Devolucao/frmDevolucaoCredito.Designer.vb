@@ -117,7 +117,7 @@ Partial Class frmDevolucaoCredito
         '
         Me.txtConta.Location = New System.Drawing.Point(65, 70)
         Me.txtConta.Name = "txtConta"
-        Me.txtConta.Size = New System.Drawing.Size(155, 27)
+        Me.txtConta.Size = New System.Drawing.Size(229, 27)
         Me.txtConta.TabIndex = 2
         '
         'btnProcurarConta
@@ -126,7 +126,7 @@ Partial Class frmDevolucaoCredito
         Me.btnProcurarConta.BackColor = System.Drawing.Color.Transparent
         Me.btnProcurarConta.FlatAppearance.BorderColor = System.Drawing.Color.Black
         Me.btnProcurarConta.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnProcurarConta.Location = New System.Drawing.Point(224, 70)
+        Me.btnProcurarConta.Location = New System.Drawing.Point(300, 70)
         Me.btnProcurarConta.Name = "btnProcurarConta"
         Me.btnProcurarConta.RoundedCornersMask = CType(15, Byte)
         Me.btnProcurarConta.RoundedCornersRadius = 0

@@ -200,7 +200,7 @@ Public Class frmDevolucaoCredito
         '
         If _Acao = EnumFlagAcao.INSERIR Then
             '--- insere na lista
-            DirectCast(_formOrigem, frmVendaVista).Pagamentos_Manipulacao(_Mov, EnumFlagAcao.INSERIR)
+            DirectCast(_formOrigem, frmDevolucaoSaida).Creditos_Manipulacao(_Mov, EnumFlagAcao.INSERIR)
         End If
         '
         Close()
@@ -258,10 +258,7 @@ Public Class frmDevolucaoCredito
                 _DataPadrao = _Conta.BloqueioData
             End If
             '
-            calDataPadrao.SetDate(_DataPadrao)
-            '
-            '-- define a etiqueta
-            lblDataBloqueio.Text = _Conta.BloqueioData
+            dtpMovData.Value = _DataPadrao
             '
             Return True
             '
@@ -271,18 +268,15 @@ Public Class frmDevolucaoCredito
                             "A DATA PADRÃO do sistema será escolhida como" & vbNewLine &
                             "DATA ATUAL: " & Now.ToLongDateString, "Data Padrão", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
             '
-            calDataPadrao.MinDate = Today.AddYears(-10)
-            calDataPadrao.MaxDate = Today
+            dtpMovData.MinDate = Today.AddYears(-10)
+            dtpMovData.MaxDate = Today
             '
             '-- Verify if DataPadrao is before to DataBloqueio
-            If _DataPadrao < calDataPadrao.MinDate Then
-                _DataPadrao = calDataPadrao.MinDate
+            If _DataPadrao < dtpMovData.MinDate Then
+                _DataPadrao = dtpMovData.MinDate
             End If
             '
-            calDataPadrao.SetDate(_DataPadrao)
-            '
-            '-- define a etiqueta
-            lblDataBloqueio.Text = calDataPadrao.MinDate
+            dtpMovData.Value = _DataPadrao
             '
             Return False
             '
