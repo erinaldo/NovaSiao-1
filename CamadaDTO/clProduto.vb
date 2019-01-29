@@ -4,6 +4,7 @@
 '==================================================================================
 Public Class clProduto
     Implements IEditableObject
+    '
 #Region "ESTRUTURA DOS DADOS"
     Structure ProdutoDados ' alguns usam FRIEND em vez de DIM
         '
@@ -31,7 +32,7 @@ Public Class clProduto
         Dim _UltAltera As Nullable(Of Date)
         Dim _EntradaData As Nullable(Of Date)
         Dim _CodBarrasA As String
-        Dim _Movimento As Byte?
+        Dim _Movimento As Byte
         Dim _MovimentoDescricao As String
         '
         '--- Dados da tblEstoque
@@ -325,6 +326,20 @@ Public Class clProduto
         End Set
     End Property
     '
+    ReadOnly Property MargemDe As Decimal
+        Get
+            Dim n = Math.Round((CDbl(PVenda) - CDbl(PCompra)) / CDbl(PCompra) * 100, 2)
+            Return n
+        End Get
+    End Property
+    '
+    ReadOnly Property DescontoDe As Decimal
+        Get
+            Dim n = Math.Round((CDbl(PVenda) - CDbl(PCompra)) / CDbl(PVenda) * 100, 2)
+            Return n
+        End Get
+    End Property
+    '
     Property ProdutoAtivo() As Nullable(Of Boolean)
         Get
             Return PData._ProdutoAtivo
@@ -425,11 +440,11 @@ Public Class clProduto
     '
     '--- Propriedade Movimento
     '------------------------------------------------------
-    Public Property Movimento() As Byte?
+    Public Property Movimento() As Byte
         Get
             Return PData._Movimento
         End Get
-        Set(ByVal value As Byte?)
+        Set(ByVal value As Byte)
             If value <> PData._Movimento Then
                 RaiseEvent AoAlterar()
             End If
@@ -528,6 +543,18 @@ Public Class clProduto
     End Property
     '
 #End Region
+    '
+#Region "ENUM PRODUTO MOVIMENTO"
+    '
+    Public Enum EnumProdutoMovimento As Byte
+        '0:Normal | 1:Sem Movimento | 2:Protegido | 3:Periodico
+        NORMAL = 0
+        SEM_MOVIMENTO = 1
+        PROTEGIDO = 2
+        PERIODICO = 3
+    End Enum
+    '
+#End Region '/ ENUM PRODUTO MOVIMENTO
     '
 End Class
 '

@@ -115,9 +115,10 @@ Partial Class frmDevolucaoCredito
         '
         'txtConta
         '
-        Me.txtConta.Location = New System.Drawing.Point(65, 70)
+        Me.txtConta.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.txtConta.Location = New System.Drawing.Point(65, 66)
         Me.txtConta.Name = "txtConta"
-        Me.txtConta.Size = New System.Drawing.Size(229, 27)
+        Me.txtConta.Size = New System.Drawing.Size(229, 31)
         Me.txtConta.TabIndex = 2
         '
         'btnProcurarConta
@@ -126,11 +127,11 @@ Partial Class frmDevolucaoCredito
         Me.btnProcurarConta.BackColor = System.Drawing.Color.Transparent
         Me.btnProcurarConta.FlatAppearance.BorderColor = System.Drawing.Color.Black
         Me.btnProcurarConta.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnProcurarConta.Location = New System.Drawing.Point(300, 70)
+        Me.btnProcurarConta.Location = New System.Drawing.Point(300, 66)
         Me.btnProcurarConta.Name = "btnProcurarConta"
         Me.btnProcurarConta.RoundedCornersMask = CType(15, Byte)
         Me.btnProcurarConta.RoundedCornersRadius = 0
-        Me.btnProcurarConta.Size = New System.Drawing.Size(34, 27)
+        Me.btnProcurarConta.Size = New System.Drawing.Size(34, 31)
         Me.btnProcurarConta.TabIndex = 3
         Me.btnProcurarConta.TabStop = False
         Me.btnProcurarConta.Text = "..."
@@ -146,7 +147,7 @@ Partial Class frmDevolucaoCredito
         Me.dtpMovData.Margin = New System.Windows.Forms.Padding(3, 6, 3, 3)
         Me.dtpMovData.Name = "dtpMovData"
         Me.dtpMovData.Size = New System.Drawing.Size(155, 31)
-        Me.dtpMovData.TabIndex = 12
+        Me.dtpMovData.TabIndex = 5
         '
         'Label2
         '
@@ -154,7 +155,7 @@ Partial Class frmDevolucaoCredito
         Me.Label2.Location = New System.Drawing.Point(19, 113)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(40, 19)
-        Me.Label2.TabIndex = 1
+        Me.Label2.TabIndex = 4
         Me.Label2.Text = "Data"
         '
         'frmDevolucaoCredito

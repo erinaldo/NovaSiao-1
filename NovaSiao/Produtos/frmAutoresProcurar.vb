@@ -94,6 +94,7 @@ Public Class frmAutoresProcurar
     End Sub
 
     Private Sub btnEscolher_Click(sender As Object, e As EventArgs) Handles btnEscolher.Click
+        '
         If dgvAutores.RowCount > 0 AndAlso dgvAutores.SelectedRows.Count > 0 Then
             '
             propAutorEscolhido = dgvAutores.SelectedRows(0).Cells(0).Value
@@ -103,6 +104,7 @@ Public Class frmAutoresProcurar
             MessageBox.Show("Favor selecionar um autor antes de Escolher...", "Selecione um Produto",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
         End If
+        '
     End Sub
     '
 #End Region

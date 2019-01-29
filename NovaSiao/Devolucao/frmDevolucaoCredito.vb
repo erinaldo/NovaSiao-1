@@ -32,18 +32,11 @@ Public Class frmDevolucaoCredito
         _Acao = Acao
         _DataPadrao = Obter_DataPadrao()
         '
-        '--- Get DataTable Tipos e Formas
-        Try
-            '--- Ampulheta ON
-            Cursor = Cursors.WaitCursor
-            '
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao Evento..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            '--- Ampulheta OFF
-            Cursor = Cursors.Default
-        End Try
+        '--- se for editar obtem info da CONTA
+        If Acao = EnumFlagAcao.EDITAR Then
+            Dim cBLL As New MovimentacaoBLL
+            _Conta = cBLL.Conta_GET_PorIDConta(_Mov.IDConta)
+        End If
         '
         bindMov.DataSource = _Mov
         PreencheDataBinding()
@@ -89,6 +82,12 @@ Public Class frmDevolucaoCredito
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
             SendKeys.Send("{Tab}")
+        Else
+            '--- bloqueados de alteracao
+            If DirectCast(sender, Control).Name = "txtConta" Then
+                e.Handled = True
+                e.SuppressKeyPress = True
+            End If
         End If
         '
     End Sub
@@ -183,9 +182,10 @@ Public Class frmDevolucaoCredito
         End If
         '
         If IsNothing(_Mov.MovValor) OrElse _Mov.MovValor <= 0 OrElse _Mov.MovValor > _vlMaximo Then
-            MessageBox.Show("O VALOR da Entrada não pode ser igual ou menor que Zero..." & vbNewLine &
-                            "bem como também não pode ser maior que o total da venda..." & vbNewLine &
-                            "Favor escolher um valor para esse campo.", "Campo Vazio",
+            MessageBox.Show("O VALOR do Crédito de Devolução não pode ser igual ou menor que Zero..." & vbNewLine &
+                            "bem como também não pode ser maior que o total da Devolução que ainda não foi creditada: " & Format(_vlMaximo, "c") &
+                            vbNewLine & vbNewLine &
+                            "Favor determinar um novo valor para esse campo.", "Campo Vazio",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             txtMovValor.Focus()
             txtMovValor.SelectAll()
@@ -198,18 +198,13 @@ Public Class frmDevolucaoCredito
         _Mov.MovValor = txtMovValor.Text
         _Mov.MovData = dtpMovData.Value
         '
-        If _Acao = EnumFlagAcao.INSERIR Then
-            '--- insere na lista
-            DirectCast(_formOrigem, frmDevolucaoSaida).Creditos_Manipulacao(_Mov, EnumFlagAcao.INSERIR)
-        End If
-        '
-        Close()
+        DialogResult = DialogResult.OK
         '
     End Sub
     '
     '--- BTN FECHAR | CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
-        Close()
+        DialogResult = DialogResult.Cancel
     End Sub
     '
     '--- BTN PROCURAR CONTA
@@ -225,9 +220,15 @@ Public Class frmDevolucaoCredito
             Return
         End If
         '
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
         '--- Abre o frmContas
         Dim frmConta As New frmContaProcurar(Me, _Mov.IDFilial, _Mov.IDConta)
         frmConta.ShowDialog()
+        '
+        '--- Ampulheta OFF
+        Cursor = Cursors.Default
         '
         If frmConta.DialogResult = DialogResult.Cancel Then Exit Sub
         '
@@ -236,6 +237,8 @@ Public Class frmDevolucaoCredito
         _Mov.Conta = _Conta.Conta
         _Mov.IDConta = _Conta.IDConta
         txtConta.Text = _Conta.Conta
+        '
+        txtConta.Focus()
         '
         '--- Verifica a Data de Bloqueio
         DefineDtPadrao_DtMin_DtMax()

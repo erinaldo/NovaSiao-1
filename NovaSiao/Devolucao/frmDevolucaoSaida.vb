@@ -91,6 +91,8 @@ Public Class frmDevolucaoSaida
                     '
             End Select
             '
+            VerificaEnviada()
+            '
         End Set
         '
     End Property
@@ -138,6 +140,13 @@ Public Class frmDevolucaoSaida
                 Case Else
             End Select
             '
+            '--- Verifica se a Devolucao foi creditada
+            If _Dev.Creditada Then
+                lblCreditada.Text = "Creditada"
+            Else
+                lblCreditada.Text = "Não Creditada"
+            End If
+            '
             '--- Habilita ou Desabilita os campos do Frete da DEVOLUCAO
             Controla_cmbFrete()
             '
@@ -184,7 +193,7 @@ Public Class frmDevolucaoSaida
     '
     Private Sub PreencheDataBinding()
         '
-        lblCliente.DataBindings.Add("Text", bindDev, "Fornecedor", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblFornecedor.DataBindings.Add("Text", bindDev, "Fornecedor", True, DataSourceUpdateMode.OnPropertyChanged)
         lblIDDevolucao.DataBindings.Add("Text", bindDev, "IDDevolucao", True, DataSourceUpdateMode.OnPropertyChanged)
         lblFilial.DataBindings.Add("Text", bindDev, "ApelidoFilial", True, DataSourceUpdateMode.OnPropertyChanged)
         lblTransacaoData.DataBindings.Add("Text", bindDev, "TransacaoData", True, DataSourceUpdateMode.OnPropertyChanged)
@@ -195,6 +204,8 @@ Public Class frmDevolucaoSaida
         txtValorDescontos.DataBindings.Add("Text", bindDev, "ValorDescontos", True, DataSourceUpdateMode.OnPropertyChanged)
         txtValorAcrescimos.DataBindings.Add("Text", bindDev, "ValorAcrescimos", True, DataSourceUpdateMode.OnPropertyChanged)
         lblTotalGeral.DataBindings.Add("Text", bindDev, "ValorTotal", True, DataSourceUpdateMode.OnPropertyChanged)
+        chkEnviada.DataBindings.Add("checked", bindDev, "Enviada", True, DataSourceUpdateMode.OnPropertyChanged)
+        chkCreditada.DataBindings.Add("checked", bindDev, "Creditada", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblIDDevolucao.DataBindings("Text").Format, AddressOf FormatRG
@@ -212,6 +223,7 @@ Public Class frmDevolucaoSaida
         '
         ' ADD HANDLER PARA DATABINGS
         AddHandler _Dev.AoAlterar, AddressOf HandlerAoAlterar
+        AddHandler _Dev.AoEnviadaAlterar, AddressOf HandlerAoEnviadaAlterar
         '
     End Sub
     '
@@ -285,6 +297,7 @@ Public Class frmDevolucaoSaida
 #End Region
     '
 #Region "CARREGA/INSERE ITENS"
+    '
     Private Sub PreencheItens()
         '
         '--- limpa as colunas do datagrid
@@ -425,6 +438,7 @@ Public Class frmDevolucaoSaida
     '
     '--- RETORNA TODOS OS ITENS DA DEVOLUCAO
     Private Sub obterItens()
+        '
         Dim tBLL As New TransacaoItemBLL
         Try
             _ItensList = tBLL.GetTransacaoItens_List(_Dev.IDDevolucao, _IDFilial)
@@ -442,6 +456,7 @@ Public Class frmDevolucaoSaida
         '--- Verifica se esta Bloqueado ou Finalizado
         If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
         If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
+        If DevolucaoEnviada("dgvItens") Then Exit Sub '--- Verifica se a devolucao foi enviada
         '
         '--- Abre o frmItem
         Dim newItem As New clTransacaoItem
@@ -491,6 +506,7 @@ Public Class frmDevolucaoSaida
         '--- Verifica se esta Bloqueado ou Finalizado
         If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
         If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
+        If DevolucaoEnviada("dgvItens") Then Exit Sub '--- Verifica se a devolucao foi enviada
         '
         '--- Verifica se há um item selecionado
         If dgvItens.SelectedRows.Count = 0 Then Exit Sub
@@ -546,6 +562,7 @@ Public Class frmDevolucaoSaida
         '--- Verifica se esta Bloqueado ou Finalizado
         If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
         If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
+        If DevolucaoEnviada("dgvItens") Then Exit Sub '--- Verifica se a devolucao foi enviada
         '
         '--- Verifica se há um item selecionado
         If dgvItens.SelectedRows.Count = 0 Then Exit Sub
@@ -621,7 +638,7 @@ Public Class frmDevolucaoSaida
     Private Sub obterCreditos()
         Dim pBLL As New MovimentacaoBLL
         Try
-            _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Venda, _Dev.IDDevolucao)
+            _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Devolucao, _Dev.IDDevolucao)
             '
             '--- Atualiza o label TOTAL PAGO
             AtualizaTotalCreditos()
@@ -718,55 +735,28 @@ Public Class frmDevolucaoSaida
         If e.KeyCode = Keys.Add Then
             '
             e.Handled = True
-            '
-            'If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            'If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
-            '
             Creditos_Adicionar()
             '
         ElseIf e.KeyCode = Keys.Enter Then
             '
             e.Handled = True
-            '
-            'If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            'If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
-            '
             Creditos_Editar()
             '
         ElseIf e.KeyCode = Keys.Delete Then
             '
             e.Handled = True
-            '
-            If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
-            '
             Creditos_Excluir()
             '
         End If
     End Sub
     '
-    '--- FUNCAO EXTERNA
-    Public Sub Creditos_Manipulacao(clMov As clMovimentacao, acao As EnumFlagAcao)
-        '
-        If acao = EnumFlagAcao.INSERIR Then
-            '
-            ' se acao for inserir
-            '----------------------------------------------------------------------------------------------
-            '--- insere o item na lista
-            _MovEntradaList.Add(clMov)
-            bindEnt.ResetBindings(False)
-            '
-            '--- atualiza o datagrid
-            dgvEntradas.DataSource = bindEnt
-            bindEnt.MoveLast()
-            '
-        End If
-        '
-    End Sub
-    '
+    '--- INSERT CREDITO DE DEVOLUCAO
+    '====================================================================================================
     Private Sub Creditos_Adicionar()
         '
         If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+        If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado'
+        If Not DevolucaoEnviada("dgvEntradas") Then Exit Sub
         '
         '--- Atualiza o Valor do Total Geral
         Dim vl As Double = AtualizaTotalGeral()
@@ -799,32 +789,68 @@ Public Class frmDevolucaoSaida
         Dim vlMax As Double = vl - _MovEntradaList.Sum(Function(x) x.MovValor)
         '
         clMov.MovValor = vlMax
-        clMov.Origem = 1
+        clMov.Origem = 4 '---> tblDevolucao
         clMov.IDOrigem = _Dev.IDDevolucao
         clMov.MovData = _Dev.TransacaoData
         clMov.IDConta = Obter_ContaPadrao()
         clMov.IDFilial = Obter_FilialPadrao()
+        clMov.IDMovForma = 1
         clMov.IDMovimentacao = _MovEntradaList.Count + 1
+        clMov.Descricao = "Credito Devolucao de " & _Dev.Fornecedor
         '
         '--- Ampulheta ON
         Cursor = Cursors.WaitCursor
         '
         '--- abre o form frmPagamentos
-        Dim fPag As New frmDevolucaoCredito(Me, vlMax, clMov, EnumFlagAcao.INSERIR, pos)
-        fPag.ShowDialog()
+        Dim fCred As New frmDevolucaoCredito(Me, vlMax, clMov, EnumFlagAcao.INSERIR, pos)
+        fCred.ShowDialog()
         '
         '--- Ampulheta OFF
         Cursor = Cursors.Default
+        '
+        '--- verifica o resultado do dialog
+        If fCred.DialogResult = DialogResult.Cancel Then Exit Sub
+        '
+        '--- insere no BD
+        Dim mBLL As New MovimentacaoBLL
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim newID As Integer = mBLL.Movimentacao_Inserir(clMov)
+            '
+            clMov.IDMovimentacao = newID
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Inserir Crédito de Devolução no BD..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+        '--- insere na listagem de Creditos
+        _MovEntradaList.Add(clMov)
+        bindEnt.ResetBindings(False)
+        '
+        '--- atualiza o datagrid
+        dgvEntradas.DataSource = bindEnt
+        bindEnt.MoveLast()
         '
         '--- AtualizaTotalCreditado
         AtualizaTotalCreditos()
         '
     End Sub
     '
+    '--- EDIT CREDITO DE DEVOLUCAO
+    '====================================================================================================
     Private Sub Creditos_Editar()
         '
         If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
         If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
+        If Not DevolucaoEnviada("dgvEntradas") Then Exit Sub
         '
         '--- posiciona o form
         Dim pos As Point = dgvEntradas.PointToScreen(Point.Empty)
@@ -833,23 +859,64 @@ Public Class frmDevolucaoSaida
         '--- GET Pagamentos do DataGrid
         If dgvEntradas.SelectedRows.Count = 0 Then Exit Sub
         '
-        Dim PagAtual As clMovimentacao = dgvEntradas.SelectedRows(0).DataBoundItem
+        Dim credAtual As clMovimentacao = dgvEntradas.SelectedRows(0).DataBoundItem
         '
-        Dim fPag As New frmVendaEntrada(Me, AtualizaTotalGeral(), PagAtual, EnumFlagAcao.EDITAR, pos)
-        fPag.ShowDialog()
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
+        Dim fCred As New frmDevolucaoCredito(Me, AtualizaTotalGeral(), credAtual, EnumFlagAcao.EDITAR, pos)
+        fCred.ShowDialog()
+        '
+        '--- Ampulheta OFF
+        Cursor = Cursors.Default
+        '
+        '--- verifica o resultado do dialog
+        If fCred.DialogResult = DialogResult.Cancel Then Exit Sub
+        '
+        '--- insere no BD
+        Dim mBLL As New MovimentacaoBLL
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            mBLL.Movimentacao_Update(credAtual)
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Atualizar o Crédito de Devolução no BD..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
         '--- AtualizaTotalPago
         AtualizaTotalCreditos()
+        '
     End Sub
     '
+    '--- DELETE CREDITO DE DEVOLUCAO
+    '====================================================================================================
     Private Sub Creditos_Excluir()
+        '
+        If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+        If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro está Finalizado
+        If Not DevolucaoEnviada("dgvEntradas") Then Exit Sub
         '
         '--- verifica se existe alguma parcela selecionada
         If dgvEntradas.SelectedRows.Count = 0 Then Exit Sub
         '
         '--- seleciona a parcela
-        Dim PagAtual As clMovimentacao
-        PagAtual = dgvEntradas.SelectedRows(0).DataBoundItem
+        Dim MovAtual As clMovimentacao = dgvEntradas.SelectedRows(0).DataBoundItem
+        '
+        '---verifica se a movimentacao esta anexada com caixa
+        If Not IsNothing(MovAtual.IDCaixa) Then
+            MessageBox.Show("Não é possível EXCLUIR esse Crédito de Devolução " &
+                            "já que essa entrada está anexada ao um caixa.",
+                            "Excluir Crédito", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Exit Sub
+        End If
         '
         '--- pergunta ao usuário se deseja excluir o item
         If MessageBox.Show("Deseja realmente REMOVER esse Crédito de Devolução?", "Excluir Crédito",
@@ -860,19 +927,25 @@ Public Class frmDevolucaoSaida
         End If
         '
         '--- envia o comando para excluir a parcela
+        Dim mBLL As New MovimentacaoBLL
         '
-        Dim i As Integer = dgvEntradas.SelectedRows(0).Index
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            mBLL.Movimentacao_Excluir(MovAtual)
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Excluir o Crédito de Devolução no BD..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Exit Sub
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
         '--- Atualiza o ITEM da lista
-        _MovEntradaList.RemoveAt(i)
-        '
-        '--- Atualiza a contagem dos itens
-        i = 1
-        '
-        For Each pg As clMovimentacao In _MovEntradaList
-            pg.IDMovimentacao = i
-            i += 1
-        Next
+        _MovEntradaList.RemoveAt(_MovEntradaList.IndexOf(MovAtual))
         '
         bindEnt.ResetBindings(False)
         '--- Atualiza o DataGrid
@@ -1297,35 +1370,22 @@ Public Class frmDevolucaoSaida
             '
             '--- SALVA A TRANSACAO/DEVOLUCAO NO BD
             '----------------------------------------------------------------------------------------
-            Try
-                '--- Ampulheta ON
-                Cursor = Cursors.WaitCursor
-                '
-                '--- altera a situacao da transacao atual
-                If _Dev.IDSituacao <> 3 Then _Dev.IDSituacao = 2 ' BLOQUEADA OU CONCLUÍDA
-                '
-                Dim obj As Object = devBLL.Update_Devolucao(_Dev, dbTran)
-                '
-                If Not IsNumeric(obj) Then
-                    Throw New Exception(obj.ToString)
-                End If
-                '
+            '--- verifica se os creditos ja foram totalizados totalmente
+            If AtualizaTotalGeral() >= AtualizaTotalCreditos() Then
+                _Dev.Creditada = True
+                _Dev.IDSituacao = 3 '--- bloqueada
+            Else
+                _Dev.Creditada = False
+                _Dev.IDSituacao = 2 '--- finalizada
+            End If
+            '
+            If SalvarRegistro(dbTran) Then
                 '--- COMMIT all 
                 tranBLL.CommitAcessoWithTransaction(dbTran)
-                '
-            Catch ex As Exception
-                '
+            Else
                 '--- RollBack Transaction
                 tranBLL.RollbackAcessoWithTransaction(dbTran)
-                '
-                MessageBox.Show("Uma exceção ocorreu ao Salvar a Devolução..." & vbNewLine &
-                                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                Exit Sub
-                '
-            Finally
-                '--- Ampulheta OFF
-                Cursor = Cursors.Default
-            End Try
+            End If
             '
             '--- ALTERA A SITUACAO DO REGISTRO ATUAL
             '----------------------------------------------------------------------------------------
@@ -1347,6 +1407,33 @@ Public Class frmDevolucaoSaida
         End If
         '
     End Sub
+    '
+    '--- SALVA A DEVOLUCAO NO BD
+    Private Function SalvarRegistro(Optional dbTran As Object = Nothing) As Boolean
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim obj As Object = devBLL.Update_Devolucao(_Dev, dbTran)
+            '
+            If Not IsNumeric(obj) Then
+                Throw New Exception(obj.ToString)
+                Return False
+            End If
+            '
+            Return True
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Salvar a Devolução no BD..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            Return False
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Function
     '
     Private Function Verificar() As Boolean
         '--- Verifica se a Data não está BLOQUEADA pelo sistema?
@@ -1391,8 +1478,8 @@ Public Class frmDevolucaoSaida
             .Origem = clAReceber.EnumAReceberOrigem.DevolucaoSaida,
             .SituacaoAReceber = 0,
             .AReceberValor = _Dev.ValorTotal,
-            .ValorPagoTotal = 0
-            }
+            .ValorPagoTotal = AtualizaTotalCreditos()
+        }
         '
         Try
             '--- Update A Receber
@@ -1414,52 +1501,32 @@ Public Class frmDevolucaoSaida
     ' ATUALIZA O TOTAL DO GERAL
     '-----------------------------------------------------------------------------------------------------
     Private Function AtualizaTotalGeral() As Double
-        If _ItensList.Count > 0 Then
-            Dim T As Double = 0
-            '
-            T = AtualizaTotalProdutos() + _Dev.ValorAcrescimos - _Dev.ValorDescontos
-            '
-            'lblTotalGeral.Text = Format(T, "c")
-            Return T
-        Else
-            'lblTotalGeral.Text = Format(0, "c")
-            Return 0
-        End If
+        '
+        Dim T = AtualizaTotalProdutos() + _Dev.ValorAcrescimos - _Dev.ValorDescontos
+        lblTotalGeral.DataBindings.Item("text").ReadValue()
+        Return T
+        '
     End Function
     '
     ' ATUALIZA O TOTAL DOS PRODUTOS VENDIDOS
     '-----------------------------------------------------------------------------------------------------
     Private Function AtualizaTotalProdutos() As Double
-        If _ItensList.Count > 0 Then
-            Dim T As Double = 0
-            '
-            For Each i As clTransacaoItem In _ItensList
-                T = T + i.Total
-            Next
-            '
-            _Dev.ValorProdutos = T
-            Return T
-        Else
-            Return 0
-        End If
+        '
+        Dim T As Double = _ItensList.Sum(Function(x) x.Total)
+        _Dev.ValorProdutos = T
+        lblValorProdutos.DataBindings.Item("text").ReadValue()
+        Return T
+        '
     End Function
     '
     ' ATUALIZA O TOTAL DOS CREDITOS
     '-----------------------------------------------------------------------------------------------------
     Private Function AtualizaTotalCreditos() As Double
-        If _MovEntradaList.Count > 0 Then
-            Dim T As Double = 0
-            '
-            For Each p As clMovimentacao In _MovEntradaList
-                T = T + p.MovValor
-            Next
-            '
-            lblTotalPago.Text = Format(T, "c")
-            Return T
-        Else
-            lblTotalPago.Text = Format(0, "c")
-            Return 0
-        End If
+        '
+        Dim T As Double = _MovEntradaList.Sum(Function(x) x.MovValor)
+        lblTotalPago.Text = Format(T, "c")
+        Return T
+        '
     End Function
     '
     ' RECALCULA VALORES QUANDO ALTERA CONTROLES VALOR
@@ -1473,7 +1540,12 @@ Public Class frmDevolucaoSaida
     '
     '--- VERIFICA O SE O NOVO VALOR INSERIDO TORNARIA O TOTAL NEGATIVO
     Private Sub txtValorDescontos_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtValorDescontos.Validating
+        '
         Dim t As Decimal = _Dev.ValorProdutos + _Dev.ValorAcrescimos
+        '
+        If String.IsNullOrEmpty(txtValorDescontos.Text) Then
+            txtValorDescontos.Text = 0
+        End If
         '
         If t - txtValorDescontos.Text < 0 Then
             '--- EMITE O ERROR PROVIDER
@@ -1487,7 +1559,12 @@ Public Class frmDevolucaoSaida
     End Sub
     '
     Private Sub txtValorAcrescimos_Validating(sender As Object, e As System.ComponentModel.CancelEventArgs) Handles txtValorAcrescimos.Validating
+        '
         Dim t As Decimal = _Dev.ValorProdutos - _Dev.ValorDescontos
+
+        If String.IsNullOrEmpty(txtValorAcrescimos.Text) Then
+            txtValorAcrescimos.Text = 0
+        End If
         '
         If t + txtValorAcrescimos.Text < 0 Then
             '--- EMITE O ERROR PROVIDER
@@ -1510,7 +1587,7 @@ Public Class frmDevolucaoSaida
         Handles cmbFreteTipo.SelectedValueChanged,
                 cmbIDTransportadora.SelectedValueChanged
         '
-        If Sit = EnumFlagEstado.RegistroBloqueado AndAlso VerificaAlteracao = True Then
+        If (Sit = EnumFlagEstado.RegistroBloqueado Or _Dev.Enviada) AndAlso VerificaAlteracao = True Then
             Dim cmb As ComboBox = DirectCast(sender, ComboBox)
             '
             Select Case cmb.Name
@@ -1540,9 +1617,9 @@ Public Class frmDevolucaoSaida
                             vbNewLine & vbNewLine &
                             "Não é possível adicionar produtos, excluir ou alterar algum dado!",
                             "Registro Bloqueado", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            RegistroBloqueado = True
+            Return True
         Else
-            RegistroBloqueado = False
+            Return False
         End If
         '
     End Function
@@ -1561,23 +1638,14 @@ Public Class frmDevolucaoSaida
                 _Dev.IDSituacao = 1
                 '
                 '--- SALVA A TRANSACAO/DEVOLUCAO NO BD
-                Try
-                    Dim obj As Object = devBLL.Update_Devolucao(_Dev)
-                    '
-                    If Not IsNumeric(obj) Then
-                        Throw New Exception(obj.ToString)
-                    End If
-                    '
-                Catch ex As Exception
-                    MessageBox.Show(ex.Message)
-                End Try
+                SalvarRegistro()
                 '
-                RegistroFinalizado = False
+                Return False
             Else
-                RegistroFinalizado = True
+                Return True
             End If
         Else
-            RegistroFinalizado = False
+            Return False
         End If
         '
     End Function
@@ -1607,6 +1675,110 @@ Public Class frmDevolucaoSaida
         '
     End Function
     '
+    '----VERIFICA SE A DEVOLUCAO FOI ENVIADA E BLOQUEIA OS ITENS
+    '-----------------------------------------------------------------------------------------------------
+    Private Function DevolucaoEnviada(source As String) As Boolean
+        '
+        'source => dgvItens OR dgvEntradas
+        '
+        If _Dev.Enviada Then
+            '
+            '--- emite a mensagem de aviso
+            If source = "dgvItens" Then
+                MessageBox.Show("Essa Devolução está BLOQUEADA para inserir produtos porque já foi enviada..." &
+                                vbNewLine & vbNewLine &
+                                "Não é possível adicionar, alterar ou excluir produtos.",
+                                "Devolução Enviada", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+            '--- return
+            Return True
+            '
+        Else
+            '
+            '--- emite a mensagem de aviso
+            If source = "dgvEntradas" Then
+                MessageBox.Show("Essa Devolução ainda está BLOQUEADA para inserir créditos, porque ainda não foi enviada...." &
+                                vbNewLine & vbNewLine &
+                                "Não é possível adicionar, alterar ou excluir créditos.",
+                                "Devolução Não Enviada", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+            '--- return
+            Return False
+            '
+        End If
+        '
+    End Function
+    '
 #End Region
+    '
+#Region "CONTROLE DO CHECK ENVIADA"
+    '
+    '--- VERIFICA A ALTERACAO DE ENVIADA E SALVA REGISTRO
+    Private Sub HandlerAoEnviadaAlterar()
+        '
+        '--- salvar o registro no BD
+        SalvarRegistro()
+        '
+    End Sub
+    '
+    Private Sub chkEnviada_CheckedChanged(sender As Object, e As EventArgs) Handles chkEnviada.CheckedChanged
+        '
+        '--- Se foi enviada porem sem produtos
+        If chkEnviada.Checked AndAlso AtualizaTotalProdutos() <= 0 Then
+            '
+            MessageBox.Show("Não é possível enviar uma devolução que ainda não tem produtos..." &
+                            vbNewLine & "Favor informar os produtos antes de enviar a devolução.",
+                            "Devolução Enviada", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            chkEnviada.Checked = False
+            Exit Sub
+            '
+        ElseIf Not chkEnviada.Checked AndAlso _MovEntradaList.Count > 0 Then '--- impedir não enviada porem com credito devolucao
+            '
+            MessageBox.Show("Não é possível alterar o estado do envio uma devolução que possui créditos de devolução..." &
+                            vbNewLine & "Se ainda desejar alterar, exclua todos os créditos de devolução.",
+                            "Devolução Enviada", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            chkEnviada.Checked = True
+            Exit Sub
+            '
+        End If
+        '
+        If chkEnviada.Checked <> _Dev.Enviada Then
+            '
+            If chkEnviada.Checked Then
+                '--- pergunta ao usuario
+                If MessageBox.Show("Essa devolução já foi enviada?",
+                                   "Devolução Enviada", MessageBoxButtons.YesNo,
+                                   MessageBoxIcon.Question,
+                                   MessageBoxDefaultButton.Button2) = DialogResult.No Then
+                    chkEnviada.Checked = _Dev.Enviada
+                    Exit Sub
+                End If
+            End If
+            '
+            If chkEnviada.Checked Then
+                lblEnviada.Text = "Enviada"
+            Else
+                lblEnviada.Text = "Não Enviada"
+            End If
+            '
+        End If
+        '
+    End Sub
+    '
+    Private Sub VerificaEnviada()
+        '
+        If _Dev.Enviada Then
+            lblEnviada.Text = "Enviada"
+            txtValorDescontos.ReadOnly = True
+            txtValorAcrescimos.ReadOnly = True
+        Else
+            lblEnviada.Text = "Não Enviada"
+            txtValorDescontos.ReadOnly = False
+            txtValorDescontos.ReadOnly = False
+        End If
+        '
+    End Sub
+    '
+#End Region '/ CONTROLE DO CHECK ENVIADA
     '
 End Class

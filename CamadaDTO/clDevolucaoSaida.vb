@@ -4,6 +4,7 @@ Public Class clDevolucaoSaida : Implements IEditableObject
     '
 #Region "ESTRUTURA DOS DADOS"
     Structure DevolucaoDados ' alguns usam FRIEND em vez de DIM
+        '
         'tblTransacao =====================================================
         Dim _IDDevolucao As Integer?
         Dim _IDPessoaDestino As Integer
@@ -46,6 +47,7 @@ Public Class clDevolucaoSaida : Implements IEditableObject
         Dim _IDAPagar As Integer?
         '
     End Structure
+    '
 #End Region
     '
 #Region "PRIVATE VARIABLES"
@@ -90,8 +92,9 @@ Public Class clDevolucaoSaida : Implements IEditableObject
         End If
     End Sub
     '
-    '-- _EVENTO PUBLIC AOALTERAR
+    '-- EVENTO PUBLIC AOALTERAR
     Public Event AoAlterar()
+    Public Event AoEnviadaAlterar()
     '
     Public Overrides Function ToString() As String
         Return IDDevolucao.ToString
@@ -273,10 +276,13 @@ Public Class clDevolucaoSaida : Implements IEditableObject
             Return DevData._Enviada
         End Get
         Set(ByVal value As Boolean)
+            '
             If value <> DevData._Enviada Then
                 RaiseEvent AoAlterar()
+                DevData._Enviada = value
+                RaiseEvent AoEnviadaAlterar()
             End If
-            DevData._Enviada = value
+            '
         End Set
     End Property
     '

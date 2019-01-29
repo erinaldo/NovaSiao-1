@@ -43,8 +43,6 @@ Public Class frmConfig
         '
         If File.Exists(Application.StartupPath & "\ConfigFiles\Config.xml") Then
             '
-            PreencheOperacoesCFOP()
-            '
             If LerConfigXML() = False Then
                 MessageBox.Show("O arquivo de Configuração possui um erro de leitura..." & vbNewLine &
                                 "Preencha todos os campos para gravar nova Configuração do Sistema.",
@@ -206,6 +204,7 @@ Public Class frmConfig
                 'IDProdutoSubTipoPadrao = .SelectSingleNode("IDProdutoSubTipoPadrao").InnerText
                 'ProdutoSubTipoPadrao = .SelectSingleNode("ProdutoSubTipoPadrao").InnerText
                 txtPermanencia.Text = .SelectSingleNode("TaxaPermanencia").InnerText
+                chkEstoqueNegativo.Checked = .SelectSingleNode("EstoqueNegativo").InnerText
                 '
             End With
             '
@@ -280,6 +279,7 @@ Error_Handler:
                 .WriteElementString("IDProdutoSubTipoPadrao", "")
                 .WriteElementString("ProdutoSubTipoPadrao", "")
                 .WriteElementString("TaxaPermanencia", txtPermanencia.Text)
+                .WriteElementString("EstoqueNegativo", chkEstoqueNegativo.Checked)
                 'encerra o elemento
                 .WriteEndElement()
 
@@ -337,124 +337,6 @@ Error_Handler:
         End Try
         '
     End Function
-    '
-#End Region
-    '
-#Region "DATAGRID OPERACOES"
-    '
-    ' PREENCHER DATAGRIDVIEW OPERACOES
-    '-----------------------------------------------------------------------------------------------
-    Private Sub PreencheOperacoesCFOP()
-        Dim SQL As New SQLControl
-        Dim dtOp As New DataTable
-        '
-        Try
-            '--- Ampulheta ON
-            Cursor = Cursors.WaitCursor
-            '
-            SQL.ExecQuery("SELECT * FROM tblOperacao ORDER BY MovimentoEstoque")
-            dtOp = SQL.DBDT
-            '
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao obter lista de Operações..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            '--- Ampulheta OFF
-            Cursor = Cursors.Default
-        End Try
-        '
-        dgvOperacao.DataSource = dtOp
-        FormataListagem()
-        '
-    End Sub
-    '
-    Private Sub FormataListagem()
-        '
-        With dgvOperacao
-            ' limpa as colunas do datagrid
-            .Columns.Clear()
-            .AutoGenerateColumns = False
-            ' altera as propriedades importantes
-            .MultiSelect = False
-            .ColumnHeadersVisible = True
-            .AllowUserToResizeRows = False
-            .AllowUserToResizeColumns = False
-            .AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
-            .StandardTab = True
-            .RowHeadersVisible = False
-        End With
-        '
-        ' (1) COLUNA ID
-        dgvOperacao.Columns.Add("clnID", "ID")
-        With dgvOperacao.Columns("clnID")
-            .DataPropertyName = "IDOperacao"
-            .Width = 70
-            .Resizable = DataGridViewTriState.False
-            .Visible = False
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Format = "00"
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-        End With
-        '
-        ' (2) COLUNA OPERACAO
-        dgvOperacao.Columns.Add("clnOperacao", "Operação")
-        With dgvOperacao.Columns("clnOperacao")
-            .DataPropertyName = "Operacao"
-            .Width = 220
-            .Resizable = DataGridViewTriState.False
-            .Visible = True
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Format = "00"
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .DefaultCellStyle.Font = New Font("Arial Narrow", 12)
-            .DefaultCellStyle.BackColor = Color.Ivory
-        End With
-        '
-        ' (3) COLUNA CFOP DENTRO
-        dgvOperacao.Columns.Add("clnCFOPDentro", "Dentro")
-        With dgvOperacao.Columns("clnCFOPDentro")
-            .DataPropertyName = "CFOPDentro"
-            .Width = 60
-            .Resizable = DataGridViewTriState.False
-            .Visible = True
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Format = "0,000"
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-        End With
-        '
-        ' (3) COLUNA CFOP FORA
-        dgvOperacao.Columns.Add("clnCFOPFora", "Fora")
-        With dgvOperacao.Columns("clnCFOPFora")
-            .DataPropertyName = "CFOPFora"
-            .Width = 60
-            .Resizable = DataGridViewTriState.False
-            .Visible = True
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Format = "0,000"
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleCenter
-            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleCenter
-
-        End With
-        '
-        ' (2) COLUNA DESCRIÇÃO
-        dgvOperacao.Columns.Add("clnDescricao", "Descrição")
-        With dgvOperacao.Columns("clnDescricao")
-            .DataPropertyName = "Descricao"
-            .Width = 300
-            .Resizable = DataGridViewTriState.False
-            .Visible = True
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .DefaultCellStyle.Font = New Font("Arial Narrow", 12)
-        End With
-        '
-    End Sub
     '
 #End Region
     '
@@ -636,6 +518,7 @@ Error_Handler:
     End Sub
     '
     Private Sub tabPrincipal_SelectedIndexChanged(sender As Object, e As EventArgs) Handles TabPrincipal.SelectedIndexChanged
+        '
         If TabPrincipal.SelectedIndex = 0 Then
             dtpDataPadrao.Focus()
         ElseIf TabPrincipal.SelectedIndex = 1 Then
@@ -646,9 +529,8 @@ Error_Handler:
             LerLogosImagem()
         ElseIf TabPrincipal.SelectedIndex = 3 Then
             txtStringConexao.Focus()
-        ElseIf TabPrincipal.SelectedIndex = 4 Then
-            dgvOperacao.Focus()
         End If
+        '
     End Sub
     '
     ' CAMPO UF SOMENTE MAIUSCULAS COM 2 CARACTERES
@@ -701,7 +583,8 @@ Error_Handler:
     Private Sub chkVerBackup_CheckedChanged(sender As Object, e As EventArgs) Handles _
         chkVerBackup.CheckedChanged,
         rbtServLocal.CheckedChanged,
-        rbtServRemoto.CheckedChanged
+        rbtServRemoto.CheckedChanged,
+        chkEstoqueNegativo.CheckedChanged
         '
         If Sit = EnumFlagEstado.RegistroSalvo Then
             Sit = EnumFlagEstado.Alterado
@@ -739,9 +622,6 @@ Error_Handler:
                 Exit Sub
             End If
         End If
-        '
-        '--- Salva os registro de CFOP das operações
-        Salvar_CFOP()
         '
         '--- Copia as imagens da LOGO para o diretorio padrao
         Copia_LogoColor()
@@ -824,37 +704,6 @@ Error_Handler:
         ' Se não encontra nenhum problema limpa o Eprovider e retorna true
         EProvider.Clear()
         TabPrincipal.SelectedTab = Tab1
-        Return True
-        '
-    End Function
-    '
-    Private Function Salvar_CFOP() As Boolean
-        If dgvOperacao.Rows.Count = 0 Then Return True
-        '
-        Dim dt As DataTable = dgvOperacao.DataSource
-        Dim tBLL As New TransacaoBLL
-        '
-        Try
-            '--- Ampulheta ON
-            Cursor = Cursors.WaitCursor
-            '
-            For Each r As DataRow In dt.Rows
-                tBLL.SalvaOperacao_CFOP(r("IDOperacao"), r("CFOPDentro"), r("CFOPFora"))
-            Next
-            '
-        Catch ex As Exception
-            '
-            MessageBox.Show("Uma exceção ocorreu ao salvar registros de Operações e CFOP no BD..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            '
-            Return False
-            '
-        Finally
-            '--- Ampulheta OFF
-            Cursor = Cursors.Default
-            '
-        End Try
-        '
         Return True
         '
     End Function
@@ -953,78 +802,6 @@ Error_Handler:
                 Sit = EnumFlagEstado.Alterado
             End If
         End Using
-        '
-    End Sub
-    '
-#End Region
-    '
-#Region "MENU SUSPENSO CFOP"
-    '
-    '--- REVELA O MENU CFOP
-    Private Sub dgvOperacao_MouseDown(sender As Control, e As MouseEventArgs) Handles dgvOperacao.MouseDown
-        '
-        If e.Button = MouseButtons.Right Then
-            Dim c As Control = DirectCast(sender, Control)
-            Dim hit As DataGridView.HitTestInfo = dgvOperacao.HitTest(e.X, e.Y)
-            dgvOperacao.ClearSelection()
-
-            If Not hit.Type = DataGridViewHitTestType.Cell Then Exit Sub
-            '
-            If hit.ColumnIndex = 2 Or hit.ColumnIndex = 3 Then
-                ' seleciona a CELL
-                If hit.ColumnIndex = 2 Then
-                    dgvOperacao.CurrentCell = dgvOperacao.Rows(hit.RowIndex).Cells(2)
-                Else
-                    dgvOperacao.CurrentCell = dgvOperacao.Rows(hit.RowIndex).Cells(3)
-                End If
-                '
-                ' mostra o MENU
-                menuCFOP.Show(c.PointToScreen(e.Location))
-                '
-            Else
-                dgvOperacao.Rows(hit.RowIndex).Selected = True
-            End If
-        End If
-    End Sub
-    '
-    '--- BTN PROCURAR MENUSTRIP
-    Private Sub ProcurarToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ProcurarToolStripMenuItem.Click
-        Dim f As New frmCodigosFiscais
-        '
-        Me.Opacity = 0.6
-        f.ShowDialog()
-        Me.Opacity = 1
-
-        If f.DialogResult = DialogResult.OK Then
-            '
-            For Each r As DataGridViewRow In dgvOperacao.Rows
-                If Not IsDBNull(r.Cells("clnCFOPDentro").Value) AndAlso r.Cells("clnCFOPDentro").Value = f.Escolhido Then
-                    MessageBox.Show("Esse CFOP já está associado a uma operação",
-                                    "CFOP Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    Exit Sub
-                End If
-                '
-                If Not IsDBNull(r.Cells("clnCFOPFora").Value) AndAlso r.Cells("clnCFOPFora").Value = f.Escolhido Then
-                    MessageBox.Show("Esse CFOP já está associado a uma operação",
-                                    "CFOP Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                    Exit Sub
-                End If
-            Next
-            '
-            '--- preenche com o valor escolhido
-            dgvOperacao.CurrentCell.Value = f.Escolhido
-            '
-            Sit = EnumFlagEstado.Alterado
-            '
-        End If
-        '
-    End Sub
-    '
-    '--- BTN LIMPAR MENUSTRIP
-    Private Sub LimparToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LimparToolStripMenuItem.Click
-        dgvOperacao.CurrentCell.Value = DBNull.Value
-        '
-        Sit = EnumFlagEstado.Alterado
         '
     End Sub
     '

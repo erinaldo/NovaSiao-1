@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+'
 Public Class clFornecedor
     Inherits clPessoaJuridica
     Implements IEditableObject

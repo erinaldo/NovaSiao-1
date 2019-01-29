@@ -50,9 +50,11 @@ Public Class frmFuncionario
             End If
         End Set
     End Property
+    '
 #End Region
     '
 #Region "EVENTO LOAD"
+    '
     ' Evento LOAD
     Private Sub frmFuncionario_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Dim funcBLL As New FuncionarioBLL
@@ -82,9 +84,11 @@ Public Class frmFuncionario
         RedimensionarForm()
         Opening = False
     End Sub
+    '
 #End Region
     '
 #Region "BINDINGS"
+    '
     Private Sub PreencheDataBindings()
         ' ADICIONANDO O DATABINDINGS AOS CONTROLES TEXT
         ' OS COMBOS JA SÃO ADICIONADOS DATABINDINGS QUANDO CARREGA
@@ -434,6 +438,7 @@ Public Class frmFuncionario
 #End Region
 
 #Region "REDIMENSIONAR FORM"
+    '
     ' Redimensionar o Form
     Private Sub RedimensionarForm()
         t.Interval = 1
@@ -601,9 +606,9 @@ Public Class frmFuncionario
             SendKeys.Send("{Tab}")
         End If
     End Sub
-    '
+
     '-----------------------------------------------------------------------------------------------------
-    ' SUB QUE VERIFICA A ALTERAÇÃO DE REGISTRO PELO DATAGRIDVIEW
+    'Sub QUE() VERIFICA A ALTERAÇÃO DE REGISTRO PELO DATAGRIDVIEW
     '-----------------------------------------------------------------------------------------------------
     Private Sub dgvFuncionarios_RowValidating(sender As Object, e As DataGridViewCellCancelEventArgs) Handles dgvFuncionarios.RowValidating
         '
@@ -633,7 +638,8 @@ Public Class frmFuncionario
     End Sub
     '
     Private Sub btnNovo_Click(sender As Object, e As EventArgs) Handles btnNovo.Click
-        listFunc.Add(New clFuncionario)
+        'listFunc.Add(New clFuncionario)
+        bindFunc.AddNew()
         bindFunc.MoveLast()
         dgvFuncionarios.ClearSelection()
         Sit = EnumFlagEstado.NovoRegistro
@@ -649,8 +655,10 @@ Public Class frmFuncionario
                 Exit Sub
             End If
             '
-            bindFunc.RemoveCurrent()
+            dgvFuncionarios.DataSource = Nothing
+            bindFunc.CancelEdit()
             bindFunc.MoveLast()
+            dgvFuncionarios.DataSource = bindFunc
             '
         ElseIf Sit = EnumFlagEstado.Alterado Then
             bindFunc.CancelEdit()

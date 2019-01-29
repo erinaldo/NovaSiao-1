@@ -475,7 +475,7 @@ Namespace My.Resources
         '''</summary>
         Friend ReadOnly Property limpar_24x24() As System.Drawing.Bitmap
             Get
-                Dim obj As Object = ResourceManager.GetObject("limpar 24x24", resourceCulture)
+                Dim obj As Object = ResourceManager.GetObject("limpar_24x24", resourceCulture)
                 Return CType(obj,System.Drawing.Bitmap)
             End Get
         End Property

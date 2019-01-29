@@ -23,7 +23,6 @@ Partial Class frmConfig
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.Panel1 = New System.Windows.Forms.Panel()
         Me.Label1 = New System.Windows.Forms.Label()
         Me.TabPrincipal = New VIBlend.WinForms.Controls.vTabControl()
@@ -86,12 +85,6 @@ Partial Class frmConfig
         Me.chkVerBackup = New System.Windows.Forms.CheckBox()
         Me.Label16 = New System.Windows.Forms.Label()
         Me.txtStringConexao = New System.Windows.Forms.TextBox()
-        Me.Tab5 = New VIBlend.WinForms.Controls.vTabPage()
-        Me.Label19 = New System.Windows.Forms.Label()
-        Me.dgvOperacao = New System.Windows.Forms.DataGridView()
-        Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnOpercao = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.Label33 = New System.Windows.Forms.Label()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnSalvar = New System.Windows.Forms.Button()
@@ -99,6 +92,7 @@ Partial Class frmConfig
         Me.menuCFOP = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ProcurarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.LimparToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.chkEstoqueNegativo = New System.Windows.Forms.CheckBox()
         Me.Panel1.SuspendLayout()
         Me.TabPrincipal.SuspendLayout()
         Me.Tab1.SuspendLayout()
@@ -108,8 +102,6 @@ Partial Class frmConfig
         CType(Me.picLogoMono, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Tab3.SuspendLayout()
         Me.GroupBox1.SuspendLayout()
-        Me.Tab5.SuspendLayout()
-        CType(Me.dgvOperacao, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.Panel2.SuspendLayout()
         CType(Me.EProvider, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.menuCFOP.SuspendLayout()
@@ -143,7 +135,6 @@ Partial Class frmConfig
         Me.TabPrincipal.Controls.Add(Me.Tab2)
         Me.TabPrincipal.Controls.Add(Me.Tab4)
         Me.TabPrincipal.Controls.Add(Me.Tab3)
-        Me.TabPrincipal.Controls.Add(Me.Tab5)
         Me.TabPrincipal.CornerRadius = 0
         Me.TabPrincipal.Font = New System.Drawing.Font("Verdana", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.TabPrincipal.Location = New System.Drawing.Point(8, 69)
@@ -156,7 +147,6 @@ Partial Class frmConfig
         Me.TabPrincipal.TabPages.Add(Me.Tab2)
         Me.TabPrincipal.TabPages.Add(Me.Tab4)
         Me.TabPrincipal.TabPages.Add(Me.Tab3)
-        Me.TabPrincipal.TabPages.Add(Me.Tab5)
         Me.TabPrincipal.TabsAreaBackColor = System.Drawing.Color.Linen
         Me.TabPrincipal.TabsInitialOffset = 15
         Me.TabPrincipal.TitleHeight = 40
@@ -168,6 +158,7 @@ Partial Class frmConfig
         '
         Me.Tab1.ContentBackColor = System.Drawing.Color.Azure
         Me.Tab1.ContentBorderColor = System.Drawing.Color.Transparent
+        Me.Tab1.Controls.Add(Me.chkEstoqueNegativo)
         Me.Tab1.Controls.Add(Me.lblDataBloqueio)
         Me.Tab1.Controls.Add(Me.Label22)
         Me.Tab1.Controls.Add(Me.txtContaPadrao)
@@ -212,7 +203,7 @@ Partial Class frmConfig
         Me.lblDataBloqueio.Location = New System.Drawing.Point(334, 152)
         Me.lblDataBloqueio.Name = "lblDataBloqueio"
         Me.lblDataBloqueio.Size = New System.Drawing.Size(92, 18)
-        Me.lblDataBloqueio.TabIndex = 19
+        Me.lblDataBloqueio.TabIndex = 11
         Me.lblDataBloqueio.Text = "01/01/2018"
         '
         'Label22
@@ -222,7 +213,7 @@ Partial Class frmConfig
         Me.Label22.Location = New System.Drawing.Point(211, 152)
         Me.Label22.Name = "Label22"
         Me.Label22.Size = New System.Drawing.Size(117, 16)
-        Me.Label22.TabIndex = 19
+        Me.Label22.TabIndex = 10
         Me.Label22.Text = "Data Bloqueada:"
         '
         'txtContaPadrao
@@ -231,7 +222,7 @@ Partial Class frmConfig
         Me.txtContaPadrao.Location = New System.Drawing.Point(214, 117)
         Me.txtContaPadrao.Name = "txtContaPadrao"
         Me.txtContaPadrao.Size = New System.Drawing.Size(212, 27)
-        Me.txtContaPadrao.TabIndex = 6
+        Me.txtContaPadrao.TabIndex = 7
         '
         'txtFilialPadrao
         '
@@ -248,7 +239,7 @@ Partial Class frmConfig
         Me.txtPermanencia.Location = New System.Drawing.Point(214, 280)
         Me.txtPermanencia.Name = "txtPermanencia"
         Me.txtPermanencia.Size = New System.Drawing.Size(53, 27)
-        Me.txtPermanencia.TabIndex = 15
+        Me.txtPermanencia.TabIndex = 19
         Me.txtPermanencia.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'btnAlteraConta
@@ -259,7 +250,7 @@ Partial Class frmConfig
         Me.btnAlteraConta.Name = "btnAlteraConta"
         Me.btnAlteraConta.RoundedCornersMask = CType(15, Byte)
         Me.btnAlteraConta.Size = New System.Drawing.Size(106, 30)
-        Me.btnAlteraConta.TabIndex = 7
+        Me.btnAlteraConta.TabIndex = 8
         Me.btnAlteraConta.Text = "Alterar Conta"
         Me.btnAlteraConta.UseVisualStyleBackColor = False
         Me.btnAlteraConta.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.OFFICESILVER
@@ -275,7 +266,7 @@ Partial Class frmConfig
         Me.btnContaAdd.Name = "btnContaAdd"
         Me.btnContaAdd.RoundedCornersMask = CType(15, Byte)
         Me.btnContaAdd.Size = New System.Drawing.Size(80, 30)
-        Me.btnContaAdd.TabIndex = 4
+        Me.btnContaAdd.TabIndex = 9
         Me.btnContaAdd.TabStop = False
         Me.btnContaAdd.Text = "Conta"
         Me.btnContaAdd.TextAbsolutePosition = New System.Drawing.Point(25, 5)
@@ -296,7 +287,7 @@ Partial Class frmConfig
         Me.btnFilialAdd.Name = "btnFilialAdd"
         Me.btnFilialAdd.RoundedCornersMask = CType(15, Byte)
         Me.btnFilialAdd.Size = New System.Drawing.Size(80, 30)
-        Me.btnFilialAdd.TabIndex = 4
+        Me.btnFilialAdd.TabIndex = 5
         Me.btnFilialAdd.TabStop = False
         Me.btnFilialAdd.Text = "Filial"
         Me.btnFilialAdd.TextAbsolutePosition = New System.Drawing.Point(20, 5)
@@ -337,7 +328,7 @@ Partial Class frmConfig
         Me.Label35.Location = New System.Drawing.Point(83, 120)
         Me.Label35.Name = "Label35"
         Me.Label35.Size = New System.Drawing.Size(125, 18)
-        Me.Label35.TabIndex = 5
+        Me.Label35.TabIndex = 6
         Me.Label35.Text = "Conta Padrão:"
         '
         'Label34
@@ -370,7 +361,7 @@ Partial Class frmConfig
         Me.Label14.Location = New System.Drawing.Point(50, 326)
         Me.Label14.Name = "Label14"
         Me.Label14.Size = New System.Drawing.Size(158, 18)
-        Me.Label14.TabIndex = 17
+        Me.Label14.TabIndex = 21
         Me.Label14.Text = "Mensagem Inicial:"
         '
         'Label13
@@ -381,7 +372,7 @@ Partial Class frmConfig
         Me.Label13.Location = New System.Drawing.Point(26, 239)
         Me.Label13.Name = "Label13"
         Me.Label13.Size = New System.Drawing.Size(182, 18)
-        Me.Label13.TabIndex = 12
+        Me.Label13.TabIndex = 16
         Me.Label13.Text = "Naturalidade Padrão:"
         '
         'Label20
@@ -392,7 +383,7 @@ Partial Class frmConfig
         Me.Label20.Location = New System.Drawing.Point(20, 283)
         Me.Label20.Name = "Label20"
         Me.Label20.Size = New System.Drawing.Size(188, 18)
-        Me.Label20.TabIndex = 14
+        Me.Label20.TabIndex = 18
         Me.Label20.Text = "Taxa de Permanência:"
         '
         'Label21
@@ -404,7 +395,7 @@ Partial Class frmConfig
         Me.Label21.Margin = New System.Windows.Forms.Padding(0)
         Me.Label21.Name = "Label21"
         Me.Label21.Size = New System.Drawing.Size(105, 18)
-        Me.Label21.TabIndex = 16
+        Me.Label21.TabIndex = 20
         Me.Label21.Text = "(% ao mês)"
         Me.Label21.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -416,7 +407,7 @@ Partial Class frmConfig
         Me.Label12.Location = New System.Drawing.Point(452, 192)
         Me.Label12.Name = "Label12"
         Me.Label12.Size = New System.Drawing.Size(98, 18)
-        Me.Label12.TabIndex = 10
+        Me.Label12.TabIndex = 14
         Me.Label12.Text = "UF Padrão:"
         '
         'Label11
@@ -427,7 +418,7 @@ Partial Class frmConfig
         Me.Label11.Location = New System.Drawing.Point(75, 192)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(133, 18)
-        Me.Label11.TabIndex = 8
+        Me.Label11.TabIndex = 12
         Me.Label11.Text = "Cidade Padrão:"
         '
         'txtMensagem
@@ -438,7 +429,7 @@ Partial Class frmConfig
         Me.txtMensagem.Multiline = True
         Me.txtMensagem.Name = "txtMensagem"
         Me.txtMensagem.Size = New System.Drawing.Size(457, 68)
-        Me.txtMensagem.TabIndex = 18
+        Me.txtMensagem.TabIndex = 22
         '
         'txtNaturalidade
         '
@@ -447,7 +438,7 @@ Partial Class frmConfig
         Me.txtNaturalidade.MaxLength = 50
         Me.txtNaturalidade.Name = "txtNaturalidade"
         Me.txtNaturalidade.Size = New System.Drawing.Size(212, 27)
-        Me.txtNaturalidade.TabIndex = 13
+        Me.txtNaturalidade.TabIndex = 17
         '
         'txtUF
         '
@@ -457,7 +448,7 @@ Partial Class frmConfig
         Me.txtUF.MaxLength = 2
         Me.txtUF.Name = "txtUF"
         Me.txtUF.Size = New System.Drawing.Size(51, 27)
-        Me.txtUF.TabIndex = 11
+        Me.txtUF.TabIndex = 15
         '
         'txtCidade
         '
@@ -466,7 +457,7 @@ Partial Class frmConfig
         Me.txtCidade.MaxLength = 50
         Me.txtCidade.Name = "txtCidade"
         Me.txtCidade.Size = New System.Drawing.Size(212, 27)
-        Me.txtCidade.TabIndex = 9
+        Me.txtCidade.TabIndex = 13
         '
         'Tab2
         '
@@ -899,86 +890,6 @@ Partial Class frmConfig
         Me.txtStringConexao.Size = New System.Drawing.Size(457, 123)
         Me.txtStringConexao.TabIndex = 3
         '
-        'Tab5
-        '
-        Me.Tab5.ContentBackColor = System.Drawing.Color.Azure
-        Me.Tab5.Controls.Add(Me.Label19)
-        Me.Tab5.Controls.Add(Me.dgvOperacao)
-        Me.Tab5.Controls.Add(Me.Label33)
-        Me.Tab5.Dock = System.Windows.Forms.DockStyle.Fill
-        Me.Tab5.Font = New System.Drawing.Font("Verdana", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Tab5.Location = New System.Drawing.Point(0, 40)
-        Me.Tab5.Name = "Tab5"
-        Me.Tab5.Padding = New System.Windows.Forms.Padding(0)
-        Me.Tab5.SelectedTextFont = New System.Drawing.Font("Verdana", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Tab5.Size = New System.Drawing.Size(706, 442)
-        Me.Tab5.TabIndex = 5
-        Me.Tab5.Text = "Associação CFOP"
-        Me.Tab5.TextFont = New System.Drawing.Font("Verdana", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Tab5.TooltipText = "Associção do CFOPs"
-        Me.Tab5.UseContentBackColor = True
-        Me.Tab5.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.ULTRABLUE
-        Me.Tab5.Visible = False
-        '
-        'Label19
-        '
-        Me.Label19.AutoSize = True
-        Me.Label19.BackColor = System.Drawing.Color.Transparent
-        Me.Label19.Location = New System.Drawing.Point(21, 408)
-        Me.Label19.Name = "Label19"
-        Me.Label19.Size = New System.Drawing.Size(478, 16)
-        Me.Label19.TabIndex = 4
-        Me.Label19.Text = "Clique com o segundo botão do mouse na listagem para alterar o CFOP"
-        '
-        'dgvOperacao
-        '
-        Me.dgvOperacao.AllowUserToAddRows = False
-        Me.dgvOperacao.AllowUserToDeleteRows = False
-        Me.dgvOperacao.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.Sunken
-        DataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ActiveCaption
-        DataGridViewCellStyle1.Font = New System.Drawing.Font("Verdana", 9.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle1.ForeColor = System.Drawing.Color.White
-        DataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.[True]
-        Me.dgvOperacao.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
-        Me.dgvOperacao.ColumnHeadersHeight = 30
-        Me.dgvOperacao.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.dgvOperacao.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnID, Me.clnOpercao})
-        Me.dgvOperacao.EnableHeadersVisualStyles = False
-        Me.dgvOperacao.Location = New System.Drawing.Point(20, 66)
-        Me.dgvOperacao.Name = "dgvOperacao"
-        Me.dgvOperacao.RowHeadersWidth = 36
-        Me.dgvOperacao.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
-        Me.dgvOperacao.RowTemplate.Height = 30
-        Me.dgvOperacao.Size = New System.Drawing.Size(667, 332)
-        Me.dgvOperacao.TabIndex = 3
-        '
-        'clnID
-        '
-        Me.clnID.HeaderText = "ID"
-        Me.clnID.Name = "clnID"
-        Me.clnID.Visible = False
-        '
-        'clnOpercao
-        '
-        Me.clnOpercao.HeaderText = "Operação"
-        Me.clnOpercao.Name = "clnOpercao"
-        Me.clnOpercao.ReadOnly = True
-        '
-        'Label33
-        '
-        Me.Label33.AutoSize = True
-        Me.Label33.BackColor = System.Drawing.Color.Transparent
-        Me.Label33.Font = New System.Drawing.Font("Verdana", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label33.ForeColor = System.Drawing.Color.SlateGray
-        Me.Label33.Location = New System.Drawing.Point(68, 24)
-        Me.Label33.Name = "Label33"
-        Me.Label33.Size = New System.Drawing.Size(546, 25)
-        Me.Label33.TabIndex = 2
-        Me.Label33.Text = "Tabela de Associação do CFOP com as Operações:"
-        '
         'Panel2
         '
         Me.Panel2.BackColor = System.Drawing.Color.Linen
@@ -1046,6 +957,17 @@ Partial Class frmConfig
         Me.LimparToolStripMenuItem.Size = New System.Drawing.Size(130, 24)
         Me.LimparToolStripMenuItem.Text = "Limpar"
         '
+        'chkEstoqueNegativo
+        '
+        Me.chkEstoqueNegativo.AutoSize = True
+        Me.chkEstoqueNegativo.BackColor = System.Drawing.Color.Transparent
+        Me.chkEstoqueNegativo.Location = New System.Drawing.Point(214, 408)
+        Me.chkEstoqueNegativo.Name = "chkEstoqueNegativo"
+        Me.chkEstoqueNegativo.Size = New System.Drawing.Size(202, 20)
+        Me.chkEstoqueNegativo.TabIndex = 23
+        Me.chkEstoqueNegativo.Text = "Permitir Estoque Negativo!"
+        Me.chkEstoqueNegativo.UseVisualStyleBackColor = False
+        '
         'frmConfig
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(10.0!, 18.0!)
@@ -1080,9 +1002,6 @@ Partial Class frmConfig
         Me.Tab3.PerformLayout()
         Me.GroupBox1.ResumeLayout(False)
         Me.GroupBox1.PerformLayout()
-        Me.Tab5.ResumeLayout(False)
-        Me.Tab5.PerformLayout()
-        CType(Me.dgvOperacao, System.ComponentModel.ISupportInitialize).EndInit()
         Me.Panel2.ResumeLayout(False)
         CType(Me.EProvider, System.ComponentModel.ISupportInitialize).EndInit()
         Me.menuCFOP.ResumeLayout(False)
@@ -1140,18 +1059,12 @@ Partial Class frmConfig
     Friend WithEvents btnProcLogoColor As VIBlend.WinForms.Controls.vButton
     Friend WithEvents Label18 As Label
     Friend WithEvents txtLogoColorCaminho As TextBox
-    Friend WithEvents Tab5 As VIBlend.WinForms.Controls.vTabPage
-    Friend WithEvents Label33 As Label
     Friend WithEvents menuCFOP As ContextMenuStrip
     Friend WithEvents ProcurarToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents LimparToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents Label34 As Label
     Friend WithEvents btnAlteraFilial As VIBlend.WinForms.Controls.vButton
     Friend WithEvents Label35 As Label
-    Friend WithEvents dgvOperacao As DataGridView
-    Friend WithEvents clnID As DataGridViewTextBoxColumn
-    Friend WithEvents clnOpercao As DataGridViewTextBoxColumn
-    Friend WithEvents Label19 As Label
     Friend WithEvents Label20 As Label
     Friend WithEvents txtPermanencia As Controles.Text_SoNumeros
     Friend WithEvents Label21 As Label
@@ -1165,4 +1078,5 @@ Partial Class frmConfig
     Friend WithEvents btnFilialAdd As VIBlend.WinForms.Controls.vButton
     Friend WithEvents lblDataBloqueio As Label
     Friend WithEvents Label22 As Label
+    Friend WithEvents chkEstoqueNegativo As CheckBox
 End Class

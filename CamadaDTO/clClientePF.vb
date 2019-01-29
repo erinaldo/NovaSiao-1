@@ -52,7 +52,7 @@ Public Class clClientePF
     Public Overrides Sub BeginEdit() Implements IEditableObject.BeginEdit
         If Not RegistroAlterado Then
             PData_Backup = PData
-            PEndData_Backup = PEndData_Backup
+            PEndData_Backup = PEndData
             PFData_Backup = PFData
             CPFData_Backup = CPFData
             RegistroAlterado = True
@@ -355,4 +355,5 @@ Public Class clClientePF
     End Property
     '
 #End Region
+    '
 End Class

@@ -3,17 +3,17 @@
 Public Class clFuncionario
     Inherits clPessoaFisica
     Implements IEditableObject
-
+    '
 #Region "ESTRUTURA DOS DADOS"
     Structure StructureFuncionario ' alguns usam FRIEND em vez de DIM
-        Dim _AdmissaoData As Nullable(Of Date)
-        Dim _Ativo As Boolean
-        Dim _Vendedor As Boolean
-        Dim _IDFilial As Integer?
-        Dim _ApelidoFuncionario As String
-        Dim _Comissao As Decimal?
-        Dim _VendaTipo As Byte?
-        Dim _VendedorAtivo As Boolean?
+        Friend _AdmissaoData As Nullable(Of Date)
+        Friend _Ativo As Boolean
+        Friend _Vendedor As Boolean
+        Friend _IDFilial As Integer?
+        Friend _ApelidoFuncionario As String
+        Friend _Comissao As Decimal?
+        Friend _VendaTipo As Byte?
+        Friend _VendedorAtivo As Boolean?
     End Structure
 #End Region
     '
@@ -36,15 +36,17 @@ Public Class clFuncionario
             ._VendedorAtivo = True
         End With
     End Sub
+    '
     Public Overrides Sub BeginEdit() Implements IEditableObject.BeginEdit
         If Not RegistroAlterado Then
             PData_Backup = PData
-            PEndData_Backup = PEndData_Backup
+            PEndData_Backup = PEndData
             PFData_Backup = PFData
             FuncData_Backup = FuncData
             RegistroAlterado = True
         End If
     End Sub
+    '
     Public Overrides Sub CancelEdit() Implements IEditableObject.CancelEdit
         If RegistroAlterado Then
             PData = PData_Backup
@@ -54,6 +56,7 @@ Public Class clFuncionario
             RegistroAlterado = False
         End If
     End Sub
+    '
     Public Overrides Sub EndEdit() Implements IEditableObject.EndEdit
         If RegistroAlterado Then
             PData_Backup = New StructurePessoa
@@ -178,4 +181,5 @@ Public Class clFuncionario
     End Property
     '
 #End Region
+    '
 End Class

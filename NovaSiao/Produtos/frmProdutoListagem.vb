@@ -1034,8 +1034,8 @@ Public Class frmProdutoListagem
         ElseIf Not mnuAlteracao.Visible() Then
             '
             '--- revela o menu
-            Dim p As New Point(chkAlterarProdutos.Location.X + chkAlterarProdutos.Width, chkAlterarProdutos.Location.Y)
-            mnuAlteracao.Show(Me, p, ToolStripDropDownDirection.AboveLeft)
+            Dim p As New Point(chkAlterarProdutos.Location.X + 4, Me.Height - chkAlterarProdutos.Height - chkAlterarProdutos.Location.Y - 4)
+            mnuAlteracao.Show(Me, p, ToolStripDropDownDirection.AboveRight)
             '
         End If
         '

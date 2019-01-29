@@ -1258,6 +1258,19 @@ Public Class frmPrincipal
         f.Show()
     End Sub
     '
+    Private Sub miCFOP_Click(sender As Object, e As EventArgs) Handles miCFOP.Click
+        '
+        If UsuarioAcesso(1) > 1 Then ' não é administrador do sistema
+            MessageBox.Show("Seu LOGIN não tem acesso aos arquivos de Configuração..." & vbNewLine &
+                            "Comunique-se com o administrador do sistema.",
+                            "Acesso Negado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+        Else
+            Dim frmC As New frmCFOP
+            frmC.ShowDialog()
+        End If
+        '
+    End Sub
+    '
 #End Region
     '
 End Class

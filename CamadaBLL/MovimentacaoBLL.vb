@@ -21,9 +21,12 @@ Public Class MovimentacaoBLL
         db.AdicionarParametros("@Origem", CByte(Origem)) ' ORIGEM TRANSACAO/VENDA
         db.AdicionarParametros("@IDOrigem", IDOrigem)
         '
+        Dim myQuery As String = "SELECT * FROM qryMovimentacao WHERE " &
+                                "Origem = @Origem AND IDOrigem = @IDOrigem"
+        '
         Try
             '
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspMovimentacao_GET_PorOrigemID")
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
             '
             '--- RETURN
             Return Convert_DT_ListOF_Movimentacao(dt)
@@ -87,8 +90,98 @@ Public Class MovimentacaoBLL
         db.AdicionarParametros("@Descricao", Movimentacao.Descricao)
         '
         Try
-            Return db.ExecutarManipulacao(CommandType.StoredProcedure, "uspMovimentacao_Inserir")
+            '
+            Dim objReturn As Object = db.ExecutarManipulacao(CommandType.StoredProcedure, "uspMovimentacao_Inserir")
+            '
+            If Not IsNumeric(objReturn) Then
+                Throw New Exception(objReturn)
+            End If
+            '
+            Return objReturn
+            '
         Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '===================================================================================================
+    ' UPDATE MOVIMENTACAO NO BD
+    '===================================================================================================
+    Public Function Movimentacao_Update(_mov As clMovimentacao,
+                                        Optional myDB As Object = Nothing) As Boolean
+        '
+        Dim db As AcessoDados = If(myDB, New AcessoDados)
+        Dim tranInterna As Boolean = False
+        '
+        If Not db.isTransaction Then
+            db.BeginTransaction()
+            tranInterna = True
+        End If
+        '
+        '--- Verifica se a movimentacao tem IDCaixa Vinculado
+        Dim myQuery As String = "SELECT IDCaixa FROM tblCaixaMovimentacao WHERE IDMovimentacao = " & _mov.IDMovimentacao
+        '
+        Try
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
+            '
+            If Not IsDBNull(dt.Rows(0)(0)) Then
+                Throw New Exception("Não é possível atualizar uma movimentação que está vinculada a um caixa...")
+            End If
+            '
+        Catch ex As Exception
+            If tranInterna Then db.RollBackTransaction()
+            Throw ex
+            Return False
+        End Try
+        '
+        '--- executa o UPDATE
+        myQuery = "UPDATE tblCaixaMovimentacao SET " &
+                  "IDConta = @IDConta, " &
+                  "MovData = @MovData, " &
+                  "MovValor = @MovValor, " &
+                  "IDMovForma = @IDMovForma, " &
+                  "Descricao = @Descricao " &
+                  "WHERE IDMovimentacao = @IDMovimentacao"
+        '
+        '--- limpa os parametros
+        db.LimparParametros()
+        '
+        '--- adiciona o parametros
+        db.AdicionarParametros("@IDMovimentacao", _mov.IDMovimentacao)
+        db.AdicionarParametros("@IDConta", _mov.IDConta)
+        db.AdicionarParametros("@MovData", _mov.MovData)
+        db.AdicionarParametros("@MovValor", _mov.MovValor)
+        db.AdicionarParametros("@IDMovForma", _mov.IDMovForma)
+        db.AdicionarParametros("@Descricao", _mov.Descricao)
+        '
+        Try
+            '
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+            '--- DELETE / INSERT OBSERVACAO
+            '--------------------------------------------------------
+            myQuery = "DELETE tblObservacao WHERE Origem = 3 AND IDOrigem = " & _mov.IDMovimentacao
+            '
+            If _mov.Observacao.Trim.Length > 0 Then
+                '--- limpa os parametros
+                db.LimparParametros()
+                db.AdicionarParametros("@Observacao", _mov.Observacao)
+                db.AdicionarParametros("@IDOrigem", _mov.IDMovimentacao)
+                '
+                myQuery = "INSERT INTO tblObservacao (Origem, IDOrigem, Observacao) " &
+                          "VALUES (3, @IDOrigem, @Observacao)"
+                '
+                db.ExecutarManipulacao(CommandType.Text, myQuery)
+                '
+            End If
+            '
+            If tranInterna Then db.CommitTransaction()
+            '
+            Return True
+            '
+        Catch ex As Exception
+            If tranInterna Then db.RollBackTransaction()
             Throw ex
         End Try
         '
@@ -121,7 +214,7 @@ Public Class MovimentacaoBLL
     End Function
     '
     '===================================================================================================
-    ' EXCLUI TODOS OS REGISTROS DE MOVIMENTACAO PELO CLMOVIMENTACAO
+    ' EXCLUI O REGISTRO DE MOVIMENTACAO PELO CLMOVIMENTACAO
     '===================================================================================================
     Public Function Movimentacao_Excluir(clMov As clMovimentacao,
                                          Optional myDB As Object = Nothing) As Boolean
@@ -132,17 +225,35 @@ Public Class MovimentacaoBLL
         End If
         ' 
         Dim db As AcessoDados = If(myDB, New AcessoDados)
+        Dim tranInterna As Boolean = False
+        '
+        '--- verifica TRANSACAO e INICIA caso nao haja
+        If Not db.isTransaction Then
+            db.BeginTransaction()
+            tranInterna = True
+        End If
         '
         db.LimparParametros()
         db.AdicionarParametros("@IDMovimentacao", clMov.IDMovimentacao)
         '
         Dim myQuery As String = "DELETE FROM tblCaixaMovimentacao WHERE IDMovimentacao = @IDMovimentacao"
+        '
         Try
             '
             db.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+            '--- DELETE OBSERVACAO
+            '------------------------------------------------------------------
+            db.LimparParametros()
+            db.AdicionarParametros("@IDMovimentacao", clMov.IDMovimentacao)
+            '
+            myQuery = "DELETE FROM tblObservacao WHERE Origem = 3 AND IDOrigem = @IDMovimentacao"
+            '
+            If tranInterna Then db.CommitTransaction()
             Return True
             '
         Catch ex As Exception
+            If tranInterna Then db.RollBackTransaction()
             Throw ex
             Return False
         End Try
@@ -214,6 +325,7 @@ Public Class MovimentacaoBLL
                         .IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
                         .ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
                         .Movimento = If(IsDBNull(r("Movimento")), Nothing, r("Movimento"))
+                        .Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
                     End With
                     '
                     '--- Adiciona o ROW na listagem

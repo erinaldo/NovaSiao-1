@@ -96,6 +96,7 @@ Public Class frmProduto
             End If
             '
         End Set
+        '
     End Property
     '
     Public Property propAcao As EnumFlagAcao
@@ -116,6 +117,7 @@ Public Class frmProduto
     Private Sub frmProduto_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         '
         addToolTipHandler()
+        pnlCalculo.Location = New Point(466, 357)
         '
     End Sub
     '
@@ -143,6 +145,7 @@ Public Class frmProduto
         txtCodBarrasA.DataBindings.Add("Text", bindP, "CodBarrasA", True, DataSourceUpdateMode.OnPropertyChanged)
         txtEstoqueIdeal.DataBindings.Add("Text", bindP, "EstoqueIdeal", True, DataSourceUpdateMode.OnPropertyChanged)
         txtEstoqueNivel.DataBindings.Add("Text", bindP, "EstoqueNivel", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtFabricante.DataBindings.Add("Text", bindP, "Fabricante", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler txtPCompra.DataBindings("Text").Format, AddressOf FormatCUR
@@ -154,8 +157,8 @@ Public Class frmProduto
         AddHandler txtDescontoCompra.DataBindings("text").Format, AddressOf FormatPercent
         '
         ' CARREGA OS COMBOBOX
-        CarregaComboFabricante()
         CarregaComboSitTributaria()
+        CarregaComboMovimento()
         '
         ' ADD HANDLER PARA DATABINGS
         AddHandler _produto.AoAlterar, AddressOf HandlerAoAlterar
@@ -187,34 +190,9 @@ Public Class frmProduto
     ' CARREGA OS COMBOBOX
     '--------------------------------------------------------------------------------------------------------
     '
-    '--- COMBO FABRICANTE
-    Private Sub CarregaComboFabricante()
-        Dim sql As New SQLControl
-        '
-        If Not IsNothing(_produto.IDFabricante) Then
-            sql.ExecQuery("SELECT * FROM tblProdutoFabricante WHERE FabricanteAtivo = 'TRUE' OR " &
-                          "IDFabricante = " & _produto.IDFabricante)
-        Else
-            sql.ExecQuery("SELECT * FROM tblProdutoFabricante WHERE FabricanteAtivo = 'TRUE';")
-        End If
-        '
-        If sql.HasException(True) Then
-            Exit Sub
-        End If
-        '
-        With cmbIDFabricante
-            .DataSource = sql.DBDT
-            .ValueMember = "IDFabricante"
-            .DisplayMember = "Fabricante"
-            If .DataBindings.Count = 0 Then
-                .DataBindings.Add("SelectedValue", bindP, "IDFabricante", True, DataSourceUpdateMode.OnPropertyChanged)
-            End If
-        End With
-        sql = Nothing
-    End Sub
-    '
     '--- COMBO SITUACAO TRIBUTARIA
     Private Sub CarregaComboSitTributaria()
+        '
         Dim dtSexo As New DataTable
         'Adiciona todas as possibilidades de instrucao
         dtSexo.Columns.Add("IDSitTributaria")
@@ -223,13 +201,40 @@ Public Class frmProduto
         dtSexo.Rows.Add(New Object() {40, "Isento"})
         dtSexo.Rows.Add(New Object() {41, "Não Tributada"})
         dtSexo.Rows.Add(New Object() {60, "Subst. Tributária"})
-
+        '
         With cmbSitTributaria
             .DataSource = dtSexo
             .ValueMember = "IDSitTributaria"
             .DisplayMember = "SitTributaria"
             .DataBindings.Add("SelectedValue", bindP, "SitTributaria", True, DataSourceUpdateMode.OnPropertyChanged)
         End With
+        '
+    End Sub
+    '
+    '--- COMBO MOVIMENTO DE ESTOQUE
+    Private Sub CarregaComboMovimento()
+        '
+        Dim dtMovimento As New DataTable
+        '
+        'Adiciona todas as possibilidades de movimento
+        dtMovimento.Columns.Add("ID")
+        dtMovimento.Columns.Add("Mov")
+        '
+        'For Each e As clProduto.EnumProdutoMovimento In System.Enum.GetValues(GetType(clProduto.EnumProdutoMovimento))
+        '    dtMovimento.Rows.Add(New Object() {CByte(e), e.ToString})
+        'Next
+        dtMovimento.Rows.Add(New Object() {0, "Normal"})
+        dtMovimento.Rows.Add(New Object() {1, "Sem Movimento"})
+        dtMovimento.Rows.Add(New Object() {2, "Protegido"})
+        dtMovimento.Rows.Add(New Object() {3, "Periódico"})
+        '
+        With cmbMovimento
+            .DataSource = dtMovimento
+            .ValueMember = "ID"
+            .DisplayMember = "Mov"
+            .DataBindings.Add("SelectedValue", bindP, "Movimento", True, DataSourceUpdateMode.OnPropertyChanged)
+        End With
+        '
     End Sub
     '
 #End Region '// BINDINGS
@@ -334,6 +339,10 @@ Public Class frmProduto
             Return False
         End If
         '
+        If Not f.VerificaDadosClasse(cmbMovimento, "Movimento do Estoque", _produto, EProvider) Then
+            Return False
+        End If
+        '
         'Se nenhuma das condições acima forem verdadeira retorna TRUE
         EProvider.Clear()
         Return True
@@ -431,12 +440,13 @@ Public Class frmProduto
     '
     ' ATIVAR OU DESATIVAR CLIENTE BOTÃO
     Private Sub btnAtivo_Click(sender As Object, e As EventArgs) Handles btnAtivo.Click
+        '
         If Sit = EnumFlagEstado.NovoRegistro Then
             MessageBox.Show("Você não pode DESATIVAR um Produto Novo", "Desativar Produto",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             Exit Sub
         End If
-
+        '
         If _produto.ProdutoAtivo = True Then ' Produto esta ativo
             If MessageBox.Show("Você deseja realmente DESATIVAR o Produto:" & vbNewLine &
                         txtProduto.Text.ToUpper, "Desativar Produto", MessageBoxButtons.YesNo,
@@ -454,6 +464,7 @@ Public Class frmProduto
                 AtivoButtonImage()
             End If
         End If
+        '
     End Sub
     '
     ' ALTERA A IMAGEM E O TEXTO DO BOTÃO ATIVO E DESATIVO
@@ -526,22 +537,32 @@ Public Class frmProduto
         End If
         '
         '--- acessa BD
+        '
         Try
-            Dim maxRG As Integer = prodBLL.ProcuraMaxRGProduto
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim maxRG As Integer = If(prodBLL.ProcuraMaxRGProduto, 0)
             txtRGProduto.Text = Format(maxRG + 1, "0000")
             txtRGProduto.Focus()
+            '
         Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao Procurar RGProduto..." & vbNewLine &
+            MessageBox.Show("Uma exceção ocorreu ao Procurar um novo RG Válido para o produto..." & vbNewLine &
             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub
     '
     ' USAR SOMENTE NÚMERO NO CAMPO RGPRODUTO
     Private Sub txtRGProduto_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtRGProduto.KeyPress
+        '
         If Not Char.IsNumber(e.KeyChar) And Not e.KeyChar = vbBack Then
             e.Handled = True
         End If
+        '
     End Sub
     '
     ' AO ENTRAR NO MENU SELECIONAR O btnProcurar
@@ -570,7 +591,7 @@ Public Class frmProduto
                 "txtProdutoSubTipo",
                 "txtProdutoCategoria",
                 "txtAutor",
-                "cmbIDFabricante",
+                "txtFabricante",
                 "txtDescontoCompra",
                 "txtPCompra",
                 "txtPVenda",
@@ -595,7 +616,7 @@ Public Class frmProduto
                 txtProdutoSubTipo.KeyDown,
                 txtProdutoCategoria.KeyDown,
                 txtAutor.KeyDown,
-                cmbIDFabricante.KeyDown,
+                txtFabricante.KeyDown,
                 txtDescontoCompra.KeyDown,
                 txtPCompra.KeyDown,
                 txtPVenda.KeyDown,
@@ -619,7 +640,7 @@ Public Class frmProduto
                     ProcurarEscolherTipo(sender)
                 Case "txtAutor"
                     btnAutoresLista_Click(New Object, New EventArgs)
-                Case "cmbIDFabricante"
+                Case "txtFabricante"
                     btnFabricantes_Click(New Object, New EventArgs)
                 Case "txtPCompra"
                     AbrePainelMargem(txtMargem, txtPCompra)
@@ -650,6 +671,10 @@ Public Class frmProduto
                     If Not IsNothing(_produto.IDCategoria) Then Sit = EnumFlagEstado.Alterado
                     txtProdutoCategoria.Clear()
                     _produto.IDCategoria = Nothing
+                Case "txtFabricante"
+                    If Not IsNothing(_produto.IDFabricante) Then Sit = EnumFlagEstado.Alterado
+                    txtFabricante.Clear()
+                    _produto.IDFabricante = Nothing
             End Select
             '
         Else
@@ -666,9 +691,13 @@ Public Class frmProduto
     End Sub
     '
     '--- SUBSTITUI A TECLA (ENTER) PELA (TAB)
-    Private Sub txtControl_KeyDown(sender As Object, e As KeyEventArgs) Handles txtProduto.KeyDown, txtRGProduto.KeyDown,
-            txtCodBarrasA.KeyDown, txtAutor.KeyDown, txtUnidade.KeyDown, txtEstoqueNivel.KeyDown,
-            txtEstoqueIdeal.KeyDown, txtNCM.KeyDown, txtPCompra.KeyDown, txtPVenda.KeyDown
+    Private Sub txtControl_KeyDown(sender As Object, e As KeyEventArgs) Handles _
+        txtProduto.KeyDown, txtRGProduto.KeyDown, txtCodBarrasA.KeyDown,
+        txtAutor.KeyDown, txtUnidade.KeyDown, txtEstoqueNivel.KeyDown,
+        txtEstoqueIdeal.KeyDown, txtNCM.KeyDown, txtPCompra.KeyDown,
+        txtPVenda.KeyDown, txtProdutoTipo.KeyDown, txtProdutoSubTipo.KeyDown,
+        txtProdutoCategoria.KeyDown, txtDesconto.KeyDown, txtFabricante.KeyDown,
+        txtDescontoCompra.KeyDown
         '
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
@@ -682,6 +711,8 @@ Public Class frmProduto
         '
         Try
             '--- procura no cadastro antigo o registro do produto pelo RG
+            If txtRGProduto.Text.Trim.Length = 0 Then Return
+
             Dim clP As clProduto = prodBLL.ProcuraProduto_CadastroAntigo(txtRGProduto.Text)
             '
             If IsNothing(clP) Then Return
@@ -852,12 +883,14 @@ Public Class frmProduto
             End If
             '
             ' calcula a margem e coloca no label
-            n = Round((CDbl(_produto.PVenda) - CDbl(_produto.PCompra)) / CDbl(_produto.PCompra) * 100, 2)
+            'n = Round((CDbl(_produto.PVenda) - CDbl(_produto.PCompra)) / CDbl(_produto.PCompra) * 100, 2)
+            n = _produto.MargemDe
             ' escreve o label
             lblMargem.Text = m & Format(n, "#,##0.00") & "%"
             ret(0) = n
             ' calcula o desconto e coloca no label
-            n = Round((CDbl(_produto.PVenda) - CDbl(_produto.PCompra)) / CDbl(_produto.PVenda) * 100, 2)
+            'n = Round((CDbl(_produto.PVenda) - CDbl(_produto.PCompra)) / CDbl(_produto.PVenda) * 100, 2)
+            n = _produto.DescontoDe
             lblDesconto.Text = d & Format(n, "#,##0.00") & "%"
             ret(1) = n
             Return ret
@@ -911,6 +944,10 @@ Public Class frmProduto
         ProcurarEscolherTipo(txtProdutoTipo)
     End Sub
     '
+    '--- BOTAO PROCURAR FABRICANTE
+    Private Sub btnFabricantes_Click(sender As Object, e As EventArgs) Handles btnFabricantes.Click
+        ProcurarEscolherTipo(txtFabricante)
+    End Sub
     '--- ESCOLHER TIPO DE PRODUTO | SUBTIPO DE PRODUTO | CATEGORIA
     Private Sub ProcurarEscolherTipo(sender As Control)
         '
@@ -951,6 +988,11 @@ Public Class frmProduto
                 oldID = _produto.IDCategoria
                 frmT = New frmProdutoProcurarCategoria(Me, oldID, _produto.IDProdutoTipo)
                 '
+            Case "txtFabricante"
+                '
+                oldID = _produto.IDFabricante
+                frmT = New frmFabricanteProcurar(Me, oldID)
+                '
         End Select
         '
         ' revela o formulario dependendo do controle acionado
@@ -975,7 +1017,7 @@ Public Class frmProduto
                         _produto.IDCategoria = Nothing
                         '
                         ' altera o EnumFlagEstado
-                        Sit = EnumFlagEstado.Alterado
+                        If Sit = EnumFlagEstado.RegistroSalvo Then Sit = EnumFlagEstado.Alterado
                         '
                     End If
                     '
@@ -990,7 +1032,7 @@ Public Class frmProduto
                     '
                     ' altera o EnumFlagEstado para ALTERADO
                     If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDProdutoSubTipo), 0, _produto.IDProdutoSubTipo) Then
-                        Sit = EnumFlagEstado.Alterado
+                        If Sit = EnumFlagEstado.RegistroSalvo Then Sit = EnumFlagEstado.Alterado
                     End If
                     '
                     ' move focus
@@ -1004,11 +1046,25 @@ Public Class frmProduto
                     '
                     ' altera o EnumFlagEstado para ALTERADO
                     If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDCategoria), 0, _produto.IDCategoria) Then
-                        Sit = EnumFlagEstado.Alterado
+                        If Sit = EnumFlagEstado.RegistroSalvo Then Sit = EnumFlagEstado.Alterado
                     End If
                     '
                     ' move focus
                     txtProdutoCategoria.Focus()
+                    '
+                Case "txtFabricante"
+                    '
+                    ' define o Fabricante escolhido
+                    txtFabricante.Text = DirectCast(frmT, frmFabricanteProcurar).propFab_Escolha
+                    _produto.IDFabricante = DirectCast(frmT, frmFabricanteProcurar).propIDFab_Escolha
+                    '
+                    ' altera o EnumFlagEstado para ALTERADO
+                    If IIf(IsNothing(oldID), 0, oldID) <> IIf(IsNothing(_produto.IDFabricante), 0, _produto.IDFabricante) Then
+                        If Sit = EnumFlagEstado.RegistroSalvo Then Sit = EnumFlagEstado.Alterado
+                    End If
+                    '
+                    ' move focus
+                    txtFabricante.Focus()
                     '
             End Select
             '
@@ -1016,62 +1072,87 @@ Public Class frmProduto
         '
     End Sub
     '
-    Private Sub btnNovoTipo_Click(sender As Object, e As EventArgs) Handles btnNovoTipo.Click
+    Private Sub btnNovoTipo_Click(sender As Object, e As EventArgs) Handles _
+        btnNovoTipo.Click, btnNovoSubTipo.Click, btnNovaCategoria.Click
         '
         Dim myTipo As Integer? = _produto.IDProdutoTipo
-        Dim frmTipo As Form = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.Tipo, myTipo)
         '
-        Panel1.BackColor = Color.Silver
-        frmTipo.ShowDialog()
-        Panel1.BackColor = Color.SlateGray
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmTipo As New Form
+            '
+            Select Case DirectCast(sender, ToolStripMenuItem).Name
+                Case "btnNovoTipo"
+                    frmTipo = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.None, myTipo)
+                Case "btnNovoSubTipo"
+                    If IsNothing(myTipo) Then
+                        MessageBox.Show("É necessário escolher um Tipo de Produto antes de inserir novo SubTipo...",
+                                        "Inserir SubTipo", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        txtProdutoTipo.Focus()
+                        Return
+                    End If
+                    frmTipo = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.SubTipo, myTipo)
+                Case "btnNovaCategoria"
+                    If IsNothing(myTipo) Then
+                        MessageBox.Show("É necessário escolher um Tipo de Produto antes de inserir nova Categoria...",
+                                        "Inserir Categoria", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                        txtProdutoTipo.Focus()
+                        Return
+                    End If
+                    frmTipo = New frmProdutoTipo(frmProdutoTipo.ProcurarPor.Categoria, myTipo)
+            End Select
+            '
+            Panel1.BackColor = Color.Silver
+            frmTipo.ShowDialog()
+            Panel1.BackColor = Color.SlateGray
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Abrir formulário de Tipos/SubTipos/Categorias..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
         '--- suspende o Binding para preservar os valores
         lblIDProduto.Tag = 0
         bindP.SuspendBinding()
         '
-        '--- carrega os combos novamente
-        'VerificaAlteracoes_Tipo_SubTipo_Categoria
-
-        '
         '--- retoma os Binding que foi suspenso
         bindP.ResumeBinding()
         '
     End Sub
-
+    '
     Private Sub btnAutoresLista_Click(sender As Object, e As EventArgs) Handles btnAutoresLista.Click
-        Dim frmAut As New frmAutoresProcurar(Me)
         '
         Panel1.BackColor = Color.Silver
-        frmAut.ShowDialog()
         '
-        If frmAut.DialogResult = DialogResult.Yes Then
-            txtAutor.Text = frmAut.propAutorEscolhido
-        End If
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim frmAut As New frmAutoresProcurar(Me)
+            '
+            frmAut.ShowDialog()
+            '
+            If frmAut.DialogResult = DialogResult.OK Then
+                txtAutor.Text = frmAut.propAutorEscolhido
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao obter a lista de Autores..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
         Panel1.BackColor = Color.SlateGray
         '
         txtAutor.Focus()
         txtAutor.SelectAll()
-    End Sub
-
-    Private Sub btnFabricantes_Click(sender As Object, e As EventArgs) Handles btnFabricantes.Click
-        '
-        '--- abre o formulário de ProdutoTipo, SubTipo e Categoria
-        Dim frmFab As New frmFabricante(True, Me)
-        frmFab.ShowDialog()
-        '
-        '--- suspende o Binding para preservar os valores
-        lblIDProduto.Tag = 0
-        bindP.SuspendBinding()
-        '
-        '--- carrega os combos novamente
-        CarregaComboFabricante()
-        '
-        '--- retoma os Binding que foi suspenso
-        bindP.ResumeBinding()
-        '
-        '--- seleciona o focu
-        cmbIDFabricante.Focus()
         '
     End Sub
     '
@@ -1165,7 +1246,7 @@ Public Class frmProduto
         listControles.Add(txtProdutoSubTipo)
         listControles.Add(txtProdutoCategoria)
         listControles.Add(txtAutor)
-        listControles.Add(cmbIDFabricante)
+        listControles.Add(txtFabricante)
         listControles.Add(txtMargem)
         listControles.Add(txtMargemMin)
         listControles.Add(txtDesconto)
@@ -1204,6 +1285,9 @@ Public Class frmProduto
         Else
             toolTip1.Show(myControl.Tag, myControl, myControl.Width - 30, -40, 1000)
         End If
+        '
+        RemoveHandler myControl.GotFocus, AddressOf showToolTip
+        RemoveHandler myControl.MouseHover, AddressOf showToolTip
         '
     End Sub
     '

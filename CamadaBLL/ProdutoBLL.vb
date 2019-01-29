@@ -288,7 +288,15 @@ Public Class ProdutoBLL
         Conn.Parameters.Add(New SqlParameter("@IDFilial", _filial))
         '
         Try
-            Return objDB.ExecuteProcedureID("uspProduto_Inserir", Conn.Parameters)
+            '
+            Dim obj As Object = objDB.ExecuteProcedureID("uspProduto_Inserir", Conn.Parameters)
+            '
+            If Not IsNothing(obj) AndAlso IsNumeric(obj) Then
+                Return obj
+            Else
+                Throw New Exception(obj)
+            End If
+            '
         Catch ex As Exception
             Throw ex
             Return Nothing
@@ -459,7 +467,7 @@ Public Class ProdutoBLL
     '---------------------------------------------------------------------------------------------------------
     ' BUSCA UM NOVO NUMERO DE REGISTRO RGPRODUTO VALIDO NA BASE DE DADOS
     '---------------------------------------------------------------------------------------------------------
-    Public Function ProcuraMaxRGProduto() As Integer
+    Public Function ProcuraMaxRGProduto() As Integer?
         '
         Dim SQL As New SQLControl
         '
@@ -479,26 +487,50 @@ Public Class ProdutoBLL
                     Throw New Exception(SQL.Exception)
                 End If
                 '
-                If SQL.RecordCount > 0 Then
-                    Dim r As DataRow = SQL.DBDT.Rows(0)
+                If SQL.RecordCount = 0 Then Return ProcuraMaxRGProduto_Interno()
+                '
+                Dim r As DataRow = SQL.DBDT.Rows(0)
+                '
+                If IsDBNull(r(0)) Then
+                    Return ProcuraMaxRGProduto_Interno()
+                Else
+                    Return r(0)
+                End If
+                '
+            Else '--- procura na TBLPRODUTO
+                Return ProcuraMaxRGProduto_Interno()
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+            Return Nothing
+        End Try
+        '
+    End Function
+    '
+    '---------------------------------------------------------------------------------------------------------
+    ' BUSCA UM NOVO NUMERO DE REGISTRO RGPRODUTO VALIDO NA BASE DE DADOS
+    '---------------------------------------------------------------------------------------------------------
+    Public Function ProcuraMaxRGProduto_Interno() As Integer
+        '
+        Dim SQL As New SQLControl
+        '
+        Try
+            SQL.ExecQuery("SELECT MAX(RGProduto) FROM tblProduto")
+            '
+            If SQL.HasException(True) Then
+                Return Nothing
+            End If
+            '
+            If SQL.RecordCount > 0 Then
+                Dim r As DataRow = SQL.DBDT.Rows(0)
+                If Not IsDBNull(r(0)) Then
                     Return r(0)
                 Else
                     Return 0
                 End If
-            Else '--- procura na TBLPRODUTO (TABELA NOVA)
-                SQL.ExecQuery("SELECT MAX(RGProduto) FROM tblProduto")
-                '
-                If SQL.HasException(True) Then
-                    Return 0
-                    Exit Function
-                End If
-                '
-                If SQL.RecordCount > 0 Then
-                    Dim r As DataRow = SQL.DBDT.Rows(0)
-                    Return r(0)
-                Else
-                    Return 0
-                End If
+            Else
+                Return 0
             End If
             '
         Catch ex As Exception
@@ -960,7 +992,7 @@ Public Class TipoSubTipoCategoriaBLL
         Dim SQL As New SQLControl
         Dim newID As Integer
         Dim myQuery As String = "INSERT INTO tblProdutoTipo" &
-                                " (ProdutoTipo, Ativo) VALUES ('@ProdutoTipo', 'TRUE')"
+                                " (ProdutoTipo, Ativo) VALUES (@ProdutoTipo, 'TRUE')"
         '
         SQL.AddParam("@ProdutoTipo", ProdutoTipo)
         '
@@ -1049,7 +1081,7 @@ Public Class TipoSubTipoCategoriaBLL
         Dim SQL As New SQLControl
         Dim newID As Integer
         Dim myQuery As String = "INSERT INTO tblProdutoSubTipo (ProdutoSubTipo, IDProdutoTipo, Ativo) " &
-                                "VALUES ('@SubTipo', @IDTipo, 'TRUE')"
+                                "VALUES (@SubTipo, @IDTipo, 'TRUE')"
         '
         SQL.AddParam("@IDTipo", IDTipo)
         SQL.AddParam("@SubTipo", SubTipo)
@@ -1081,9 +1113,9 @@ Public Class TipoSubTipoCategoriaBLL
         '
         Dim SQL As New SQLControl
         Dim myQuery As String = "UPDATE tblProdutoSubTipo " &
-                                "SET ProdutoSubTipo = '@SubTipo', " &
+                                "SET ProdutoSubTipo = @SubTipo, " &
                                 " Ativo = @Ativo" &
-                                " WHERE IDSubTipo = @IDSubTipo"
+                                " WHERE IDProdutoSubTipo = @IDSubTipo"
         '
         SQL.AddParam("@SubTipo", SubTipo)
         SQL.AddParam("@Ativo", Ativo)
@@ -1139,7 +1171,7 @@ Public Class TipoSubTipoCategoriaBLL
         Dim SQL As New SQLControl
         Dim newID As Integer
         Dim myQuery As String = "INSERT INTO tblProdutoCategoria (ProdutoSubTipo, IDProdutoTipo, Ativo) " &
-                                "VALUES ('@Categoria', @IDTipo, 'TRUE')"
+                                "VALUES (@Categoria, @IDTipo, 'TRUE')"
         '
         SQL.AddParam("@IDTipo", IDTipo)
         SQL.AddParam("@Categoria", Categoria)
@@ -1171,7 +1203,7 @@ Public Class TipoSubTipoCategoriaBLL
         '
         Dim SQL As New SQLControl
         Dim myQuery As String = "UPDATE tblProdutoCategoria" &
-                                " SET ProdutoCategoria = '@Categoria', " &
+                                " SET ProdutoCategoria = @Categoria, " &
                                 " Ativo = @Ativo" &
                                 " WHERE IDCategoria = @IDCategoria"
         '

@@ -49,11 +49,12 @@ Partial Class frmPrincipal
         Me.tsbVendas = New System.Windows.Forms.ToolStripSplitButton()
         Me.miNovaVendaVista = New System.Windows.Forms.ToolStripMenuItem()
         Me.miNovaVendaPrazo = New System.Windows.Forms.ToolStripMenuItem()
-        Me.miProcurarOperacaoSaida = New System.Windows.Forms.ToolStripMenuItem()
-        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
-        Me.miProcurarTroca = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator18 = New System.Windows.Forms.ToolStripSeparator()
         Me.miNovaSimplesSaida = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miNovaDevolucaoSaida = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ToolStripSeparator5 = New System.Windows.Forms.ToolStripSeparator()
+        Me.miProcurarOperacaoSaida = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miProcurarTroca = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsbCompras = New System.Windows.Forms.ToolStripSplitButton()
         Me.miNovaCompra = New System.Windows.Forms.ToolStripMenuItem()
         Me.miSimplesEntrada = New System.Windows.Forms.ToolStripMenuItem()
@@ -110,7 +111,7 @@ Partial Class frmPrincipal
         Me.Label2 = New System.Windows.Forms.Label()
         Me.lblHora = New System.Windows.Forms.Label()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.miNovaDevolucaoSaida = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miCFOP = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsPrincipal.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SContainerPrincipal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -340,27 +341,6 @@ Partial Class frmPrincipal
         Me.miNovaVendaPrazo.Size = New System.Drawing.Size(234, 30)
         Me.miNovaVendaPrazo.Text = "Nova Venda à Prazo"
         '
-        'miProcurarOperacaoSaida
-        '
-        Me.miProcurarOperacaoSaida.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
-        Me.miProcurarOperacaoSaida.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.miProcurarOperacaoSaida.Name = "miProcurarOperacaoSaida"
-        Me.miProcurarOperacaoSaida.Size = New System.Drawing.Size(234, 30)
-        Me.miProcurarOperacaoSaida.Text = "Procurar Venda | Saída"
-        '
-        'ToolStripSeparator5
-        '
-        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
-        Me.ToolStripSeparator5.Size = New System.Drawing.Size(231, 6)
-        '
-        'miProcurarTroca
-        '
-        Me.miProcurarTroca.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
-        Me.miProcurarTroca.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.miProcurarTroca.Name = "miProcurarTroca"
-        Me.miProcurarTroca.Size = New System.Drawing.Size(234, 30)
-        Me.miProcurarTroca.Text = "Procurar Troca"
-        '
         'ToolStripSeparator18
         '
         Me.ToolStripSeparator18.Name = "ToolStripSeparator18"
@@ -373,6 +353,35 @@ Partial Class frmPrincipal
         Me.miNovaSimplesSaida.Name = "miNovaSimplesSaida"
         Me.miNovaSimplesSaida.Size = New System.Drawing.Size(234, 30)
         Me.miNovaSimplesSaida.Text = "Nova Simples Saída"
+        '
+        'miNovaDevolucaoSaida
+        '
+        Me.miNovaDevolucaoSaida.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
+        Me.miNovaDevolucaoSaida.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miNovaDevolucaoSaida.Name = "miNovaDevolucaoSaida"
+        Me.miNovaDevolucaoSaida.Size = New System.Drawing.Size(234, 30)
+        Me.miNovaDevolucaoSaida.Text = "Nova Devolução"
+        '
+        'ToolStripSeparator5
+        '
+        Me.ToolStripSeparator5.Name = "ToolStripSeparator5"
+        Me.ToolStripSeparator5.Size = New System.Drawing.Size(231, 6)
+        '
+        'miProcurarOperacaoSaida
+        '
+        Me.miProcurarOperacaoSaida.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
+        Me.miProcurarOperacaoSaida.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miProcurarOperacaoSaida.Name = "miProcurarOperacaoSaida"
+        Me.miProcurarOperacaoSaida.Size = New System.Drawing.Size(234, 30)
+        Me.miProcurarOperacaoSaida.Text = "Procurar Venda | Saída"
+        '
+        'miProcurarTroca
+        '
+        Me.miProcurarTroca.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
+        Me.miProcurarTroca.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miProcurarTroca.Name = "miProcurarTroca"
+        Me.miProcurarTroca.Size = New System.Drawing.Size(234, 30)
+        Me.miProcurarTroca.Text = "Procurar Troca"
         '
         'tsbCompras
         '
@@ -643,7 +652,7 @@ Partial Class frmPrincipal
         'tsbConfig
         '
         Me.tsbConfig.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbConfig.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miConfiguracaoDataPadrao, Me.miConfiguracaoSistema, Me.ToolStripSeparator2, Me.miConfiguracaoUsuarios, Me.ToolStripSeparator15, Me.miFazerBackup})
+        Me.tsbConfig.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miConfiguracaoDataPadrao, Me.miConfiguracaoSistema, Me.miCFOP, Me.ToolStripSeparator2, Me.miConfiguracaoUsuarios, Me.ToolStripSeparator15, Me.miFazerBackup})
         Me.tsbConfig.Image = Global.NovaSiao.My.Resources.Resources.Controles
         Me.tsbConfig.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbConfig.Name = "tsbConfig"
@@ -871,13 +880,13 @@ Partial Class frmPrincipal
         Me.Timer1.Enabled = True
         Me.Timer1.Interval = 600
         '
-        'miNovaDevolucaoSaida
+        'miCFOP
         '
-        Me.miNovaDevolucaoSaida.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
-        Me.miNovaDevolucaoSaida.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.miNovaDevolucaoSaida.Name = "miNovaDevolucaoSaida"
-        Me.miNovaDevolucaoSaida.Size = New System.Drawing.Size(234, 30)
-        Me.miNovaDevolucaoSaida.Text = "Nova Devolução"
+        Me.miCFOP.Image = Global.NovaSiao.My.Resources.Resources.Controles_24x24
+        Me.miCFOP.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miCFOP.Name = "miCFOP"
+        Me.miCFOP.Size = New System.Drawing.Size(246, 30)
+        Me.miCFOP.Text = "CFOP das Operações"
         '
         'frmPrincipal
         '
@@ -998,4 +1007,5 @@ Partial Class frmPrincipal
     Friend WithEvents miAReceberMovInterna As ToolStripMenuItem
     Friend WithEvents miAPagarMovInterna As ToolStripMenuItem
     Friend WithEvents miNovaDevolucaoSaida As ToolStripMenuItem
+    Friend WithEvents miCFOP As ToolStripMenuItem
 End Class

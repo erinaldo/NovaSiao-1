@@ -24,8 +24,6 @@ Public Class frmVendaItem
         _precoOrigem = pOrigem '--- DEFINE SE É ENTRADA OU SAÍDA
         BackColor = Color.Azure
         Panel1.BackColor = Color.SlateGray
-        'BackColor = Color.Beige
-        'Panel1.BackColor = Color.Brown
         '
         If fOrigem.Name = "frmTrocaSimples" Then
             lblTitulo.Text = "Entrada de Produto - Item"
@@ -35,8 +33,9 @@ Public Class frmVendaItem
         _filial = Filial
         '
         '--- DEFINE E PREECHE A CLASSE
-        propItem = Item
-        propItem.IDFilial = Filial
+        _clItem = Item
+        BindItem.DataSource = _clItem
+        PreencheDataBindings()
         '
         If IsNothing(Item.IDTransacaoItem) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
             propAcao = EnumFlagAcao.INSERIR
@@ -63,28 +62,6 @@ Public Class frmVendaItem
             End If
             '
         End Set
-    End Property
-    '
-    '--- Propriedade propItem
-    Public Property propItem() As clTransacaoItem
-        '
-        Get
-            Return _clItem
-        End Get
-        '
-        Set(ByVal value As clTransacaoItem)
-            _clItem = value
-            '
-            If IsNothing(BindItem.DataSource) Then
-                BindItem.DataSource = _clItem
-                PreencheDataBindings()
-            Else
-                BindItem.Clear()
-                BindItem.DataSource = _clItem
-                BindItem.ResetBindings(True)
-            End If
-        End Set
-        '
     End Property
     '
 #End Region
@@ -278,6 +255,7 @@ Public Class frmVendaItem
 #Region "BUTTONS FUNCTION"
 
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
+        '
         '--- VERIFICA SE OS VALORES ESTÃO PREENCHIDOS
         Dim A As Boolean = IsNothing(_clItem.RGProduto) OrElse String.IsNullOrEmpty(_clItem.RGProduto)
         Dim B As Boolean = IsNothing(_clItem.Produto) OrElse String.IsNullOrEmpty(_clItem.Produto)

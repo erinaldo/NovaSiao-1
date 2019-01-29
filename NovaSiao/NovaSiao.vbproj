@@ -451,6 +451,12 @@
     <Compile Include="FormsPrincipais\frmBackup.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FormsPrincipais\frmCFOP.designer.vb">
+      <DependentUpon>frmCFOP.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FormsPrincipais\frmCFOP.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FormsPrincipais\frmConfig.Designer.vb">
       <DependentUpon>frmConfig.vb</DependentUpon>
     </Compile>
@@ -905,6 +911,9 @@
     <EmbeddedResource Include="FormsPrincipais\frmBackup.resx">
       <DependentUpon>frmBackup.vb</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FormsPrincipais\frmCFOP.resx">
+      <DependentUpon>frmCFOP.vb</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormsPrincipais\frmConfig.resx">
       <DependentUpon>frmConfig.vb</DependentUpon>
     </EmbeddedResource>
@@ -1092,9 +1101,9 @@
     <None Include="Resources\NovaSiao_PNG_256px.PNG" />
     <None Include="Resources\limpar 24x24.png" />
     <None Include="packages.config" />
-    <Content Include="ConfigFiles\Config.xml">
+    <AdditionalFiles Include="ConfigFiles\Config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    </AdditionalFiles>
     <None Include="Resources\Clientes.png" />
   </ItemGroup>
   <ItemGroup>
