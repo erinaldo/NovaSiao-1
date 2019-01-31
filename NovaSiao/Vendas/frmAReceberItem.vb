@@ -8,6 +8,8 @@ Public Class frmAReceberItem
     Private _vlMaximo As Double
     Private BindRec As New BindingSource
     '
+#Region "SUB NEW | PROPERTS"
+    '
     '-------------------------------------------------------------------------------------------------
     ' SUB NEW
     '-------------------------------------------------------------------------------------------------
@@ -29,13 +31,17 @@ Public Class frmAReceberItem
             StartPosition = FormStartPosition.Manual
             Location = New Point(Posicao.X - Me.Width, Posicao.Y)
         End If
+        '
     End Sub
     '
-    '--- Propriedade propAcao
+    '--- PROPRIEDADE PROPACAO
+    '-------------------------------------------------------------------------------------------------
     Public Property propAcao() As EnumFlagAcao
+        '
         Get
             Return _acao
         End Get
+        '
         Set(ByVal value As EnumFlagAcao)
             _acao = value
             '
@@ -50,9 +56,11 @@ Public Class frmAReceberItem
             End If
             '
         End Set
+        '
     End Property
     '
-    '--- Propriedade propItem
+    '--- PROPRIEDADE PROPITEM
+    '-------------------------------------------------------------------------------------------------
     Public Property propAReceber() As clAReceberParcela
         Get
             Return _clParc
@@ -70,6 +78,10 @@ Public Class frmAReceberItem
             End If
         End Set
     End Property
+    '
+#End Region '/ SUB NEW | PROPERTS
+    '
+#Region "BINDINGS"
     '
     '-------------------------------------------------------------------------------------------------
     ' BINDINGS DOS CAMPOS
@@ -100,6 +112,10 @@ Public Class frmAReceberItem
     Private Sub FormatDate(sender As Object, e As System.Windows.Forms.ConvertEventArgs)
         e.Value = FormatDateTime(e.Value, DateFormat.ShortDate)
     End Sub
+    '
+#End Region '/ BINDINGS
+    '
+#Region "BUTTONS FUNCTION"
     '
     '-------------------------------------------------------------------------------------------------
     ' BTN INSERIR / FECHAR
@@ -143,14 +159,21 @@ Public Class frmAReceberItem
         '-------------------------------------------------------------------
         ' FECHA O DIALOG
         '-------------------------------------------------------------------
+        BindRec.EndEdit()
         DialogResult = DialogResult.OK
         '
     End Sub
     '
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
+        '
         BindRec.CancelEdit()
-        Close()
+        DialogResult = DialogResult.Cancel
+        '
     End Sub
+    '
+#End Region '/ BUTTONS FUNCTION
+    '
+#Region "NAVEGACAO"
     '
     '-------------------------------------------------------------------------------------------------
     ' NAVEGACAO ENTRE OS CAMPOS
@@ -180,6 +203,10 @@ Public Class frmAReceberItem
             SendKeys.Send("{Tab}")
         End If
     End Sub
+    '
+#End Region '/ NAVEGACAO
+    '
+#Region "DESIGN VISUAL"
     '
     '-------------------------------------------------------------------------------------------------
     ' CONSTRUIR UMA BORDA NO FORMULÁRIO
@@ -213,5 +240,7 @@ Public Class frmAReceberItem
         Dim pnl As Panel = _formOrigem.Controls("Panel1")
         pnl.BackColor = Color.SlateGray
     End Sub
+    '
+#End Region '/ DESIGN VISUAL
     '
 End Class

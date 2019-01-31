@@ -161,7 +161,6 @@ Partial Class frmVendaItem
         '
         'btnOK
         '
-        Me.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK
         Me.btnOK.ForeColor = System.Drawing.Color.MidnightBlue
         Me.btnOK.Image = Global.NovaSiao.My.Resources.Resources.accept
         Me.btnOK.ImageAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -185,7 +184,6 @@ Partial Class frmVendaItem
         'btnCancelar
         '
         Me.btnCancelar.CausesValidation = False
-        Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCancelar.ForeColor = System.Drawing.Color.DarkRed
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.block
         Me.btnCancelar.ImageAlign = System.Drawing.ContentAlignment.MiddleRight

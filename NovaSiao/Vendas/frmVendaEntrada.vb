@@ -2,6 +2,7 @@
 Imports CamadaDTO
 
 Public Class frmVendaEntrada
+    '
     Private _formOrigem As Form
     Private _vlMaximo As Double
     Private _Pag As clMovimentacao
@@ -357,27 +358,22 @@ Public Class frmVendaEntrada
             Exit Sub
         End If
         '
-        '--- Devolve o pagamento para o formOrigem
-        Select Case _formOrigem.Name
-            Case "frmVendaVista"
-                _Pag.MovForma = lstItens.SelectedItems(0).Text
-                _Pag.IDMovForma = lstItens.SelectedItems(0).Value
-                '
-                If _Acao = EnumFlagAcao.INSERIR Then
-                    DirectCast(_formOrigem, frmVendaVista).Pagamentos_Manipulacao(_Pag, EnumFlagAcao.INSERIR)
-                ElseIf _Acao = EnumFlagAcao.EDITAR Then
-
-                End If
-                '
-            Case Else
-                MessageBox.Show("Ainda não implementado")
-        End Select
-        Close()
+        '--- Devolve o credito para o formOrigem
+        _Pag.MovForma = lstItens.SelectedItems(0).Text
+        _Pag.IDMovForma = lstItens.SelectedItems(0).Value
+        _Pag.MovValor = txtValor.Text
+        '
+        bindPag.EndEdit()
+        DialogResult = DialogResult.OK
+        '
     End Sub
     '
     '--- BTN FECHAR | CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
-        Close()
+        '
+        bindPag.CancelEdit()
+        DialogResult = DialogResult.Cancel
+        '
     End Sub
     '
     '--- BTN PROCURAR TIPO

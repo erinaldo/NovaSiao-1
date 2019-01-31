@@ -113,6 +113,38 @@ Public Class TransacaoItemBLL
     End Function
     '
     '==========================================================================================
+    ' GET O ESTOQUE DE UM PRODUTO PELO ID E PELA FILIAL
+    '==========================================================================================
+    Public Function Item_GetEstoque(_IDProduto As Integer, _IDFilial As Integer) As DataTable
+        Dim db As New AcessoDados
+        '
+        db.LimparParametros()
+        '
+        Dim myQuery As String = "SELECT E.Quantidade AS Estoque, E.Reservado " &
+                                "FROM tblEstoque AS E " &
+                                "WHERE IDProduto = @IDProduto AND IDFilial = @IDFilial"
+        '
+        '--- Adiciona IDFilial
+        db.AdicionarParametros("@IDFilial", _IDFilial)
+        db.AdicionarParametros("@IDProduto", _IDProduto)
+        '
+        Try
+            '
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
+            '
+            If dt.Rows.Count = 0 Then
+                Throw New Exception("Estoque do Produto na Filial não foi encontrado...")
+            Else
+                Return dt
+            End If
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
+    End Function
+    '
+    '==========================================================================================
     ' CONVERTE DATATABLE IN LIST OF CLTRANSACAOITEM
     '==========================================================================================
     Private Function ConvertDt_in_ListOf(dt As DataTable, withCustos As Boolean) As List(Of clTransacaoItem)

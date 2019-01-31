@@ -57,7 +57,7 @@ Partial Class frmVendaEntrada
         Me.Label1.Location = New System.Drawing.Point(21, 73)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(37, 19)
-        Me.Label1.TabIndex = 1
+        Me.Label1.TabIndex = 2
         Me.Label1.Text = "Tipo"
         '
         'Label3
@@ -66,7 +66,7 @@ Partial Class frmVendaEntrada
         Me.Label3.Location = New System.Drawing.Point(17, 282)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(42, 19)
-        Me.Label3.TabIndex = 6
+        Me.Label3.TabIndex = 9
         Me.Label3.Text = "Valor"
         '
         'btnOK
@@ -77,7 +77,7 @@ Partial Class frmVendaEntrada
         Me.btnOK.Location = New System.Drawing.Point(65, 318)
         Me.btnOK.Name = "btnOK"
         Me.btnOK.Size = New System.Drawing.Size(111, 48)
-        Me.btnOK.TabIndex = 8
+        Me.btnOK.TabIndex = 11
         Me.btnOK.Text = "&Receber"
         Me.btnOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnOK.UseVisualStyleBackColor = True
@@ -85,13 +85,12 @@ Partial Class frmVendaEntrada
         'btnCancelar
         '
         Me.btnCancelar.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCancelar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_30px
         Me.btnCancelar.Location = New System.Drawing.Point(183, 318)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(111, 48)
-        Me.btnCancelar.TabIndex = 9
+        Me.btnCancelar.TabIndex = 12
         Me.btnCancelar.Text = "&Cancelar"
         Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -105,7 +104,7 @@ Partial Class frmVendaEntrada
         Me.lblFilial.Name = "lblFilial"
         Me.lblFilial.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
         Me.lblFilial.Size = New System.Drawing.Size(162, 23)
-        Me.lblFilial.TabIndex = 10
+        Me.lblFilial.TabIndex = 13
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -117,7 +116,7 @@ Partial Class frmVendaEntrada
         Me.lblConta.Name = "lblConta"
         Me.lblConta.Padding = New System.Windows.Forms.Padding(3, 0, 0, 0)
         Me.lblConta.Size = New System.Drawing.Size(189, 23)
-        Me.lblConta.TabIndex = 11
+        Me.lblConta.TabIndex = 14
         Me.lblConta.Text = "Conta"
         Me.lblConta.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
         '
@@ -127,7 +126,7 @@ Partial Class frmVendaEntrada
         Me.txtValor.Location = New System.Drawing.Point(65, 279)
         Me.txtValor.Name = "txtValor"
         Me.txtValor.Size = New System.Drawing.Size(111, 31)
-        Me.txtValor.TabIndex = 7
+        Me.txtValor.TabIndex = 10
         Me.txtValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtFormaTipo
@@ -135,7 +134,7 @@ Partial Class frmVendaEntrada
         Me.txtFormaTipo.Location = New System.Drawing.Point(65, 70)
         Me.txtFormaTipo.Name = "txtFormaTipo"
         Me.txtFormaTipo.Size = New System.Drawing.Size(151, 27)
-        Me.txtFormaTipo.TabIndex = 2
+        Me.txtFormaTipo.TabIndex = 3
         '
         'btnProcurarTipo
         '
@@ -148,7 +147,7 @@ Partial Class frmVendaEntrada
         Me.btnProcurarTipo.RoundedCornersMask = CType(15, Byte)
         Me.btnProcurarTipo.RoundedCornersRadius = 0
         Me.btnProcurarTipo.Size = New System.Drawing.Size(34, 27)
-        Me.btnProcurarTipo.TabIndex = 3
+        Me.btnProcurarTipo.TabIndex = 4
         Me.btnProcurarTipo.TabStop = False
         Me.btnProcurarTipo.Text = "..."
         Me.btnProcurarTipo.UseCompatibleTextRendering = True
@@ -168,7 +167,7 @@ Partial Class frmVendaEntrada
         Me.lstItens.MultiSelect = False
         Me.lstItens.Name = "lstItens"
         Me.lstItens.Size = New System.Drawing.Size(274, 170)
-        Me.lstItens.TabIndex = 5
+        Me.lstItens.TabIndex = 8
         Me.lstItens.TabStop = False
         '
         'clnForma
@@ -183,7 +182,7 @@ Partial Class frmVendaEntrada
         Me.txtPesquisa.Location = New System.Drawing.Point(262, 70)
         Me.txtPesquisa.Name = "txtPesquisa"
         Me.txtPesquisa.Size = New System.Drawing.Size(77, 27)
-        Me.txtPesquisa.TabIndex = 4
+        Me.txtPesquisa.TabIndex = 5
         Me.txtPesquisa.Visible = False
         '
         'Label2
@@ -192,7 +191,7 @@ Partial Class frmVendaEntrada
         Me.Label2.Location = New System.Drawing.Point(10, 103)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(49, 19)
-        Me.Label2.TabIndex = 1
+        Me.Label2.TabIndex = 7
         Me.Label2.Text = "Forma"
         '
         'lblPesquisa
@@ -203,7 +202,7 @@ Partial Class frmVendaEntrada
         Me.lblPesquisa.Location = New System.Drawing.Point(265, 56)
         Me.lblPesquisa.Name = "lblPesquisa"
         Me.lblPesquisa.Size = New System.Drawing.Size(32, 13)
-        Me.lblPesquisa.TabIndex = 1
+        Me.lblPesquisa.TabIndex = 6
         Me.lblPesquisa.Text = "Filtro"
         Me.lblPesquisa.Visible = False
         '

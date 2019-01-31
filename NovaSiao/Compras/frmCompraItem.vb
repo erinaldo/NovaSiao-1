@@ -3,13 +3,16 @@ Imports CamadaBLL
 Imports System.ComponentModel
 '
 Public Class frmCompraItem
+    '
+    Private itemBLL As New TransacaoItemBLL
     Private _clItem As clTransacaoItem
     Private _acao As EnumFlagAcao
-    Private _pOrigem As EnumPrecoOrigem
+    Private _precoOrigem As EnumPrecoOrigem
     Private _formOrigem As Form
-    Private _filial As Integer?
+    Private _IDFilial As Integer?
     Private BindItem As New BindingSource
-    Private _IDAlterado As Boolean = False
+    Private _RGAlterado As Boolean = False '--> detecta alteracao do RGProduto
+    Private QuantAnterior As Integer '--> backup da quantidade original
     '
 #Region "NEW | PROPERTYS"
     '
@@ -19,16 +22,25 @@ Public Class frmCompraItem
         InitializeComponent()
         ' 
         ' Add any initialization after the InitializeComponent() call.
-        _pOrigem = pOrigem '--- DEFINE SE É ENTRADA OU SAÍDA PARA OBTER O PREÇO CORRETO
+        _precoOrigem = pOrigem '--- DEFINE SE É ENTRADA OU SAÍDA PARA OBTER O PREÇO CORRETO
         _formOrigem = fOrigem '--- DEFINE O FORMULARIO DE ORIGEM PARA RETORNAR
-        _filial = Filial
-        propItem = Item
+        _IDFilial = Filial
+        '
+        '--- Define o BINDING
+        _clItem = Item
+        BindItem.DataSource = _clItem
+        PreencheDataBindings()
         '
         If IsNothing(Item.IDTransacaoItem) Then '--- DEFINE SE É NOVA OU ALTERAÇÃO
             propAcao = EnumFlagAcao.INSERIR
         Else
             propAcao = EnumFlagAcao.EDITAR
+            QuantAnterior = Item.Quantidade
+            ObtemEstoque()
         End If
+        '
+        '--- evento que detecta alteracao do RGProduto
+        _RGAlterado = False
         '
         '--- posiciona o form pelo FORMORIGEM
         Dim pos As Point = fOrigem.PointToScreen(Point.Empty)
@@ -41,40 +53,24 @@ Public Class frmCompraItem
     '
     '--- Propriedade propAcao
     Public Property propAcao() As EnumFlagAcao
+        '
         Get
             Return _acao
         End Get
+        '
         Set(ByVal value As EnumFlagAcao)
             _acao = value
             '
             If _acao = EnumFlagAcao.INSERIR Then
                 btnOK.Text = "&Inserir"
                 lblToolStripInfo.Text = "Inserindo Novo Item - Para cadastrar NOVO Produto pressione tecla N"
-            ElseIf _acao = enumFlagAcao.EDITAR Then
+            ElseIf _acao = EnumFlagAcao.EDITAR Then
                 btnOK.Text = "&Alterar"
                 lblToolStripInfo.Text = "Editando Item"
             End If
             '
         End Set
-    End Property
-    '
-    '--- Propriedade propItem
-    Public Property propItem() As clTransacaoItem
-        Get
-            Return _clItem
-        End Get
-        Set(ByVal value As clTransacaoItem)
-            _clItem = value
-            '
-            If IsNothing(BindItem.DataSource) Then
-                BindItem.DataSource = _clItem
-                PreencheDataBindings()
-            Else
-                BindItem.Clear()
-                BindItem.DataSource = _clItem
-                BindItem.ResetBindings(True)
-            End If
-        End Set
+        '
     End Property
     '
 #End Region
@@ -115,8 +111,13 @@ Public Class frmCompraItem
         AddHandler lblReservado.DataBindings("text").Format, AddressOf idFormatQ2
         '
         '--- Detecta quando o IDProduto foi alterado
-        AddHandler _clItem.AoAlterarIDProduto, AddressOf IDProdutoAlterado
+        AddHandler _clItem.AoAlterarRGProduto, AddressOf RGProdutoAlterado
         '
+    End Sub
+    '
+    '--- DETECTA QUANDO O IDPRODUTO FOI ALTERADO
+    Private Sub RGProdutoAlterado()
+        _RGAlterado = True
     End Sub
     '
     ' FORMATA OS BINDINGS
@@ -133,25 +134,15 @@ Public Class frmCompraItem
         e.Value = Format(e.Value, "0.00")
     End Sub
     '
-    Private Sub IDProdutoAlterado()
-        _IDAlterado = True
-    End Sub
-    '
 #End Region
     '
-#Region "OUTRAS FUNCOES"
+#Region "VALIDA RGPRODUTO OU COD BARRAS"
     '
-    '--- VALIDA O TEXTO DO RGPRODUTO E ACIONA O ObterProdutoPeloRG
+    '--- VALIDA O TEXTO DO RGPRODUTO E ACIONA O ObterProdutoPeloRG OU CODBARRAS
     Private Sub txtRGProduto_Validating(sender As Object, e As CancelEventArgs) Handles txtRGProduto.Validating
         '
         '-- Verifica se o controle RGProduto sofreu alguma alteracao
-        If _IDAlterado = False Then Exit Sub
-        '
-        If String.IsNullOrEmpty(txtRGProduto.Text) Then
-            propItem = New clTransacaoItem
-            e.Cancel = False
-            Exit Sub
-        End If
+        If Not _RGAlterado Then Exit Sub
         '
         If ObterProdutoPeloRG() = False Then e.Cancel = True
         '
@@ -160,20 +151,23 @@ Public Class frmCompraItem
     '--- OBTEM AS INFORMACOES DO PRODUTO APOS INSERIR RGPRODUTO
     Private Function ObterProdutoPeloRG() As Boolean
         '
-        Dim itemBLL As New TransacaoItemBLL
-        '
         '--- obter as informacoes do produto digitado
         Try
-            Dim ItemProduto As clTransacaoItem = itemBLL.TransacaoItem_Get_New(txtRGProduto.Text, _filial)
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim ItemProduto As clTransacaoItem = itemBLL.TransacaoItem_Get_New(txtRGProduto.Text, _IDFilial)
             '
             If String.IsNullOrEmpty(ItemProduto.Produto) Then
                 MessageBox.Show("Registro de Produto não encontrado..." & vbNewLine &
-                                "Favor digite um Registro válido.", "Reg. Inválido",
+                                "Favor digitar um Registro válido.", "Reg. Inválido",
                                 MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
-                txtRGProduto.Text = String.Empty
+                '
+                BindItem.CancelEdit()
                 Return False
             End If
             '
+            '--- Preenche a classe clItem
             With _clItem
                 .Produto = ItemProduto.Produto
                 .PVenda = ItemProduto.PVenda
@@ -187,9 +181,9 @@ Public Class frmCompraItem
                 .RGProduto = ItemProduto.RGProduto
                 '
                 '--- define o preco de VENDA OU DE COMPRA
-                If _pOrigem = EnumPrecoOrigem.PRECO_VENDA Then
+                If _precoOrigem = EnumPrecoOrigem.PRECO_VENDA Then
                     .Preco = ItemProduto.PVenda
-                ElseIf _pOrigem = enumprecoOrigem.PRECO_COMPRA Then
+                ElseIf _precoOrigem = EnumPrecoOrigem.PRECO_COMPRA Then
                     .Preco = ItemProduto.PCompra
                     .Desconto = ItemProduto.DescontoCompra
                     .Substituicao = 0
@@ -199,18 +193,49 @@ Public Class frmCompraItem
                 End If
                 '
             End With
-            BindItem.ResetBindings(True)
             '
+            BindItem.ResetBindings(True)
             Return True
             '
         Catch ex As Exception
-            MessageBox.Show("Um erro inesperado ocorreu..." & vbNewLine &
-                            ex.Message, "Obter Produto",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information)
+            MessageBox.Show("Um erro inesperado ocorreu ao obter iformações do produto no BD..." & vbNewLine &
+                            ex.Message, "Exceção",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error)
             Return False
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Function
+    '
+    '--- OBTEM O ESTOQUE DO PRODUTO QUANDO AO EDITAR    
+    Private Sub ObtemEstoque()
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            Dim dt As DataTable = itemBLL.Item_GetEstoque(_clItem.IDProduto, _IDFilial)
+            '
+            If IsNumeric(dt.Rows(0)(0)) Then
+                _clItem.Estoque = dt.Rows(0)(0)
+                _clItem.Reservado = dt.Rows(0)(1)
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao obter o estoque do produto..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+#End Region '/ VALIDA PRODUTO
+    '
+#Region "OUTRAS FUNCOES"
     '
     '--- SOMENTE PERMITE NUMEROS NO TEXTBOX
     Private Sub Text_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtRGProduto.KeyPress
@@ -262,7 +287,7 @@ Public Class frmCompraItem
 
 
             End If
-        ElseIf e.KeyCode = Keys.N AndAlso _acao = enumFlagAcao.INSERIR Then
+        ElseIf e.KeyCode = Keys.N AndAlso _acao = EnumFlagAcao.INSERIR Then
             e.Handled = True
             '
             Dim prod As New clProduto
@@ -285,17 +310,13 @@ Public Class frmCompraItem
     Private Sub btnOK_Click(sender As Object, e As EventArgs) Handles btnOK.Click
         '
         '--- VERIFICA SE OS VALORES ESTÃO PREENCHIDOS
-        Dim A As Boolean = IsNothing(_clItem.RGProduto) OrElse String.IsNullOrEmpty(_clItem.RGProduto)
-        Dim B As Boolean = IsNothing(_clItem.Produto) OrElse String.IsNullOrEmpty(_clItem.Produto)
+        If Not VerificaValores() Then Return
         '
-        If A Or B Then
-            MessageBox.Show("É necessária informar o Reg. do produto corretamente...", "Reg. do Produto",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information)
-            txtRGProduto.Focus()
-            Exit Sub
-        End If
+        '--- VERIFICA ESTOQUE
+        If Not VerificaEstoque() Then Return
         '
         '--- RETORNA O OBJETO PARA O FORMULARIO ORIGEM
+        _clItem.EndEdit()
         DialogResult = DialogResult.OK
         '
     End Sub
@@ -304,6 +325,103 @@ Public Class frmCompraItem
         BindItem.CancelEdit()
         Close()
     End Sub
+    '
+    '--- REALIZA O PREENCHIMENTO CORRETO DOS CAMPOS
+    Private Function VerificaValores() As Boolean
+        Dim f As New FuncoesUtilitarias
+        '
+        If Not f.VerificaDadosClasse(txtRGProduto, "Reg. do Produto", _clItem) Then
+            Return False
+        End If
+        '
+        If IsNothing(_clItem.Produto) OrElse String.IsNullOrEmpty(_clItem.Produto) Then
+            MessageBox.Show("O produto ainda não foi especificado...",
+                            "Produto Incompleto",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            txtRGProduto.Focus()
+            Return False
+        End If
+        '
+        If _clItem.Quantidade <= 0 Then
+            MessageBox.Show("Necessário especificar a quantidade MAIOR que Zero...",
+                            "Produto Quantidade",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            txtQuantidade.Focus()
+            Return False
+        End If
+        '
+        If _clItem.Desconto < 0 Then
+            MessageBox.Show("O DESCONTO não pode ser MENOR que Zero...",
+                            "Produto Desconto",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Information)
+            txtDesconto.Focus()
+            Return False
+        End If
+        '
+        Return True
+        '
+    End Function
+    '
+    '--- REALIZA A VERIFICACAO DE ESTOQUE NEGATIVO
+    Private Function VerificaEstoque() As Boolean
+        '
+        '--- verifica CONFIG se estoque negativo permitido
+        '---------------------------------------------------------------
+        Dim ver As String = ObterDefault("EstoqueNegativo")
+        If String.IsNullOrEmpty(ver) Then ver = "FALSE"
+        '
+        '--- se for TRUE entao nao verifica
+        If CBool(ver) Then Return True
+        '
+        '--- write binding quantidade
+        txtQuantidade.DataBindings.Item("text").WriteValue()
+        '
+        '--- verifica se existe estoque obtido no BD
+        If IsNothing(_clItem.Estoque) Then Return True
+        '
+        '--- VERIFICACAO DE ESTOQUE
+        '---------------------------------------------------------------------
+        If _acao = EnumFlagAcao.INSERIR Then
+            '
+            '--- MOVIMENTO DE ENTRADA NO ESTOQUE
+            '
+        ElseIf _acao = EnumFlagAcao.EDITAR Then
+            '
+            '--- no caso de NAO ALTERACAO do produto
+            '----------------------------------------------------
+            If Not _RGAlterado Then
+                '
+                Dim estAnterior As Integer = _clItem.Estoque - QuantAnterior
+                '
+                If estAnterior + _clItem.Estoque < 0 Then
+                    '
+                    MessageBox.Show("Essa quantidade fará com que o estoque fique NEGATIVO..." &
+                                    vbNewLine & vbNewLine &
+                                    "Favor Inserir uma quantidade igual ou maior que: " &
+                                    Format(estAnterior, "00"),
+                                    "Estoque Negativo",
+                                    MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
+                    '
+                    txtQuantidade.Focus()
+                    txtQuantidade.SelectAll()
+                    Return False
+                    '
+                End If
+                '
+            Else '--- no caso de produto ALTERADO
+                '
+                '--- MOVIMENTO DE ENTRADA NO ESTOQUE
+                '
+            End If
+            '
+        End If
+        '
+        Return True
+        '
+    End Function
     '
 #End Region '/ BUTONS FUNCTION
     '

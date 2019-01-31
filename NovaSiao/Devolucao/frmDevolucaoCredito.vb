@@ -198,13 +198,17 @@ Public Class frmDevolucaoCredito
         _Mov.MovValor = txtMovValor.Text
         _Mov.MovData = dtpMovData.Value
         '
+        bindMov.EndEdit()
         DialogResult = DialogResult.OK
         '
     End Sub
     '
     '--- BTN FECHAR | CANCELAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
+        '
+        bindMov.CancelEdit()
         DialogResult = DialogResult.Cancel
+        '
     End Sub
     '
     '--- BTN PROCURAR CONTA

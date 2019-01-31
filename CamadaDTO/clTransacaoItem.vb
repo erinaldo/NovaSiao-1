@@ -86,7 +86,7 @@ Public Class clTransacaoItem : Implements IEditableObject
     '-- _EVENTO PUBLIC AOALTERAR
     Public Event AoAlterar()
     '
-    Public Event AoAlterarIDProduto()
+    Public Event AoAlterarRGProduto()
     '
     Public Overrides Function ToString() As String
         Return IDProduto.ToString & " - " & Produto.ToString
@@ -189,7 +189,7 @@ Public Class clTransacaoItem : Implements IEditableObject
                 RaiseEvent AoAlterar()
             End If
             itemData._RGProduto = value
-            RaiseEvent AoAlterarIDProduto()
+            RaiseEvent AoAlterarRGProduto()
         End Set
     End Property
     '

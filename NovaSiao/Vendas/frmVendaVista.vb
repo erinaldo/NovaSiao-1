@@ -386,12 +386,11 @@ Public Class frmVendaVista
         '--- Verifica o retorno do Dialog
         If Not fItem.DialogResult = DialogResult.OK Then Exit Sub
         '
-        '--- Insere o novo Item
+        '--- Insere o novo ITEM no BD
+        '--------------------------------------------------------
         Dim ItemBLL As New TransacaoItemBLL
         Dim myID As Long? = Nothing
         '
-        '----------------------------------------------------------------------------------------------
-        '--- Insere o novo ITEM no BD
         Try
             newItem.IDTransacao = _Venda.IDVenda
             myID = ItemBLL.InserirNovoItem(newItem,
@@ -406,6 +405,7 @@ Public Class frmVendaVista
         End Try
         '
         '--- Insere o ITEM na lista
+        '--------------------------------------------------------
         _ItensList.Add(newItem)
         bindItem.ResetBindings(False)
         '
@@ -430,8 +430,7 @@ Public Class frmVendaVista
         If dgvItens.SelectedRows.Count = 0 Then Exit Sub
         '
         '--- obtem o itemAtual
-        Dim itmAtual As clTransacaoItem
-        itmAtual = dgvItens.SelectedRows(0).DataBoundItem
+        Dim itmAtual As clTransacaoItem = dgvItens.SelectedRows(0).DataBoundItem
         '
         '--- Abre o frmItem
         Dim fitem As New frmVendaItem(Me, EnumPrecoOrigem.PRECO_VENDA, _IDFilial, itmAtual)
@@ -440,13 +439,11 @@ Public Class frmVendaVista
         '--- Verifica o retorno do Dialog
         If Not fitem.DialogResult = DialogResult.OK Then Exit Sub
         '
-        '--- Edita o novo Item
+        '--- Altera o ITEM no BD e reforma o ESTOQUE
+        '-------------------------------------------------------------------------
         Dim ItemBLL As New TransacaoItemBLL
         Dim myID As Long? = Nothing
         '
-        'Dim i As Integer = _ItensList.FindIndex(Function(x) x.IDTransacaoItem = itmAtual.IDTransacaoItem)
-        '
-        '--- Altera o ITEM no BD e reforma o ESTOQUE
         Try
             itmAtual.IDTransacao = _Venda.IDVenda
             myID = ItemBLL.EditarItem(itmAtual,
@@ -461,7 +458,7 @@ Public Class frmVendaVista
         End Try
         '
         '--- Atualiza o ITEM da lista
-        '
+        '--------------------------------------------------------
         '_ItensList.Item(i) = Item
         bindItem.ResetBindings(False)
         '
@@ -497,6 +494,7 @@ Public Class frmVendaVista
                            MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
         '
         '--- Exclui o Item do BD
+        '--------------------------------------------------------
         Dim ItemBLL As New TransacaoItemBLL
         Dim myID As Long? = Nothing
         '
@@ -511,6 +509,7 @@ Public Class frmVendaVista
         End Try
         '
         '--- Atualiza o ITEM da lista
+        '--------------------------------------------------------
         _ItensList.RemoveAt(i)
         bindItem.ResetBindings(False)
         '
@@ -866,7 +865,9 @@ Public Class frmVendaVista
     '
     '--- RETORNA TODOS OS PAGAMENTOS
     Private Sub obterPagamentos()
+        '
         Dim pBLL As New MovimentacaoBLL
+        '
         Try
             _MovEntradaList = pBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Venda, _Venda.IDVenda)
             '--- Atualiza o label TOTAL PAGO
@@ -880,6 +881,7 @@ Public Class frmVendaVista
     '
     '--- Preenche o DataGrid AReceber
     Private Sub Preenche_Pagamentos()
+        '
         With dgvPagamentos
             '
             '--- limpa as colunas do datagrid
@@ -962,48 +964,37 @@ Public Class frmVendaVista
         If e.KeyCode = Keys.Add Then
             '
             e.Handled = True
-            '
-            'If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            'If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
-            '
             Pagamentos_Adicionar()
             '
         ElseIf e.KeyCode = Keys.Enter Then
             '
             e.Handled = True
-            '
-            'If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            'If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
-            '
             Pagamentos_Editar()
             '
         ElseIf e.KeyCode = Keys.Delete Then
             '
             e.Handled = True
-            '
-            If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
-            If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
-            '
             Pagamentos_Excluir()
             '
         End If
+        '
     End Sub
     '
-    Public Sub Pagamentos_Manipulacao(clPag As clMovimentacao, Acao As EnumFlagAcao)
-        '
-        If Acao = EnumFlagAcao.INSERIR Then
-            ' SE ACAO FOR INSERIR
-            '----------------------------------------------------------------------------------------------
-            '--- Insere o ITEM na lista
-            _MovEntradaList.Add(clPag)
-            bindEnt.ResetBindings(False)
-            '--- Atualiza o DataGrid
-            dgvPagamentos.DataSource = bindEnt
-            bindEnt.MoveLast()
-            '
-        End If
-        '
-    End Sub
+    'Public Sub Pagamentos_Manipulacao(clPag As clMovimentacao, Acao As EnumFlagAcao)
+    '    '
+    '    If Acao = EnumFlagAcao.INSERIR Then
+    '        ' SE ACAO FOR INSERIR
+    '        '----------------------------------------------------------------------------------------------
+    '        '--- Insere o ITEM na lista
+    '        _MovEntradaList.Add(clPag)
+    '        bindEnt.ResetBindings(False)
+    '        '--- Atualiza o DataGrid
+    '        dgvPagamentos.DataSource = bindEnt
+    '        bindEnt.MoveLast()
+    '        '
+    '    End If
+    '    '
+    'End Sub
     '
     Private Sub Pagamentos_Adicionar()
         '
@@ -1054,6 +1045,14 @@ Public Class frmVendaVista
         '--- Ampulheta OFF
         Cursor = Cursors.Default
         '
+        '--- Insere o ITEM na lista
+        _MovEntradaList.Add(clPag)
+        bindEnt.ResetBindings(False)
+        '
+        '--- Atualiza o DataGrid
+        dgvPagamentos.DataSource = bindEnt
+        bindEnt.MoveLast()
+        '
         '--- AtualizaTotalPago
         AtualizaTotalPago()
         '
@@ -1078,9 +1077,13 @@ Public Class frmVendaVista
         '
         '--- AtualizaTotalPago
         AtualizaTotalPago()
+        '
     End Sub
     '
     Private Sub Pagamentos_Excluir()
+        '
+        If RegistroBloqueado() Then Exit Sub '--- Verifica se o registro nao esta bloqueado
+        If RegistroFinalizado() Then Exit Sub '--- Verifica se o registro nao esta finalizado
         '
         '--- verifica se existe alguma parcela selecionada
         If dgvPagamentos.SelectedRows.Count = 0 Then Exit Sub

@@ -38,6 +38,7 @@ Partial Class frmAReceberItem
         '
         Me.Panel1.Controls.Add(Me.lblReg)
         Me.Panel1.Size = New System.Drawing.Size(304, 50)
+        Me.Panel1.TabIndex = 0
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.lblReg, 0)
         '
@@ -57,7 +58,7 @@ Partial Class frmAReceberItem
         Me.btnCancelar.Location = New System.Drawing.Point(154, 191)
         Me.btnCancelar.Name = "btnCancelar"
         Me.btnCancelar.Size = New System.Drawing.Size(118, 46)
-        Me.btnCancelar.TabIndex = 5
+        Me.btnCancelar.TabIndex = 8
         Me.btnCancelar.Text = "Cancelar"
         Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -70,7 +71,7 @@ Partial Class frmAReceberItem
         Me.btnOK.Location = New System.Drawing.Point(27, 191)
         Me.btnOK.Name = "btnOK"
         Me.btnOK.Size = New System.Drawing.Size(118, 46)
-        Me.btnOK.TabIndex = 4
+        Me.btnOK.TabIndex = 7
         Me.btnOK.Text = "Inserir"
         Me.btnOK.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnOK.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -87,7 +88,7 @@ Partial Class frmAReceberItem
         Me.StatusStrip1.Size = New System.Drawing.Size(300, 22)
         Me.StatusStrip1.SizingGrip = False
         Me.StatusStrip1.Stretch = False
-        Me.StatusStrip1.TabIndex = 10
+        Me.StatusStrip1.TabIndex = 9
         Me.StatusStrip1.Text = "StatusStrip1"
         '
         'lblToolStripInfo
@@ -104,7 +105,7 @@ Partial Class frmAReceberItem
         Me.txtParcelaValor.Location = New System.Drawing.Point(172, 138)
         Me.txtParcelaValor.Name = "txtParcelaValor"
         Me.txtParcelaValor.Size = New System.Drawing.Size(100, 27)
-        Me.txtParcelaValor.TabIndex = 1
+        Me.txtParcelaValor.TabIndex = 6
         Me.txtParcelaValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtVencimento
@@ -113,7 +114,7 @@ Partial Class frmAReceberItem
         Me.txtVencimento.Mask = "00/00/0000"
         Me.txtVencimento.Name = "txtVencimento"
         Me.txtVencimento.Size = New System.Drawing.Size(100, 27)
-        Me.txtVencimento.TabIndex = 0
+        Me.txtVencimento.TabIndex = 2
         Me.txtVencimento.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'txtPermanencia
@@ -121,7 +122,7 @@ Partial Class frmAReceberItem
         Me.txtPermanencia.Location = New System.Drawing.Point(172, 105)
         Me.txtPermanencia.Name = "txtPermanencia"
         Me.txtPermanencia.Size = New System.Drawing.Size(47, 27)
-        Me.txtPermanencia.TabIndex = 3
+        Me.txtPermanencia.TabIndex = 4
         Me.txtPermanencia.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label1
@@ -130,7 +131,7 @@ Partial Class frmAReceberItem
         Me.Label1.Location = New System.Drawing.Point(81, 75)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(85, 19)
-        Me.Label1.TabIndex = 14
+        Me.Label1.TabIndex = 1
         Me.Label1.Text = "Vencimento"
         '
         'Label2
@@ -139,7 +140,7 @@ Partial Class frmAReceberItem
         Me.Label2.Location = New System.Drawing.Point(124, 141)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(42, 19)
-        Me.Label2.TabIndex = 14
+        Me.Label2.TabIndex = 5
         Me.Label2.Text = "Valor"
         '
         'Label4
@@ -148,7 +149,7 @@ Partial Class frmAReceberItem
         Me.Label4.Location = New System.Drawing.Point(19, 108)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(147, 19)
-        Me.Label4.TabIndex = 14
+        Me.Label4.TabIndex = 3
         Me.Label4.Text = "Taxa de Permanência"
         '
         'lblReg
@@ -158,7 +159,7 @@ Partial Class frmAReceberItem
         Me.lblReg.Location = New System.Drawing.Point(8, 11)
         Me.lblReg.Name = "lblReg"
         Me.lblReg.Size = New System.Drawing.Size(105, 29)
-        Me.lblReg.TabIndex = 2
+        Me.lblReg.TabIndex = 0
         Me.lblReg.Text = "0000A"
         '
         'frmAReceberItem
