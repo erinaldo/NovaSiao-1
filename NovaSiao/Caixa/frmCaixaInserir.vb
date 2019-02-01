@@ -84,7 +84,7 @@ Public Class frmCaixaInserir
         End Get
         Set(ByVal value As Date?)
             minDate = value
-            lblDtInicial.Text = IIf(IsNothing(minDate), "", minDate)
+            lblDtInicialValor.Text = IIf(IsNothing(minDate), "", minDate)
         End Set
     End Property
     '
@@ -97,7 +97,7 @@ Public Class frmCaixaInserir
             '
             If Not IsNothing(value) Then
                 dtpFinal.MaxDate = maxDate
-                lblMax.Text = "max.:" & maxdate
+                lblMax.Text = "max.:" & maxDate
             Else
                 dtpFinal.ResetText()
             End If
@@ -119,7 +119,7 @@ Public Class frmCaixaInserir
                 '
                 dtpFinal.Enabled = False
                 btnInserir.Enabled = False
-                lblDtInicial.Text = "Vazia"
+                lblDtInicialValor.Text = "Vazia"
                 txtConta.Clear()
                 '
             Else
@@ -148,6 +148,9 @@ Public Class frmCaixaInserir
                 '--- define o valor do maxDate
                 If Not IsNothing(propMinDate) Then dtpFinal.Value = propMinDate
                 '
+                '--- lblDtInicialTexto
+                lblDtInicialTexto.Text = "Data do Caixa:"
+                '
             Else
                 '--- controla o tamanho do form
                 pnlDtFinal.Visible = True
@@ -157,6 +160,9 @@ Public Class frmCaixaInserir
                 '
                 '--- define o valor do maxDate
                 If Not IsNothing(propMaxDate) Then dtpFinal.Value = propMaxDate
+                '
+                '--- lblDtInicialTexto
+                lblDtInicialTexto.Text = "Data Inicial:"
                 '
             End If
             '

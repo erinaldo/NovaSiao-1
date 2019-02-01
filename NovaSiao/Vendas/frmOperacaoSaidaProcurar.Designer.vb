@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class frmOperacaoSaidaProcurar
     Inherits NovaSiao.frmModNBorder
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         If disposing AndAlso components IsNot Nothing Then
             components.Dispose()
@@ -17,7 +17,7 @@ Partial Class frmOperacaoSaidaProcurar
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
@@ -32,10 +32,6 @@ Partial Class frmOperacaoSaidaProcurar
         Me.chkPeriodoTodos = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.dgvListagem = New System.Windows.Forms.DataGridView()
-        Me.ID = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.VendaData = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.CadastroNome = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.ApelidoFuncionario = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.btnEscolher = New System.Windows.Forms.Button()
         Me.pnlVenda = New System.Windows.Forms.Panel()
@@ -199,7 +195,6 @@ Partial Class frmOperacaoSaidaProcurar
         DataGridViewCellStyle1.BackColor = System.Drawing.Color.Azure
         Me.dgvListagem.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvListagem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.dgvListagem.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.ID, Me.VendaData, Me.CadastroNome, Me.ApelidoFuncionario})
         Me.dgvListagem.GridColor = System.Drawing.Color.LightSteelBlue
         Me.dgvListagem.Location = New System.Drawing.Point(12, 178)
         Me.dgvListagem.MultiSelect = False
@@ -210,33 +205,6 @@ Partial Class frmOperacaoSaidaProcurar
         Me.dgvListagem.RowsDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvListagem.Size = New System.Drawing.Size(920, 368)
         Me.dgvListagem.TabIndex = 5
-        '
-        'ID
-        '
-        Me.ID.HeaderText = "Reg."
-        Me.ID.Name = "ID"
-        Me.ID.ReadOnly = True
-        Me.ID.Width = 50
-        '
-        'VendaData
-        '
-        Me.VendaData.HeaderText = "Data"
-        Me.VendaData.Name = "VendaData"
-        Me.VendaData.ReadOnly = True
-        '
-        'CadastroNome
-        '
-        Me.CadastroNome.HeaderText = "Nome / Razão Social"
-        Me.CadastroNome.Name = "CadastroNome"
-        Me.CadastroNome.ReadOnly = True
-        Me.CadastroNome.Width = 300
-        '
-        'ApelidoFuncionario
-        '
-        Me.ApelidoFuncionario.HeaderText = "Vendedor"
-        Me.ApelidoFuncionario.Name = "ApelidoFuncionario"
-        Me.ApelidoFuncionario.ReadOnly = True
-        Me.ApelidoFuncionario.Width = 150
         '
         'btnCancelar
         '
@@ -324,7 +292,7 @@ Partial Class frmOperacaoSaidaProcurar
         'lbl4
         '
         Me.lbl4.BackColor = System.Drawing.Color.Transparent
-        Me.lbl4.Location = New System.Drawing.Point(481, 4)
+        Me.lbl4.Location = New System.Drawing.Point(517, 4)
         Me.lbl4.Name = "lbl4"
         Me.lbl4.Size = New System.Drawing.Size(70, 19)
         Me.lbl4.TabIndex = 7
@@ -463,10 +431,6 @@ Partial Class frmOperacaoSaidaProcurar
     Friend WithEvents lbl3 As Label
     Friend WithEvents lbl4 As Label
     Friend WithEvents lbl2 As Label
-    Friend WithEvents ID As DataGridViewTextBoxColumn
-    Friend WithEvents VendaData As DataGridViewTextBoxColumn
-    Friend WithEvents CadastroNome As DataGridViewTextBoxColumn
-    Friend WithEvents ApelidoFuncionario As DataGridViewTextBoxColumn
     Friend WithEvents lbl6 As Label
     Friend WithEvents lbl7 As Label
     Friend WithEvents btnMesAtual As VIBlend.WinForms.Controls.vButton

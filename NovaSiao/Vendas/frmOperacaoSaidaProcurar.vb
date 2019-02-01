@@ -40,10 +40,10 @@ Public Class frmOperacaoSaidaProcurar
             '
             '--- obtem a nova listagem source e altera o DataGrid
             GetList_AlteraListagem()
-            '
             AlteraEtiquetas()
             '
         End Set
+        '
     End Property
     '
 #Region "EVENTO LOAD"
@@ -70,6 +70,9 @@ Public Class frmOperacaoSaidaProcurar
         '
         AddHandler cmbOperacao.SelectedIndexChanged, AddressOf Handler_GetList
         AddHandler dtMes.DateChanged, AddressOf dtMes_DateChanged
+        '
+        '--- repetir execucao para garantir a exibicao das etiquetas
+        AlteraEtiquetas()
         '
     End Sub
     '
@@ -904,8 +907,12 @@ Public Class frmOperacaoSaidaProcurar
 #Region "TRATAMENTO VISUAL"
     Private Sub pnlVenda_Paint(sender As Object, e As PaintEventArgs) Handles pnlVenda.Paint
         '
-        Dim brush As Brush = New LinearGradientBrush(e.ClipRectangle, Color.LightSteelBlue, Color.FromArgb(100, Color.SlateGray), LinearGradientMode.Vertical)
-        e.Graphics.FillRectangle(brush, e.ClipRectangle)
+        Try
+            Dim brush As Brush = New LinearGradientBrush(e.ClipRectangle, Color.LightSteelBlue, Color.FromArgb(100, Color.SlateGray), LinearGradientMode.Vertical)
+            e.Graphics.FillRectangle(brush, e.ClipRectangle)
+        Catch ex As Exception
+            Return
+        End Try
         '
     End Sub
     '
