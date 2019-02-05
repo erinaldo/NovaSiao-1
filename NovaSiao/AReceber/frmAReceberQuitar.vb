@@ -5,6 +5,7 @@ Public Class frmAReceberQuitar
     '
     Private _formOrigem As Form
     Private _dbTran As Object = Nothing
+    Private dtTipo As DataTable
     '
     Private bindEntrada As New BindingSource
     Private _vlMax As Decimal = 0
@@ -13,6 +14,8 @@ Public Class frmAReceberQuitar
     Property propMovEntrada As clMovimentacao
     Property prop_vlPagoDoValor As Double '--- retorna o valor pago sem o acrescimo
     Property prop_vlPagoJuros As Double '--- retorna o valor pago do Acrescimo / Juros
+    '
+#Region "SUB NEW | GET DADOS"
     '
     Public Sub New(formOrigem As Form,
                    vlMax As Decimal,
@@ -33,14 +36,24 @@ Public Class frmAReceberQuitar
         propMovEntrada = New clMovimentacao(EnumMovimentacaoOrigem.AReceberParcela, EnumMovimento.Entrada)
         bindEntrada.DataSource = propMovEntrada
         PreencheDataBinding()
+        CarregaDtTipo()
         '
         '--- define os valores da movimentacao
         propMovEntrada.MovData = If(DataEntrada, Obter_DataPadrao())
         propMovEntrada.IDConta = Obter_ContaPadrao()
+        propMovEntrada.IDFilial = Obter_FilialPadrao()
         propMovEntrada.Origem = 2 '--- ORIGEM PARCELAMENTO
         propMovEntrada.IDOrigem = IDOrigem
         propMovEntrada.Creditar = False
         propMovEntrada.Movimento = 1 '--- ORIGEM ENTRADA
+        '
+        txtConta.Text = ObterDefault("ContaDescricao")
+        '
+        If dtTipo.Rows.Count > 0 Then
+            txtTipo.Text = dtTipo.Rows(0)("MovTipo")
+            propMovEntrada.IDMovTipo = dtTipo.Rows(0)("IDMovTipo")
+            propMovEntrada.IDMeio = dtTipo.Rows(0)("IDMeio")
+        End If
         '
         txtDoValor.Text = FormatCurrency(vlMax, 2)
         txtAcrescimo.Text = FormatCurrency(Acrescimo, 2)
@@ -58,6 +71,31 @@ Public Class frmAReceberQuitar
         '
     End Sub
     '
+    Private Sub frmAReceberQuitar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        txtConta.Focus()
+    End Sub
+    '
+    Private Sub CarregaDtTipo()
+        '
+        Dim TipoBLL As New MovimentacaoBLL
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            dtTipo = TipoBLL.MovTipo_GET_Dt
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Obter os Tipo de Pagamento..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
+    End Sub
+    '
+#End Region '/ SUB NEW | PROPERTIES
+    '
 #Region "DATA BINDINGS"
     '------------------------------------------------------------------------------------------
     ' PREENCHE O DATABINDING
@@ -67,23 +105,11 @@ Public Class frmAReceberQuitar
         lblEntradaValor.DataBindings.Add("Text", bindEntrada, "MovValor", True, DataSourceUpdateMode.OnPropertyChanged)
         txtEntradaData.DataBindings.Add("Text", bindEntrada, "MovData", True, DataSourceUpdateMode.OnPropertyChanged)
         txtObservacao.DataBindings.Add("Text", bindEntrada, "Observacao", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtTipo.DataBindings.Add("Text", bindEntrada, "MovTipo", True, DataSourceUpdateMode.OnPropertyChanged)
+        txtConta.DataBindings.Add("Text", bindEntrada, "Conta", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' CARREGA OS COMBOBOX
-        Try
-            '--- Ampulheta ON
-            Cursor = Cursors.WaitCursor
-            '
-            CarregaCmbTipo()
-            CarregaCmbForma()
-            CarregaCmbConta()
-            '
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao Carregar os ComboBox..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            '--- Ampulheta OFF
-            Cursor = Cursors.Default
-        End Try
+        CarregaCmbForma()
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblEntradaValor.DataBindings("Text").Format, AddressOf FormatCUR
@@ -101,32 +127,6 @@ Public Class frmAReceberQuitar
     '------------------------------------------------------------------------------------------
     ' CARREGAR OS COMBOBOX
     '------------------------------------------------------------------------------------------
-    Private Sub CarregaCmbTipo()
-        Dim TipoBLL As New MovimentacaoBLL
-        '
-        Try
-            '--- Ampulheta ON
-            Cursor = Cursors.WaitCursor
-            '
-            Dim dtTipo As DataTable = TipoBLL.MovTipo_GET_Dt
-            '
-            With cmbIDMovTipo
-                .DataSource = dtTipo
-                .DisplayMember = "MovTipo"
-                .ValueMember = "IDMovTipo"
-                .DataBindings.Add("SelectedValue", bindEntrada, "IDMovTipo", True, DataSourceUpdateMode.OnPropertyChanged)
-            End With
-            '
-        Catch ex As Exception
-            MessageBox.Show("Uma exceção ocorreu ao Obter os Tipo de Pagamento..." & vbNewLine &
-            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        Finally
-            '--- Ampulheta OFF
-            Cursor = Cursors.Default
-        End Try
-        '
-    End Sub
-    '
     Private Sub CarregaCmbForma()
         '
         Dim TipoBLL As New MovimentacaoBLL
@@ -150,34 +150,6 @@ Public Class frmAReceberQuitar
         Finally
             '--- Ampulheta OFF
             Cursor = Cursors.Default
-        End Try
-        '
-    End Sub
-    '
-    Private Sub CarregaCmbConta()
-        Dim EntBLL As New MovimentacaoBLL
-        Dim Filial As Integer
-        '
-        Try
-            Filial = Obter_FilialPadrao()
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma exceção inesperada ao obter a Filial Padrão:" & vbNewLine &
-                ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            Exit Sub
-        End Try
-        '
-        Try
-            Dim dt As DataTable = EntBLL.Contas_GET_PorIDFilial_DT
-            '
-            With cmbIDConta
-                .DataSource = dt
-                .DisplayMember = "Conta"
-                .ValueMember = "IDConta"
-                .DataBindings.Add("SelectedValue", bindEntrada, "IDConta", True, DataSourceUpdateMode.OnPropertyChanged)
-            End With
-        Catch ex As Exception
-            MessageBox.Show("Ocorreu uma exceção inesperada ao obter as lista de conta:" & vbNewLine &
-                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
         '
     End Sub
@@ -208,18 +180,8 @@ Public Class frmAReceberQuitar
             '
             '--- Insere a Entrada
             Dim eBLL As New MovimentacaoBLL
-            Dim newID As Integer?
             '
-            newID = eBLL.Movimentacao_Inserir(propMovEntrada, _dbTran)
-            '
-            '--- Verifica resultado
-            If Not IsNumeric(newID) Then
-                Throw New Exception(newID.ToString)
-            Else
-                propMovEntrada.IDMovimentacao = newID
-                propMovEntrada.Conta = cmbIDConta.Text
-                propMovEntrada.MovForma = cmbIDMovForma.Text
-            End If
+            propMovEntrada = eBLL.Movimentacao_Inserir(propMovEntrada, _dbTran)
             '
             '--- retorna valores salvos
             prop_vlPagoDoValor = CDbl(txtDoValor.Text)
@@ -246,7 +208,7 @@ Public Class frmAReceberQuitar
         Dim f As New FuncoesUtilitarias
         '
         '--- Campo Conta de Entrada
-        If f.VerificaControlesForm(cmbIDConta, "Conta da Entrada") = False Then
+        If f.VerificaControlesForm(txtConta, "Conta da Entrada") = False Then
             Return False
         End If
         '
@@ -268,7 +230,7 @@ Public Class frmAReceberQuitar
         End If
         '
         '--- Campo Tipo de Entrada
-        If f.VerificaControlesForm(cmbIDMovTipo, "Tipo de Pagamento da Entrada") = False Then
+        If f.VerificaControlesForm(txtTipo, "Tipo de Pagamento da Entrada") = False Then
             Return False
         End If
         '
@@ -289,35 +251,189 @@ Public Class frmAReceberQuitar
         '
     End Function
     '
+    '===================================================================================
+    ' ABRE FORM PARA ESCOLHER CONTA
+    '===================================================================================
+    Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
+        '
+        '--- Abre o frmContas
+        '---------------------------------------------------------------------------------------
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
+        Dim frmConta As New frmContaProcurar(Me, propMovEntrada.IDFilial, propMovEntrada.IDConta, True)
+        '
+        '--- Ampulheta OFF
+        Cursor = Cursors.Default
+        '
+        frmConta.ShowDialog()
+        '
+        If frmConta.DialogResult = DialogResult.OK Then
+            '
+            txtConta.Text = frmConta.propConta_Escolha.Conta
+            propMovEntrada.IDConta = frmConta.propConta_Escolha.IDConta
+            '
+        End If
+        '
+    End Sub
+    '
+    '===================================================================================
+    ' ABRE FORM PARA ESCOLHER MOVTIPO
+    '===================================================================================
+    Private Sub btnTipoEscolher_Click(sender As Object, e As EventArgs) Handles btnTipoEscolher.Click
+        '
+        '--- Abre o frmMovTipoProcurar
+        '---------------------------------------------------------------------------------------
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        '
+        Dim frmTipo As New frmMovTipoProcurar(Me, propMovEntrada.IDMovTipo)
+        '
+        '--- Ampulheta OFF
+        Cursor = Cursors.Default
+        '
+        frmTipo.ShowDialog()
+        '
+        If frmTipo.DialogResult = DialogResult.OK Then
+            '
+            If propMovEntrada.IDMovTipo <> frmTipo.propIdMovTipo_Escolha Then
+                propMovEntrada.IDMovForma = Nothing
+                cmbIDMovForma.DataBindings.Item("SelectedValue").ReadValue()
+            End If
+            '
+            txtTipo.Text = frmTipo.propMovTipo_Escolha
+            propMovEntrada.IDMovTipo = frmTipo.propIdMovTipo_Escolha
+            propMovEntrada.IDMeio = frmTipo.propMeio_Escolha
+            IDMovTipo_Alterado()
+            '
+        End If
+        '
+    End Sub
+    '
+    '===================================================================================
+    ' ALTERA A FORMA DE PAGAMENTO PELA ALTERACAO DO TIPO DE PAGAMENTO
+    '===================================================================================
+    Private Sub IDMovTipo_Alterado()
+        '
+        If _VerAlteracao = False Then Exit Sub
+        If IsNothing(propMovEntrada.IDMovTipo) Then Exit Sub
+        '
+        Dim dtForma As DataTable = cmbIDMovForma.DataSource
+        dtForma.DefaultView.RowFilter = "IDMovTipo = " & propMovEntrada.IDMovTipo
+        '
+        _VerAlteracao = False
+        '
+        If cmbIDMovForma.Items.Count = 1 Then
+            cmbIDMovForma.SelectedIndex = 0
+            propMovEntrada.IDMovForma = dtForma.Rows(0).Item("IDMovForma")
+        Else
+            cmbIDMovForma.SelectedIndex = -1
+        End If
+        '
+        _VerAlteracao = True
+        '
+    End Sub
+    '
 #End Region
     '
 #Region "ATALHOS - NAVEGAÇÃO"
     '
+    '---------------------------------------------------------------------------------------
+    '--- BLOQUEIA PRESS A TECLA (+)
+    '---------------------------------------------------------------------------------------
+    Private Sub me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles MyBase.KeyPress
+        '
+        If e.KeyChar = "+" Then
+            '--- cria uma lista de controles que serao impedidos de receber '+'
+            Dim controlesBloqueados As String() = {
+            "txtConta",
+            "txtTipo"
+        }
+            '
+            If controlesBloqueados.Contains(ActiveControl.Name) Then
+                e.Handled = True
+            End If
+            '
+        End If
+        '
+    End Sub
+    '
+    '---------------------------------------------------------------------------------------
+    '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
+    '--- ACIONA ATALHO TECLA (+) E (DEL) | IMPEDE INSERIR TEXTO NOS CONTROLES
+    '---------------------------------------------------------------------------------------
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) _
+    Handles txtConta.KeyDown,
+            txtTipo.KeyDown
+        '
+        Dim ctr As Control = DirectCast(sender, Control)
+        '
+        If e.KeyCode = Keys.Add Then
+            e.Handled = True
+            '
+            Select Case ctr.Name
+                Case "txtConta"
+                    btnContaEscolher_Click(New Object, New EventArgs)
+                Case "txtTipo"
+                    btnTipoEscolher_Click(New Object, New EventArgs)
+            End Select
+            '
+        ElseIf e.KeyCode = Keys.Delete Then
+            e.Handled = True
+            Select Case ctr.Name
+                Case "txtConta"
+                    txtConta.Clear()
+                    propMovEntrada.IDConta = Nothing
+                Case "txtTipo"
+                    txtTipo.Clear()
+                    propMovEntrada.IDMovTipo = Nothing
+                    propMovEntrada.IDMovForma = Nothing
+                    cmbIDMovForma.DataBindings.Item("SelectedValue").ReadValue()
+            End Select
+            '
+        Else
+            '--- cria uma lista de controles que serão bloqueados de alteracao
+            Dim controlesBloqueados As New List(Of String)
+            controlesBloqueados.AddRange({"txtConta"})
+            '
+            If controlesBloqueados.Contains(ctr.Name) Then
+                e.Handled = True
+                e.SuppressKeyPress = True
+            End If
+            '
+        End If
+        '
+    End Sub
+    '
     '------------------------------------------------------------------------------------------
     ' CRIA UM ATALHO PARA OS COMBO BOX
     '------------------------------------------------------------------------------------------
-    Private Sub cmbFormaTipo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles cmbIDMovTipo.KeyPress
+    Private Sub txtTipo_KeyPress(sender As Object, e As KeyPressEventArgs) Handles txtTipo.KeyPress
+        '
+        e.Handled = True
+        '
         If Char.IsNumber(e.KeyChar) Then
-            e.Handled = True
             '
-            Dim dt As DataTable = cmbIDMovTipo.DataSource
-            Dim rCount As Integer = dt.Rows.Count
+            Dim rCount As Integer = dtTipo.Rows.Count
             Dim item As Integer = e.KeyChar.ToString
             '
             If item <= rCount And item > 0 Then
-                Dim Valor As Integer = dt.Rows(e.KeyChar.ToString - 1)("IDMovTipo")
                 '
-                propMovEntrada.IDMovTipo = Valor
-                cmbIDMovTipo.SelectedValue = Valor
+                propMovEntrada.IDMovTipo = dtTipo.Rows(e.KeyChar.ToString - 1)("IDMovTipo")
+                txtTipo.Text = dtTipo.Rows(e.KeyChar.ToString - 1)("MovTipo")
+                IDMovTipo_Alterado()
                 '
             End If
+            '
         End If
+        '
     End Sub
     '
     '-------------------------------------------------------------------------------------------------
     ' SELECIONA A FORMA DE PAGAMENTO CRIANDO ATALHO NUMERICO
     '-------------------------------------------------------------------------------------------------
     Private Sub cmbForma_KeyPress(sender As Object, e As KeyPressEventArgs) Handles cmbIDMovForma.KeyPress
+        '
         If Char.IsNumber(e.KeyChar) Then
             e.Handled = True
             '
@@ -326,7 +442,9 @@ Public Class frmAReceberQuitar
             Dim i As Integer = 1
             '
             For Each r As DataRow In dtF.Rows
-                If r("IDMovTipo") = cmbIDMovTipo.SelectedValue Then
+                '
+                If r("IDMovTipo") = propMovEntrada.IDMovTipo Then
+                    '
                     If num = i Then
                         propMovEntrada.IDMovForma = r("IDMovForma")
                         cmbIDMovForma.DataBindings("SelectedValue").ReadValue()
@@ -334,8 +452,11 @@ Public Class frmAReceberQuitar
                     Else
                         i += 1
                     End If
+                    '
                 End If
+                '
             Next
+            '
         End If
         '
     End Sub
@@ -343,18 +464,25 @@ Public Class frmAReceberQuitar
     '------------------------------------------------------------------------------------------
     ' USAR TAB AO KEYPRESS ENTER
     '------------------------------------------------------------------------------------------
-    Private Sub txtValor_KeyDown(sender As Object, e As KeyEventArgs) Handles rbtEntrada.KeyDown,
-            txtDoValor.KeyDown, txtAcrescimo.KeyDown, txtObservacao.KeyDown
+    Private Sub txtValor_KeyDown(sender As Object, e As KeyEventArgs) Handles _
+        txtConta.KeyDown,
+        txtDoValor.KeyDown,
+        txtAcrescimo.KeyDown,
+        txtTipo.KeyDown,
+        txtObservacao.KeyDown,
+        rbtEntrada.KeyDown, rbtCreditar.KeyDown
+        '
         If e.KeyCode = Keys.Enter Then
             e.SuppressKeyPress = True
             SendKeys.Send("{Tab}")
         End If
+        '
     End Sub
     '
     '------------------------------------------------------------------------------------------
     '-- CONVERTE A TECLA ESC EM CANCELAR
     '------------------------------------------------------------------------------------------
-    Private Sub frm_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+    Private Sub frm_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
         If e.KeyCode = Keys.Escape Then
             e.Handled = True
             '
@@ -423,27 +551,6 @@ Public Class frmAReceberQuitar
     End Sub
     '
     '------------------------------------------------------------------------------------------
-    ' ALTERA A FORMA DE PAGAMENTO PELA ALTERACAO DO TIPO DE PAGAMENTO
-    '------------------------------------------------------------------------------------------
-    Private Sub cmbIDMovTipo_Validated(sender As Object, e As EventArgs) Handles cmbIDMovTipo.Validated
-        If _VerAlteracao = False Then Exit Sub
-        If IsNothing(cmbIDMovTipo.SelectedValue) Then Exit Sub
-        '
-        Dim dtForma As DataTable = cmbIDMovForma.DataSource
-        dtForma.DefaultView.RowFilter = "IDMovTipo = " & cmbIDMovTipo.SelectedValue
-        '
-        _VerAlteracao = False
-        If cmbIDMovForma.Items.Count = 1 Then
-            cmbIDMovForma.SelectedIndex = 0
-            propMovEntrada.IDMovForma = dtForma.Rows(0).Item("IDMovForma")
-        Else
-            cmbIDMovForma.SelectedIndex = -1
-        End If
-        _VerAlteracao = True
-        '
-    End Sub
-    '
-    '------------------------------------------------------------------------------------------
     ' ALTERA A FORMA DE ENTRADA PELA ALTERACAO DOS RADIOBUTTONS PANEL2
     '------------------------------------------------------------------------------------------
     Private Sub radiobt_CheckedChanged(sender As Object, e As EventArgs) Handles rbtEntrada.CheckedChanged, rbtCreditar.CheckedChanged
@@ -485,14 +592,24 @@ Public Class frmAReceberQuitar
     '-------------------------------------------------------------------------------------------------
     ' CRIAR EFEITO VISUAL DE FORM SELECIONADO
     '-------------------------------------------------------------------------------------------------
-    Private Sub frmAPagarItem_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+    Private Sub frmAPagarItem_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
         Dim pnl As Panel = _formOrigem.Controls("Panel1")
         pnl.BackColor = Color.Silver
+        '
+        If Not IsNothing(_formOrigem) Then
+            _formOrigem.Visible = False
+        End If
+        '
     End Sub
     '
-    Private Sub frmAPagarItem_Deactivate(sender As Object, e As EventArgs) Handles Me.Deactivate
+    Private Sub frmAPagarItem_Deactivate(sender As Object, e As EventArgs) Handles Me.Closed
         Dim pnl As Panel = _formOrigem.Controls("Panel1")
         pnl.BackColor = Color.SlateGray
+        '
+        If Not IsNothing(_formOrigem) Then
+            _formOrigem.Visible = True
+        End If
+        '
     End Sub
     '
 #End Region

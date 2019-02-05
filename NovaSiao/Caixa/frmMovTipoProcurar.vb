@@ -86,7 +86,7 @@ Public Class frmMovTipoProcurar
         '
         clnID.DisplayMember = "IDMovTipo"
         clnTipo.DisplayMember = "MovTipo"
-        clnTipo.ValueMember = "Meio"
+        clnTipo.ValueMember = "IDMeio"
         clnAtivo.DisplayMember = "Ativo"
         clnAtivo.Width = 0
         '

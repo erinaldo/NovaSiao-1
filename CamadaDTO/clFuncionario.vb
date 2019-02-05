@@ -180,6 +180,8 @@ Public Class clFuncionario
         End Set
     End Property
     '
+    Property ApelidoFilial As String
+    '
 #End Region
     '
 End Class

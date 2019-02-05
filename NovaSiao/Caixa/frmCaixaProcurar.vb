@@ -28,34 +28,14 @@ Public Class frmCaixaProcurar
         End Set
     End Property
     '
-    Private Property propIDConta() As Int16?
+    Private Property propIDConta() As Int16
         Get
             Return _IDConta
         End Get
-        Set(ByVal value As Int16?)
+        Set(ByVal value As Int16)
             _IDConta = value
             '
-            If IsNothing(_IDConta) Then
-                txtConta.Text = "TODAS Contas"
-            End If
-            '
-            FiltrarListagem()
-            '
-        End Set
-    End Property
-    '
-    Private Property propIDFilial As Integer?
-        Get
-            Return _IDFilial
-        End Get
-        Set(ByVal value As Integer?)
-            _IDFilial = value
-            '
-            If IsNothing(_IDFilial) Then
-                txtFilial.Text = "TODAS Filiais"
-            End If
-            '
-            FiltrarListagem()
+            Get_Dados()
             '
         End Set
     End Property
@@ -68,10 +48,10 @@ Public Class frmCaixaProcurar
         ' Add any initialization after the InitializeComponent() call.
         '
         ''--- verifica a conta padrao
-        'txtConta.Text = ObterDefault("ContaDescricao")
-        propIDConta = Nothing
-        propIDFilial = Nothing
-        'txtFilial.Text = ObterDefault("FilialDescricao")
+        _IDFilial = Obter_FilialPadrao()
+        lblFilial.Text = ObterDefault("FilialDescricao")
+        _IDConta = Obter_ContaPadrao()
+        txtConta.Text = ObterDefault("ContaDescricao")
         '
         myMes = ObterDefault("DataPadrao")
         lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
@@ -126,7 +106,7 @@ Public Class frmCaixaProcurar
                 cxLista = cxBLL.GetCaixaLista_Procura(propIDConta, dtInicial, dtFinal)
             End If
             '
-            FiltrarListagem()
+            dgvListagem.DataSource = cxLista
             '
         Catch ex As Exception
             MessageBox.Show("Ocorreu exceção ao obter a lista de Caixas..." & vbNewLine &
@@ -258,27 +238,6 @@ Public Class frmCaixaProcurar
     '
     Private Sub dgvListagem_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvListagem.CellDoubleClick
         btnAbrir_Click(New Object, New EventArgs)
-    End Sub
-    '
-    '
-    Private Sub btnFilialEscolher_Click(sender As Object, e As EventArgs) Handles btnFilialEscolher.Click
-        '
-        '--- Abre o frmFilial
-        Dim fFil As New frmFilial(True, Me)
-        '
-        fFil.ShowDialog()
-        '
-        If fFil.DialogResult = DialogResult.Cancel Then
-            propIDFilial = Nothing
-        Else
-            If fFil.IDFilialEscolhida <> _IDFilial Then
-                _IDConta = Nothing
-            End If
-            '
-            _IDFilial = fFil.IDFilialEscolhida
-            txtFilial.Text = fFil.FilialEscolhida
-        End If
-
     End Sub
     '
     Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
@@ -415,17 +374,13 @@ Public Class frmCaixaProcurar
 #Region "OUTRAS FUNCOES"
     '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtFilial.KeyDown, txtConta.KeyDown
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtConta.KeyDown
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '
         If e.KeyCode = Keys.Add Then
             e.Handled = True
             Select Case ctr.Name
-                Case "txtFilial"
-                    btnFilialEscolher_Click(New Object, New EventArgs)
-                    txtFilial.Text = txtFilial.Text.Replace("+", "")
-                    txtFilial.SelectAll()
                 Case "txtConta"
                     btnContaEscolher_Click(New Object, New EventArgs)
                     txtConta.Text = txtConta.Text.Replace("+", "")
@@ -434,8 +389,6 @@ Public Class frmCaixaProcurar
         ElseIf e.KeyCode = Keys.Delete Then
             e.Handled = True
             Select Case ctr.Name
-                Case "txtFilial"
-                    propIDFilial = Nothing
                 Case "txtConta"
                     propIDConta = Nothing
             End Select
@@ -445,21 +398,6 @@ Public Class frmCaixaProcurar
         Else
             e.Handled = True
             e.SuppressKeyPress = True
-        End If
-        '
-    End Sub
-    '
-    '--- FILTAR LISTAGEM PELO IDCONTA E IDFILIAL
-    Private Sub FiltrarListagem()
-        '
-        If Not IsNothing(_IDFilial) And Not IsNothing(_IDConta) Then
-            dgvListagem.DataSource = cxLista.FindAll(Function(x) x.IDFilial = _IDFilial And x.IDConta = _IDConta).ToList
-        ElseIf Not IsNothing(_IDFilial) Then
-            dgvListagem.DataSource = cxLista.FindAll(Function(x) x.IDFilial = _IDFilial).ToList
-        ElseIf Not IsNothing(_IDConta) Then
-            dgvListagem.DataSource = cxLista.FindAll(Function(x) x.IDConta = _IDConta).ToList
-        Else
-            dgvListagem.DataSource = cxLista
         End If
         '
     End Sub

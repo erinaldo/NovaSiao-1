@@ -350,7 +350,7 @@ Public Class frmMovFormas
         '--- grava os novos valores
         txtMovTipo.Text = frmTipo.propMovTipo_Escolha
         _MovForma.IDMovTipo = frmTipo.propIdMovTipo_Escolha
-        _MovForma.Meio = frmTipo.propMeio_Escolha
+        _MovForma.IDMeio = frmTipo.propMeio_Escolha
         txtMovTipo.Focus()
         txtMovTipo.SelectAll()
         '
@@ -385,7 +385,7 @@ Public Class frmMovFormas
     '--- VERIFICA SE E MOV CARTAO PARA HABILITAR OS CONTROLES
     Private Sub VerificaCartaoTipo(Optional AnulaPropriedades As Boolean = False)
         '
-        If _MovForma.Meio <> 3 Then ' 1 --> DINHEIRO | 2 --> CHEQUE | 3 --> MEIO CARTAO
+        If _MovForma.IDMeio <> 3 Then ' 1 --> DINHEIRO | 2 --> CHEQUE | 3 --> MEIO CARTAO
             '
             txtCartao.Enabled = False
             txtConta.Enabled = False

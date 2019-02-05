@@ -89,8 +89,8 @@ Partial Class frmDespesaSimples
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(383, 0)
-        Me.lblTitulo.Size = New System.Drawing.Size(211, 50)
+        Me.lblTitulo.Location = New System.Drawing.Point(384, 0)
+        Me.lblTitulo.Size = New System.Drawing.Size(210, 50)
         Me.lblTitulo.TabIndex = 4
         Me.lblTitulo.Text = "Despesa QUITADA"
         '
@@ -502,7 +502,7 @@ Partial Class frmDespesaSimples
         '
         Me.lblSaidaValor.BackColor = System.Drawing.Color.Transparent
         Me.lblSaidaValor.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSaidaValor.Location = New System.Drawing.Point(169, 428)
+        Me.lblSaidaValor.Location = New System.Drawing.Point(169, 430)
         Me.lblSaidaValor.Name = "lblSaidaValor"
         Me.lblSaidaValor.Size = New System.Drawing.Size(122, 25)
         Me.lblSaidaValor.TabIndex = 27

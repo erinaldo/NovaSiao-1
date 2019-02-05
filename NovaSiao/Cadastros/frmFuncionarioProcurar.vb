@@ -2,19 +2,25 @@
 Imports ComponentOwl.BetterListView
 '
 Public Class frmFuncionarioProcurar
+    '
     Private _DestinoVenda As Boolean
     Private _formOrigem As Form
+    Private _IDFilial As Integer
     Private dtFunc As DataTable
     Property IDEscolhido As Integer?
     Property NomeEscolhido As String
     '
     '--- SUB NEW
     Public Sub New(Optional DestinoVenda As Boolean = False, Optional frmOrigem As Form = Nothing)
+        '
         ' This call is required by the designer.
         InitializeComponent()
         '
         ' Add any initialization after the InitializeComponent() call.
+        _IDFilial = Obter_FilialPadrao()
+        lblFilial.Text = ObterDefault("FilialDescricao")
         _DestinoVenda = DestinoVenda
+        '
         If Not IsNothing(frmOrigem) Then
             _formOrigem = frmOrigem
         End If
@@ -42,29 +48,34 @@ Public Class frmFuncionarioProcurar
     End Sub
     '
     Private Function PreencheData() As Boolean
+        '
         Dim fBLL As New FuncionarioBLL
         Dim strSQL As String
         '
         '--- Preenche o Datatable
         Try
             If _DestinoVenda = True Then
-                strSQL = $"Vendedor = 'TRUE' AND Ativo = '{chkAtivo.Checked}' ORDER BY ApelidoFuncionario ASC"
+                strSQL = $"Vendedor = 'TRUE' AND Ativo = '{chkAtivo.Checked}' AND IDFilial = {_IDFilial} ORDER BY ApelidoFuncionario ASC"
                 dtFunc = fBLL.GetFuncionarios_DT(strSQL)
+                '
                 '--- verifica se retornou algum registro
                 If dtFunc.Rows.Count = 0 Then
                     MessageBox.Show("Não há vendedores" & IIf(chkAtivo.Checked = True, " Ativos ", " Inativos ") & "cadastrados no sistema",
                                     "Sem Cadastro", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Return False
                 End If
+                '
             Else
-                strSQL = $"Ativo = '{chkAtivo.Checked}' ORDER BY Cadastro ASC"
+                strSQL = $"Ativo = '{chkAtivo.Checked}' AND IDFilial = {_IDFilial} ORDER BY Cadastro ASC"
                 dtFunc = fBLL.GetFuncionarios_DT(strSQL)
+                '
                 '--- verifica se retornou algum registro
                 If dtFunc.Rows.Count = 0 Then
                     MessageBox.Show("Não há funcionários" & IIf(chkAtivo.Checked = True, " Ativos ", " Inativos ") & "cadastrados no sistema",
                                     "Sem Cadastro", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                     Return False
                 End If
+                '
             End If
             '
             Return True
@@ -78,12 +89,14 @@ Public Class frmFuncionarioProcurar
     End Function
     '
     Private Sub PreencheListagem()
+        '
         lstListagem.DataSource = dtFunc
         lstListagem.Columns(1).DisplayMember = "ApelidoFuncionario"
         '
     End Sub
     '
     Private Sub lstListagem_DrawColumnHeader(sender As Object, eventArgs As BetterListViewDrawColumnHeaderEventArgs) Handles lstListagem.DrawColumnHeader
+        '
         If eventArgs.ColumnHeaderBounds.BoundsOuter.Width > 0 AndAlso eventArgs.ColumnHeaderBounds.BoundsOuter.Height > 0 Then
             Dim brush As Brush = New SolidBrush(Color.LightSteelBlue)
 
@@ -92,17 +105,19 @@ Public Class frmFuncionarioProcurar
 
             brush.Dispose()
         End If
+        '
     End Sub
     Private Sub lstListagem_DrawItem(sender As Object, eventArgs As BetterListViewDrawItemEventArgs) Handles lstListagem.DrawItem
+        '
         If IsNumeric(eventArgs.Item.Text) Then
             eventArgs.Item.Text = Format(CInt(eventArgs.Item.Text), "00")
         End If
+        '
     End Sub
     '
     ' BOTÃO FECHAR
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         Me.DialogResult = DialogResult.Cancel
-        Me.Close()
     End Sub
     '
     ' ESCOLHER E SAIR
@@ -120,7 +135,6 @@ Public Class frmFuncionarioProcurar
         NomeEscolhido = lstListagem.SelectedItems(0).SubItems(1).Text ' NOME DO FUNCIONARIO/VENDEDOR
         '
         Me.DialogResult = DialogResult.OK
-        Me.Close()
         '
     End Sub
     '

@@ -4,10 +4,11 @@ Imports System.Data.SqlClient
 '
 Public Class FuncionarioBLL
     '
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     ' GET LIST OF
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     Public Function GetFuncionarios() As List(Of clFuncionario)
+        '
         Dim objdb As New AcessoDados
         Dim strSql As String = ""
 
@@ -18,40 +19,44 @@ Public Class FuncionarioBLL
         While dr.Read
             Dim func As clFuncionario = New clFuncionario
             '
-            func.IDPessoa = IIf(IsDBNull(dr("IDFuncionario")), Nothing, dr("IDFuncionario")) '1
-            func.Cadastro = IIf(IsDBNull(dr("Cadastro")), String.Empty, dr("Cadastro")) '2
-            func.CPF = IIf(IsDBNull(dr("CPF")), String.Empty, dr("CPF")) '4
-            func.NascimentoData = IIf(IsDBNull(dr("NascimentoData")), Nothing, dr("NascimentoData")) '3
-            func.Sexo = IIf(IsDBNull(dr("Sexo")), Nothing, dr("Sexo")) '3
-            func.Identidade = IIf(IsDBNull(dr("Identidade")), String.Empty, dr("Identidade")) '3
-            func.IdentidadeOrgao = IIf(IsDBNull(dr("IdentidadeOrgao")), String.Empty, dr("IdentidadeOrgao")) '3
-            func.IdentidadeData = IIf(IsDBNull(dr("IdentidadeData")), Nothing, dr("IdentidadeData")) '3
-            func.Endereco = IIf(IsDBNull(dr("Endereco")), String.Empty, dr("Endereco")) '5
-            func.Bairro = IIf(IsDBNull(dr("Bairro")), String.Empty, dr("Bairro")) '6 
-            func.Cidade = IIf(IsDBNull(dr("Cidade")), String.Empty, dr("Cidade")) '7 
-            func.UF = IIf(IsDBNull(dr("UF")), String.Empty, dr("UF")) '8
-            func.CEP = IIf(IsDBNull(dr("CEP")), String.Empty, dr("CEP")) '9
-            func.TelefoneA = IIf(IsDBNull(dr("TelefoneA")), String.Empty, dr("TelefoneA")) '10
-            func.TelefoneB = IIf(IsDBNull(dr("TelefoneB")), String.Empty, dr("TelefoneB")) '11
-            func.Email = IIf(IsDBNull(dr("Email")), String.Empty, dr("Email")) '12
-            func.AdmissaoData = IIf(IsDBNull(dr("AdmissaoData")), Nothing, dr("AdmissaoData")) '13
-            func.Ativo = IIf(IsDBNull(dr("Ativo")), 0, dr("Ativo")) '14
-            func.Vendedor = IIf(IsDBNull(dr("Vendedor")), Nothing, dr("Vendedor")) '15
-            func.ApelidoFuncionario = IIf(IsDBNull(dr("ApelidoFuncionario")), String.Empty, dr("ApelidoFuncionario")) '16
-            func.Comissao = IIf(IsDBNull(dr("Comissao")), Nothing, dr("Comissao")) '17
-            func.VendaTipo = IIf(IsDBNull(dr("VendaTipo")), Nothing, dr("VendaTipo")) '18
-            func.VendedorAtivo = IIf(IsDBNull(dr("VendedorAtivo")), Nothing, dr("VendedorAtivo")) '14
+            func.IDPessoa = IIf(IsDBNull(dr("IDFuncionario")), Nothing, dr("IDFuncionario"))
+            func.Cadastro = IIf(IsDBNull(dr("Cadastro")), String.Empty, dr("Cadastro"))
+            func.CPF = IIf(IsDBNull(dr("CPF")), String.Empty, dr("CPF"))
+            func.NascimentoData = IIf(IsDBNull(dr("NascimentoData")), Nothing, dr("NascimentoData"))
+            func.Sexo = IIf(IsDBNull(dr("Sexo")), Nothing, dr("Sexo"))
+            func.Identidade = IIf(IsDBNull(dr("Identidade")), String.Empty, dr("Identidade"))
+            func.IdentidadeOrgao = IIf(IsDBNull(dr("IdentidadeOrgao")), String.Empty, dr("IdentidadeOrgao"))
+            func.IdentidadeData = IIf(IsDBNull(dr("IdentidadeData")), Nothing, dr("IdentidadeData"))
+            func.Endereco = IIf(IsDBNull(dr("Endereco")), String.Empty, dr("Endereco"))
+            func.Bairro = IIf(IsDBNull(dr("Bairro")), String.Empty, dr("Bairro"))
+            func.Cidade = IIf(IsDBNull(dr("Cidade")), String.Empty, dr("Cidade"))
+            func.UF = IIf(IsDBNull(dr("UF")), String.Empty, dr("UF"))
+            func.CEP = IIf(IsDBNull(dr("CEP")), String.Empty, dr("CEP"))
+            func.TelefoneA = IIf(IsDBNull(dr("TelefoneA")), String.Empty, dr("TelefoneA"))
+            func.TelefoneB = IIf(IsDBNull(dr("TelefoneB")), String.Empty, dr("TelefoneB"))
+            func.Email = IIf(IsDBNull(dr("Email")), String.Empty, dr("Email"))
+            func.AdmissaoData = IIf(IsDBNull(dr("AdmissaoData")), Nothing, dr("AdmissaoData"))
+            func.Ativo = IIf(IsDBNull(dr("Ativo")), 0, dr("Ativo"))
+            func.Vendedor = IIf(IsDBNull(dr("Vendedor")), Nothing, dr("Vendedor"))
+            func.ApelidoFuncionario = IIf(IsDBNull(dr("ApelidoFuncionario")), String.Empty, dr("ApelidoFuncionario"))
+            func.IDFilial = IIf(IsDBNull(dr("IDFilial")), Nothing, dr("IDFilial"))
+            func.ApelidoFilial = IIf(IsDBNull(dr("ApelidoFilial")), String.Empty, dr("ApelidoFilial"))
+            func.Comissao = IIf(IsDBNull(dr("Comissao")), Nothing, dr("Comissao"))
+            func.VendaTipo = IIf(IsDBNull(dr("VendaTipo")), Nothing, dr("VendaTipo"))
+            func.VendedorAtivo = IIf(IsDBNull(dr("VendedorAtivo")), Nothing, dr("VendedorAtivo"))
             lista.Add(func)
             '
         End While
         dr.Close()
         Return lista
+        '
     End Function
     '
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     ' GET DATATABLE
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     Public Function GetFuncionarios_DT(Optional myWhere As String = "") As DataTable
+        '
         Dim objdb As New AcessoDados
         Dim strSql As String = ""
         '
@@ -73,40 +78,42 @@ Public Class FuncionarioBLL
         '
     End Function
     '
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     ' UPDATE
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     Public Function AtualizaFuncionario_Procedure_ID(ByVal _func As clFuncionario) As Long
         Dim objDB As New AcessoDados
-        Dim Conn As New SqlCommand
-
+        '
+        objDB.LimparParametros()
+        '
         'Adiciona os Parâmetros
-        Conn.Parameters.Add(New SqlParameter("@IDPessoa", _func.IDPessoa))
-        Conn.Parameters.Add(New SqlParameter("@Cadastro", _func.Cadastro))
-        Conn.Parameters.Add(New SqlParameter("@CPF", _func.CPF))
-        Conn.Parameters.Add(New SqlParameter("@Sexo", _func.Sexo))
-        Conn.Parameters.Add(New SqlParameter("@NascimentoData", _func.NascimentoData))
-        Conn.Parameters.Add(New SqlParameter("@Identidade", _func.Identidade))
-        Conn.Parameters.Add(New SqlParameter("@IdentidadeOrgao", _func.IdentidadeOrgao))
-        Conn.Parameters.Add(New SqlParameter("@IdentidadeData", _func.IdentidadeData))
-        Conn.Parameters.Add(New SqlParameter("@Endereco", _func.Endereco))
-        Conn.Parameters.Add(New SqlParameter("@Bairro", _func.Bairro))
-        Conn.Parameters.Add(New SqlParameter("@Cidade", _func.Cidade))
-        Conn.Parameters.Add(New SqlParameter("@UF", _func.UF))
-        Conn.Parameters.Add(New SqlParameter("@CEP", _func.CEP))
-        Conn.Parameters.Add(New SqlParameter("@TelefoneA", _func.TelefoneA))
-        Conn.Parameters.Add(New SqlParameter("@TelefoneB", _func.TelefoneB))
-        Conn.Parameters.Add(New SqlParameter("@Email", _func.Email))
-        Conn.Parameters.Add(New SqlParameter("@AdmissaoData", _func.AdmissaoData))
-        Conn.Parameters.Add(New SqlParameter("@Ativo", _func.Ativo))
-        Conn.Parameters.Add(New SqlParameter("@Vendedor", _func.Vendedor))
-        Conn.Parameters.Add(New SqlParameter("@ApelidoFuncionario", _func.ApelidoFuncionario))
-        Conn.Parameters.Add(New SqlParameter("@Comissao", _func.Comissao))
-        Conn.Parameters.Add(New SqlParameter("@VendaTipo", _func.VendaTipo))
-        Conn.Parameters.Add(New SqlParameter("@VendedorAtivo", _func.VendedorAtivo))
+        objDB.AdicionarParametros("@IDPessoa", _func.IDPessoa)
+        objDB.AdicionarParametros("@Cadastro", _func.Cadastro)
+        objDB.AdicionarParametros("@CPF", _func.CPF)
+        objDB.AdicionarParametros("@Sexo", _func.Sexo)
+        objDB.AdicionarParametros("@NascimentoData", _func.NascimentoData)
+        objDB.AdicionarParametros("@Identidade", _func.Identidade)
+        objDB.AdicionarParametros("@IdentidadeOrgao", _func.IdentidadeOrgao)
+        objDB.AdicionarParametros("@IdentidadeData", _func.IdentidadeData)
+        objDB.AdicionarParametros("@Endereco", _func.Endereco)
+        objDB.AdicionarParametros("@Bairro", _func.Bairro)
+        objDB.AdicionarParametros("@Cidade", _func.Cidade)
+        objDB.AdicionarParametros("@UF", _func.UF)
+        objDB.AdicionarParametros("@CEP", _func.CEP)
+        objDB.AdicionarParametros("@TelefoneA", _func.TelefoneA)
+        objDB.AdicionarParametros("@TelefoneB", _func.TelefoneB)
+        objDB.AdicionarParametros("@Email", _func.Email)
+        objDB.AdicionarParametros("@AdmissaoData", _func.AdmissaoData)
+        objDB.AdicionarParametros("@Ativo", _func.Ativo)
+        objDB.AdicionarParametros("@Vendedor", _func.Vendedor)
+        objDB.AdicionarParametros("@ApelidoFuncionario", _func.ApelidoFuncionario)
+        objDB.AdicionarParametros("@IDFilial", _func.IDFilial)
+        objDB.AdicionarParametros("@Comissao", _func.Comissao)
+        objDB.AdicionarParametros("@VendaTipo", _func.VendaTipo)
+        objDB.AdicionarParametros("@VendedorAtivo", _func.VendedorAtivo)
         '
         Try
-            Return objDB.ExecuteProcedureID("uspFuncionario_Alterar", Conn.Parameters)
+            Return objDB.ExecutarManipulacao(CommandType.StoredProcedure, "uspFuncionario_Alterar")
         Catch ex As Exception
             Throw ex
             Return Nothing
@@ -114,39 +121,39 @@ Public Class FuncionarioBLL
         '
     End Function
     '
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     ' INSERT
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     Public Function SalvaNovoFuncionario_Procedure_ID(ByVal _func As clFuncionario) As Long
         Dim objDB As New AcessoDados
-        Dim Conn As New SqlCommand
 
         'Adiciona os Parâmetros
-        Conn.Parameters.Add(New SqlParameter("@Cadastro", _func.Cadastro))
-        Conn.Parameters.Add(New SqlParameter("@CPF", _func.CPF))
-        Conn.Parameters.Add(New SqlParameter("@Sexo", _func.Sexo))
-        Conn.Parameters.Add(New SqlParameter("@NascimentoData", _func.NascimentoData))
-        Conn.Parameters.Add(New SqlParameter("@Identidade", _func.Identidade))
-        Conn.Parameters.Add(New SqlParameter("@IdentidadeOrgao", _func.IdentidadeOrgao))
-        Conn.Parameters.Add(New SqlParameter("@IdentidadeData", _func.IdentidadeData))
-        Conn.Parameters.Add(New SqlParameter("@Endereco", _func.Endereco))
-        Conn.Parameters.Add(New SqlParameter("@Bairro", _func.Bairro))
-        Conn.Parameters.Add(New SqlParameter("@Cidade", _func.Cidade))
-        Conn.Parameters.Add(New SqlParameter("@UF", _func.UF))
-        Conn.Parameters.Add(New SqlParameter("@CEP", _func.CEP))
-        Conn.Parameters.Add(New SqlParameter("@TelefoneA", _func.TelefoneA))
-        Conn.Parameters.Add(New SqlParameter("@TelefoneB", _func.TelefoneB))
-        Conn.Parameters.Add(New SqlParameter("@Email", _func.Email))
-        Conn.Parameters.Add(New SqlParameter("@AdmissaoData", _func.AdmissaoData))
-        Conn.Parameters.Add(New SqlParameter("@Ativo", _func.Ativo))
-        Conn.Parameters.Add(New SqlParameter("@Vendedor", _func.Vendedor))
-        Conn.Parameters.Add(New SqlParameter("@ApelidoFuncionario", _func.ApelidoFuncionario))
-        Conn.Parameters.Add(New SqlParameter("@Comissao", _func.Comissao))
-        Conn.Parameters.Add(New SqlParameter("@VendaTipo", _func.VendaTipo))
-        'Conn.Parameters.Add(New SqlParameter("@VendedorAtivo", _func.VendedorAtivo)) 'PADRAO 'TRUE'
+        objDB.AdicionarParametros("@Cadastro", _func.Cadastro)
+        objDB.AdicionarParametros("@CPF", _func.CPF)
+        objDB.AdicionarParametros("@Sexo", _func.Sexo)
+        objDB.AdicionarParametros("@NascimentoData", _func.NascimentoData)
+        objDB.AdicionarParametros("@Identidade", _func.Identidade)
+        objDB.AdicionarParametros("@IdentidadeOrgao", _func.IdentidadeOrgao)
+        objDB.AdicionarParametros("@IdentidadeData", _func.IdentidadeData)
+        objDB.AdicionarParametros("@Endereco", _func.Endereco)
+        objDB.AdicionarParametros("@Bairro", _func.Bairro)
+        objDB.AdicionarParametros("@Cidade", _func.Cidade)
+        objDB.AdicionarParametros("@UF", _func.UF)
+        objDB.AdicionarParametros("@CEP", _func.CEP)
+        objDB.AdicionarParametros("@TelefoneA", _func.TelefoneA)
+        objDB.AdicionarParametros("@TelefoneB", _func.TelefoneB)
+        objDB.AdicionarParametros("@Email", _func.Email)
+        objDB.AdicionarParametros("@AdmissaoData", _func.AdmissaoData)
+        objDB.AdicionarParametros("@Ativo", _func.Ativo)
+        objDB.AdicionarParametros("@Vendedor", _func.Vendedor)
+        objDB.AdicionarParametros("@ApelidoFuncionario", _func.ApelidoFuncionario)
+        objDB.AdicionarParametros("@Comissao", _func.Comissao)
+        objDB.AdicionarParametros("@VendaTipo", _func.VendaTipo)
+        objDB.AdicionarParametros("@IDFilial", _func.IDFilial)
+        'objDB.AdicionarParametros("@VendedorAtivo", _func.VendedorAtivo)) 'PADRAO 'TRUE'
         '
         Try
-            Return objDB.ExecuteProcedureID("uspFuncionario_Inserir", Conn.Parameters)
+            Return objDB.ExecutarManipulacao(CommandType.StoredProcedure, "uspFuncionario_Inserir")
         Catch ex As Exception
             Throw ex
             Return Nothing
@@ -154,17 +161,17 @@ Public Class FuncionarioBLL
         '
     End Function
     '
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     ' DELETE
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     Public Function DeletaFuncionario_PorID(ByVal _IDFuncionario As Long) As Boolean
-        MsgBox("Ainda ão implementado")
+        MsgBox("Ainda não implementado")
         Return False
     End Function
     '
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     ' GET QTDE DE VENDAS POR VENDEDOR 
-    '-----------------------------------------------------------------------------------------------------
+    '=====================================================================================================
     Public Function FuncionarioVendedor_GetVendas(myID As Integer) As Integer?
         Dim SQL As New SQLControl
         Dim r As DataRow

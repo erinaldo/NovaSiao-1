@@ -818,7 +818,7 @@ Public Class frmDevolucaoSaida
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Dim newID As Integer = mBLL.Movimentacao_Inserir(clMov)
+            Dim newID As Integer = mBLL.Movimentacao_Inserir(clMov).IDMovimentacao
             '
             clMov.IDMovimentacao = newID
             '

@@ -170,7 +170,7 @@ Public Class frmMovTipos
             .DataSource = dtMeio
             .ValueMember = "IDMeio"
             .DisplayMember = "Meio"
-            .DataBindings.Add("SelectedValue", bindTipo, "Meio", True, DataSourceUpdateMode.OnPropertyChanged)
+            .DataBindings.Add("SelectedValue", bindTipo, "IDMeio", True, DataSourceUpdateMode.OnPropertyChanged)
         End With
         '
     End Sub
@@ -332,7 +332,7 @@ Public Class frmMovTipos
         '
         If Sit = EnumFlagEstado.NovoRegistro Then
             Try
-                Dim newID As Int16 = movBLL.MovTipo_Inserir(row("MovTipo"), row("Meio"))
+                Dim newID As Int16 = movBLL.MovTipo_Inserir(row("MovTipo"), row("IDMeio"))
                 '
                 row("IDMovTipo") = newID
                 lblIDMovTipo.DataBindings("Text").ReadValue()
@@ -352,7 +352,7 @@ Public Class frmMovTipos
             '
         ElseIf Sit = EnumFlagEstado.Alterado Then
             Try
-                movBLL.MovTipo_Update(row("IDMovTipo"), row("MovTipo"), row("Ativo"), row("Meio"))
+                movBLL.MovTipo_Update(row("IDMovTipo"), row("MovTipo"), row("Ativo"), row("IDMeio"))
                 '
                 DirectCast(bindTipo.Current, DataRowView).Row.AcceptChanges()
                 Sit = EnumFlagEstado.RegistroSalvo
@@ -386,7 +386,7 @@ Public Class frmMovTipos
         End If
         '
         '--- verifica combo meio de pagamento
-        If IsDBNull(r("Meio")) OrElse cmbMeio.SelectedIndex = -1 Then
+        If IsDBNull(r("IDMeio")) OrElse cmbMeio.SelectedIndex = -1 Then
             MessageBox.Show("O campo MEIO DE PAGAMENTO não pode ficar vazio;" & vbCrLf &
                             "Favor preencher esse campo antes de Salvar o registro...",
                             "Campo Vazio", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
@@ -399,7 +399,7 @@ Public Class frmMovTipos
         For Each row In dtTipos.Rows
             If Not row.Equals(r.Row) Then
                 If r("MovTipo").ToString.ToUpper = row("MovTipo").ToString.ToUpper Then
-                    MessageBox.Show("A descrição do Meio de Pagamento deve ser exclusiva..." & vbCrLf &
+                    MessageBox.Show("A descrição do Tipo de Pagamento deve ser exclusiva..." & vbCrLf &
                                     "O campo descrição está DUPLICADO, favor usar uma descrição diferente.",
                                     "Campo Duplicado", MessageBoxButtons.OK,
                                     MessageBoxIcon.Exclamation)

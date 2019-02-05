@@ -4,6 +4,7 @@ Imports ComponentOwl.BetterListView
 Imports CamadaDTO
 
 Public Class frmContaProcurar
+    '
     Private listContas As List(Of clConta)
     Private ItemAtivo As Image = My.Resources.accept
     Private ItemInativo As Image = My.Resources.block
@@ -15,13 +16,16 @@ Public Class frmContaProcurar
     '
 #Region "SUB NEW | PROPERTYS"
     '
-    Sub New(formOrigem As Form, IDFilialPadrao As Integer, Optional idContaPadrao As Integer? = Nothing)
+    Sub New(formOrigem As Form,
+            IDFilialPadrao As Integer,
+            Optional idContaPadrao As Integer? = Nothing,
+            Optional OnlyContaCaixa As Boolean = False)
         '
         ' This call is required by the designer.
         InitializeComponent()
         '
         ' Add any initialization after the InitializeComponent() call.
-        ObterContas(IDFilialPadrao)
+        ObterContas(IDFilialPadrao, OnlyContaCaixa)
         PreencheListagem()
         '
         _formOrigem = formOrigem
@@ -59,17 +63,19 @@ Public Class frmContaProcurar
 #Region "LISTAGEM"
     '
     '--- OBTER A DT CONTAS
-    Private Sub ObterContas(myFilial As Integer?)
+    Private Sub ObterContas(myFilial As Integer?, OnlyContaCaixa As Boolean)
         '
         Dim mBLL As New MovimentacaoBLL
         '
         Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
             '
-            If IsNothing(myFilial) Then
-                listContas = mBLL.Contas_GET_PorIDFilial
-            Else
-                listContas = mBLL.Contas_GET_PorIDFilial(myFilial)
-            End If
+            '--- GET
+            listContas = mBLL.Contas_GET_PorIDFilial(Nothing, OnlyContaCaixa)
+            '
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
             '
         Catch ex As Exception
             MessageBox.Show("Uma exceção ocorreu ao obter lista de Contas da Filial" & vbNewLine &
@@ -125,7 +131,7 @@ Public Class frmContaProcurar
         '
         If eventArgs.Item.SubItems(2).Value = "True" Then
             eventArgs.Item.SubItems(2).Image = ItemAtivo
-        ElseIf eventArgs.Item.SubItems(2).VALUE = "False" Then
+        ElseIf eventArgs.Item.SubItems(2).Value = "False" Then
             eventArgs.Item.SubItems(2).Image = ItemInativo
         End If
         '

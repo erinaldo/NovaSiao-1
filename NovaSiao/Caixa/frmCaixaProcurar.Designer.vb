@@ -19,8 +19,8 @@ Partial Class frmCaixaProcurar
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.Panel2 = New System.Windows.Forms.Panel()
         Me.btnMesAtual = New VIBlend.WinForms.Controls.vButton()
         Me.btnPeriodoAnterior = New VIBlend.WinForms.Controls.vArrowButton()
@@ -50,12 +50,11 @@ Partial Class frmCaixaProcurar
         Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
         Me.btnAbrir = New System.Windows.Forms.Button()
         Me.txtConta = New System.Windows.Forms.TextBox()
-        Me.txtFilial = New System.Windows.Forms.TextBox()
         Me.btnContaEscolher = New VIBlend.WinForms.Controls.vButton()
-        Me.btnFilialEscolher = New VIBlend.WinForms.Controls.vButton()
         Me.Label2 = New System.Windows.Forms.Label()
-        Me.Label1 = New System.Windows.Forms.Label()
         Me.btnInserirNovo = New System.Windows.Forms.Button()
+        Me.Label11 = New System.Windows.Forms.Label()
+        Me.lblFilial = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.dgvListagem, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -65,10 +64,14 @@ Partial Class frmCaixaProcurar
         '
         'Panel1
         '
+        Me.Panel1.Controls.Add(Me.Label11)
+        Me.Panel1.Controls.Add(Me.lblFilial)
         Me.Panel1.Controls.Add(Me.btnClose)
         Me.Panel1.TabIndex = 0
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.lblFilial, 0)
+        Me.Panel1.Controls.SetChildIndex(Me.Label11, 0)
         '
         'lblTitulo
         '
@@ -175,8 +178,8 @@ Partial Class frmCaixaProcurar
         '
         Me.dgvListagem.AllowUserToAddRows = False
         Me.dgvListagem.AllowUserToDeleteRows = False
-        DataGridViewCellStyle1.BackColor = System.Drawing.Color.Azure
-        Me.dgvListagem.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle3.BackColor = System.Drawing.Color.Azure
+        Me.dgvListagem.AlternatingRowsDefaultCellStyle = DataGridViewCellStyle3
         Me.dgvListagem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
         Me.dgvListagem.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnApelidoFilial, Me.clnConta, Me.clnDataInicial, Me.clnDataFinal, Me.clnSaldoAnterior, Me.clnSaldoFinal, Me.clnSituacao})
         Me.dgvListagem.GridColor = System.Drawing.Color.LightSteelBlue
@@ -185,8 +188,8 @@ Partial Class frmCaixaProcurar
         Me.dgvListagem.Name = "dgvListagem"
         Me.dgvListagem.ReadOnly = True
         Me.dgvListagem.RowHeadersWidth = 30
-        DataGridViewCellStyle2.SelectionBackColor = System.Drawing.Color.LightSlateGray
-        Me.dgvListagem.RowsDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.LightSlateGray
+        Me.dgvListagem.RowsDefaultCellStyle = DataGridViewCellStyle4
         Me.dgvListagem.Size = New System.Drawing.Size(920, 368)
         Me.dgvListagem.TabIndex = 11
         '
@@ -383,17 +386,10 @@ Partial Class frmCaixaProcurar
         '
         'txtConta
         '
-        Me.txtConta.Location = New System.Drawing.Point(115, 105)
+        Me.txtConta.Location = New System.Drawing.Point(113, 66)
         Me.txtConta.Name = "txtConta"
-        Me.txtConta.Size = New System.Drawing.Size(205, 27)
+        Me.txtConta.Size = New System.Drawing.Size(229, 27)
         Me.txtConta.TabIndex = 5
-        '
-        'txtFilial
-        '
-        Me.txtFilial.Location = New System.Drawing.Point(115, 66)
-        Me.txtFilial.Name = "txtFilial"
-        Me.txtFilial.Size = New System.Drawing.Size(205, 27)
-        Me.txtFilial.TabIndex = 2
         '
         'btnContaEscolher
         '
@@ -401,7 +397,7 @@ Partial Class frmCaixaProcurar
         Me.btnContaEscolher.BackColor = System.Drawing.Color.Transparent
         Me.btnContaEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
         Me.btnContaEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnContaEscolher.Location = New System.Drawing.Point(326, 105)
+        Me.btnContaEscolher.Location = New System.Drawing.Point(348, 66)
         Me.btnContaEscolher.Name = "btnContaEscolher"
         Me.btnContaEscolher.RoundedCornersMask = CType(15, Byte)
         Me.btnContaEscolher.RoundedCornersRadius = 0
@@ -413,41 +409,14 @@ Partial Class frmCaixaProcurar
         Me.btnContaEscolher.UseVisualStyleBackColor = False
         Me.btnContaEscolher.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
-        'btnFilialEscolher
-        '
-        Me.btnFilialEscolher.AllowAnimations = True
-        Me.btnFilialEscolher.BackColor = System.Drawing.Color.Transparent
-        Me.btnFilialEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
-        Me.btnFilialEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnFilialEscolher.Location = New System.Drawing.Point(326, 66)
-        Me.btnFilialEscolher.Name = "btnFilialEscolher"
-        Me.btnFilialEscolher.RoundedCornersMask = CType(15, Byte)
-        Me.btnFilialEscolher.RoundedCornersRadius = 0
-        Me.btnFilialEscolher.Size = New System.Drawing.Size(34, 27)
-        Me.btnFilialEscolher.TabIndex = 3
-        Me.btnFilialEscolher.TabStop = False
-        Me.btnFilialEscolher.Text = "..."
-        Me.btnFilialEscolher.UseCompatibleTextRendering = True
-        Me.btnFilialEscolher.UseVisualStyleBackColor = False
-        Me.btnFilialEscolher.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
-        '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(18, 108)
+        Me.Label2.Location = New System.Drawing.Point(16, 69)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(91, 19)
         Me.Label2.TabIndex = 4
         Me.Label2.Text = "Conta Caixa:"
-        '
-        'Label1
-        '
-        Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(65, 69)
-        Me.Label1.Name = "Label1"
-        Me.Label1.Size = New System.Drawing.Size(44, 19)
-        Me.Label1.TabIndex = 1
-        Me.Label1.Text = "Filial:"
         '
         'btnInserirNovo
         '
@@ -463,16 +432,39 @@ Partial Class frmCaixaProcurar
         Me.btnInserirNovo.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnInserirNovo.UseVisualStyleBackColor = True
         '
+        'Label11
+        '
+        Me.Label11.AutoSize = True
+        Me.Label11.BackColor = System.Drawing.Color.Transparent
+        Me.Label11.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label11.ForeColor = System.Drawing.Color.Silver
+        Me.Label11.Location = New System.Drawing.Point(91, 5)
+        Me.Label11.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
+        Me.Label11.Name = "Label11"
+        Me.Label11.Size = New System.Drawing.Size(39, 13)
+        Me.Label11.TabIndex = 5
+        Me.Label11.Text = "Filial"
+        Me.Label11.TextAlign = System.Drawing.ContentAlignment.TopCenter
+        '
+        'lblFilial
+        '
+        Me.lblFilial.BackColor = System.Drawing.Color.Transparent
+        Me.lblFilial.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblFilial.ForeColor = System.Drawing.Color.White
+        Me.lblFilial.Location = New System.Drawing.Point(13, 23)
+        Me.lblFilial.Name = "lblFilial"
+        Me.lblFilial.Size = New System.Drawing.Size(200, 23)
+        Me.lblFilial.TabIndex = 4
+        Me.lblFilial.Text = "Filial"
+        Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        '
         'frmCaixaProcurar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(944, 598)
         Me.Controls.Add(Me.txtConta)
-        Me.Controls.Add(Me.txtFilial)
         Me.Controls.Add(Me.btnContaEscolher)
-        Me.Controls.Add(Me.btnFilialEscolher)
         Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.pnlMes)
         Me.Controls.Add(Me.pnlVenda)
         Me.Controls.Add(Me.btnInserirNovo)
@@ -490,13 +482,11 @@ Partial Class frmCaixaProcurar
         Me.Controls.SetChildIndex(Me.pnlVenda, 0)
         Me.Controls.SetChildIndex(Me.pnlMes, 0)
         Me.Controls.SetChildIndex(Me.Panel1, 0)
-        Me.Controls.SetChildIndex(Me.Label1, 0)
         Me.Controls.SetChildIndex(Me.Label2, 0)
-        Me.Controls.SetChildIndex(Me.btnFilialEscolher, 0)
         Me.Controls.SetChildIndex(Me.btnContaEscolher, 0)
-        Me.Controls.SetChildIndex(Me.txtFilial, 0)
         Me.Controls.SetChildIndex(Me.txtConta, 0)
         Me.Panel1.ResumeLayout(False)
+        Me.Panel1.PerformLayout()
         Me.Panel2.ResumeLayout(False)
         Me.Panel2.PerformLayout()
         CType(Me.dgvListagem, System.ComponentModel.ISupportInitialize).EndInit()
@@ -529,11 +519,8 @@ Partial Class frmCaixaProcurar
     Friend WithEvents txtDespesaTipo As TextBox
     Friend WithEvents btnAbrir As Button
     Friend WithEvents txtConta As TextBox
-    Friend WithEvents txtFilial As TextBox
     Friend WithEvents btnContaEscolher As VIBlend.WinForms.Controls.vButton
-    Friend WithEvents btnFilialEscolher As VIBlend.WinForms.Controls.vButton
     Friend WithEvents Label2 As Label
-    Friend WithEvents Label1 As Label
     Friend WithEvents clnApelidoFilial As DataGridViewTextBoxColumn
     Friend WithEvents clnConta As DataGridViewTextBoxColumn
     Friend WithEvents clnDataInicial As DataGridViewTextBoxColumn
@@ -543,4 +530,6 @@ Partial Class frmCaixaProcurar
     Friend WithEvents clnSituacao As DataGridViewTextBoxColumn
     Friend WithEvents Label4 As Label
     Friend WithEvents btnInserirNovo As Button
+    Friend WithEvents Label11 As Label
+    Friend WithEvents lblFilial As Label
 End Class

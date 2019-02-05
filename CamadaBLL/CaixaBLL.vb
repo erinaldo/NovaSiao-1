@@ -19,6 +19,8 @@ Public Class CaixaBLL
         db.AdicionarParametros("@SaldoFinal", myCaixa.SaldoFinal)
         db.AdicionarParametros("@SaldoAnterior", myCaixa.SaldoAnterior)
         db.AdicionarParametros("@Observacao", myCaixa.Observacao)
+        db.AdicionarParametros("@CaixaFinalDia", myCaixa.CaixaFinalDia)
+        db.AdicionarParametros("@IDFuncionario", If(myCaixa.IDFuncionario, DBNull.Value))
         '
         Try
             Dim dt As DataTable
@@ -26,25 +28,9 @@ Public Class CaixaBLL
             dt = db.ExecutarConsulta(CommandType.StoredProcedure, "uspCaixa_Inserir")
             '
             If dt.Rows.Count > 0 Then
-                Dim clC As New clCaixa
+                '
                 Dim r As DataRow = dt(0)
-                '
-                clC.IDCaixa = IIf(IsDBNull(r("IDCaixa")), Nothing, r("IDCaixa"))
-                clC.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
-                clC.Conta = IIf(IsDBNull(r("Conta")), String.Empty, r("Conta"))
-                clC.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
-                clC.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
-                clC.FechamentoData = IIf(IsDBNull(r("FechamentoData")), Nothing, r("FechamentoData"))
-                clC.IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao"))
-                clC.Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
-                clC.DataInicial = IIf(IsDBNull(r("DataInicial")), Nothing, r("DataInicial"))
-                clC.DataFinal = IIf(IsDBNull(r("DataFinal")), Nothing, r("DataFinal"))
-                clC.SaldoFinal = IIf(IsDBNull(r("SaldoFinal")), Nothing, r("SaldoFinal"))
-                clC.SaldoAnterior = IIf(IsDBNull(r("SaldoAnterior")), Nothing, r("SaldoAnterior"))
-                clC.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
-                '
-                '--- Retorna o resultado clCaixa
-                Return clC
+                Return Convert_DtRow_clCaixa(r)
                 '
             Else
                 Throw New Exception("Operação de salvamento não retornou nenhum dado...")
@@ -52,6 +38,41 @@ Public Class CaixaBLL
         Catch ex As Exception
             Throw ex
         End Try
+        '
+    End Function
+    '
+    '============================================================================================
+    '  CONVERT DT ROW EM CLCAIXA
+    '============================================================================================
+    Private Function Convert_DtRow_clCaixa(r As DataRow) As clCaixa
+        '
+        Dim clC As New clCaixa
+        '
+        Try
+            '
+            clC.IDCaixa = IIf(IsDBNull(r("IDCaixa")), Nothing, r("IDCaixa"))
+            clC.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
+            clC.Conta = IIf(IsDBNull(r("Conta")), String.Empty, r("Conta"))
+            clC.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
+            clC.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
+            clC.FechamentoData = IIf(IsDBNull(r("FechamentoData")), Nothing, r("FechamentoData"))
+            clC.IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao"))
+            clC.Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
+            clC.DataInicial = IIf(IsDBNull(r("DataInicial")), Nothing, r("DataInicial"))
+            clC.DataFinal = IIf(IsDBNull(r("DataFinal")), Nothing, r("DataFinal"))
+            clC.SaldoFinal = IIf(IsDBNull(r("SaldoFinal")), Nothing, r("SaldoFinal"))
+            clC.SaldoAnterior = IIf(IsDBNull(r("SaldoAnterior")), Nothing, r("SaldoAnterior"))
+            clC.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
+            clC.CaixaFinalDia = IIf(IsDBNull(r("CaixaFinalDia")), Nothing, r("CaixaFinalDia"))
+            clC.IDFuncionario = IIf(IsDBNull(r("IDFuncionario")), Nothing, r("IDFuncionario"))
+            clC.ApelidoFuncionario = IIf(IsDBNull(r("ApelidoFuncionario")), String.Empty, r("ApelidoFuncionario"))
+            '
+            Return clC
+            '
+        Catch ex As Exception
+            Throw ex
+        End Try
+        '
     End Function
     '
     '============================================================================================
@@ -72,24 +93,9 @@ Public Class CaixaBLL
             Dim dt As DataTable = SQL.DBDT
             '
             If dt.Rows.Count > 0 Then
-                Dim clC As New clCaixa
+                '
                 Dim r As DataRow = dt(0)
-                '
-                clC.IDCaixa = IIf(IsDBNull(r("IDCaixa")), Nothing, r("IDCaixa"))
-                clC.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
-                clC.Conta = IIf(IsDBNull(r("Conta")), String.Empty, r("Conta"))
-                clC.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
-                clC.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
-                clC.FechamentoData = IIf(IsDBNull(r("FechamentoData")), Nothing, r("FechamentoData"))
-                clC.IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao"))
-                clC.Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
-                clC.DataInicial = IIf(IsDBNull(r("DataInicial")), Nothing, r("DataInicial"))
-                clC.DataFinal = IIf(IsDBNull(r("DataFinal")), Nothing, r("DataFinal"))
-                clC.SaldoFinal = IIf(IsDBNull(r("SaldoFinal")), Nothing, r("SaldoFinal"))
-                clC.SaldoAnterior = IIf(IsDBNull(r("SaldoAnterior")), Nothing, r("SaldoAnterior"))
-                clC.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
-                '
-                Return clC
+                Return Convert_DtRow_clCaixa(r)
                 '
             Else
                 Throw New Exception("Não foi encontrado nenhum registro...")
@@ -122,14 +128,14 @@ Public Class CaixaBLL
     '============================================================================================
     ' GET SALDO DAS CONTAS DO CAIXA ANTERIOR PELO IDCAIXA
     '============================================================================================
-    Public Function GetSaldo_ContaFormas_IDCaixa(myIDCaixa As Integer) As DataTable
+    Public Function GetSaldo_ContaTipos_IDCaixa(myIDCaixa As Integer) As DataTable
         Dim db As New AcessoDados
         '
         db.LimparParametros()
         db.AdicionarParametros("@IDCaixa", myIDCaixa)
         '
         Try
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspCaixa_GetSaldoContaFormas")
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspCaixa_GetSaldoContaTipos")
             Return dt
         Catch ex As Exception
             Throw ex
@@ -140,12 +146,13 @@ Public Class CaixaBLL
     '============================================================================================
     ' INSERE NIVELAMENTO NO CAIXA E RETORNA UMA NOVA MOVIMENTACAO DE CAIXA
     '============================================================================================
-    Public Function InserirNivelamento(IDCaixa As Integer, IDMovForma As Int16, myValor As Decimal) As clMovimentacao
+    Public Function InserirNivelamento(IDCaixa As Integer, IDMovTipo As Int16, myValor As Decimal) As clMovimentacao
+        '
         Dim db As New AcessoDados
         '
         db.LimparParametros()
         db.AdicionarParametros("@IDCaixa", IDCaixa)
-        db.AdicionarParametros("@IDMovForma", IDMovForma)
+        db.AdicionarParametros("@IDMovTipo", IDMovTipo)
         db.AdicionarParametros("@Valor", myValor)
         '
         Try
@@ -224,7 +231,7 @@ Public Class CaixaBLL
     '============================================================================================
     ' GET LISTAGEM DE CAIXAS PARA PROCURA
     '============================================================================================
-    Public Function GetCaixaLista_Procura(myIDConta As Int16?,
+    Public Function GetCaixaLista_Procura(myIDConta As Int16,
                                           Optional dtInicial As Date? = Nothing,
                                           Optional dtFinal As Date? = Nothing) As List(Of clCaixa)
         '
@@ -233,36 +240,31 @@ Public Class CaixaBLL
         db.LimparParametros()
         '
         db.AdicionarParametros("@IDConta", myIDConta)
+        Dim myQuery As String = "SELECT * FROM qryCaixa WHERE IDConta = @IDConta"
+        '
         If Not IsNothing(dtInicial) Then
+            '
             db.AdicionarParametros("@DataInicial", dtInicial)
+            myQuery = myQuery & " AND DataInicial >= @DataInicial"
+            '
         End If
         '
         If Not IsNothing(dtFinal) Then
+            '
             db.AdicionarParametros("@DataFinal", dtFinal)
+            myQuery = myQuery & " AND DataFinal <= @DataFinal"
+            '
         End If
         '
         Try
-            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspCaixa_ProcurarLista")
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.Text, myQuery)
             Dim cxList As New List(Of clCaixa)
             '
+            If dt.Rows.Count = 0 Then Return cxList
+            '
             For Each r In dt.Rows
-                Dim c As New clCaixa
                 '
-                c.IDCaixa = IIf(IsDBNull(r("IDCaixa")), Nothing, r("IDCaixa"))
-                c.IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
-                c.Conta = IIf(IsDBNull(r("Conta")), String.Empty, r("Conta"))
-                c.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
-                c.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
-                c.FechamentoData = IIf(IsDBNull(r("FechamentoData")), Nothing, r("FechamentoData"))
-                c.DataInicial = IIf(IsDBNull(r("DataInicial")), Nothing, r("DataInicial"))
-                c.DataFinal = IIf(IsDBNull(r("DataFinal")), Nothing, r("DataFinal"))
-                c.IDSituacao = IIf(IsDBNull(r("IDSituacao")), Nothing, r("IDSituacao"))
-                c.Situacao = IIf(IsDBNull(r("Situacao")), String.Empty, r("Situacao"))
-                c.SaldoFinal = IIf(IsDBNull(r("SaldoFinal")), Nothing, r("SaldoFinal"))
-                c.SaldoAnterior = IIf(IsDBNull(r("SaldoAnterior")), Nothing, r("SaldoAnterior"))
-                c.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
-                '
-                cxList.Add(c)
+                cxList.Add(Convert_DtRow_clCaixa(r))
                 '
             Next
             '
@@ -275,16 +277,19 @@ Public Class CaixaBLL
     End Function
     '
     '============================================================================================
-    ' GET LISTAGEM DE CAIXAS PARA PROCURA
+    ' FIANLIZA O CAIXA
     '============================================================================================
-    Public Sub CaixaFinalizar(IDCaixa As Integer, Observacao As String)
+    Public Function CaixaFinalizar(_caixa As clCaixa) As Integer
+        '
         Dim db As New AcessoDados
         '
         db.LimparParametros()
-        db.AdicionarParametros("@IDCaixa", IDCaixa)
+        db.AdicionarParametros("@IDCaixa", _caixa.IDCaixa)
+        db.AdicionarParametros("@CaixaFinalDia", _caixa.CaixaFinalDia)
+        db.AdicionarParametros("@IDFuncionario", If(_caixa.IDFuncionario, DBNull.Value))
         '
-        If Observacao.Trim.Length > 0 Then
-            db.AdicionarParametros("@Observacao", Observacao)
+        If _caixa.Observacao.Trim.Length > 0 Then
+            db.AdicionarParametros("@Observacao", _caixa.Observacao)
         End If
         '
         Try
@@ -295,11 +300,13 @@ Public Class CaixaBLL
                 Throw New Exception(ID.ToString)
             End If
             '
+            Return ID
+            '
         Catch ex As Exception
             Throw ex
         End Try
         '
-    End Sub
+    End Function
     '
     '============================================================================================
     ' DESBLOQUEAR CAIXA E CONTA PELO ID CAIXA
@@ -346,40 +353,55 @@ Public Class CaixaBLL
     End Sub
     '
     '============================================================================================
-    ' SALVA OBSERVACAO PELO IDCAIXA
+    ' SALVA CAIXA
     '============================================================================================
-    Public Sub Caixa_SalvarObservacao(IDCaixa As Integer, Observacao As String)
-        Dim SQL As New SQLControl
+    Public Function UpdateCaixa(_caixa As clCaixa) As Boolean
         '
-        '--- DETERMINA OS PARAMETROS
-        SQL.AddParam("@IDCaixa", IDCaixa)
+        Dim db As New AcessoDados
+        '
+        '--- inicia uma TRANSACTION 
+        db.BeginTransaction()
         '
         Try
-            '--- EXCLUI A OBSERVACAO ANTERIOR SE HOUVER
-            SQL.ExecQuery("DELETE tblObservacao WHERE Origem = 5 AND IDOrigem = @IDCaixa")
             '
-            If SQL.HasException Then
-                Throw New Exception(SQL.Exception)
-                Exit Sub
+            '--- SALVA a observacao
+            '-------------------------------------------------------------------------------
+            Dim obs As New ObservacaoBLL
+            '
+            If Not obs.SaveObservacao(5, _caixa.IDCaixa, _caixa.Observacao, db) Then
+                Throw New Exception("Não foi possível salvar a observação do caixa...")
             End If
             '
-            '--- DETERMINA OS PARAMETROS
-            SQL.AddParam("@IDCaixa", IDCaixa)
-            SQL.AddParam("@Observacao", Observacao)
+            '--- SALVA o caixa
+            '-------------------------------------------------------------------------------
+            db.LimparParametros()
+            db.AdicionarParametros("@IDCaixa", _caixa.IDCaixa)
+            db.AdicionarParametros("@IDSituacao", _caixa.IDSituacao)
+            db.AdicionarParametros("@DataInicial", _caixa.DataInicial)
+            db.AdicionarParametros("@DataFinal", _caixa.DataFinal)
+            db.AdicionarParametros("@SaldoFinal", _caixa.SaldoFinal)
+            db.AdicionarParametros("@SaldoAnterior", _caixa.SaldoAnterior)
+            db.AdicionarParametros("@Observacao", _caixa.Observacao)
+            db.AdicionarParametros("@CaixaFinalDia", _caixa.CaixaFinalDia)
+            db.AdicionarParametros("@IDFuncionario", If(_caixa.IDFuncionario, DBNull.Value))
             '
-            '--- INSERE A NOVA OBSERVACAO
-            SQL.ExecQuery("INSERT INTO tblObservacao (IDOrigem, Origem, Observacao) VALUES (@IDCaixa, 5, @Observacao);")
+            Dim myQuery As String = "UPDATE tblCaixa SET " &
+                                    "IDSituacao = @IDSituacao, DataInicial = @DataInicial, DataFinal = @DataFinal, " &
+                                    "SaldoFinal = @SaldoFinal, SaldoAnterior = @SaldoAnterior, " &
+                                    "CaixaFinalDia = @CaixaFinalDia, IDFuncionario = @IDFuncionario " &
+                                    "WHERE IDCaixa = @IDCaixa"
             '
-            If SQL.HasException Then
-                Throw New Exception(SQL.Exception)
-                Exit Sub
-            End If
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+            db.CommitTransaction()
+            Return True
             '
         Catch ex As Exception
+            db.RollBackTransaction()
             Throw ex
         End Try
         '
-    End Sub
+    End Function
     '
 End Class
 

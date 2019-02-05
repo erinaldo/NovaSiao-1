@@ -361,6 +361,12 @@
     <Compile Include="Caixa\frmNivelamento.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Caixa\Transferencias\frmTransferenciaConta.designer.vb">
+      <DependentUpon>frmTransferenciaConta.vb</DependentUpon>
+    </Compile>
+    <Compile Include="Caixa\Transferencias\frmTransferenciaConta.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Clientes\frmClienteAcoesDialog.Designer.vb">
       <DependentUpon>frmClienteAcoesDialog.vb</DependentUpon>
     </Compile>
@@ -867,6 +873,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Caixa\frmNivelamento.resx">
       <DependentUpon>frmNivelamento.vb</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Caixa\Transferencias\frmTransferenciaConta.resx">
+      <DependentUpon>frmTransferenciaConta.vb</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Clientes\frmClienteAcoesDialog.resx">
       <DependentUpon>frmClienteAcoesDialog.vb</DependentUpon>

@@ -9,7 +9,7 @@ Public Class clCaixa : Implements IEditableObject
     Structure CaixaStructure ' alguns usam FRIEND em vez de DIM
         Dim _IDCaixa As Integer?
         Dim _IDFilial As Integer?
-        Dim _IDConta As Byte?
+        Dim _IDConta As Int16?
         Dim _FechamentoData As Date
         Dim _DataInicial As Date
         Dim _DataFinal As Date
@@ -17,6 +17,8 @@ Public Class clCaixa : Implements IEditableObject
         Dim _SaldoFinal As Decimal
         Dim _SaldoAnterior As Decimal
         Dim _Observacao As String
+        Dim _CaixaFinalDia As Boolean
+        Dim _IDFuncionario As Integer? ' operador de caixa
     End Structure
 #End Region
     '
@@ -40,6 +42,7 @@ Public Class clCaixa : Implements IEditableObject
             ._FechamentoData = Today
             ._IDSituacao = 1 '--- Iniciada
             ._Observacao = ""
+            ._CaixaFinalDia = False
         End With
     End Sub
     '
@@ -92,11 +95,11 @@ Public Class clCaixa : Implements IEditableObject
     End Property
     '
     '--- Propriedade IDConta
-    Public Property IDConta() As Byte?
+    Public Property IDConta() As Int16?
         Get
             Return CxData._IDConta
         End Get
-        Set(ByVal value As Byte?)
+        Set(ByVal value As Int16?)
             If value <> CxData._IDConta Then
                 RaiseEvent AoAlterar()
             End If
@@ -208,12 +211,41 @@ Public Class clCaixa : Implements IEditableObject
         End Set
     End Property
     '
+    '--- Propriedade CaixaFinalDia
+    '------------------------------------------------------
+    Public Property CaixaFinalDia() As Boolean
+        Get
+            Return CxData._CaixaFinalDia
+        End Get
+        Set(ByVal value As Boolean)
+            If value <> CxData._CaixaFinalDia Then
+                RaiseEvent AoAlterar()
+            End If
+            CxData._CaixaFinalDia = value
+        End Set
+    End Property
+    '
+    '--- Propriedade IDFuncionario (operador de caixa)
+    '------------------------------------------------------
+    Public Property IDFuncionario() As Integer?
+        Get
+            Return CxData._IDFuncionario
+        End Get
+        Set(ByVal value As Integer?)
+            If value <> CxData._IDFuncionario Then
+                RaiseEvent AoAlterar()
+            End If
+            CxData._IDFuncionario = value
+        End Set
+    End Property
+    '
     '----------------------------------------------------------------
     '  PROPRIEDADES DE OUTRAS TABELAS
     '----------------------------------------------------------------
     Property Conta As String
     Property ApelidoFilial As String
     Property Situacao As String
+    Property ApelidoFuncionario As String
     '
 #End Region
     '

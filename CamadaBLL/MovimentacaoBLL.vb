@@ -71,7 +71,7 @@ Public Class MovimentacaoBLL
     ' SALVA NOVA ENTRADA/PAGAMENTO NO BD
     '===================================================================================================
     Public Function Movimentacao_Inserir(Movimentacao As clMovimentacao,
-                                         Optional myDB As Object = Nothing) As Integer
+                                         Optional myDB As Object = Nothing) As clMovimentacao
         '
         Dim db As AcessoDados = If(myDB, New AcessoDados)
         '
@@ -88,16 +88,18 @@ Public Class MovimentacaoBLL
         db.AdicionarParametros("@Creditar", Movimentacao.Creditar)
         db.AdicionarParametros("@Observacao", Movimentacao.Observacao)
         db.AdicionarParametros("@Descricao", Movimentacao.Descricao)
+        db.AdicionarParametros("@IDMeio", Movimentacao.IDMeio)
+        db.AdicionarParametros("@Movimento", Movimentacao.Movimento)
         '
         Try
             '
-            Dim objReturn As Object = db.ExecutarManipulacao(CommandType.StoredProcedure, "uspMovimentacao_Inserir")
+            Dim dt As DataTable = db.ExecutarManipulacao(CommandType.StoredProcedure, "uspMovimentacao_Inserir")
             '
-            If Not IsNumeric(objReturn) Then
-                Throw New Exception(objReturn)
+            If dt.Rows.Count = 0 Then
+                Throw New Exception("Não foi retornado registro de movimentação...")
             End If
             '
-            Return objReturn
+            Return Convert_DT_ListOF_Movimentacao(dt).Item(0)
             '
         Catch ex As Exception
             Throw ex
@@ -141,6 +143,7 @@ Public Class MovimentacaoBLL
                   "MovData = @MovData, " &
                   "MovValor = @MovValor, " &
                   "IDMovForma = @IDMovForma, " &
+                  "IDMeio = @IDMeio, " &
                   "Descricao = @Descricao " &
                   "WHERE IDMovimentacao = @IDMovimentacao"
         '
@@ -153,6 +156,7 @@ Public Class MovimentacaoBLL
         db.AdicionarParametros("@MovData", _mov.MovData)
         db.AdicionarParametros("@MovValor", _mov.MovValor)
         db.AdicionarParametros("@IDMovForma", _mov.IDMovForma)
+        db.AdicionarParametros("@IDMeio", _mov.IDMeio)
         db.AdicionarParametros("@Descricao", _mov.Descricao)
         '
         Try
@@ -311,6 +315,7 @@ Public Class MovimentacaoBLL
                         .Origem = IIf(IsDBNull(r("Origem")), Nothing, r("Origem"))
                         .IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
                         .Conta = IIf(IsDBNull(r("Conta")), String.Empty, r("Conta"))
+                        .IDMeio = If(IsDBNull(r("IDMeio")), Nothing, r("IDMeio"))
                         .IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
                         .MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
                         .IDMovTipo = IIf(IsDBNull(r("IDMovTipo")), Nothing, r("IDMovTipo"))
@@ -325,6 +330,7 @@ Public Class MovimentacaoBLL
                         .IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
                         .ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
                         .Movimento = If(IsDBNull(r("Movimento")), Nothing, r("Movimento"))
+                        .Mov = If(IsDBNull(r("Mov")), Nothing, r("Mov"))
                         .Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
                     End With
                     '
@@ -352,10 +358,11 @@ Public Class MovimentacaoBLL
     '===================================================================================================
     ' RETURN LIST OF CONTAS PELO IDFILIAL
     '===================================================================================================
-    Public Function Contas_GET_PorIDFilial(Optional IDFilial As Integer? = Nothing) As List(Of clConta)
+    Public Function Contas_GET_PorIDFilial(Optional IDFilial As Integer? = Nothing,
+                                           Optional OnlyContaCaixa As Boolean = False) As List(Of clConta)
         '
         Try
-            Dim DT As DataTable = Contas_GET_PorIDFilial_DT(IDFilial)
+            Dim DT As DataTable = Contas_GET_PorIDFilial_DT(IDFilial, OnlyContaCaixa)
             Return Conta_Convert_Dt_To_List(DT)
         Catch ex As Exception
             Throw ex
@@ -366,7 +373,8 @@ Public Class MovimentacaoBLL
     '===================================================================================================
     ' OBTER DATATABLE DAS CONTAS PELO IDFILIAL
     '===================================================================================================
-    Public Function Contas_GET_PorIDFilial_DT(Optional IDFilial As Integer? = Nothing) As DataTable
+    Public Function Contas_GET_PorIDFilial_DT(Optional IDFilial As Integer? = Nothing,
+                                              Optional OnlyContaCaixa As Boolean = False) As DataTable
         Dim db As New AcessoDados
         Dim dtConta As DataTable
         '
@@ -378,6 +386,14 @@ Public Class MovimentacaoBLL
             '--- adiciona os parametros
             db.AdicionarParametros("@IDFilial", IDFilial)
             myQuery = myQuery & " WHERE IDFilial = @IDFilial"
+        End If
+        '
+        If OnlyContaCaixa Then '--- diferente de ContaTipo Cartao
+            If myQuery.Contains("WHERE") Then
+                myQuery = myQuery & " AND ContaTipo <> 3"
+            Else
+                myQuery = myQuery & " WHERE ContaTipo <> 3"
+            End If
         End If
         '
         Try
@@ -612,7 +628,7 @@ Public Class MovimentacaoBLL
                 clF.ContaPadrao = IIf(IsDBNull(r("ContaPadrao")), String.Empty, r("ContaPadrao"))
                 clF.IDFilial = IIf(IsDBNull(r("IDFilial")), Nothing, r("IDFilial"))
                 clF.ApelidoFilial = IIf(IsDBNull(r("ApelidoFilial")), String.Empty, r("ApelidoFilial"))
-                clF.Meio = IIf(IsDBNull(r("Meio")), Nothing, r("Meio"))
+                clF.IDMeio = IIf(IsDBNull(r("IDMeio")), Nothing, r("IDMeio"))
                 '
                 list.Add(clF)
                 '
@@ -626,7 +642,9 @@ Public Class MovimentacaoBLL
         '
     End Function
     '
+    '=========================================================================================
     '--- SALVAR REGISTRO
+    '=========================================================================================
     Public Function MovForma_Inserir(myMovForma As clMovForma) As Int16?
         '
         Dim mySQL As New SQLControl
@@ -660,7 +678,9 @@ Public Class MovimentacaoBLL
         '
     End Function
     '
-    '--- ATUALIZAR REGISTRO
+    '=========================================================================================
+    '--- ATUALIZAR REGISTRO DE FORMA DE MOVIMENTACAO
+    '=========================================================================================
     Public Function MovForma_Update(myMovForma As clMovForma) As Int16?
         '
         Dim mySQL As New SQLControl
@@ -733,8 +753,10 @@ Public Class MovimentacaoBLL
         '
     End Function
     '
-    ' --- SALVAR REGISTRO
-    Public Function MovTipo_Inserir(MovTipo As String, Meio As Byte) As Byte
+    '=========================================================================================
+    ' --- SALVAR REGISTRO DE TIPO DE MOVIMENTACAO
+    '=========================================================================================
+    Public Function MovTipo_Inserir(MovTipo As String, IDMeio As Byte) As Byte
         '
         Dim lng As Integer = MovTipo.Trim.Length
         '
@@ -744,15 +766,15 @@ Public Class MovimentacaoBLL
             Throw New Exception("A descrição do Tipo de Movimentação não pode ser maior de 30 caracteres")
         End If
         '
-        If Meio = 0 Then
+        If IDMeio = 0 OrElse IsNothing(IDMeio) Then
             Throw New Exception("O Meio de Pagamento não pode ficar vazio...")
         End If
         '
         SQL.ClearParams()
         SQL.AddParam("@MovTipo", MovTipo)
-        SQL.AddParam("@Meio", Meio)
+        SQL.AddParam("@IDMeio", IDMeio)
         '
-        Dim strSQL As String = "INSERT INTO tblCaixaMovFormaTipo (MovTipo, Meio, Ativo) VALUES (@MovTipo, @Meio, 'TRUE')"
+        Dim strSQL As String = "INSERT INTO tblCaixaMovFormaTipo (MovTipo, IDMeio, Ativo) VALUES (@MovTipo, @IDMeio, 'TRUE')"
         '
         Try
             '
@@ -774,17 +796,19 @@ Public Class MovimentacaoBLL
         '
     End Function
     '
-    ' --- ATUALIZAR REGISTRO
-    Public Function MovTipo_Update(IDMovTipo As Integer, MovTipo As String, Ativo As Boolean, Meio As Byte) As Byte
+    '=========================================================================================
+    ' --- ATUALIZAR REGISTRO DE TIPO DE MOVIMENTACAO
+    '=========================================================================================
+    Public Function MovTipo_Update(IDMovTipo As Integer, MovTipo As String, Ativo As Boolean, IDMeio As Byte) As Byte
         '
         SQL.ClearParams()
         SQL.AddParam("@IDMovTipo", IDMovTipo)
         SQL.AddParam("@MovTipo", MovTipo)
         SQL.AddParam("@Ativo", Ativo)
-        SQL.AddParam("@Meio", Meio)
+        SQL.AddParam("@IDMeio", IDMeio)
         '
         Dim strSQL As String = "UPDATE tblCaixaMovFormaTipo " &
-                               "SET MovTipo = @MovTipo, Ativo = @Ativo, Meio = @Meio " &
+                               "SET MovTipo = @MovTipo, Ativo = @Ativo, IDMeio = @IDMeio " &
                                "WHERE IDMovTipo = @IDMovTipo"
         '
         Try

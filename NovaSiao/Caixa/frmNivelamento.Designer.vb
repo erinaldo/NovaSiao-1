@@ -67,9 +67,9 @@ Partial Class frmNivelamento
         '
         Me.btnNivelar.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ActiveCaption
         Me.btnNivelar.Image = Global.NovaSiao.My.Resources.Resources.dollar_currency_sign
-        Me.btnNivelar.Location = New System.Drawing.Point(65, 315)
+        Me.btnNivelar.Location = New System.Drawing.Point(55, 315)
         Me.btnNivelar.Name = "btnNivelar"
-        Me.btnNivelar.Size = New System.Drawing.Size(111, 48)
+        Me.btnNivelar.Size = New System.Drawing.Size(119, 48)
         Me.btnNivelar.TabIndex = 3
         Me.btnNivelar.Text = "&Nivelar"
         Me.btnNivelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
@@ -80,9 +80,9 @@ Partial Class frmNivelamento
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCancelar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_30px
-        Me.btnCancelar.Location = New System.Drawing.Point(183, 315)
+        Me.btnCancelar.Location = New System.Drawing.Point(189, 315)
         Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(111, 48)
+        Me.btnCancelar.Size = New System.Drawing.Size(119, 48)
         Me.btnCancelar.TabIndex = 4
         Me.btnCancelar.Text = "&Cancelar"
         Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
@@ -92,11 +92,11 @@ Partial Class frmNivelamento
         'lblOperadora
         '
         Me.lblOperadora.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblOperadora.Location = New System.Drawing.Point(85, 25)
+        Me.lblOperadora.Location = New System.Drawing.Point(34, 25)
         Me.lblOperadora.Name = "lblOperadora"
-        Me.lblOperadora.Size = New System.Drawing.Size(154, 29)
+        Me.lblOperadora.Size = New System.Drawing.Size(263, 29)
         Me.lblOperadora.TabIndex = 5
-        Me.lblOperadora.Text = "Operadora"
+        Me.lblOperadora.Text = "Conta do Caixa"
         Me.lblOperadora.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'Label4
@@ -115,7 +115,7 @@ Partial Class frmNivelamento
         Me.lblMovForma.Name = "lblMovForma"
         Me.lblMovForma.Size = New System.Drawing.Size(257, 29)
         Me.lblMovForma.TabIndex = 5
-        Me.lblMovForma.Text = "Forma de Movimentação"
+        Me.lblMovForma.Text = "Tipo de Movimentação"
         Me.lblMovForma.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'GroupBox1
@@ -126,7 +126,7 @@ Partial Class frmNivelamento
         Me.GroupBox1.Size = New System.Drawing.Size(328, 70)
         Me.GroupBox1.TabIndex = 7
         Me.GroupBox1.TabStop = False
-        Me.GroupBox1.Text = "Operadora de Crédito:"
+        Me.GroupBox1.Text = " Conta de Nivelamento: "
         '
         'GroupBox2
         '
@@ -136,7 +136,7 @@ Partial Class frmNivelamento
         Me.GroupBox2.Size = New System.Drawing.Size(328, 70)
         Me.GroupBox2.TabIndex = 7
         Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = "Forma de Movimentação:"
+        Me.GroupBox2.Text = " Tipo de Movimentação: "
         '
         'frmNivelamento
         '

@@ -11,6 +11,7 @@ Public Class frmClienteProcurar
     Private _formOrigem As Form = Nothing
     '
 #Region "PROPRIEDADES, NEW E LOAD"
+    '
     '--- PROPRIEDADES
     Public Property propClienteID As Integer? '--- Define o IDPessoa do Cliente Selecionado
     Public Property propClienteRG() As Integer? '--- Define o RGCliente do Cliente Selecionado
@@ -110,6 +111,7 @@ Public Class frmClienteProcurar
 #End Region
     '
 #Region "LISTAGEM"
+    '
     '--- PREENCHE LISTAGEM
     Private Sub PreencheListagem()
         '--- Preenche o DataTable

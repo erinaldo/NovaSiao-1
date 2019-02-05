@@ -1,4 +1,5 @@
 ﻿Public Class frmNivelamento
+    '
     Private _formOrigem As Form
     Private _ValorAtual As Decimal
     Property NivValor_Escolhido As Decimal
@@ -92,7 +93,7 @@
     '-------------------------------------------------------------------------------------------------
     ' CRIAR EFEITO VISUAL DE FORM SELECIONADO
     '-------------------------------------------------------------------------------------------------
-    Private Sub frmAReceberItem_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+    Private Sub Me_Activated(sender As Object, e As EventArgs) Handles Me.Activated
         If IsNothing(_formOrigem) Then Exit Sub
         '
         For Each c As Control In _formOrigem.Controls
@@ -102,7 +103,7 @@
         Next
     End Sub
     '
-    Private Sub frmVendaPagamento_Closed(sender As Object, e As EventArgs) Handles Me.Closed
+    Private Sub Me_Closed(sender As Object, e As EventArgs) Handles Me.Closed
         If IsNothing(_formOrigem) Then Exit Sub
         '
         For Each c As Control In _formOrigem.Controls

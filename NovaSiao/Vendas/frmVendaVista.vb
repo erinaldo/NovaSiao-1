@@ -1414,7 +1414,7 @@ Public Class frmVendaVista
             For Each pag As clMovimentacao In PagGroupList
                 '
                 '--- Insere A MOVIMENTACAO DE ENTRADA
-                pag.IDMovimentacao = pagBll.Movimentacao_Inserir(pag, myDBTran)
+                pag = pagBll.Movimentacao_Inserir(pag, myDBTran)
                 '
                 '--- Insere a nova lista DataGrid pagamentos
                 _MovEntradaList.Add(pag)

@@ -83,6 +83,10 @@ Partial Class frmFuncionario
         Me.dgvFuncionarios = New System.Windows.Forms.DataGridView()
         Me.clnID = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnNome = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.VPanel1 = New VIBlend.WinForms.Controls.vPanel()
+        Me.lblApelidoFilial = New System.Windows.Forms.Label()
+        Me.Label20 = New System.Windows.Forms.Label()
+        Me.btnAlterarFilial = New System.Windows.Forms.Button()
         Me.Panel1.SuspendLayout()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
@@ -92,6 +96,8 @@ Partial Class frmFuncionario
         Me.pnlVenda.SuspendLayout()
         CType(Me.EProvider, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvFuncionarios, System.ComponentModel.ISupportInitialize).BeginInit()
+        Me.VPanel1.Content.SuspendLayout()
+        Me.VPanel1.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -731,7 +737,7 @@ Partial Class frmFuncionario
         Me.dgvFuncionarios.RowTemplate.Height = 30
         Me.dgvFuncionarios.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvFuncionarios.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.dgvFuncionarios.Size = New System.Drawing.Size(320, 293)
+        Me.dgvFuncionarios.Size = New System.Drawing.Size(320, 275)
         Me.dgvFuncionarios.TabIndex = 1
         '
         'clnID
@@ -754,10 +760,74 @@ Partial Class frmFuncionario
         Me.clnNome.ReadOnly = True
         Me.clnNome.Width = 220
         '
+        'VPanel1
+        '
+        Me.VPanel1.AllowAnimations = True
+        Me.VPanel1.BorderRadius = 0
+        '
+        'VPanel1.Content
+        '
+        Me.VPanel1.Content.AutoScroll = True
+        Me.VPanel1.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.VPanel1.Content.Controls.Add(Me.lblApelidoFilial)
+        Me.VPanel1.Content.Controls.Add(Me.btnAlterarFilial)
+        Me.VPanel1.Content.Location = New System.Drawing.Point(1, 1)
+        Me.VPanel1.Content.Name = "Content"
+        Me.VPanel1.Content.Size = New System.Drawing.Size(318, 36)
+        Me.VPanel1.Content.TabIndex = 3
+        Me.VPanel1.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
+        Me.VPanel1.Location = New System.Drawing.Point(14, 349)
+        Me.VPanel1.Name = "VPanel1"
+        Me.VPanel1.Opacity = 1.0!
+        Me.VPanel1.PanelBorderColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(180, Byte), Integer), CType(CType(209, Byte), Integer))
+        Me.VPanel1.Size = New System.Drawing.Size(320, 38)
+        Me.VPanel1.TabIndex = 40
+        Me.VPanel1.Text = "VPanel1"
+        Me.VPanel1.UsePanelBorderColor = True
+        Me.VPanel1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        '
+        'lblApelidoFilial
+        '
+        Me.lblApelidoFilial.BackColor = System.Drawing.Color.Transparent
+        Me.lblApelidoFilial.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblApelidoFilial.Location = New System.Drawing.Point(3, 4)
+        Me.lblApelidoFilial.Name = "lblApelidoFilial"
+        Me.lblApelidoFilial.Size = New System.Drawing.Size(277, 28)
+        Me.lblApelidoFilial.TabIndex = 4
+        Me.lblApelidoFilial.Text = "Apelido Filial"
+        Me.lblApelidoFilial.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
+        'Label20
+        '
+        Me.Label20.AutoSize = True
+        Me.Label20.BackColor = System.Drawing.Color.Transparent
+        Me.Label20.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.Label20.Location = New System.Drawing.Point(770, 277)
+        Me.Label20.Name = "Label20"
+        Me.Label20.Size = New System.Drawing.Size(69, 14)
+        Me.Label20.TabIndex = 3
+        Me.Label20.Text = "Filial Sede:"
+        '
+        'btnAlterarFilial
+        '
+        Me.btnAlterarFilial.BackgroundImage = Global.NovaSiao.My.Resources.Resources.refresh
+        Me.btnAlterarFilial.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch
+        Me.btnAlterarFilial.FlatAppearance.BorderColor = System.Drawing.SystemColors.ActiveCaption
+        Me.btnAlterarFilial.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnAlterarFilial.Font = New System.Drawing.Font("Calibri", 9.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.btnAlterarFilial.Location = New System.Drawing.Point(286, 4)
+        Me.btnAlterarFilial.Name = "btnAlterarFilial"
+        Me.btnAlterarFilial.Size = New System.Drawing.Size(28, 28)
+        Me.btnAlterarFilial.TabIndex = 25
+        Me.btnAlterarFilial.TabStop = False
+        Me.btnAlterarFilial.UseVisualStyleBackColor = True
+        '
         'frmFuncionario
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(922, 542)
+        Me.Controls.Add(Me.VPanel1)
+        Me.Controls.Add(Me.Label20)
         Me.Controls.Add(Me.dgvFuncionarios)
         Me.Controls.Add(Me.txtAdmissaoData)
         Me.Controls.Add(Me.cmbSexo)
@@ -839,6 +909,8 @@ Partial Class frmFuncionario
         Me.Controls.SetChildIndex(Me.cmbSexo, 0)
         Me.Controls.SetChildIndex(Me.txtAdmissaoData, 0)
         Me.Controls.SetChildIndex(Me.dgvFuncionarios, 0)
+        Me.Controls.SetChildIndex(Me.Label20, 0)
+        Me.Controls.SetChildIndex(Me.VPanel1, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
         Me.SplitContainer1.Panel1.ResumeLayout(False)
@@ -851,6 +923,8 @@ Partial Class frmFuncionario
         Me.pnlVenda.PerformLayout()
         CType(Me.EProvider, System.ComponentModel.ISupportInitialize).EndInit()
         CType(Me.dgvFuncionarios, System.ComponentModel.ISupportInitialize).EndInit()
+        Me.VPanel1.Content.ResumeLayout(False)
+        Me.VPanel1.ResumeLayout(False)
         Me.ResumeLayout(False)
         Me.PerformLayout()
 
@@ -914,4 +988,8 @@ Partial Class frmFuncionario
     Friend WithEvents dgvFuncionarios As DataGridView
     Friend WithEvents clnID As DataGridViewTextBoxColumn
     Friend WithEvents clnNome As DataGridViewTextBoxColumn
+    Friend WithEvents VPanel1 As VIBlend.WinForms.Controls.vPanel
+    Friend WithEvents lblApelidoFilial As Label
+    Friend WithEvents Label20 As Label
+    Friend WithEvents btnAlterarFilial As Button
 End Class

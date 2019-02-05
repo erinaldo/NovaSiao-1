@@ -17,6 +17,7 @@ End Enum
 Public Class clMovimentacao : Implements IEditableObject
     '
 #Region "ESTRUTURA DOS DADOS"
+    '
     Structure MovStructure ' alguns usam FRIEND em vez de DIM
         '
         '--- ORIGEM: qryMovimentacao
@@ -27,6 +28,7 @@ Public Class clMovimentacao : Implements IEditableObject
         Dim _IDConta As Byte
         'Conta As String
         Dim _IDMovForma As Int16?
+        Dim _IDMeio As Byte
         'MovForma As String
         'IDMovTipo As Int16
         'MovTipo as String
@@ -45,6 +47,7 @@ Public Class clMovimentacao : Implements IEditableObject
         'ApelidoFilial As String
         '
     End Structure
+    '
 #End Region
     '
 #Region "PRIVATE VARIABLES"
@@ -176,6 +179,20 @@ Public Class clMovimentacao : Implements IEditableObject
     '--- Propriedade Conta
     '------------------------------------------------------
     Public Property Conta() As String
+    '
+    '--- Propriedade IDMeio
+    '------------------------------------------------------
+    Public Property IDMeio() As Byte
+        Get
+            Return MData._IDMeio
+        End Get
+        Set(ByVal value As Byte)
+            If value <> MData._IDMeio Then
+                RaiseEvent AoAlterar()
+            End If
+            MData._IDMeio = value
+        End Set
+    End Property
     '
     '--- Propriedade IDMovForma
     Public Property IDMovForma() As Int16?

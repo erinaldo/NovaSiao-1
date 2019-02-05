@@ -98,6 +98,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="NotaFiscalBLL.vb" />
+    <Compile Include="ObservacaoBLL.vb" />
     <Compile Include="PedidoBLL.vb" />
     <Compile Include="PessoaBLL.vb" />
     <Compile Include="ProdutoBLL.vb" />

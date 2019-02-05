@@ -60,7 +60,7 @@ Public Class frmContas
     End Property
     '
     Sub New(Optional formOrigem As Form = Nothing,
-            Optional idFilialPadrao As Integer = Nothing,
+            Optional idFilialPadrao As Integer? = Nothing,
             Optional FilialPadrao As String = "")
         '
         ' This call is required by the designer.

@@ -68,9 +68,10 @@ Public Class frmFuncionario
         bindFunc.DataSource = listFunc
         '
         If listFunc.Count = 0 Then
-            bindFunc.AddNew()
+            '
+            btnNovo_Click(Me, New EventArgs)
             PreencheDataBindings()
-            Sit = EnumFlagEstado.NovoRegistro
+            '
         Else
             bindFunc.MoveFirst()
             PreencheDataBindings()
@@ -83,6 +84,7 @@ Public Class frmFuncionario
         AddHandlerControles() ' adiciona o handler para selecionar e usar tab com a tecla enter
         RedimensionarForm()
         Opening = False
+        '
     End Sub
     '
 #End Region
@@ -113,6 +115,7 @@ Public Class frmFuncionario
         txtApelidoFuncionario.DataBindings.Add("Text", bindFunc, "ApelidoFuncionario", True, DataSourceUpdateMode.OnPropertyChanged)
         txtComissao.DataBindings.Add("Text", bindFunc, "Comissao", True, DataSourceUpdateMode.OnPropertyChanged)
         chkVendedorAtivo.DataBindings.Add("CheckState", bindFunc, "VendedorAtivo", True, DataSourceUpdateMode.OnPropertyChanged)
+        lblApelidoFilial.DataBindings.Add("Text", bindFunc, "ApelidoFilial", True, DataSourceUpdateMode.OnPropertyChanged)
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblIDFuncionario.DataBindings("Tag").Format, AddressOf idFormatRG
@@ -631,6 +634,7 @@ Public Class frmFuncionario
 #End Region
     '
 #Region "ACAO DOS BOTOES"
+    '
     Private Sub btnFechar_Click(sender As Object, e As EventArgs) Handles btnFechar.Click
         AutoValidate = AutoValidate.Disable
         Me.Close()
@@ -641,6 +645,8 @@ Public Class frmFuncionario
         'listFunc.Add(New clFuncionario)
         bindFunc.AddNew()
         bindFunc.MoveLast()
+        bindFunc.Current.IDFilial = Obter_FilialPadrao()
+        bindFunc.Current.ApelidoFilial = ObterDefault("FilialDescricao")
         dgvFuncionarios.ClearSelection()
         Sit = EnumFlagEstado.NovoRegistro
         txtFuncionario.Focus()
@@ -671,7 +677,6 @@ Public Class frmFuncionario
     Private Sub btnExcluir_Click(sender As Object, e As EventArgs) Handles btnExcluir.Click
         MsgBox("Em complementação...")
     End Sub
-    '
     '
     ' ALTERA A IMAGEM E O TEXTO DO BOTÃO ATIVO E DESATIVO
     Private Sub AtivoButtonImage()
@@ -713,6 +718,36 @@ Public Class frmFuncionario
                 AtivoButtonImage()
             End If
         End If
+    End Sub
+    '
+    ' ALTERAR A FILIAL SEDE DO FUNCIONARIO
+    Private Sub btnAlterarFilial_Click(sender As Object, e As EventArgs) Handles btnAlterarFilial.Click
+        '
+        '--- Abre o frmFilial
+        Dim fFil As New frmFilialEscolher()
+        '
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            fFil.ShowDialog()
+            '
+            If fFil.DialogResult = DialogResult.Cancel Then Exit Sub
+            '
+            If fFil.propIdFilial_Escolha <> bindFunc.Current.IDFilial Then
+                Sit = EnumFlagEstado.Alterado
+                bindFunc.Current.IDFilial = fFil.propIdFilial_Escolha
+                lblApelidoFilial.Text = fFil.propFilial_Escolha
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao abrir o formulário de procurar filial..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
+        '
     End Sub
     '
 #End Region

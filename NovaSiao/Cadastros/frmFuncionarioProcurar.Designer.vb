@@ -27,6 +27,8 @@ Partial Class frmFuncionarioProcurar
         Me.Funcionario = New ComponentOwl.BetterListView.BetterListViewColumnHeader()
         Me.chkAtivo = New CheckedButton_OnOff.CheckedButton_OnOff()
         Me.lblAtivo = New System.Windows.Forms.Label()
+        Me.Label1 = New System.Windows.Forms.Label()
+        Me.lblFilial = New System.Windows.Forms.Label()
         Me.Panel1.SuspendLayout()
         CType(Me.lstListagem, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
@@ -72,11 +74,11 @@ Partial Class frmFuncionarioProcurar
         Me.lstListagem.FontColumns = New System.Drawing.Font("Verdana", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lstListagem.HeaderStyle = ComponentOwl.BetterListView.BetterListViewHeaderStyle.Nonclickable
         Me.lstListagem.HideSelectionMode = ComponentOwl.BetterListView.BetterListViewHideSelectionMode.KeepSelection
-        Me.lstListagem.Location = New System.Drawing.Point(12, 63)
+        Me.lstListagem.Location = New System.Drawing.Point(12, 98)
         Me.lstListagem.Margin = New System.Windows.Forms.Padding(6)
         Me.lstListagem.MultiSelect = False
         Me.lstListagem.Name = "lstListagem"
-        Me.lstListagem.Size = New System.Drawing.Size(378, 356)
+        Me.lstListagem.Size = New System.Drawing.Size(378, 321)
         Me.lstListagem.TabIndex = 4
         '
         'IDFuncionario
@@ -129,10 +131,32 @@ Partial Class frmFuncionarioProcurar
         Me.lblAtivo.Text = "Ativos"
         Me.lblAtivo.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Location = New System.Drawing.Point(13, 63)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(79, 19)
+        Me.Label1.TabIndex = 16
+        Me.Label1.Text = "Filial Sede:"
+        Me.Label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        '
+        'lblFilial
+        '
+        Me.lblFilial.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblFilial.Location = New System.Drawing.Point(92, 60)
+        Me.lblFilial.Name = "lblFilial"
+        Me.lblFilial.Size = New System.Drawing.Size(274, 26)
+        Me.lblFilial.TabIndex = 16
+        Me.lblFilial.Text = "Filial Nome"
+        Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleLeft
+        '
         'frmFuncionarioProcurar
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
         Me.ClientSize = New System.Drawing.Size(398, 480)
+        Me.Controls.Add(Me.lblFilial)
+        Me.Controls.Add(Me.Label1)
         Me.Controls.Add(Me.lblAtivo)
         Me.Controls.Add(Me.chkAtivo)
         Me.Controls.Add(Me.btnEscolher)
@@ -146,9 +170,12 @@ Partial Class frmFuncionarioProcurar
         Me.Controls.SetChildIndex(Me.btnEscolher, 0)
         Me.Controls.SetChildIndex(Me.chkAtivo, 0)
         Me.Controls.SetChildIndex(Me.lblAtivo, 0)
+        Me.Controls.SetChildIndex(Me.Label1, 0)
+        Me.Controls.SetChildIndex(Me.lblFilial, 0)
         Me.Panel1.ResumeLayout(False)
         CType(Me.lstListagem, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
+        Me.PerformLayout()
 
     End Sub
 
@@ -159,4 +186,6 @@ Partial Class frmFuncionarioProcurar
     Friend WithEvents Funcionario As ComponentOwl.BetterListView.BetterListViewColumnHeader
     Friend WithEvents chkAtivo As CheckedButton_OnOff.CheckedButton_OnOff
     Friend WithEvents lblAtivo As Label
+    Friend WithEvents Label1 As Label
+    Friend WithEvents lblFilial As Label
 End Class
