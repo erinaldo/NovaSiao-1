@@ -93,6 +93,7 @@ Partial Class frmPrincipal
         Me.tsbConfig = New System.Windows.Forms.ToolStripSplitButton()
         Me.miConfiguracaoDataPadrao = New System.Windows.Forms.ToolStripMenuItem()
         Me.miConfiguracaoSistema = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miCFOP = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator2 = New System.Windows.Forms.ToolStripSeparator()
         Me.miConfiguracaoUsuarios = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolStripSeparator15 = New System.Windows.Forms.ToolStripSeparator()
@@ -111,7 +112,7 @@ Partial Class frmPrincipal
         Me.Label2 = New System.Windows.Forms.Label()
         Me.lblHora = New System.Windows.Forms.Label()
         Me.Timer1 = New System.Windows.Forms.Timer(Me.components)
-        Me.miCFOP = New System.Windows.Forms.ToolStripMenuItem()
+        Me.miTransferencias = New System.Windows.Forms.ToolStripMenuItem()
         Me.tsPrincipal.SuspendLayout()
         Me.Panel1.SuspendLayout()
         CType(Me.SContainerPrincipal, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -568,7 +569,7 @@ Partial Class frmPrincipal
         'tsbCaixa
         '
         Me.tsbCaixa.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image
-        Me.tsbCaixa.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miProcurarCaixa, Me.miFinalizarCaixa, Me.ToolStripSeparator10, Me.miContas, Me.ToolStripSeparator9, Me.miFormasDeMovimentacao, Me.miControlesMovimentacao})
+        Me.tsbCaixa.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.miProcurarCaixa, Me.miFinalizarCaixa, Me.ToolStripSeparator10, Me.miTransferencias, Me.miContas, Me.ToolStripSeparator9, Me.miFormasDeMovimentacao, Me.miControlesMovimentacao})
         Me.tsbCaixa.Image = Global.NovaSiao.My.Resources.Resources.Caixa
         Me.tsbCaixa.ImageTransparentColor = System.Drawing.Color.Magenta
         Me.tsbCaixa.Name = "tsbCaixa"
@@ -580,7 +581,7 @@ Partial Class frmPrincipal
         Me.miProcurarCaixa.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
         Me.miProcurarCaixa.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miProcurarCaixa.Name = "miProcurarCaixa"
-        Me.miProcurarCaixa.Size = New System.Drawing.Size(268, 30)
+        Me.miProcurarCaixa.Size = New System.Drawing.Size(276, 38)
         Me.miProcurarCaixa.Text = "Procurar Caixa"
         '
         'miFinalizarCaixa
@@ -588,33 +589,33 @@ Partial Class frmPrincipal
         Me.miFinalizarCaixa.Image = Global.NovaSiao.My.Resources.Resources.accept
         Me.miFinalizarCaixa.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miFinalizarCaixa.Name = "miFinalizarCaixa"
-        Me.miFinalizarCaixa.Size = New System.Drawing.Size(268, 30)
+        Me.miFinalizarCaixa.Size = New System.Drawing.Size(276, 38)
         Me.miFinalizarCaixa.Text = "Finalizar Caixa"
         '
         'ToolStripSeparator10
         '
         Me.ToolStripSeparator10.Name = "ToolStripSeparator10"
-        Me.ToolStripSeparator10.Size = New System.Drawing.Size(265, 6)
+        Me.ToolStripSeparator10.Size = New System.Drawing.Size(273, 6)
         '
         'miContas
         '
         Me.miContas.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
         Me.miContas.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miContas.Name = "miContas"
-        Me.miContas.Size = New System.Drawing.Size(268, 30)
+        Me.miContas.Size = New System.Drawing.Size(276, 38)
         Me.miContas.Text = "Manutenção de Contas"
         '
         'ToolStripSeparator9
         '
         Me.ToolStripSeparator9.Name = "ToolStripSeparator9"
-        Me.ToolStripSeparator9.Size = New System.Drawing.Size(265, 6)
+        Me.ToolStripSeparator9.Size = New System.Drawing.Size(273, 6)
         '
         'miFormasDeMovimentacao
         '
         Me.miFormasDeMovimentacao.Image = Global.NovaSiao.My.Resources.Resources.search_peq1
         Me.miFormasDeMovimentacao.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miFormasDeMovimentacao.Name = "miFormasDeMovimentacao"
-        Me.miFormasDeMovimentacao.Size = New System.Drawing.Size(268, 30)
+        Me.miFormasDeMovimentacao.Size = New System.Drawing.Size(276, 38)
         Me.miFormasDeMovimentacao.Text = "Formas de Movimentação"
         '
         'miControlesMovimentacao
@@ -623,7 +624,7 @@ Partial Class frmPrincipal
         Me.miControlesMovimentacao.Image = Global.NovaSiao.My.Resources.Resources.add_24x24
         Me.miControlesMovimentacao.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
         Me.miControlesMovimentacao.Name = "miControlesMovimentacao"
-        Me.miControlesMovimentacao.Size = New System.Drawing.Size(268, 30)
+        Me.miControlesMovimentacao.Size = New System.Drawing.Size(276, 38)
         Me.miControlesMovimentacao.Text = "Controles de Movimentação"
         '
         'miTiposDeMovimentacao
@@ -678,6 +679,14 @@ Partial Class frmPrincipal
         Me.miConfiguracaoSistema.Size = New System.Drawing.Size(246, 30)
         Me.miConfiguracaoSistema.Tag = "1"
         Me.miConfiguracaoSistema.Text = "Configuração do Sistema"
+        '
+        'miCFOP
+        '
+        Me.miCFOP.Image = Global.NovaSiao.My.Resources.Resources.Controles_24x24
+        Me.miCFOP.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miCFOP.Name = "miCFOP"
+        Me.miCFOP.Size = New System.Drawing.Size(246, 30)
+        Me.miCFOP.Text = "CFOP das Operações"
         '
         'ToolStripSeparator2
         '
@@ -880,13 +889,13 @@ Partial Class frmPrincipal
         Me.Timer1.Enabled = True
         Me.Timer1.Interval = 600
         '
-        'miCFOP
+        'miTransferencias
         '
-        Me.miCFOP.Image = Global.NovaSiao.My.Resources.Resources.Controles_24x24
-        Me.miCFOP.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
-        Me.miCFOP.Name = "miCFOP"
-        Me.miCFOP.Size = New System.Drawing.Size(246, 30)
-        Me.miCFOP.Text = "CFOP das Operações"
+        Me.miTransferencias.Image = Global.NovaSiao.My.Resources.Resources.refresh1
+        Me.miTransferencias.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None
+        Me.miTransferencias.Name = "miTransferencias"
+        Me.miTransferencias.Size = New System.Drawing.Size(276, 38)
+        Me.miTransferencias.Text = "Transferências entre Contas"
         '
         'frmPrincipal
         '
@@ -1008,4 +1017,5 @@ Partial Class frmPrincipal
     Friend WithEvents miAPagarMovInterna As ToolStripMenuItem
     Friend WithEvents miNovaDevolucaoSaida As ToolStripMenuItem
     Friend WithEvents miCFOP As ToolStripMenuItem
+    Friend WithEvents miTransferencias As ToolStripMenuItem
 End Class

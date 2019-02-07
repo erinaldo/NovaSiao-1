@@ -2,11 +2,11 @@
 Imports CamadaDTO
 Imports System.Drawing.Drawing2D
 '
-Public Class frmCaixaProcurar
-    Private cxLista As New List(Of clCaixa)
+Public Class frmTransferenciaProcurar
+    Private TransfLista As New List(Of clTransferenciaCaixa)
     Private _myMes As Date
     Private _Sit As EnumFlagEstado
-    '
+    Private _formOrigem As Form = Nothing
     Private _IDFilial As Integer?
     Private _IDConta As Int16?
     '
@@ -40,7 +40,7 @@ Public Class frmCaixaProcurar
         End Set
     End Property
     '
-    Sub New()
+    Sub New(Optional formOrigem As Form = Nothing)
         '
         ' This call is required by the designer.
         InitializeComponent()
@@ -56,6 +56,8 @@ Public Class frmCaixaProcurar
         myMes = ObterDefault("DataPadrao")
         lblPeriodo.Text = Format(myMes, "MMMM | yyyy")
         FormataListagem()
+        '
+        _formOrigem = formOrigem
         '
         AddHandler dtMes.DateChanged, AddressOf dtMes_DateChanged
         '
@@ -91,7 +93,7 @@ Public Class frmCaixaProcurar
     '
     Private Sub Get_Dados()
         '
-        Dim cxBLL As New CaixaBLL
+        Dim tBLL As New TransferenciaCaixaBLL
         '
         '--- consulta o banco de dados
         Try
@@ -101,19 +103,19 @@ Public Class frmCaixaProcurar
             '
             '--- verifica o filtro das datas
             If chkPeriodoTodos.Checked = True Then
-                cxLista = cxBLL.GetCaixaLista_Procura(propIDConta)
+                TransfLista = tBLL.GetTransferenciasLista_Procura(propIDConta)
             Else
                 Dim f As New FuncoesUtilitarias
                 Dim dtInicial As Date = f.FirstDayOfMonth(myMes)
                 Dim dtFinal As Date = f.LastDayOfMonth(myMes)
                 '
-                cxLista = cxBLL.GetCaixaLista_Procura(propIDConta, dtInicial, dtFinal)
+                TransfLista = tBLL.GetTransferenciasLista_Procura(propIDConta, dtInicial, dtFinal)
             End If
             '
-            dgvListagem.DataSource = cxLista
+            dgvListagem.DataSource = TransfLista
             '
         Catch ex As Exception
-            MessageBox.Show("Ocorreu exceção ao obter a lista de Caixas..." & vbNewLine &
+            MessageBox.Show("Ocorreu exceção ao obter a lista de Transferências de Conta..." & vbNewLine &
             ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
         Finally
             '
@@ -126,37 +128,10 @@ Public Class frmCaixaProcurar
     '
     Private Sub PreencheListagem()
         '
-        ' (0) COLUNA FILIAL
-        dgvListagem.Columns.Add("clnFilial", "Filial")
-        With dgvListagem.Columns("clnFilial")
-            .DataPropertyName = "ApelidoFilial"
-            .Width = 150
-            .Resizable = DataGridViewTriState.False
-            .Visible = True
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            '.DefaultCellStyle.Font = New Font("Arial Narrow", 12)
-        End With
-        '
-        ' (1) COLUNA CONTA
-        dgvListagem.Columns.Add("clnConta", "Conta")
-        With dgvListagem.Columns("clnConta")
-            .DataPropertyName = "Conta"
-            .Width = 150
-            .Resizable = DataGridViewTriState.False
-            .Visible = True
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            '.DefaultCellStyle.Font = New Font("Arial Narrow", 12)
-        End With
-        '
-        ' (2) COLUNA DT INICIAL
-        dgvListagem.Columns.Add("clnDataInicial", "DataInicial")
-        With dgvListagem.Columns("clnDataInicial")
-            .DataPropertyName = "DataInicial"
-            .Width = 120
+        ' (0) COLUNA ID
+        With clnIDTransferencia
+            .DataPropertyName = "IDTransferencia"
+            .Width = 80
             .Resizable = DataGridViewTriState.False
             .Visible = True
             .ReadOnly = True
@@ -164,11 +139,10 @@ Public Class frmCaixaProcurar
             .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
         End With
         '
-        ' (3) COLUNA DT FINAL
-        dgvListagem.Columns.Add("clnDataFinal", "DataFinal")
-        With dgvListagem.Columns("clnDataFinal")
-            .DataPropertyName = "DataFinal"
-            .Width = 120
+        ' (1) COLUNA DATA
+        With clnTransferenciaData
+            .DataPropertyName = "TransferenciaData"
+            .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
             .ReadOnly = True
@@ -176,10 +150,31 @@ Public Class frmCaixaProcurar
             .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
         End With
         '
-        ' (4) COLUNA SALDO ANTERIOR
-        dgvListagem.Columns.Add("clnSaldoAnterior", "Sd. Anterior")
-        With dgvListagem.Columns("clnSaldoAnterior")
-            .DataPropertyName = "SaldoAnterior"
+        ' (2) COLUNA CONTA DEBITO
+        With clnContaDebito
+            .DataPropertyName = "ContaDebito"
+            .Width = 200
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+        End With
+        '
+        ' (3) COLUNA CONTA CREDITO
+        With clnContaCredito
+            .DataPropertyName = "ContaCredito"
+            .Width = 200
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+        End With
+        '
+        ' (4) COLUNA MEIO
+        With clnMeio
+            .DataPropertyName = "Meio"
             .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -189,10 +184,9 @@ Public Class frmCaixaProcurar
             .DefaultCellStyle.Format = "C"
         End With
         '
-        ' (5) COLUNA SALDO FINAL
-        dgvListagem.Columns.Add("clnSaldoFinal", "Sd. Final")
-        With dgvListagem.Columns("clnSaldoFinal")
-            .DataPropertyName = "SaldoFinal"
+        ' (5) COLUNA VALOR
+        With clnTransferenciaValor
+            .DataPropertyName = "TransferenciaValor"
             .Width = 100
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -202,51 +196,34 @@ Public Class frmCaixaProcurar
             .DefaultCellStyle.Format = "C"
         End With
         '
-        ' (6) COLUNA SITUAÇÃO
-        dgvListagem.Columns.Add("clnSituacao", "Situacao")
-        With dgvListagem.Columns("clnSituacao")
-            .DataPropertyName = "Situacao"
-            .Width = 100
-            .Resizable = DataGridViewTriState.False
-            .Visible = True
-            .ReadOnly = True
-            .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
-        End With
-        '
+        dgvListagem.Columns.AddRange(New DataGridViewColumn() {
+                                     clnIDTransferencia,
+                                     clnTransferenciaData,
+                                     clnContaDebito,
+                                     clnContaCredito,
+                                     clnMeio,
+                                     clnTransferenciaValor})
     End Sub
     '
 #End Region
     '
 #Region "ACAO DOS BOTOES"
     '
-    Private Sub btnAbrir_Click(sender As Object, e As EventArgs) Handles btnAbrir.Click
-
-        If dgvListagem.SelectedRows.Count = 0 Then
-            MessageBox.Show("Não existe nenhum Caixa selecionado na listagem", "Escolher",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Exit Sub
-        End If
+    '--- EXCLUIR
+    '----------------------------------------------------------------------------------
+    Private Sub btnExcluir_Click(sender As Object, e As EventArgs) Handles btnExcluir.Click
         '
-        Dim clCx As clCaixa = dgvListagem.SelectedRows(0).DataBoundItem
-        '
-        Dim cBLL As New CaixaBLL
-        '
-        Dim frm = New frmCaixa(clCx)
-        frm.MdiParent = frmPrincipal
-        frm.StartPosition = FormStartPosition.CenterScreen
-        Close()
-        frm.Show()
+        MessageBox.Show("Ainda não implementado")
         '
     End Sub
     '
+    '--- CANCELAR FECHAR
+    '----------------------------------------------------------------------------------
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click, btnClose.Click
+        '
         Close()
-        MostraMenuPrincipal()
-    End Sub
-    '
-    Private Sub dgvListagem_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles dgvListagem.CellDoubleClick
-        btnAbrir_Click(New Object, New EventArgs)
+        If IsNothing(_formOrigem) Then MostraMenuPrincipal()
+        '
     End Sub
     '
     Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
@@ -266,12 +243,15 @@ Public Class frmCaixaProcurar
         End If
     End Sub
     '
-    Private Sub btnInserirNovo_Click(sender As Object, e As EventArgs) Handles btnInserirNovo.Click
-        Dim frmN As New frmCaixaInserir(Me)
+    '--- EFETUAR NOVA TRANSFERENCIA
+    '----------------------------------------------------------------------------------
+    Private Sub btnEfetuarNova_Click(sender As Object, e As EventArgs) Handles btnEfetuarNova.Click
+        '
+        Dim frmN As New frmTransferenciaConta(Me)
         frmN.ShowDialog()
         '
         If frmN.DialogResult = DialogResult.OK Then
-            Close()
+            Get_Dados()
         End If
         '
     End Sub
@@ -285,7 +265,7 @@ Public Class frmCaixaProcurar
         If e.KeyCode = Keys.Enter Then
             e.Handled = True
             '
-            btnAbrir_Click(New Object, New EventArgs)
+            'btnAbrir_Click(New Object, New EventArgs)
         End If
     End Sub
     '
@@ -300,9 +280,39 @@ Public Class frmCaixaProcurar
         '
     End Sub
     '
+    '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtConta.KeyDown
+        '
+        Dim ctr As Control = DirectCast(sender, Control)
+        '
+        If e.KeyCode = Keys.Add Then
+            e.Handled = True
+            Select Case ctr.Name
+                Case "txtConta"
+                    btnContaEscolher_Click(New Object, New EventArgs)
+                    txtConta.Text = txtConta.Text.Replace("+", "")
+                    txtConta.SelectAll()
+            End Select
+        ElseIf e.KeyCode = Keys.Delete Then
+            e.Handled = True
+            Select Case ctr.Name
+                Case "txtConta"
+                    propIDConta = Nothing
+            End Select
+        ElseIf e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+            e.Handled = True
+            SendKeys.Send("{Tab}")
+        Else
+            e.Handled = True
+            e.SuppressKeyPress = True
+        End If
+        '
+    End Sub
+    '
 #End Region
     '
 #Region "CONTROLE DO PERÍODO"
+    '
     Private Sub btnPeriodoAnterior_Click(sender As Object, e As EventArgs) Handles btnPeriodoAnterior.Click
         myMes = myMes.AddMonths(-1)
         dtMes.SelectionStart = myMes
@@ -369,8 +379,11 @@ Public Class frmCaixaProcurar
     '
 #End Region
     '
-#Region "TRATAMENTO VISUAL"
+#Region "EFEITOS VISUAIS"
+
     '
+    '--- COR PAINEL DO DATAGRID
+    '----------------------------------------------------------------------------------
     Private Sub pnlVenda_Paint(sender As Object, e As PaintEventArgs) Handles pnlVenda.Paint
         '
         Dim brush As Brush = New LinearGradientBrush(e.ClipRectangle, Color.LightSteelBlue, Color.FromArgb(100, Color.SlateGray), LinearGradientMode.Vertical)
@@ -378,37 +391,33 @@ Public Class frmCaixaProcurar
         '
     End Sub
     '
-#End Region
+    '-------------------------------------------------------------------------------------------------
+    ' CONSTRUIR UMA BORDA NO FORMULÁRIO
+    '-------------------------------------------------------------------------------------------------
+    Protected Overrides Sub OnPaintBackground(ByVal e As PaintEventArgs)
+        MyBase.OnPaintBackground(e)
+
+        Dim rect As New Rectangle(0, 0, Me.ClientSize.Width - 1, Me.ClientSize.Height - 1)
+        Dim pen As New Pen(Color.SlateGray, 3)
+
+        e.Graphics.DrawRectangle(pen, rect)
+    End Sub
     '
-#Region "OUTRAS FUNCOES"
-    '
-    '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtConta.KeyDown
-        '
-        Dim ctr As Control = DirectCast(sender, Control)
-        '
-        If e.KeyCode = Keys.Add Then
-            e.Handled = True
-            Select Case ctr.Name
-                Case "txtConta"
-                    btnContaEscolher_Click(New Object, New EventArgs)
-                    txtConta.Text = txtConta.Text.Replace("+", "")
-                    txtConta.SelectAll()
-            End Select
-        ElseIf e.KeyCode = Keys.Delete Then
-            e.Handled = True
-            Select Case ctr.Name
-                Case "txtConta"
-                    propIDConta = Nothing
-            End Select
-        ElseIf e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
-            e.Handled = True
-            SendKeys.Send("{Tab}")
-        Else
-            e.Handled = True
-            e.SuppressKeyPress = True
+    '-------------------------------------------------------------------------------------------------
+    ' CRIAR EFEITO VISUAL DE FORM SELECIONADO
+    '-------------------------------------------------------------------------------------------------
+    Private Sub form_Activated(sender As Object, e As EventArgs) Handles Me.Activated
+        If Not IsNothing(_formOrigem) Then
+            Dim pnl As Panel = _formOrigem.Controls("Panel1")
+            pnl.BackColor = Color.Silver
         End If
-        '
+    End Sub
+    '
+    Private Sub Me_Closed(sender As Object, e As EventArgs) Handles Me.Closed
+        If Not IsNothing(_formOrigem) Then
+            Dim pnl As Panel = _formOrigem.Controls("Panel1")
+            pnl.BackColor = Color.SlateGray
+        End If
     End Sub
     '
 #End Region

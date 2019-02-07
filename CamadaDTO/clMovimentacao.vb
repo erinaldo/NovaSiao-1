@@ -6,6 +6,7 @@ Public Enum EnumMovimentacaoOrigem
     Creditos = 3        ' IDOrigem  :   tblCreditos
     Devolucao = 4       ' IDOrigem  :   tblDevolucao
     APagar = 10         ' IDOrigem  :   tblAPagar
+    Transferencia = 11  ' IDOrigem  :   tblTransferenciaCaixa
 End Enum
 '
 Public Enum EnumMovimento
@@ -244,8 +245,7 @@ Public Class clMovimentacao : Implements IEditableObject
     Public Property MovValor() As Double
         '
         Get
-            '--- retorna sempre um valor positivo
-            Return If(MData._MovValor < 0, MData._MovValor * (-1), MData._MovValor)
+            Return MData._MovValor
         End Get
         '
         Set(ByVal value As Double)

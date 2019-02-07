@@ -84,16 +84,16 @@ Public Class MovimentacaoBLL
         db.AdicionarParametros("@IDConta", Movimentacao.IDConta)
         db.AdicionarParametros("@MovData", Movimentacao.MovData)
         db.AdicionarParametros("@MovValor", Movimentacao.MovValor)
-        db.AdicionarParametros("@IDMovForma", Movimentacao.IDMovForma)
+        db.AdicionarParametros("@IDMovForma", If(Movimentacao.IDMovForma, DBNull.Value))
         db.AdicionarParametros("@Creditar", Movimentacao.Creditar)
-        db.AdicionarParametros("@Observacao", Movimentacao.Observacao)
-        db.AdicionarParametros("@Descricao", Movimentacao.Descricao)
+        db.AdicionarParametros("@Descricao", If(Movimentacao.Descricao.Length = 0, DBNull.Value, Movimentacao.Descricao))
         db.AdicionarParametros("@IDMeio", Movimentacao.IDMeio)
         db.AdicionarParametros("@Movimento", Movimentacao.Movimento)
+        db.AdicionarParametros("@Observacao", Movimentacao.Observacao)
         '
         Try
             '
-            Dim dt As DataTable = db.ExecutarManipulacao(CommandType.StoredProcedure, "uspMovimentacao_Inserir")
+            Dim dt As DataTable = db.ExecutarConsulta(CommandType.StoredProcedure, "uspMovimentacao_Inserir")
             '
             If dt.Rows.Count = 0 Then
                 Throw New Exception("Não foi retornado registro de movimentação...")

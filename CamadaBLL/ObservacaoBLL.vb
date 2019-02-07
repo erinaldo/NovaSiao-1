@@ -15,6 +15,7 @@ Public Class ObservacaoBLL
     '10     tblSimplesSaida
     '11     tblSimplesEntrada
     '12     tblDevolucaoSaida
+    '13     tblCaixaTransferencia
     '
     '===============================================================================
     ' SAVE NEW OBSERVACAO

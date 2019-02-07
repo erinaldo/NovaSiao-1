@@ -19,33 +19,38 @@ Partial Class frmTransferenciaConta
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
-        Me.txtSaidaData = New Controles.MaskText_Data()
         Me.Label1 = New System.Windows.Forms.Label()
-        Me.txtValorPago = New Controles.Text_Monetario()
+        Me.txtTransferenciaValor = New Controles.Text_Monetario()
         Me.Label4 = New System.Windows.Forms.Label()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.Label5 = New System.Windows.Forms.Label()
-        Me.txtAcrescimo = New Controles.Text_Monetario()
+        Me.txtComissaoValor = New Controles.Text_Monetario()
         Me.Label6 = New System.Windows.Forms.Label()
-        Me.lblSaidaValor = New System.Windows.Forms.Label()
-        Me.btnQuitar = New System.Windows.Forms.Button()
+        Me.lblValorReal = New System.Windows.Forms.Label()
+        Me.btnEfetuar = New System.Windows.Forms.Button()
         Me.txtObservacao = New System.Windows.Forms.TextBox()
         Me.Label2 = New System.Windows.Forms.Label()
         Me.txtContaCredito = New System.Windows.Forms.TextBox()
-        Me.btnContaEscolher = New VIBlend.WinForms.Controls.vButton()
+        Me.btnContaCredEscolher = New VIBlend.WinForms.Controls.vButton()
         Me.Label17 = New System.Windows.Forms.Label()
         Me.lblFilial = New System.Windows.Forms.Label()
         Me.Label18 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
-        Me.VButton1 = New VIBlend.WinForms.Controls.vButton()
+        Me.btnContaDebEscolher = New VIBlend.WinForms.Controls.vButton()
         Me.txtContaDebito = New System.Windows.Forms.TextBox()
+        Me.dtpTransferenciaData = New System.Windows.Forms.DateTimePicker()
+        Me.cmbMeio = New Controles.ComboBox_OnlyValues()
         Me.Label7 = New System.Windows.Forms.Label()
-        Me.VButton2 = New VIBlend.WinForms.Controls.vButton()
-        Me.TextBox1 = New System.Windows.Forms.TextBox()
-        Me.Label8 = New System.Windows.Forms.Label()
-        Me.VButton3 = New VIBlend.WinForms.Controls.vButton()
-        Me.TextBox2 = New System.Windows.Forms.TextBox()
+        Me.VPanel1 = New VIBlend.WinForms.Controls.vPanel()
+        Me.VPanel2 = New VIBlend.WinForms.Controls.vPanel()
+        Me.VPanel3 = New VIBlend.WinForms.Controls.vPanel()
         Me.Panel1.SuspendLayout()
+        Me.VPanel1.Content.SuspendLayout()
+        Me.VPanel1.SuspendLayout()
+        Me.VPanel2.Content.SuspendLayout()
+        Me.VPanel2.SuspendLayout()
+        Me.VPanel3.Content.SuspendLayout()
+        Me.VPanel3.SuspendLayout()
         Me.SuspendLayout()
         '
         'Panel1
@@ -60,56 +65,47 @@ Partial Class frmTransferenciaConta
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(310, 0)
+        Me.lblTitulo.Location = New System.Drawing.Point(238, 0)
         Me.lblTitulo.RightToLeft = System.Windows.Forms.RightToLeft.No
-        Me.lblTitulo.Size = New System.Drawing.Size(167, 50)
-        Me.lblTitulo.TabIndex = 0
-        Me.lblTitulo.Text = "Transferências"
-        '
-        'txtSaidaData
-        '
-        Me.txtSaidaData.Location = New System.Drawing.Point(170, 221)
-        Me.txtSaidaData.Mask = "00/00/0000"
-        Me.txtSaidaData.Name = "txtSaidaData"
-        Me.txtSaidaData.Size = New System.Drawing.Size(109, 27)
-        Me.txtSaidaData.TabIndex = 6
-        Me.txtSaidaData.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.lblTitulo.Size = New System.Drawing.Size(239, 50)
+        Me.lblTitulo.TabIndex = 2
+        Me.lblTitulo.Text = "Efetuar Transferência"
         '
         'Label1
         '
         Me.Label1.AutoSize = True
-        Me.Label1.Location = New System.Drawing.Point(53, 224)
+        Me.Label1.Location = New System.Drawing.Point(40, 11)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(111, 19)
-        Me.Label1.TabIndex = 5
+        Me.Label1.TabIndex = 0
         Me.Label1.Text = "Data do Débito:"
         '
-        'txtValorPago
+        'txtTransferenciaValor
         '
-        Me.txtValorPago.Location = New System.Drawing.Point(170, 254)
-        Me.txtValorPago.Name = "txtValorPago"
-        Me.txtValorPago.Size = New System.Drawing.Size(109, 27)
-        Me.txtValorPago.TabIndex = 8
-        Me.txtValorPago.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtTransferenciaValor.Location = New System.Drawing.Point(157, 41)
+        Me.txtTransferenciaValor.Name = "txtTransferenciaValor"
+        Me.txtTransferenciaValor.Size = New System.Drawing.Size(127, 27)
+        Me.txtTransferenciaValor.TabIndex = 3
+        Me.txtTransferenciaValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label4
         '
         Me.Label4.AutoSize = True
-        Me.Label4.Location = New System.Drawing.Point(118, 257)
+        Me.Label4.Location = New System.Drawing.Point(105, 44)
         Me.Label4.Name = "Label4"
         Me.Label4.Size = New System.Drawing.Size(46, 19)
-        Me.Label4.TabIndex = 7
+        Me.Label4.TabIndex = 2
         Me.Label4.Text = "Valor:"
         '
         'btnCancelar
         '
         Me.btnCancelar.Anchor = System.Windows.Forms.AnchorStyles.Bottom
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_30px
-        Me.btnCancelar.Location = New System.Drawing.Point(246, 428)
+        Me.btnCancelar.Location = New System.Drawing.Point(246, 414)
         Me.btnCancelar.Name = "btnCancelar"
-        Me.btnCancelar.Size = New System.Drawing.Size(120, 48)
-        Me.btnCancelar.TabIndex = 16
-        Me.btnCancelar.Text = "&Fechar"
+        Me.btnCancelar.Size = New System.Drawing.Size(141, 48)
+        Me.btnCancelar.TabIndex = 5
+        Me.btnCancelar.Text = "&Cancelar"
         Me.btnCancelar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnCancelar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnCancelar.UseVisualStyleBackColor = True
@@ -117,103 +113,103 @@ Partial Class frmTransferenciaConta
         'Label5
         '
         Me.Label5.AutoSize = True
-        Me.Label5.Location = New System.Drawing.Point(88, 290)
+        Me.Label5.Location = New System.Drawing.Point(75, 77)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(76, 19)
-        Me.Label5.TabIndex = 9
+        Me.Label5.TabIndex = 4
         Me.Label5.Text = "Comissão:"
         '
-        'txtAcrescimo
+        'txtComissaoValor
         '
-        Me.txtAcrescimo.Location = New System.Drawing.Point(170, 287)
-        Me.txtAcrescimo.Name = "txtAcrescimo"
-        Me.txtAcrescimo.Size = New System.Drawing.Size(109, 27)
-        Me.txtAcrescimo.TabIndex = 10
-        Me.txtAcrescimo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
+        Me.txtComissaoValor.Location = New System.Drawing.Point(157, 74)
+        Me.txtComissaoValor.Name = "txtComissaoValor"
+        Me.txtComissaoValor.Size = New System.Drawing.Size(127, 27)
+        Me.txtComissaoValor.TabIndex = 5
+        Me.txtComissaoValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
         'Label6
         '
         Me.Label6.AutoSize = True
-        Me.Label6.Location = New System.Drawing.Point(46, 327)
+        Me.Label6.Location = New System.Drawing.Point(28, 114)
         Me.Label6.Name = "Label6"
-        Me.Label6.Size = New System.Drawing.Size(118, 19)
-        Me.Label6.TabIndex = 11
-        Me.Label6.Text = "Valor a ser Pago:"
+        Me.Label6.Size = New System.Drawing.Size(123, 19)
+        Me.Label6.TabIndex = 6
+        Me.Label6.Text = "Valor Transferido:"
         '
-        'lblSaidaValor
+        'lblValorReal
         '
-        Me.lblSaidaValor.BackColor = System.Drawing.Color.Transparent
-        Me.lblSaidaValor.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSaidaValor.Location = New System.Drawing.Point(169, 323)
-        Me.lblSaidaValor.Name = "lblSaidaValor"
-        Me.lblSaidaValor.Size = New System.Drawing.Size(109, 25)
-        Me.lblSaidaValor.TabIndex = 12
-        Me.lblSaidaValor.Text = "R$ 0,00"
-        Me.lblSaidaValor.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblValorReal.BackColor = System.Drawing.Color.Transparent
+        Me.lblValorReal.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblValorReal.Location = New System.Drawing.Point(156, 110)
+        Me.lblValorReal.Name = "lblValorReal"
+        Me.lblValorReal.Size = New System.Drawing.Size(128, 25)
+        Me.lblValorReal.TabIndex = 7
+        Me.lblValorReal.Text = "R$ 0,00"
+        Me.lblValorReal.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         '
-        'btnQuitar
+        'btnEfetuar
         '
-        Me.btnQuitar.Anchor = System.Windows.Forms.AnchorStyles.Bottom
-        Me.btnQuitar.Image = Global.NovaSiao.My.Resources.Resources.dollar_currency_sign
-        Me.btnQuitar.Location = New System.Drawing.Point(116, 428)
-        Me.btnQuitar.Name = "btnQuitar"
-        Me.btnQuitar.Size = New System.Drawing.Size(120, 48)
-        Me.btnQuitar.TabIndex = 15
-        Me.btnQuitar.Text = "&Quitar"
-        Me.btnQuitar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnQuitar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.btnQuitar.UseVisualStyleBackColor = True
+        Me.btnEfetuar.Anchor = System.Windows.Forms.AnchorStyles.Bottom
+        Me.btnEfetuar.Image = Global.NovaSiao.My.Resources.Resources.dollar_currency_sign
+        Me.btnEfetuar.Location = New System.Drawing.Point(92, 414)
+        Me.btnEfetuar.Name = "btnEfetuar"
+        Me.btnEfetuar.Size = New System.Drawing.Size(141, 48)
+        Me.btnEfetuar.TabIndex = 4
+        Me.btnEfetuar.Text = "&Transferir"
+        Me.btnEfetuar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
+        Me.btnEfetuar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
+        Me.btnEfetuar.UseVisualStyleBackColor = True
         '
         'txtObservacao
         '
-        Me.txtObservacao.Location = New System.Drawing.Point(170, 364)
+        Me.txtObservacao.Location = New System.Drawing.Point(157, 8)
         Me.txtObservacao.Multiline = True
         Me.txtObservacao.Name = "txtObservacao"
-        Me.txtObservacao.Size = New System.Drawing.Size(234, 54)
-        Me.txtObservacao.TabIndex = 14
+        Me.txtObservacao.Size = New System.Drawing.Size(245, 54)
+        Me.txtObservacao.TabIndex = 1
         '
         'Label2
         '
         Me.Label2.AutoSize = True
-        Me.Label2.Location = New System.Drawing.Point(74, 364)
+        Me.Label2.Location = New System.Drawing.Point(61, 8)
         Me.Label2.Name = "Label2"
         Me.Label2.Size = New System.Drawing.Size(90, 19)
-        Me.Label2.TabIndex = 13
+        Me.Label2.TabIndex = 0
         Me.Label2.Text = "Observação:"
         '
         'txtContaCredito
         '
-        Me.txtContaCredito.Location = New System.Drawing.Point(170, 101)
+        Me.txtContaCredito.Location = New System.Drawing.Point(157, 42)
         Me.txtContaCredito.Name = "txtContaCredito"
         Me.txtContaCredito.Size = New System.Drawing.Size(205, 27)
-        Me.txtContaCredito.TabIndex = 3
+        Me.txtContaCredito.TabIndex = 4
         '
-        'btnContaEscolher
+        'btnContaCredEscolher
         '
-        Me.btnContaEscolher.AllowAnimations = True
-        Me.btnContaEscolher.BackColor = System.Drawing.Color.Transparent
-        Me.btnContaEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
-        Me.btnContaEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnContaEscolher.Location = New System.Drawing.Point(381, 101)
-        Me.btnContaEscolher.Name = "btnContaEscolher"
-        Me.btnContaEscolher.RoundedCornersMask = CType(15, Byte)
-        Me.btnContaEscolher.RoundedCornersRadius = 0
-        Me.btnContaEscolher.Size = New System.Drawing.Size(34, 27)
-        Me.btnContaEscolher.TabIndex = 4
-        Me.btnContaEscolher.TabStop = False
-        Me.btnContaEscolher.Text = "..."
-        Me.btnContaEscolher.UseCompatibleTextRendering = True
-        Me.btnContaEscolher.UseVisualStyleBackColor = False
-        Me.btnContaEscolher.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        Me.btnContaCredEscolher.AllowAnimations = True
+        Me.btnContaCredEscolher.BackColor = System.Drawing.Color.Transparent
+        Me.btnContaCredEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
+        Me.btnContaCredEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnContaCredEscolher.Location = New System.Drawing.Point(368, 42)
+        Me.btnContaCredEscolher.Name = "btnContaCredEscolher"
+        Me.btnContaCredEscolher.RoundedCornersMask = CType(15, Byte)
+        Me.btnContaCredEscolher.RoundedCornersRadius = 0
+        Me.btnContaCredEscolher.Size = New System.Drawing.Size(34, 27)
+        Me.btnContaCredEscolher.TabIndex = 5
+        Me.btnContaCredEscolher.TabStop = False
+        Me.btnContaCredEscolher.Text = "..."
+        Me.btnContaCredEscolher.UseCompatibleTextRendering = True
+        Me.btnContaCredEscolher.UseVisualStyleBackColor = False
+        Me.btnContaCredEscolher.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
         'Label17
         '
         Me.Label17.AutoSize = True
-        Me.Label17.Location = New System.Drawing.Point(54, 104)
+        Me.Label17.Location = New System.Drawing.Point(26, 45)
         Me.Label17.Name = "Label17"
-        Me.Label17.Size = New System.Drawing.Size(110, 19)
-        Me.Label17.TabIndex = 2
-        Me.Label17.Text = "Conta da Saída:"
+        Me.Label17.Size = New System.Drawing.Size(125, 19)
+        Me.Label17.TabIndex = 3
+        Me.Label17.Text = "Conta de Entrada:"
         '
         'lblFilial
         '
@@ -224,7 +220,7 @@ Partial Class frmTransferenciaConta
         Me.lblFilial.Margin = New System.Windows.Forms.Padding(4, 0, 4, 0)
         Me.lblFilial.Name = "lblFilial"
         Me.lblFilial.Size = New System.Drawing.Size(191, 30)
-        Me.lblFilial.TabIndex = 4
+        Me.lblFilial.TabIndex = 0
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
@@ -238,198 +234,216 @@ Partial Class frmTransferenciaConta
         Me.Label18.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label18.Name = "Label18"
         Me.Label18.Size = New System.Drawing.Size(43, 13)
-        Me.Label18.TabIndex = 5
+        Me.Label18.TabIndex = 1
         Me.Label18.Text = "Filial:"
         Me.Label18.TextAlign = System.Drawing.ContentAlignment.TopCenter
         '
         'Label3
         '
         Me.Label3.AutoSize = True
-        Me.Label3.Location = New System.Drawing.Point(54, 71)
+        Me.Label3.Location = New System.Drawing.Point(40, 12)
         Me.Label3.Name = "Label3"
         Me.Label3.Size = New System.Drawing.Size(110, 19)
-        Me.Label3.TabIndex = 2
-        Me.Label3.Text = "Conta da Saída:"
+        Me.Label3.TabIndex = 0
+        Me.Label3.Text = "Conta de Saída:"
         '
-        'VButton1
+        'btnContaDebEscolher
         '
-        Me.VButton1.AllowAnimations = True
-        Me.VButton1.BackColor = System.Drawing.Color.Transparent
-        Me.VButton1.FlatAppearance.BorderColor = System.Drawing.Color.Black
-        Me.VButton1.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.VButton1.Location = New System.Drawing.Point(381, 68)
-        Me.VButton1.Name = "VButton1"
-        Me.VButton1.RoundedCornersMask = CType(15, Byte)
-        Me.VButton1.RoundedCornersRadius = 0
-        Me.VButton1.Size = New System.Drawing.Size(34, 27)
-        Me.VButton1.TabIndex = 4
-        Me.VButton1.TabStop = False
-        Me.VButton1.Text = "..."
-        Me.VButton1.UseCompatibleTextRendering = True
-        Me.VButton1.UseVisualStyleBackColor = False
-        Me.VButton1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        Me.btnContaDebEscolher.AllowAnimations = True
+        Me.btnContaDebEscolher.BackColor = System.Drawing.Color.Transparent
+        Me.btnContaDebEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
+        Me.btnContaDebEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnContaDebEscolher.Location = New System.Drawing.Point(368, 9)
+        Me.btnContaDebEscolher.Name = "btnContaDebEscolher"
+        Me.btnContaDebEscolher.RoundedCornersMask = CType(15, Byte)
+        Me.btnContaDebEscolher.RoundedCornersRadius = 0
+        Me.btnContaDebEscolher.Size = New System.Drawing.Size(34, 27)
+        Me.btnContaDebEscolher.TabIndex = 2
+        Me.btnContaDebEscolher.TabStop = False
+        Me.btnContaDebEscolher.Text = "..."
+        Me.btnContaDebEscolher.UseCompatibleTextRendering = True
+        Me.btnContaDebEscolher.UseVisualStyleBackColor = False
+        Me.btnContaDebEscolher.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
         'txtContaDebito
         '
-        Me.txtContaDebito.Location = New System.Drawing.Point(170, 68)
+        Me.txtContaDebito.Location = New System.Drawing.Point(157, 9)
         Me.txtContaDebito.Name = "txtContaDebito"
         Me.txtContaDebito.Size = New System.Drawing.Size(205, 27)
-        Me.txtContaDebito.TabIndex = 3
+        Me.txtContaDebito.TabIndex = 1
+        '
+        'dtpTransferenciaData
+        '
+        Me.dtpTransferenciaData.Format = System.Windows.Forms.DateTimePickerFormat.[Short]
+        Me.dtpTransferenciaData.Location = New System.Drawing.Point(157, 8)
+        Me.dtpTransferenciaData.Name = "dtpTransferenciaData"
+        Me.dtpTransferenciaData.Size = New System.Drawing.Size(127, 27)
+        Me.dtpTransferenciaData.TabIndex = 1
+        '
+        'cmbMeio
+        '
+        Me.cmbMeio.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend
+        Me.cmbMeio.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems
+        Me.cmbMeio.FormattingEnabled = True
+        Me.cmbMeio.Location = New System.Drawing.Point(157, 75)
+        Me.cmbMeio.Name = "cmbMeio"
+        Me.cmbMeio.RestrictContentToListItems = True
+        Me.cmbMeio.Size = New System.Drawing.Size(205, 27)
+        Me.cmbMeio.TabIndex = 7
         '
         'Label7
         '
         Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(54, 137)
+        Me.Label7.Location = New System.Drawing.Point(57, 78)
         Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(110, 19)
-        Me.Label7.TabIndex = 2
-        Me.Label7.Text = "Conta da Saída:"
+        Me.Label7.Size = New System.Drawing.Size(94, 19)
+        Me.Label7.TabIndex = 6
+        Me.Label7.Text = "Meio de Pag."
         '
-        'VButton2
+        'VPanel1
         '
-        Me.VButton2.AllowAnimations = True
-        Me.VButton2.BackColor = System.Drawing.Color.Transparent
-        Me.VButton2.FlatAppearance.BorderColor = System.Drawing.Color.Black
-        Me.VButton2.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.VButton2.Location = New System.Drawing.Point(381, 134)
-        Me.VButton2.Name = "VButton2"
-        Me.VButton2.RoundedCornersMask = CType(15, Byte)
-        Me.VButton2.RoundedCornersRadius = 0
-        Me.VButton2.Size = New System.Drawing.Size(34, 27)
-        Me.VButton2.TabIndex = 4
-        Me.VButton2.TabStop = False
-        Me.VButton2.Text = "..."
-        Me.VButton2.UseCompatibleTextRendering = True
-        Me.VButton2.UseVisualStyleBackColor = False
-        Me.VButton2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        Me.VPanel1.AllowAnimations = True
+        Me.VPanel1.BorderRadius = 0
         '
-        'TextBox1
+        'VPanel1.Content
         '
-        Me.TextBox1.Location = New System.Drawing.Point(170, 134)
-        Me.TextBox1.Name = "TextBox1"
-        Me.TextBox1.Size = New System.Drawing.Size(205, 27)
-        Me.TextBox1.TabIndex = 3
+        Me.VPanel1.Content.AutoScroll = True
+        Me.VPanel1.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.VPanel1.Content.Controls.Add(Me.cmbMeio)
+        Me.VPanel1.Content.Controls.Add(Me.Label17)
+        Me.VPanel1.Content.Controls.Add(Me.Label7)
+        Me.VPanel1.Content.Controls.Add(Me.btnContaCredEscolher)
+        Me.VPanel1.Content.Controls.Add(Me.Label3)
+        Me.VPanel1.Content.Controls.Add(Me.txtContaDebito)
+        Me.VPanel1.Content.Controls.Add(Me.txtContaCredito)
+        Me.VPanel1.Content.Controls.Add(Me.btnContaDebEscolher)
+        Me.VPanel1.Content.Location = New System.Drawing.Point(1, 1)
+        Me.VPanel1.Content.Name = "Content"
+        Me.VPanel1.Content.Size = New System.Drawing.Size(451, 112)
+        Me.VPanel1.Content.TabIndex = 3
+        Me.VPanel1.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
+        Me.VPanel1.Location = New System.Drawing.Point(12, 60)
+        Me.VPanel1.Name = "VPanel1"
+        Me.VPanel1.Opacity = 1.0!
+        Me.VPanel1.PanelBorderColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(180, Byte), Integer), CType(CType(209, Byte), Integer))
+        Me.VPanel1.Size = New System.Drawing.Size(453, 114)
+        Me.VPanel1.TabIndex = 1
+        Me.VPanel1.Text = "VPanel1"
+        Me.VPanel1.UsePanelBorderColor = True
+        Me.VPanel1.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
-        'Label8
+        'VPanel2
         '
-        Me.Label8.AutoSize = True
-        Me.Label8.Location = New System.Drawing.Point(54, 170)
-        Me.Label8.Name = "Label8"
-        Me.Label8.Size = New System.Drawing.Size(110, 19)
-        Me.Label8.TabIndex = 2
-        Me.Label8.Text = "Conta da Saída:"
+        Me.VPanel2.AllowAnimations = True
+        Me.VPanel2.BorderRadius = 0
         '
-        'VButton3
+        'VPanel2.Content
         '
-        Me.VButton3.AllowAnimations = True
-        Me.VButton3.BackColor = System.Drawing.Color.Transparent
-        Me.VButton3.FlatAppearance.BorderColor = System.Drawing.Color.Black
-        Me.VButton3.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.VButton3.Location = New System.Drawing.Point(381, 167)
-        Me.VButton3.Name = "VButton3"
-        Me.VButton3.RoundedCornersMask = CType(15, Byte)
-        Me.VButton3.RoundedCornersRadius = 0
-        Me.VButton3.Size = New System.Drawing.Size(34, 27)
-        Me.VButton3.TabIndex = 4
-        Me.VButton3.TabStop = False
-        Me.VButton3.Text = "..."
-        Me.VButton3.UseCompatibleTextRendering = True
-        Me.VButton3.UseVisualStyleBackColor = False
-        Me.VButton3.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
+        Me.VPanel2.Content.AutoScroll = True
+        Me.VPanel2.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.VPanel2.Content.Controls.Add(Me.dtpTransferenciaData)
+        Me.VPanel2.Content.Controls.Add(Me.Label1)
+        Me.VPanel2.Content.Controls.Add(Me.Label4)
+        Me.VPanel2.Content.Controls.Add(Me.Label5)
+        Me.VPanel2.Content.Controls.Add(Me.Label6)
+        Me.VPanel2.Content.Controls.Add(Me.lblValorReal)
+        Me.VPanel2.Content.Controls.Add(Me.txtComissaoValor)
+        Me.VPanel2.Content.Controls.Add(Me.txtTransferenciaValor)
+        Me.VPanel2.Content.Location = New System.Drawing.Point(1, 1)
+        Me.VPanel2.Content.Name = "Content"
+        Me.VPanel2.Content.Size = New System.Drawing.Size(451, 146)
+        Me.VPanel2.Content.TabIndex = 3
+        Me.VPanel2.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
+        Me.VPanel2.Location = New System.Drawing.Point(12, 180)
+        Me.VPanel2.Name = "VPanel2"
+        Me.VPanel2.Opacity = 1.0!
+        Me.VPanel2.PanelBorderColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(180, Byte), Integer), CType(CType(209, Byte), Integer))
+        Me.VPanel2.Size = New System.Drawing.Size(453, 148)
+        Me.VPanel2.TabIndex = 2
+        Me.VPanel2.Text = "VPanel2"
+        Me.VPanel2.UsePanelBorderColor = True
+        Me.VPanel2.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
-        'TextBox2
+        'VPanel3
         '
-        Me.TextBox2.Location = New System.Drawing.Point(170, 167)
-        Me.TextBox2.Name = "TextBox2"
-        Me.TextBox2.Size = New System.Drawing.Size(205, 27)
-        Me.TextBox2.TabIndex = 3
+        Me.VPanel3.AllowAnimations = True
+        Me.VPanel3.BorderRadius = 0
+        '
+        'VPanel3.Content
+        '
+        Me.VPanel3.Content.AutoScroll = True
+        Me.VPanel3.Content.BackColor = System.Drawing.SystemColors.Control
+        Me.VPanel3.Content.Controls.Add(Me.txtObservacao)
+        Me.VPanel3.Content.Controls.Add(Me.Label2)
+        Me.VPanel3.Content.Location = New System.Drawing.Point(1, 1)
+        Me.VPanel3.Content.Name = "Content"
+        Me.VPanel3.Content.Size = New System.Drawing.Size(451, 69)
+        Me.VPanel3.Content.TabIndex = 3
+        Me.VPanel3.CustomScrollersIntersectionColor = System.Drawing.Color.Empty
+        Me.VPanel3.Location = New System.Drawing.Point(12, 334)
+        Me.VPanel3.Name = "VPanel3"
+        Me.VPanel3.Opacity = 1.0!
+        Me.VPanel3.PanelBorderColor = System.Drawing.Color.FromArgb(CType(CType(153, Byte), Integer), CType(CType(180, Byte), Integer), CType(CType(209, Byte), Integer))
+        Me.VPanel3.Size = New System.Drawing.Size(453, 71)
+        Me.VPanel3.TabIndex = 3
+        Me.VPanel3.Text = "VPanel3"
+        Me.VPanel3.UsePanelBorderColor = True
+        Me.VPanel3.VIBlendTheme = VIBlend.Utilities.VIBLEND_THEME.VISTABLUE
         '
         'frmTransferenciaConta
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(477, 494)
-        Me.Controls.Add(Me.txtContaDebito)
-        Me.Controls.Add(Me.VButton1)
-        Me.Controls.Add(Me.TextBox2)
-        Me.Controls.Add(Me.TextBox1)
-        Me.Controls.Add(Me.VButton3)
-        Me.Controls.Add(Me.txtContaCredito)
-        Me.Controls.Add(Me.VButton2)
-        Me.Controls.Add(Me.Label8)
-        Me.Controls.Add(Me.Label3)
-        Me.Controls.Add(Me.Label7)
-        Me.Controls.Add(Me.btnContaEscolher)
-        Me.Controls.Add(Me.Label17)
-        Me.Controls.Add(Me.txtObservacao)
-        Me.Controls.Add(Me.Label2)
-        Me.Controls.Add(Me.btnQuitar)
+        Me.ClientSize = New System.Drawing.Size(477, 474)
+        Me.Controls.Add(Me.btnEfetuar)
         Me.Controls.Add(Me.btnCancelar)
-        Me.Controls.Add(Me.txtAcrescimo)
-        Me.Controls.Add(Me.txtValorPago)
-        Me.Controls.Add(Me.lblSaidaValor)
-        Me.Controls.Add(Me.Label6)
-        Me.Controls.Add(Me.Label5)
-        Me.Controls.Add(Me.Label4)
-        Me.Controls.Add(Me.Label1)
-        Me.Controls.Add(Me.txtSaidaData)
+        Me.Controls.Add(Me.VPanel1)
+        Me.Controls.Add(Me.VPanel2)
+        Me.Controls.Add(Me.VPanel3)
         Me.KeyPreview = True
         Me.Name = "frmTransferenciaConta"
-        Me.Controls.SetChildIndex(Me.Panel1, 0)
-        Me.Controls.SetChildIndex(Me.txtSaidaData, 0)
-        Me.Controls.SetChildIndex(Me.Label1, 0)
-        Me.Controls.SetChildIndex(Me.Label4, 0)
-        Me.Controls.SetChildIndex(Me.Label5, 0)
-        Me.Controls.SetChildIndex(Me.Label6, 0)
-        Me.Controls.SetChildIndex(Me.lblSaidaValor, 0)
-        Me.Controls.SetChildIndex(Me.txtValorPago, 0)
-        Me.Controls.SetChildIndex(Me.txtAcrescimo, 0)
+        Me.Controls.SetChildIndex(Me.VPanel3, 0)
+        Me.Controls.SetChildIndex(Me.VPanel2, 0)
+        Me.Controls.SetChildIndex(Me.VPanel1, 0)
         Me.Controls.SetChildIndex(Me.btnCancelar, 0)
-        Me.Controls.SetChildIndex(Me.btnQuitar, 0)
-        Me.Controls.SetChildIndex(Me.Label2, 0)
-        Me.Controls.SetChildIndex(Me.txtObservacao, 0)
-        Me.Controls.SetChildIndex(Me.Label17, 0)
-        Me.Controls.SetChildIndex(Me.btnContaEscolher, 0)
-        Me.Controls.SetChildIndex(Me.Label7, 0)
-        Me.Controls.SetChildIndex(Me.Label3, 0)
-        Me.Controls.SetChildIndex(Me.Label8, 0)
-        Me.Controls.SetChildIndex(Me.VButton2, 0)
-        Me.Controls.SetChildIndex(Me.txtContaCredito, 0)
-        Me.Controls.SetChildIndex(Me.VButton3, 0)
-        Me.Controls.SetChildIndex(Me.TextBox1, 0)
-        Me.Controls.SetChildIndex(Me.TextBox2, 0)
-        Me.Controls.SetChildIndex(Me.VButton1, 0)
-        Me.Controls.SetChildIndex(Me.txtContaDebito, 0)
+        Me.Controls.SetChildIndex(Me.btnEfetuar, 0)
+        Me.Controls.SetChildIndex(Me.Panel1, 0)
         Me.Panel1.ResumeLayout(False)
         Me.Panel1.PerformLayout()
+        Me.VPanel1.Content.ResumeLayout(False)
+        Me.VPanel1.Content.PerformLayout()
+        Me.VPanel1.ResumeLayout(False)
+        Me.VPanel2.Content.ResumeLayout(False)
+        Me.VPanel2.Content.PerformLayout()
+        Me.VPanel2.ResumeLayout(False)
+        Me.VPanel3.Content.ResumeLayout(False)
+        Me.VPanel3.Content.PerformLayout()
+        Me.VPanel3.ResumeLayout(False)
         Me.ResumeLayout(False)
-        Me.PerformLayout()
 
     End Sub
-
-    Friend WithEvents txtSaidaData As Controles.MaskText_Data
     Friend WithEvents Label1 As Label
-    Friend WithEvents txtValorPago As Controles.Text_Monetario
+    Friend WithEvents txtTransferenciaValor As Controles.Text_Monetario
     Friend WithEvents Label4 As Label
     Friend WithEvents btnCancelar As Button
     Friend WithEvents Label5 As Label
-    Friend WithEvents txtAcrescimo As Controles.Text_Monetario
+    Friend WithEvents txtComissaoValor As Controles.Text_Monetario
     Friend WithEvents Label6 As Label
-    Friend WithEvents lblSaidaValor As Label
-    Friend WithEvents btnQuitar As Button
+    Friend WithEvents lblValorReal As Label
+    Friend WithEvents btnEfetuar As Button
     Friend WithEvents txtObservacao As TextBox
     Friend WithEvents Label2 As Label
     Friend WithEvents txtContaCredito As TextBox
-    Friend WithEvents btnContaEscolher As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents btnContaCredEscolher As VIBlend.WinForms.Controls.vButton
     Friend WithEvents Label17 As Label
     Friend WithEvents lblFilial As Label
     Friend WithEvents Label18 As Label
     Friend WithEvents Label3 As Label
-    Friend WithEvents VButton1 As VIBlend.WinForms.Controls.vButton
+    Friend WithEvents btnContaDebEscolher As VIBlend.WinForms.Controls.vButton
     Friend WithEvents txtContaDebito As TextBox
+    Friend WithEvents dtpTransferenciaData As DateTimePicker
+    Friend WithEvents cmbMeio As Controles.ComboBox_OnlyValues
     Friend WithEvents Label7 As Label
-    Friend WithEvents VButton2 As VIBlend.WinForms.Controls.vButton
-    Friend WithEvents TextBox1 As TextBox
-    Friend WithEvents Label8 As Label
-    Friend WithEvents VButton3 As VIBlend.WinForms.Controls.vButton
-    Friend WithEvents TextBox2 As TextBox
+    Friend WithEvents VPanel1 As VIBlend.WinForms.Controls.vPanel
+    Friend WithEvents VPanel2 As VIBlend.WinForms.Controls.vPanel
+    Friend WithEvents VPanel3 As VIBlend.WinForms.Controls.vPanel
 End Class

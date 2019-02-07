@@ -72,7 +72,7 @@ Public Class frmContaProcurar
             Cursor = Cursors.WaitCursor
             '
             '--- GET
-            listContas = mBLL.Contas_GET_PorIDFilial(Nothing, OnlyContaCaixa)
+            listContas = mBLL.Contas_GET_PorIDFilial(myFilial, OnlyContaCaixa)
             '
             '--- Ampulheta OFF
             Cursor = Cursors.Default

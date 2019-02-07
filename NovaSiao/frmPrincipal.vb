@@ -1191,6 +1191,21 @@ Public Class frmPrincipal
         '
     End Sub
     '
+    Private Sub miTransferencias_Click(sender As Object, e As EventArgs) Handles miTransferencias.Click
+        '
+        OcultaMenuPrincipal()
+        Dim f As New frmTransferenciaProcurar
+        Try
+            f.MdiParent = Me
+            f.StartPosition = FormStartPosition.CenterScreen
+            f.Show()
+        Catch ex As Exception
+            f.Dispose()
+            MostraMenuPrincipal()
+        End Try
+        '
+    End Sub
+    '
 #End Region
     '
     '========================================================================================================
