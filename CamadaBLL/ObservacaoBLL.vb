@@ -37,13 +37,7 @@ Public Class ObservacaoBLL
         '
         Try
             '--- DELETE old OBSERVACAO
-            db.LimparParametros()
-            db.AdicionarParametros("@Origem", Origem)
-            db.AdicionarParametros("@IDOrigem", IDOrigem)
-            '
-            myQuery = "DELETE tblObservacao WHERE Origem = @Origem AND IDOrigem = @IDOrigem"
-            '
-            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            DeleteObservacao(Origem, IDOrigem)
             '
             '--- Verifica se existe observacao, se nao return TRUE
             If Observacao.Trim.Length = 0 Then
@@ -82,6 +76,34 @@ Public Class ObservacaoBLL
             '
             Throw ex
             '
+        End Try
+        '
+    End Function
+    '
+    '==========================================================================================
+    ' DELETE OBSERVACAO
+    '==========================================================================================
+    Public Function DeleteObservacao(Origem As Byte,
+                                     IDOrigem As Integer,
+                                     Optional dbTran As Object = Nothing) As Boolean
+        '
+        Dim db As AcessoDados = If(dbTran, New AcessoDados)
+        '
+        Try
+            '
+            '--- DELETE OBSERVACAO
+            db.LimparParametros()
+            db.AdicionarParametros("@Origem", Origem)
+            db.AdicionarParametros("@IDOrigem", IDOrigem)
+            '
+            Dim myQuery As String = "DELETE tblObservacao WHERE Origem = @Origem AND IDOrigem = @IDOrigem"
+            '
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+            Return True
+            '
+        Catch ex As Exception
+            Throw ex
         End Try
         '
     End Function

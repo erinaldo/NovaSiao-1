@@ -159,13 +159,11 @@ Public Class frmContaProcurar
         propConta_Escolha = listContas.Find(Function(x) x.IDConta = lstItens.SelectedItems(0).Text)
         '
         Me.DialogResult = DialogResult.OK
-        Me.Close()
         '
     End Sub
     '
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         DialogResult = DialogResult.Cancel
-        Close()
     End Sub
     '
 #End Region

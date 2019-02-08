@@ -135,7 +135,7 @@ Public Class frmAReceberQuitar
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            Dim dtForma As DataTable = TipoBLL.MovForma_GET_DT
+            Dim dtForma As DataTable = TipoBLL.MovForma_GET_DT(propMovEntrada.IDFilial)
             '
             With cmbIDMovForma
                 .DataSource = dtForma

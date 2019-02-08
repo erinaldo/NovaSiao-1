@@ -100,7 +100,7 @@ Public Class frmMovFormas
         Dim fBLL As New MovimentacaoBLL
         '
         Try
-            listMovFormas = fBLL.MovForma_GET_List
+            listMovFormas = fBLL.MovForma_GET_List(_IDFilial)
         Catch ex As Exception
             '
             MessageBox.Show("Uma exceção ocorreu ao obter a lista das Formas de Pagamento..." & vbNewLine &
@@ -125,7 +125,7 @@ Public Class frmMovFormas
         txtMovTipo.DataBindings.Add("Text", bindMovForma, "MovTipo", True, DataSourceUpdateMode.OnPropertyChanged)
         txtCartao.DataBindings.Add("Text", bindMovForma, "Cartao", True, DataSourceUpdateMode.OnPropertyChanged)
         txtConta.DataBindings.Add("Text", bindMovForma, "ContaPadrao", True, DataSourceUpdateMode.OnPropertyChanged)
-        lblFilial.DataBindings.Add("Text", bindMovForma, "ApelidoFilial")
+        'lblFilial.DataBindings.Add("Text", bindMovForma, "ApelidoFilial")
         '
         ' FORMATA OS VALORES DO DATABINDING
         AddHandler lblIDMovForma.DataBindings("Text").Format, AddressOf idFormatRG
@@ -654,6 +654,10 @@ Public Class frmMovFormas
             SendKeys.Send("{Tab}")
         End If
         '
+    End Sub
+
+    Private Sub tsMenu_Enter(sender As Object, e As EventArgs) Handles tsMenu.Enter
+        btnNovo.Select()
     End Sub
     '
 #End Region

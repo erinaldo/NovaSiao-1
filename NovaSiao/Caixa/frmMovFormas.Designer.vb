@@ -42,7 +42,7 @@ Partial Class frmMovFormas
         Me.ToolStripSeparator1 = New System.Windows.Forms.ToolStripSeparator()
         Me.btnExcluir = New System.Windows.Forms.ToolStripButton()
         Me.btnAtivo = New System.Windows.Forms.ToolStripButton()
-        Me.btnFechar = New System.Windows.Forms.Button()
+        Me.btnFechar = New System.Windows.Forms.ToolStripButton()
         Me.Label8 = New System.Windows.Forms.Label()
         Me.lblIDMovForma = New System.Windows.Forms.Label()
         Me.epValida = New System.Windows.Forms.ErrorProvider(Me.components)
@@ -61,7 +61,6 @@ Partial Class frmMovFormas
         CType(Me.lstFormas, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SplitContainer1.Panel1.SuspendLayout()
-        Me.SplitContainer1.Panel2.SuspendLayout()
         Me.SplitContainer1.SuspendLayout()
         Me.tsMenu.SuspendLayout()
         CType(Me.epValida, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -213,18 +212,15 @@ Partial Class frmMovFormas
         Me.SplitContainer1.BackColor = System.Drawing.Color.AntiqueWhite
         Me.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Bottom
         Me.SplitContainer1.IsSplitterFixed = True
-        Me.SplitContainer1.Location = New System.Drawing.Point(0, 366)
+        Me.SplitContainer1.Location = New System.Drawing.Point(0, 362)
         Me.SplitContainer1.Name = "SplitContainer1"
         '
         'SplitContainer1.Panel1
         '
         Me.SplitContainer1.Panel1.Controls.Add(Me.tsMenu)
-        '
-        'SplitContainer1.Panel2
-        '
-        Me.SplitContainer1.Panel2.Controls.Add(Me.btnFechar)
+        Me.SplitContainer1.Panel2Collapsed = True
         Me.SplitContainer1.Size = New System.Drawing.Size(740, 48)
-        Me.SplitContainer1.SplitterDistance = 625
+        Me.SplitContainer1.SplitterDistance = 600
         Me.SplitContainer1.TabIndex = 21
         Me.SplitContainer1.TabStop = False
         '
@@ -235,11 +231,11 @@ Partial Class frmMovFormas
         Me.tsMenu.Dock = System.Windows.Forms.DockStyle.Fill
         Me.tsMenu.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.tsMenu.ImageScalingSize = New System.Drawing.Size(30, 30)
-        Me.tsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnNovo, Me.ToolStripSeparator5, Me.btnSalvar, Me.btnCancelar, Me.ToolStripSeparator1, Me.btnExcluir, Me.btnAtivo})
+        Me.tsMenu.Items.AddRange(New System.Windows.Forms.ToolStripItem() {Me.btnNovo, Me.ToolStripSeparator5, Me.btnSalvar, Me.btnCancelar, Me.ToolStripSeparator1, Me.btnExcluir, Me.btnAtivo, Me.btnFechar})
         Me.tsMenu.Location = New System.Drawing.Point(0, 0)
         Me.tsMenu.Name = "tsMenu"
         Me.tsMenu.Padding = New System.Windows.Forms.Padding(5, 0, 0, 0)
-        Me.tsMenu.Size = New System.Drawing.Size(625, 48)
+        Me.tsMenu.Size = New System.Drawing.Size(740, 48)
         Me.tsMenu.TabIndex = 0
         Me.tsMenu.TabStop = True
         Me.tsMenu.Text = "Menu Cliente PF"
@@ -310,22 +306,13 @@ Partial Class frmMovFormas
         '
         'btnFechar
         '
-        Me.btnFechar.BackColor = System.Drawing.Color.Transparent
-        Me.btnFechar.CausesValidation = False
-        Me.btnFechar.FlatAppearance.BorderSize = 0
-        Me.btnFechar.FlatAppearance.MouseDownBackColor = System.Drawing.Color.LightCoral
-        Me.btnFechar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.LightBlue
-        Me.btnFechar.FlatStyle = System.Windows.Forms.FlatStyle.Flat
+        Me.btnFechar.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right
         Me.btnFechar.Image = Global.NovaSiao.My.Resources.Resources.Fechar
-        Me.btnFechar.Location = New System.Drawing.Point(4, 4)
-        Me.btnFechar.Margin = New System.Windows.Forms.Padding(0)
+        Me.btnFechar.ImageTransparentColor = System.Drawing.Color.Magenta
+        Me.btnFechar.Margin = New System.Windows.Forms.Padding(0, 1, 3, 2)
         Me.btnFechar.Name = "btnFechar"
-        Me.btnFechar.Size = New System.Drawing.Size(97, 40)
-        Me.btnFechar.TabIndex = 0
+        Me.btnFechar.Size = New System.Drawing.Size(86, 45)
         Me.btnFechar.Text = "&Fechar"
-        Me.btnFechar.TextAlign = System.Drawing.ContentAlignment.MiddleRight
-        Me.btnFechar.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
-        Me.btnFechar.UseVisualStyleBackColor = False
         '
         'Label8
         '
@@ -504,7 +491,7 @@ Partial Class frmMovFormas
         'frmMovFormas
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(740, 414)
+        Me.ClientSize = New System.Drawing.Size(740, 410)
         Me.Controls.Add(Me.btnCartao)
         Me.Controls.Add(Me.btnContaEscolher)
         Me.Controls.Add(Me.txtCartao)
@@ -555,7 +542,6 @@ Partial Class frmMovFormas
         Me.Panel1.PerformLayout()
         CType(Me.lstFormas, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.Panel1.ResumeLayout(False)
-        Me.SplitContainer1.Panel2.ResumeLayout(False)
         CType(Me.SplitContainer1, System.ComponentModel.ISupportInitialize).EndInit()
         Me.SplitContainer1.ResumeLayout(False)
         Me.tsMenu.ResumeLayout(False)
@@ -587,7 +573,6 @@ Partial Class frmMovFormas
     Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
     Friend WithEvents btnExcluir As ToolStripButton
     Friend WithEvents btnAtivo As ToolStripButton
-    Friend WithEvents btnFechar As Button
     Friend WithEvents Label8 As Label
     Friend WithEvents lblIDMovForma As Label
     Friend WithEvents epValida As ErrorProvider
@@ -602,4 +587,5 @@ Partial Class frmMovFormas
     Friend WithEvents btnContaEscolher As VIBlend.WinForms.Controls.vButton
     Friend WithEvents txtConta As TextBox
     Friend WithEvents Label9 As Label
+    Friend WithEvents btnFechar As ToolStripButton
 End Class

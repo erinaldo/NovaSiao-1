@@ -2,22 +2,24 @@
     '
     Private _formOrigem As Form
     Private _ValorAtual As Decimal
-    Property NivValor_Escolhido As Decimal
+    Property PropNivValor_Escolhido As Decimal
     '
 #Region "NEW | CARREGA COMBO"
     '-------------------------------------------------------------------------------------------------
     ' SUB NEW
     '-------------------------------------------------------------------------------------------------
-    Sub New(ValorAtual As Double, Operadora As String, MovForma As String)
+    Sub New(ValorAtual As Double, Operadora As String, Meio As String)
         '
         ' This call is required by the designer.
         InitializeComponent()
         '
         ' Add any initialization after the InitializeComponent() call.
         lblOperadora.Text = Operadora
-        lblMovForma.Text = MovForma
+        lblMeio.Text = Meio
         _ValorAtual = ValorAtual
         txtValor.Text = Format(ValorAtual, "C")
+        '
+        txtValor.SomentePositivos = False
         '
     End Sub
     '
@@ -53,7 +55,7 @@
         '
         If IsNothing(txtValor.Text) OrElse txtValor.Text = _ValorAtual Then
             MessageBox.Show("O VALOR REAL para Nivelamento não pode ser menor que Zero..." & vbNewLine &
-                            "bem como, não pode ser igual ao Valor Atual da Operadora" & vbNewLine &
+                            "bem como, não pode ser igual ao Valor Atual do Saldo do Meio de Movimentação" & vbNewLine &
                             "Favor definir outro valor para esse campo.", "Valor Inválido",
                             MessageBoxButtons.OK, MessageBoxIcon.Information)
             txtValor.Focus()
@@ -61,7 +63,7 @@
             Exit Sub
         End If
         '
-        NivValor_Escolhido = txtValor.Text - _ValorAtual
+        PropNivValor_Escolhido = txtValor.Text - _ValorAtual
         '
         DialogResult = DialogResult.OK
         Close()
@@ -70,8 +72,7 @@
     '
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
         '
-        Me.DialogResult = DialogResult.Cancel
-        Close()
+        DialogResult = DialogResult.Cancel
         '
     End Sub
     '

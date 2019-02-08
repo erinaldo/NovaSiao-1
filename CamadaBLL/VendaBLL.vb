@@ -427,7 +427,7 @@ Public Class VendaBLL
         End Try
         '
         '
-        '--- DELETE NOTAS IF NECESSITY
+        '--- DELETE NOTAS IF NECESSARY
         '==================================================================
         Try
             '
@@ -445,9 +445,23 @@ Public Class VendaBLL
             '
         End Try
         '
+        '--- DELETE OBSERVACAO
+        '==================================================================
+        Try
+            Dim oBLL As New ObservacaoBLL
+            '
+            oBLL.DeleteObservacao(9, clV.IDVenda)
+            '
+        Catch ex As Exception
+            '
+            ObjDB.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
         '--- DELETE VENDA FINNALY AND COMMIT
         '==================================================================
-        '
         Try
             '
             ObjDB.LimparParametros()

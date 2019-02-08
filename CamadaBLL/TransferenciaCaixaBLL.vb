@@ -65,7 +65,7 @@ Public Class TransferenciaCaixaBLL
         '
         movSaida.IDConta = Transf.IDContaDebito
         movSaida.Creditar = False
-        movSaida.Descricao = "Débito de Transferencia para Conta:" & Transf.ContaDebito
+        movSaida.Descricao = "Débito de Transferencia para Conta: " & Transf.ContaDebito
         movSaida.IDFilial = Transf.IDFilial
         movSaida.IDMeio = Transf.IDMeio
         movSaida.MovData = Transf.TransferenciaData
@@ -88,7 +88,7 @@ Public Class TransferenciaCaixaBLL
         '
         movEntrada.IDConta = Transf.IDContaCredito
         movEntrada.Creditar = False
-        movEntrada.Descricao = "Crédito de Transferencia da Conta:" & Transf.ContaDebito
+        movEntrada.Descricao = "Crédito de Transferencia da Conta: " & Transf.ContaDebito
         movEntrada.IDFilial = Transf.IDFilial
         movEntrada.IDMeio = Transf.IDMeio
         movEntrada.MovData = Transf.TransferenciaData
@@ -197,6 +197,7 @@ Public Class TransferenciaCaixaBLL
             clT.ComissaoValor = IIf(IsDBNull(r("ComissaoValor")), Nothing, r("ComissaoValor"))
             clT.Observacao = IIf(IsDBNull(r("Observacao")), String.Empty, r("Observacao"))
             clT.IDMeio = IIf(IsDBNull(r("IDMeio")), Nothing, r("IDMeio"))
+            clT.Meio = IIf(IsDBNull(r("Meio")), String.Empty, r("Meio"))
             '
             clT.IDContaDebito = IIf(IsDBNull(r("IDContaDebito")), Nothing, r("IDContaDebito"))
             clT.ContaDebito = IIf(IsDBNull(r("ContaDebito")), String.Empty, r("ContaDebito"))
@@ -210,6 +211,93 @@ Public Class TransferenciaCaixaBLL
             '
         Catch ex As Exception
             Throw ex
+        End Try
+        '
+    End Function
+    '
+    '==========================================================================================
+    ' EXCLUIR TRANSFERENCIA
+    '==========================================================================================
+    Public Function Excluir_Transferencia(Transf As clTransferenciaCaixa,
+                                          Optional dbTran As Object = Nothing) As Boolean
+        '
+        Dim db As AcessoDados = If(dbTran, New AcessoDados)
+        '
+        '--- create TRANSACAO IF NECESSARY
+        '----------------------------------------------------------------------------------
+        Dim tranInterna As Boolean = False
+        '
+        If Not db.isTransaction Then
+            tranInterna = True
+            db.BeginTransaction()
+        End If
+        '
+        '--- get MOVIMENTACAO
+        '----------------------------------------------------------------------------------
+        Dim lstMovs As List(Of clMovimentacao) = Nothing
+        Dim movBLL As New MovimentacaoBLL
+        lstMovs = movBLL.Movimentacao_GET_PorOrigemID(EnumMovimentacaoOrigem.Transferencia, Transf.IDTransferencia)
+        '
+        '--- DELETE OBSERVACAO
+        '----------------------------------------------------------------------------------
+        Try
+            Dim oBLL As New ObservacaoBLL
+            '
+            oBLL.DeleteObservacao(13, Transf.IDTransferencia)
+            '
+        Catch ex As Exception
+            '
+            If tranInterna Then db.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE TRANSFERENCIA
+        '----------------------------------------------------------------------------------
+        Try
+            '
+            '--- DELETE OBSERVACAO
+            db.LimparParametros()
+            db.AdicionarParametros("@IDTransferencia", Transf.IDTransferencia)
+            '
+            Dim myQuery As String = "DELETE tblCaixaTransferencia WHERE IDTransferencia = @IDTransferencia"
+            '
+            db.ExecutarManipulacao(CommandType.Text, myQuery)
+            '
+        Catch ex As Exception
+            '
+            If tranInterna Then db.RollBackTransaction()
+            Throw ex
+            Return False
+            '
+        End Try
+        '
+        '--- DELETE MOVIMENTACAO CAIXA
+        Try
+            '
+            If lstMovs.Count > 0 Then
+                '
+                If lstMovs.Where(Function(a) Not IsNothing(a.IDCaixa)).Count > 0 Then
+                    Throw New Exception("Não é possível excluir parcelas que tem movimentações incluídas no Caixa...")
+                End If
+                '
+                '--- exclui as movimentacoes
+                For Each mov In lstMovs
+                    movBLL.Movimentacao_Excluir(mov, db)
+                Next
+                '
+            End If
+            '
+            If tranInterna Then db.CommitTransaction()
+            Return True
+            '
+        Catch ex As Exception
+            '
+            If tranInterna Then db.RollBackTransaction()
+            Throw ex
+            Return False
+            '
         End Try
         '
     End Function

@@ -162,6 +162,7 @@ Partial Class frmFuncionarioProcurar
         Me.Controls.Add(Me.btnEscolher)
         Me.Controls.Add(Me.btnCancelar)
         Me.Controls.Add(Me.lstListagem)
+        Me.KeyPreview = True
         Me.Name = "frmFuncionarioProcurar"
         Me.Text = "Escolha um Funcionario"
         Me.Controls.SetChildIndex(Me.Panel1, 0)

@@ -22,13 +22,11 @@ Partial Class frmCaixa
         Me.components = New System.ComponentModel.Container()
         Dim DataGridViewCellStyle1 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As System.Windows.Forms.DataGridViewCellStyle = New System.Windows.Forms.DataGridViewCellStyle()
         Me.dgvListagem = New System.Windows.Forms.DataGridView()
-        Me.clnMov = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnMovData = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnDescricao = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnMovForma = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.dgvSaldos = New System.Windows.Forms.DataGridView()
         Me.btnClose = New VIBlend.WinForms.Controls.vFormButton()
         Me.lblDataInicial = New System.Windows.Forms.Label()
@@ -67,9 +65,15 @@ Partial Class frmCaixa
         Me.lblApelidoFuncionario = New System.Windows.Forms.Label()
         Me.Label13 = New System.Windows.Forms.Label()
         Me.btnFuncionarioAlterar = New System.Windows.Forms.Button()
+        Me.clnMov = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnMovData = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnDescricao = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnMovForma = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnTipo = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnSaldoAnterior = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.clnSaldoFinal = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnTransferir = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Panel1.SuspendLayout()
         CType(Me.dgvListagem, System.ComponentModel.ISupportInitialize).BeginInit()
         CType(Me.dgvSaldos, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -85,7 +89,7 @@ Partial Class frmCaixa
         Me.Panel1.Controls.Add(Me.lblSituacao)
         Me.Panel1.Controls.Add(Me.lblApelidoFilial)
         Me.Panel1.Controls.Add(Me.btnClose)
-        Me.Panel1.Size = New System.Drawing.Size(991, 50)
+        Me.Panel1.Size = New System.Drawing.Size(1118, 50)
         Me.Panel1.TabIndex = 0
         Me.Panel1.Controls.SetChildIndex(Me.lblTitulo, 0)
         Me.Panel1.Controls.SetChildIndex(Me.btnClose, 0)
@@ -98,7 +102,7 @@ Partial Class frmCaixa
         '
         'lblTitulo
         '
-        Me.lblTitulo.Location = New System.Drawing.Point(730, 0)
+        Me.lblTitulo.Location = New System.Drawing.Point(857, 0)
         Me.lblTitulo.Size = New System.Drawing.Size(261, 50)
         Me.lblTitulo.TabIndex = 6
         Me.lblTitulo.Text = "Fechamento de Caixa"
@@ -135,59 +139,27 @@ Partial Class frmCaixa
         Me.dgvListagem.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvListagem.RowHeadersWidth = 36
         Me.dgvListagem.RowTemplate.Height = 30
-        Me.dgvListagem.Size = New System.Drawing.Size(784, 318)
+        Me.dgvListagem.Size = New System.Drawing.Size(910, 318)
         Me.dgvListagem.TabIndex = 7
-        '
-        'clnMov
-        '
-        Me.clnMov.HeaderText = "Mov"
-        Me.clnMov.Name = "clnMov"
-        Me.clnMov.ReadOnly = True
-        Me.clnMov.Visible = False
-        '
-        'clnMovData
-        '
-        Me.clnMovData.HeaderText = "Data"
-        Me.clnMovData.Name = "clnMovData"
-        Me.clnMovData.ReadOnly = True
-        '
-        'clnDescricao
-        '
-        Me.clnDescricao.HeaderText = "Descrição"
-        Me.clnDescricao.Name = "clnDescricao"
-        Me.clnDescricao.ReadOnly = True
-        Me.clnDescricao.Width = 300
-        '
-        'clnMovForma
-        '
-        Me.clnMovForma.HeaderText = "Forma"
-        Me.clnMovForma.Name = "clnMovForma"
-        Me.clnMovForma.ReadOnly = True
-        Me.clnMovForma.Width = 150
-        '
-        'clnValor
-        '
-        Me.clnValor.HeaderText = "Valor"
-        Me.clnValor.Name = "clnValor"
-        Me.clnValor.ReadOnly = True
         '
         'dgvSaldos
         '
         Me.dgvSaldos.AllowUserToAddRows = False
         Me.dgvSaldos.AllowUserToDeleteRows = False
+        Me.dgvSaldos.AllowUserToResizeRows = False
         Me.dgvSaldos.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
         Me.dgvSaldos.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         Me.dgvSaldos.ColumnHeadersHeight = 27
         Me.dgvSaldos.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing
-        Me.dgvSaldos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnTipo, Me.clnSaldoAnterior, Me.clnSaldoFinal})
-        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Window
-        DataGridViewCellStyle3.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        DataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText
-        DataGridViewCellStyle3.SelectionBackColor = System.Drawing.Color.LightSteelBlue
-        DataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.Black
-        DataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
-        Me.dgvSaldos.DefaultCellStyle = DataGridViewCellStyle3
+        Me.dgvSaldos.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.clnTipo, Me.clnSaldoAnterior, Me.clnSaldoFinal, Me.clnTransferir})
+        DataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window
+        DataGridViewCellStyle6.Font = New System.Drawing.Font("Calibri", 12.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        DataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText
+        DataGridViewCellStyle6.SelectionBackColor = System.Drawing.Color.LightSteelBlue
+        DataGridViewCellStyle6.SelectionForeColor = System.Drawing.Color.Black
+        DataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.[False]
+        Me.dgvSaldos.DefaultCellStyle = DataGridViewCellStyle6
         Me.dgvSaldos.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically
         Me.dgvSaldos.EnableHeadersVisualStyles = False
         Me.dgvSaldos.Location = New System.Drawing.Point(14, 446)
@@ -196,9 +168,11 @@ Partial Class frmCaixa
         Me.dgvSaldos.RowHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.[Single]
         Me.dgvSaldos.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
         Me.dgvSaldos.RowHeadersWidth = 36
+        Me.dgvSaldos.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing
         Me.dgvSaldos.RowTemplate.Height = 30
+        Me.dgvSaldos.RowTemplate.Resizable = System.Windows.Forms.DataGridViewTriState.[False]
         Me.dgvSaldos.ScrollBars = System.Windows.Forms.ScrollBars.Vertical
-        Me.dgvSaldos.Size = New System.Drawing.Size(510, 140)
+        Me.dgvSaldos.Size = New System.Drawing.Size(546, 140)
         Me.dgvSaldos.TabIndex = 8
         '
         'btnClose
@@ -209,7 +183,7 @@ Partial Class frmCaixa
         Me.btnClose.BorderStyle = VIBlend.WinForms.Controls.ButtonBorderStyle.NONE
         Me.btnClose.ButtonType = VIBlend.WinForms.Controls.vFormButtonType.CloseButton
         Me.btnClose.CausesValidation = False
-        Me.btnClose.Location = New System.Drawing.Point(962, 13)
+        Me.btnClose.Location = New System.Drawing.Point(1089, 13)
         Me.btnClose.Name = "btnClose"
         Me.btnClose.RibbonStyle = False
         Me.btnClose.RoundedCornersMask = CType(15, Byte)
@@ -259,7 +233,7 @@ Partial Class frmCaixa
         Me.lblApelidoFilial.ForeColor = System.Drawing.Color.White
         Me.lblApelidoFilial.Location = New System.Drawing.Point(110, 22)
         Me.lblApelidoFilial.Name = "lblApelidoFilial"
-        Me.lblApelidoFilial.Size = New System.Drawing.Size(200, 23)
+        Me.lblApelidoFilial.Size = New System.Drawing.Size(245, 23)
         Me.lblApelidoFilial.TabIndex = 2
         Me.lblApelidoFilial.Text = "Filial"
         Me.lblApelidoFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
@@ -297,7 +271,7 @@ Partial Class frmCaixa
         Me.Label1.BackColor = System.Drawing.Color.Transparent
         Me.Label1.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label1.ForeColor = System.Drawing.Color.Silver
-        Me.Label1.Location = New System.Drawing.Point(188, 4)
+        Me.Label1.Location = New System.Drawing.Point(211, 4)
         Me.Label1.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label1.Name = "Label1"
         Me.Label1.Size = New System.Drawing.Size(39, 13)
@@ -342,7 +316,7 @@ Partial Class frmCaixa
         Me.lblSituacao.BackColor = System.Drawing.Color.Transparent
         Me.lblSituacao.Font = New System.Drawing.Font("Verdana", 14.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.lblSituacao.ForeColor = System.Drawing.Color.White
-        Me.lblSituacao.Location = New System.Drawing.Point(319, 22)
+        Me.lblSituacao.Location = New System.Drawing.Point(357, 22)
         Me.lblSituacao.Name = "lblSituacao"
         Me.lblSituacao.Size = New System.Drawing.Size(186, 23)
         Me.lblSituacao.TabIndex = 4
@@ -355,7 +329,7 @@ Partial Class frmCaixa
         Me.Label6.BackColor = System.Drawing.Color.Transparent
         Me.Label6.Font = New System.Drawing.Font("Verdana", 8.25!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
         Me.Label6.ForeColor = System.Drawing.Color.Silver
-        Me.Label6.Location = New System.Drawing.Point(379, 4)
+        Me.Label6.Location = New System.Drawing.Point(417, 4)
         Me.Label6.Margin = New System.Windows.Forms.Padding(2, 0, 2, 0)
         Me.Label6.Name = "Label6"
         Me.Label6.Size = New System.Drawing.Size(63, 13)
@@ -366,7 +340,7 @@ Partial Class frmCaixa
         'Label5
         '
         Me.Label5.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label5.Location = New System.Drawing.Point(587, 475)
+        Me.Label5.Location = New System.Drawing.Point(679, 475)
         Me.Label5.Name = "Label5"
         Me.Label5.Size = New System.Drawing.Size(85, 24)
         Me.Label5.TabIndex = 11
@@ -376,7 +350,7 @@ Partial Class frmCaixa
         'lblTEntradas
         '
         Me.lblTEntradas.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTEntradas.Location = New System.Drawing.Point(674, 475)
+        Me.lblTEntradas.Location = New System.Drawing.Point(766, 475)
         Me.lblTEntradas.Name = "lblTEntradas"
         Me.lblTEntradas.Size = New System.Drawing.Size(121, 24)
         Me.lblTEntradas.TabIndex = 12
@@ -386,7 +360,7 @@ Partial Class frmCaixa
         'Label7
         '
         Me.Label7.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label7.Location = New System.Drawing.Point(587, 504)
+        Me.Label7.Location = New System.Drawing.Point(679, 504)
         Me.Label7.Name = "Label7"
         Me.Label7.Size = New System.Drawing.Size(85, 24)
         Me.Label7.TabIndex = 13
@@ -396,7 +370,7 @@ Partial Class frmCaixa
         'lblTSaidas
         '
         Me.lblTSaidas.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTSaidas.Location = New System.Drawing.Point(674, 504)
+        Me.lblTSaidas.Location = New System.Drawing.Point(766, 504)
         Me.lblTSaidas.Name = "lblTSaidas"
         Me.lblTSaidas.Size = New System.Drawing.Size(121, 24)
         Me.lblTSaidas.TabIndex = 14
@@ -406,7 +380,7 @@ Partial Class frmCaixa
         'Label8
         '
         Me.Label8.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label8.Location = New System.Drawing.Point(534, 446)
+        Me.Label8.Location = New System.Drawing.Point(626, 446)
         Me.Label8.Name = "Label8"
         Me.Label8.Size = New System.Drawing.Size(138, 24)
         Me.Label8.TabIndex = 9
@@ -416,7 +390,7 @@ Partial Class frmCaixa
         'lblSaldoAnterior
         '
         Me.lblSaldoAnterior.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSaldoAnterior.Location = New System.Drawing.Point(674, 446)
+        Me.lblSaldoAnterior.Location = New System.Drawing.Point(766, 446)
         Me.lblSaldoAnterior.Name = "lblSaldoAnterior"
         Me.lblSaldoAnterior.Size = New System.Drawing.Size(121, 24)
         Me.lblSaldoAnterior.TabIndex = 10
@@ -426,7 +400,7 @@ Partial Class frmCaixa
         'lblSaldoFinal
         '
         Me.lblSaldoFinal.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblSaldoFinal.Location = New System.Drawing.Point(674, 562)
+        Me.lblSaldoFinal.Location = New System.Drawing.Point(766, 562)
         Me.lblSaldoFinal.Name = "lblSaldoFinal"
         Me.lblSaldoFinal.Size = New System.Drawing.Size(121, 24)
         Me.lblSaldoFinal.TabIndex = 16
@@ -436,7 +410,7 @@ Partial Class frmCaixa
         'Label10
         '
         Me.Label10.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label10.Location = New System.Drawing.Point(534, 562)
+        Me.Label10.Location = New System.Drawing.Point(626, 562)
         Me.Label10.Name = "Label10"
         Me.Label10.Size = New System.Drawing.Size(138, 24)
         Me.Label10.TabIndex = 15
@@ -445,10 +419,11 @@ Partial Class frmCaixa
         '
         'btnInserirDespesa
         '
+        Me.btnInserirDespesa.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.btnInserirDespesa.BackColor = System.Drawing.Color.SeaShell
         Me.btnInserirDespesa.FlatAppearance.BorderSize = 0
         Me.btnInserirDespesa.Image = Global.NovaSiao.My.Resources.Resources.APagar_30px
-        Me.btnInserirDespesa.Location = New System.Drawing.Point(813, 282)
+        Me.btnInserirDespesa.Location = New System.Drawing.Point(940, 282)
         Me.btnInserirDespesa.Name = "btnInserirDespesa"
         Me.btnInserirDespesa.Size = New System.Drawing.Size(159, 45)
         Me.btnInserirDespesa.TabIndex = 20
@@ -459,10 +434,11 @@ Partial Class frmCaixa
         '
         'btnAlterar
         '
+        Me.btnAlterar.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.btnAlterar.BackColor = System.Drawing.Color.Honeydew
         Me.btnAlterar.FlatAppearance.BorderSize = 0
         Me.btnAlterar.Image = Global.NovaSiao.My.Resources.Resources.refresh1
-        Me.btnAlterar.Location = New System.Drawing.Point(813, 333)
+        Me.btnAlterar.Location = New System.Drawing.Point(940, 333)
         Me.btnAlterar.Name = "btnAlterar"
         Me.btnAlterar.Size = New System.Drawing.Size(159, 45)
         Me.btnAlterar.TabIndex = 21
@@ -473,10 +449,11 @@ Partial Class frmCaixa
         '
         'btnFinalizar
         '
+        Me.btnFinalizar.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.btnFinalizar.BackColor = System.Drawing.Color.AliceBlue
         Me.btnFinalizar.FlatAppearance.BorderSize = 0
         Me.btnFinalizar.Image = Global.NovaSiao.My.Resources.Resources.accept
-        Me.btnFinalizar.Location = New System.Drawing.Point(813, 448)
+        Me.btnFinalizar.Location = New System.Drawing.Point(940, 448)
         Me.btnFinalizar.Name = "btnFinalizar"
         Me.btnFinalizar.Size = New System.Drawing.Size(159, 72)
         Me.btnFinalizar.TabIndex = 23
@@ -487,10 +464,11 @@ Partial Class frmCaixa
         '
         'btnFechar
         '
+        Me.btnFechar.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.btnFechar.BackColor = System.Drawing.SystemColors.ButtonFace
         Me.btnFechar.FlatAppearance.BorderSize = 0
         Me.btnFechar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_30px
-        Me.btnFechar.Location = New System.Drawing.Point(813, 541)
+        Me.btnFechar.Location = New System.Drawing.Point(940, 541)
         Me.btnFechar.Name = "btnFechar"
         Me.btnFechar.Size = New System.Drawing.Size(159, 45)
         Me.btnFechar.TabIndex = 24
@@ -521,8 +499,9 @@ Partial Class frmCaixa
         '
         'Label9
         '
+        Me.Label9.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.Label9.AutoSize = True
-        Me.Label9.Location = New System.Drawing.Point(847, 89)
+        Me.Label9.Location = New System.Drawing.Point(974, 89)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(90, 19)
         Me.Label9.TabIndex = 17
@@ -531,8 +510,9 @@ Partial Class frmCaixa
         '
         'txtObservacao
         '
+        Me.txtObservacao.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.txtObservacao.BackColor = System.Drawing.SystemColors.Control
-        Me.txtObservacao.Location = New System.Drawing.Point(813, 111)
+        Me.txtObservacao.Location = New System.Drawing.Point(940, 111)
         Me.txtObservacao.Multiline = True
         Me.txtObservacao.Name = "txtObservacao"
         Me.txtObservacao.Size = New System.Drawing.Size(159, 160)
@@ -541,10 +521,11 @@ Partial Class frmCaixa
         '
         'btnExcluirCaixa
         '
+        Me.btnExcluirCaixa.Anchor = System.Windows.Forms.AnchorStyles.Right
         Me.btnExcluirCaixa.BackColor = System.Drawing.Color.MistyRose
         Me.btnExcluirCaixa.FlatAppearance.BorderSize = 0
         Me.btnExcluirCaixa.Image = Global.NovaSiao.My.Resources.Resources.Fechar_24x24
-        Me.btnExcluirCaixa.Location = New System.Drawing.Point(813, 384)
+        Me.btnExcluirCaixa.Location = New System.Drawing.Point(940, 384)
         Me.btnExcluirCaixa.Name = "btnExcluirCaixa"
         Me.btnExcluirCaixa.Size = New System.Drawing.Size(159, 45)
         Me.btnExcluirCaixa.TabIndex = 22
@@ -555,7 +536,8 @@ Partial Class frmCaixa
         '
         'btnSalvarObservacao
         '
-        Me.btnSalvarObservacao.Location = New System.Drawing.Point(851, 238)
+        Me.btnSalvarObservacao.Anchor = System.Windows.Forms.AnchorStyles.Right
+        Me.btnSalvarObservacao.Location = New System.Drawing.Point(978, 238)
         Me.btnSalvarObservacao.Name = "btnSalvarObservacao"
         Me.btnSalvarObservacao.Size = New System.Drawing.Size(86, 27)
         Me.btnSalvarObservacao.TabIndex = 19
@@ -566,7 +548,7 @@ Partial Class frmCaixa
         'Label11
         '
         Me.Label11.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.Label11.Location = New System.Drawing.Point(534, 533)
+        Me.Label11.Location = New System.Drawing.Point(626, 533)
         Me.Label11.Name = "Label11"
         Me.Label11.Size = New System.Drawing.Size(138, 24)
         Me.Label11.TabIndex = 15
@@ -576,7 +558,7 @@ Partial Class frmCaixa
         'lblTTransf
         '
         Me.lblTTransf.Font = New System.Drawing.Font("Calibri", 14.25!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblTTransf.Location = New System.Drawing.Point(674, 533)
+        Me.lblTTransf.Location = New System.Drawing.Point(766, 533)
         Me.lblTTransf.Name = "lblTTransf"
         Me.lblTTransf.Size = New System.Drawing.Size(121, 24)
         Me.lblTTransf.TabIndex = 16
@@ -619,6 +601,39 @@ Partial Class frmCaixa
         Me.btnFuncionarioAlterar.TabStop = False
         Me.btnFuncionarioAlterar.UseVisualStyleBackColor = True
         '
+        'clnMov
+        '
+        Me.clnMov.HeaderText = ""
+        Me.clnMov.Name = "clnMov"
+        Me.clnMov.ReadOnly = True
+        Me.clnMov.Width = 40
+        '
+        'clnMovData
+        '
+        Me.clnMovData.HeaderText = "Data"
+        Me.clnMovData.Name = "clnMovData"
+        Me.clnMovData.ReadOnly = True
+        '
+        'clnDescricao
+        '
+        Me.clnDescricao.HeaderText = "Descrição"
+        Me.clnDescricao.Name = "clnDescricao"
+        Me.clnDescricao.ReadOnly = True
+        Me.clnDescricao.Width = 400
+        '
+        'clnMovForma
+        '
+        Me.clnMovForma.HeaderText = "Forma"
+        Me.clnMovForma.Name = "clnMovForma"
+        Me.clnMovForma.ReadOnly = True
+        Me.clnMovForma.Width = 200
+        '
+        'clnValor
+        '
+        Me.clnValor.HeaderText = "Valor"
+        Me.clnValor.Name = "clnValor"
+        Me.clnValor.ReadOnly = True
+        '
         'clnTipo
         '
         Me.clnTipo.HeaderText = "Mov. Tipo"
@@ -628,20 +643,31 @@ Partial Class frmCaixa
         '
         'clnSaldoAnterior
         '
+        DataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        Me.clnSaldoAnterior.DefaultCellStyle = DataGridViewCellStyle3
         Me.clnSaldoAnterior.HeaderText = "Sd Anterior"
         Me.clnSaldoAnterior.Name = "clnSaldoAnterior"
         Me.clnSaldoAnterior.ReadOnly = True
         '
         'clnSaldoFinal
         '
+        DataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        Me.clnSaldoFinal.DefaultCellStyle = DataGridViewCellStyle4
         Me.clnSaldoFinal.HeaderText = "Sd Final"
         Me.clnSaldoFinal.Name = "clnSaldoFinal"
         Me.clnSaldoFinal.ReadOnly = True
         '
+        'clnTransferir
+        '
+        DataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleRight
+        Me.clnTransferir.DefaultCellStyle = DataGridViewCellStyle5
+        Me.clnTransferir.HeaderText = "Auto Transf."
+        Me.clnTransferir.Name = "clnTransferir"
+        '
         'frmCaixa
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 19.0!)
-        Me.ClientSize = New System.Drawing.Size(991, 599)
+        Me.ClientSize = New System.Drawing.Size(1118, 599)
         Me.Controls.Add(Me.btnFuncionarioAlterar)
         Me.Controls.Add(Me.lblApelidoFuncionario)
         Me.Controls.Add(Me.Label13)
@@ -731,11 +757,6 @@ Partial Class frmCaixa
     Friend WithEvents lblTEntradas As Label
     Friend WithEvents Label7 As Label
     Friend WithEvents lblTSaidas As Label
-    Friend WithEvents clnMov As DataGridViewTextBoxColumn
-    Friend WithEvents clnMovData As DataGridViewTextBoxColumn
-    Friend WithEvents clnDescricao As DataGridViewTextBoxColumn
-    Friend WithEvents clnMovForma As DataGridViewTextBoxColumn
-    Friend WithEvents clnValor As DataGridViewTextBoxColumn
     Friend WithEvents Label8 As Label
     Friend WithEvents lblSaldoAnterior As Label
     Friend WithEvents lblSaldoFinal As Label
@@ -757,7 +778,13 @@ Partial Class frmCaixa
     Friend WithEvents lblApelidoFuncionario As Label
     Friend WithEvents Label13 As Label
     Friend WithEvents btnFuncionarioAlterar As Button
+    Friend WithEvents clnMov As DataGridViewTextBoxColumn
+    Friend WithEvents clnMovData As DataGridViewTextBoxColumn
+    Friend WithEvents clnDescricao As DataGridViewTextBoxColumn
+    Friend WithEvents clnMovForma As DataGridViewTextBoxColumn
+    Friend WithEvents clnValor As DataGridViewTextBoxColumn
     Friend WithEvents clnTipo As DataGridViewTextBoxColumn
     Friend WithEvents clnSaldoAnterior As DataGridViewTextBoxColumn
     Friend WithEvents clnSaldoFinal As DataGridViewTextBoxColumn
+    Friend WithEvents clnTransferir As DataGridViewTextBoxColumn
 End Class

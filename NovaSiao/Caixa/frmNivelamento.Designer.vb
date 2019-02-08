@@ -25,7 +25,7 @@ Partial Class frmNivelamento
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.lblOperadora = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
-        Me.lblMovForma = New System.Windows.Forms.Label()
+        Me.lblMeio = New System.Windows.Forms.Label()
         Me.GroupBox1 = New System.Windows.Forms.GroupBox()
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.Panel1.SuspendLayout()
@@ -50,6 +50,7 @@ Partial Class frmNivelamento
         Me.txtValor.Location = New System.Drawing.Point(129, 257)
         Me.txtValor.Name = "txtValor"
         Me.txtValor.Size = New System.Drawing.Size(135, 31)
+        Me.txtValor.SomentePositivos = False
         Me.txtValor.TabIndex = 2
         Me.txtValor.TextAlign = System.Windows.Forms.HorizontalAlignment.Right
         '
@@ -77,6 +78,7 @@ Partial Class frmNivelamento
         '
         'btnCancelar
         '
+        Me.btnCancelar.CausesValidation = False
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
         Me.btnCancelar.FlatAppearance.MouseOverBackColor = System.Drawing.Color.FromArgb(CType(CType(255, Byte), Integer), CType(CType(224, Byte), Integer), CType(CType(192, Byte), Integer))
         Me.btnCancelar.Image = Global.NovaSiao.My.Resources.Resources.Fechar_30px
@@ -108,15 +110,15 @@ Partial Class frmNivelamento
         Me.Label4.TabIndex = 6
         Me.Label4.Text = "Informe o valor real que há na Conta"
         '
-        'lblMovForma
+        'lblMeio
         '
-        Me.lblMovForma.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
-        Me.lblMovForma.Location = New System.Drawing.Point(41, 27)
-        Me.lblMovForma.Name = "lblMovForma"
-        Me.lblMovForma.Size = New System.Drawing.Size(257, 29)
-        Me.lblMovForma.TabIndex = 5
-        Me.lblMovForma.Text = "Tipo de Movimentação"
-        Me.lblMovForma.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
+        Me.lblMeio.Font = New System.Drawing.Font("Calibri", 15.75!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(0, Byte))
+        Me.lblMeio.Location = New System.Drawing.Point(41, 27)
+        Me.lblMeio.Name = "lblMeio"
+        Me.lblMeio.Size = New System.Drawing.Size(257, 29)
+        Me.lblMeio.TabIndex = 5
+        Me.lblMeio.Text = "Meio de Movimentação"
+        Me.lblMeio.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
         '
         'GroupBox1
         '
@@ -130,13 +132,13 @@ Partial Class frmNivelamento
         '
         'GroupBox2
         '
-        Me.GroupBox2.Controls.Add(Me.lblMovForma)
+        Me.GroupBox2.Controls.Add(Me.lblMeio)
         Me.GroupBox2.Location = New System.Drawing.Point(17, 146)
         Me.GroupBox2.Name = "GroupBox2"
         Me.GroupBox2.Size = New System.Drawing.Size(328, 70)
         Me.GroupBox2.TabIndex = 7
         Me.GroupBox2.TabStop = False
-        Me.GroupBox2.Text = " Tipo de Movimentação: "
+        Me.GroupBox2.Text = " Meio de Movimentação: "
         '
         'frmNivelamento
         '
@@ -171,7 +173,7 @@ Partial Class frmNivelamento
     Friend WithEvents btnCancelar As Button
     Friend WithEvents lblOperadora As Label
     Friend WithEvents Label4 As Label
-    Friend WithEvents lblMovForma As Label
+    Friend WithEvents lblMeio As Label
     Friend WithEvents GroupBox1 As GroupBox
     Friend WithEvents GroupBox2 As GroupBox
 End Class

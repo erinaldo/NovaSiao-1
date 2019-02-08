@@ -40,7 +40,7 @@ Public Class frmVendaEntrada
             '--- Ampulheta ON
             Cursor = Cursors.WaitCursor
             '
-            lstForma = TipoBLL.MovForma_GET_List(True)
+            lstForma = TipoBLL.MovForma_GET_List(Pag.IDFilial, True)
             dtTipo = TipoBLL.MovTipo_GET_Dt(True)
             '
         Catch ex As Exception

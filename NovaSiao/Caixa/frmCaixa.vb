@@ -179,7 +179,7 @@ Public Class frmCaixa
         With clnMov
             .HeaderText = ""
             .DataPropertyName = "Mov"
-            .Width = 30
+            .Width = 40
             .Resizable = DataGridViewTriState.False
             .Visible = True
             .ReadOnly = True
@@ -206,7 +206,7 @@ Public Class frmCaixa
         With clnDescricao
             .HeaderText = "Descrição"
             .DataPropertyName = "Descricao"
-            .Width = 300
+            .Width = 400
             .Resizable = DataGridViewTriState.False
             .Visible = True
             .ReadOnly = True
@@ -242,12 +242,12 @@ Public Class frmCaixa
             .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight
         End With
         '
-        Me.dgvListagem.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {
-                                        Me.clnMov,
-                                        Me.clnMovData,
-                                        Me.clnDescricao,
-                                        Me.clnMovForma,
-                                        Me.clnValor})
+        Me.dgvListagem.Columns.AddRange(New DataGridViewColumn() {
+                                        clnMov,
+                                        clnMovData,
+                                        clnDescricao,
+                                        clnMovForma,
+                                        clnValor})
         '
     End Sub
     '
@@ -255,7 +255,13 @@ Public Class frmCaixa
     '=====================================================================================================
     Private Sub dgvListagem_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvListagem.CellFormatting
         '
-        If e.ColumnIndex = 3 Then
+        If e.ColumnIndex = 0 Then
+            If Not IsNothing(DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clMovimentacao).IDContaPadrao) Then
+                e.Value = "E/S"
+            End If
+        End If
+        '
+        If e.ColumnIndex = 4 Then
             '
             Dim M As String = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clMovimentacao).Mov
             '
@@ -272,16 +278,26 @@ Public Class frmCaixa
                     dgvListagem.Rows(e.RowIndex).DefaultCellStyle.BackColor = Color.Azure
                     dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionBackColor = SystemColors.Highlight
                     '
-                    e.CellStyle.ForeColor = Color.Black
+                    e.CellStyle.ForeColor = Color.DarkBlue
                 Case "T"
                     '
-                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.BackColor = Color.LightCyan
-                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionBackColor = SystemColors.Highlight
+                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.BackColor = Color.LightGreen
+                    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionBackColor = Color.DarkGreen
                     '
-                    e.CellStyle.ForeColor = Color.Blue
+                    If e.Value > 0 Then
+                        e.CellStyle.ForeColor = Color.DarkBlue
+                    Else
+                        e.CellStyle.ForeColor = Color.Red
+                    End If
                     '
             End Select
             '
+        End If
+        '
+        If e.ColumnIndex = 3 Then '--- se nao houver movForma then
+            If e.Value = "" Then
+                e.Value = DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clMovimentacao).Meio
+            End If
         End If
         '
     End Sub
@@ -294,31 +310,33 @@ Public Class frmCaixa
         '
         '--- Adiciona as COLUNAS da DataTable: dtSaldos
         '--------------------------------------------------------------
-        Dim IDMovTipo As New DataColumn
+        Dim IDMeio As New DataColumn
         '
-        With IDMovTipo
-            .ColumnName = "IDMovTipo"
-            .DataType = GetType(Short)
+        With IDMeio
+            .ColumnName = "IDMeio"
+            .DataType = GetType(Byte)
             .Caption = "ID"
             .ReadOnly = False
             .Unique = True
         End With
         '
-        dtSaldo.Columns.Add(IDMovTipo)
+        dtSaldo.Columns.Add(IDMeio)
         Dim Keys(0) As DataColumn
-        Keys(0) = IDMovTipo
+        Keys(0) = IDMeio
         dtSaldo.PrimaryKey = Keys
         '
-        dtSaldo.Columns.Add("MovTipo", GetType(String))
+        dtSaldo.Columns.Add("Meio", GetType(String))
         dtSaldo.Columns.Add("IDConta", GetType(Short))
         dtSaldo.Columns.Add("Conta", GetType(String))
         dtSaldo.Columns.Add("SaldoAnterior", GetType(Decimal))
         dtSaldo.Columns.Add("SaldoFinal", GetType(Decimal))
         dtSaldo.Columns.Add("Nivelamento", GetType(Boolean))
+        dtSaldo.Columns.Add("ATransferir", GetType(Decimal))
         '
     End Sub
     '
     Private Sub ObterSaldos()
+        '
         Dim cxBLL As New CaixaBLL
         '
         '--- Limpa todas as ROWS do dtSaldo
@@ -333,41 +351,46 @@ Public Class frmCaixa
             If dtSaldoAnterior.Rows.Count > 0 Then
                 '
                 For Each r As DataRow In dtSaldoAnterior.Rows
-                    dtSaldo.Rows.Add({r("IDMovTipo"),
-                                      r("MovTipo"),
+                    dtSaldo.Rows.Add({r("IDMeio"),
+                                      r("Meio"),
                                       r("IDConta"),
                                       r("Conta"),
                                       r("MovValor"),
-                                      r("MovValor")})
+                                      r("MovValor"),
+                                      0})
                 Next
                 '
             End If
             '
             '--- Calcula os DADOS do SALDOATUAL
             For Each c As clMovimentacao In lstMov
-                Dim saldoFind As DataRow = dtSaldo.Rows.Find(c.IDMovTipo)
                 '
-                '--- Calcula valor real positivo para entrada e negativo para saída
+                '--- GET valor real positivo para entrada e negativo para saída
                 Dim MovValorReal As Double = c.MovValorReal
+                '
+                '--- Find IDMEIO no DataTable SaldoAnterior
+                Dim saldoFind As DataRow = dtSaldo.Rows.Find(c.IDMeio)
                 '
                 '--- adiciona os valores
                 If IsNothing(saldoFind) Then
                     If c.Descricao.ToString.Contains("Nivelamento") Then
-                        dtSaldo.Rows.Add({c.IDMovTipo,
-                                         c.MovTipo,
+                        dtSaldo.Rows.Add({c.IDMeio,
+                                         c.Meio,
                                          c.IDConta,
                                          c.Conta,
                                          0,
                                          MovValorReal,
-                                         True})
+                                         True,
+                                         0})
                     Else
-                        dtSaldo.Rows.Add({c.IDMovTipo,
-                                         c.MovTipo,
+                        dtSaldo.Rows.Add({c.IDMeio,
+                                         c.Meio,
                                          c.IDConta,
                                          c.Conta,
                                          0,
                                          MovValorReal,
-                                         False})
+                                         False,
+                                         If(IsNothing(c.IDContaPadrao), 0, c.MovValorReal)})
                     End If
                 Else
                     saldoFind.BeginEdit()
@@ -378,7 +401,12 @@ Public Class frmCaixa
                     '
                     saldoFind("SaldoFinal") += MovValorReal
                     '
+                    If Not IsNothing(c.IDContaPadrao) Then
+                        saldoFind("ATransferir") += MovValorReal
+                    End If
+                    '
                     saldoFind.AcceptChanges()
+                    '
                 End If
                 '
             Next
@@ -410,8 +438,9 @@ Public Class frmCaixa
         dgvSaldos.RowHeadersVisible = True
         dgvSaldos.RowHeadersWidth = 30
         dgvSaldos.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
-        dgvSaldos.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         dgvSaldos.StandardTab = True
+        dgvSaldos.RowTemplate.Height = 33
+        dgvSaldos.RowTemplate.Resizable = DataGridViewTriState.False
         '
         FormataDgvSaldos()
         '
@@ -419,10 +448,10 @@ Public Class frmCaixa
     '
     Private Sub FormataDgvSaldos()
         '
-        ' (1) COLUNA MOVFORMA
+        ' (0) COLUNA MOVFORMA
         With clnTipo
-            .HeaderText = "Tipo"
-            .DataPropertyName = "MovTipo"
+            .HeaderText = "Meio"
+            .DataPropertyName = "Meio"
             .Width = 140
             .Resizable = DataGridViewTriState.False
             .Visible = True
@@ -430,10 +459,10 @@ Public Class frmCaixa
             .SortMode = DataGridViewColumnSortMode.NotSortable
             .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
             .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .DefaultCellStyle.Font = New Font("Arial Narrow", 10)
+            '.DefaultCellStyle.Font = New Font("Arial Narrow", 10)
         End With
         '
-        ' (2) COLUNA SALDO ANTERIOR
+        ' (1) COLUNA SALDO ANTERIOR
         With clnSaldoAnterior
             .HeaderText = "Sd Anterior"
             .DataPropertyName = "SaldoAnterior"
@@ -443,12 +472,12 @@ Public Class frmCaixa
             .ReadOnly = True
             .DefaultCellStyle.Format = "C"
             .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight
 
         End With
         '
-        ' (3) COLUNA SALDO FINAL 
+        ' (2) COLUNA SALDO FINAL 
         With clnSaldoFinal
             .HeaderText = "Sd Final"
             .DataPropertyName = "SaldoFinal"
@@ -458,22 +487,36 @@ Public Class frmCaixa
             .ReadOnly = True
             .DefaultCellStyle.Format = "C"
             .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
-            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleLeft
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight
         End With
         '
+        ' (3) COLUNA A TRANSFERIR 
+        With clnTransferir
+            .HeaderText = "Auto Transf."
+            .DataPropertyName = "ATransferir"
+            .Width = 100
+            .Resizable = DataGridViewTriState.False
+            .Visible = True
+            .ReadOnly = True
+            .DefaultCellStyle.Format = "C"
+            .SortMode = DataGridViewColumnSortMode.NotSortable
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .HeaderCell.Style.Alignment = DataGridViewContentAlignment.MiddleRight
+        End With
         '
         Me.dgvSaldos.Columns.AddRange(New DataGridViewColumn() {
-                                      Me.clnTipo,
-                                      Me.clnSaldoAnterior,
-                                      Me.clnSaldoFinal})
+                                      clnTipo,
+                                      clnSaldoAnterior,
+                                      clnSaldoFinal,
+                                      clnTransferir})
         '
     End Sub
     '
     Private Sub dgvSaldos_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvSaldos.CellFormatting
         '
         If e.ColumnIndex = 3 Then
-            If e.Value >= 0 Then
+            If e.Value = 0 Then
                 e.CellStyle.ForeColor = Color.Blue
                 e.CellStyle.SelectionForeColor = Color.Blue
             Else
@@ -483,6 +526,7 @@ Public Class frmCaixa
         End If
         '
     End Sub
+    '
 #End Region
     '
 #Region "BUTTONS FUNCTION"
@@ -569,9 +613,28 @@ Public Class frmCaixa
                            "Finalizar Caixa",
                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) = DialogResult.No Then Exit Sub
         '
+        '--- verifica se caixa final do dia
+        '----------------------------------------------------------------------------------
+        If MessageBox.Show("Esse caixa é o ultimo caixa da conta " & _clCaixa.Conta & " no dia?" &
+                           vbNewLine & vbNewLine &
+                           "Se SIM, a data de: " & _clCaixa.DataFinal.ToShortDateString &
+                           " será bloqueada para realizar novas operações..." & vbNewLine & vbNewLine &
+                           "Se NÃO, essa data continuará em aberto.",
+                           "Finalizar Caixa",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question,
+                           MessageBoxDefaultButton.Button2) = DialogResult.Yes Then
+            _clCaixa.CaixaFinalDia = True
+        Else
+            _clCaixa.CaixaFinalDia = False
+        End If
+        '
         Dim cxBLL As New CaixaBLL
         '
         Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
             cxBLL.CaixaFinalizar(_clCaixa)
             '
             MessageBox.Show("Caixa Finalizado com sucesso...", "Finalizar Caixa",
@@ -580,8 +643,11 @@ Public Class frmCaixa
             MostraMenuPrincipal()
             '
         Catch ex As Exception
-            MessageBox.Show("Um exceção ocorreu ao Finalizar esse Caixa..." & vbNewLine &
-                            ex.Message, "Exceção Inseperada", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Uma exceção ocorreu ao Finalizar o Caixa..." & vbNewLine &
+            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
         End Try
         '
     End Sub
@@ -874,7 +940,7 @@ Public Class frmCaixa
         '
         '--- abre o frmNivelamento
         Dim r As DataRowView = dgvSaldos.CurrentRow.DataBoundItem
-        Dim frmN As New frmNivelamento(r("SaldoFinal"), r("Conta"), r("MovTipo"))
+        Dim frmN As New frmNivelamento(r("SaldoFinal"), r("Conta"), r("Meio"))
         '
         frmN.ShowDialog()
         '
@@ -884,7 +950,7 @@ Public Class frmCaixa
         End If
         '
         '--- recupera os valores
-        Dim myNivValor As Decimal = frmN.NivValor_Escolhido
+        Dim myNivValor As Decimal = frmN.PropNivValor_Escolhido
         '
         '--- Verifica se já houve um nivelamento efetuado com o mesmo IDMovForma
         If r("Nivelamento") = True Then
@@ -893,7 +959,7 @@ Public Class frmCaixa
             For Each c As clMovimentacao In lstMov
                 If c.Descricao.ToString.Contains("Nivelamento") Then
                     If c.IDMovTipo = r("IDMovTipo") Then
-                        MessageBox.Show("Já existe um Nivelamento efetuado nesse mesmo Tipo de Movimentação." & vbNewLine &
+                        MessageBox.Show("Já existe um Nivelamento efetuado nesse mesmo Meio de Movimentação." & vbNewLine &
                                         "Se deseja realizar Novo Nivelamento, exclua todos os outros anteriores...",
                                         "Nivelamento Duplicado", MessageBoxButtons.OK, MessageBoxIcon.Exclamation)
                         '
@@ -913,7 +979,7 @@ Public Class frmCaixa
         Try
             Dim cxBLL As New CaixaBLL
             '
-            Dim newMov As clMovimentacao = cxBLL.InserirNivelamento(_clCaixa.IDCaixa, r("IDMovTipo"), myNivValor)
+            Dim newMov As clMovimentacao = cxBLL.InserirNivelamento(_clCaixa.IDCaixa, r("IDMeio"), myNivValor)
             '
             '--- retorna os valores e insere na listagem
             lstMov.Add(newMov)
@@ -947,8 +1013,8 @@ Public Class frmCaixa
         '
         Dim r As DataRowView = dgvSaldos.CurrentRow.DataBoundItem
         '
-        If MessageBox.Show("Você deseja excluir todos os nivelamentos desse caixa da operadora: " & vbNewLine &
-                           r("Operadora").ToString.ToUpper, "Excluir Nivelamentos",
+        If MessageBox.Show("Você deseja excluir todos os nivelamentos desse caixa?" & vbNewLine &
+                           r("Meio").ToString.ToUpper, "Excluir Nivelamentos",
                            MessageBoxButtons.YesNo, MessageBoxIcon.Question,
                            MessageBoxDefaultButton.Button2) = vbNo Then Exit Sub
         '

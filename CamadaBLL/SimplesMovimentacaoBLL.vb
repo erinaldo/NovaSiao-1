@@ -670,48 +670,6 @@ Public Class SimplesMovimentacaoBLL
         '
     End Function
     '
-    '--------------------------------------------------------------------------------------------
-    ' UPDATE SIMPLES ENTRADA OBSERVACAO
-    '--------------------------------------------------------------------------------------------
-    Public Function Updata_SimplesEntrada_Observacao(IDSimples As Integer, Observacao As String) As Boolean
-        '
-        Dim myQuery As String = ""
-        '
-        SQL.AddParam("@IDSimples", IDSimples)
-        '
-        '--- delete all observacao of SimplesEntrada
-        myQuery = "DELETE tblObservacao WHERE (Origem = 11) AND (IDOrigem = @IDSimples)"
-        '
-        Try
-            SQL.ExecQuery(myQuery)
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-        If Observacao.Trim.Length = 0 Then
-            Return True
-        End If
-        '
-        SQL.AddParam("@IDSimples", IDSimples)
-        SQL.AddParam("@Observacao", Observacao)
-        '
-        myQuery = "INSERT INTO tblObservacao (Origem, IDOrigem, Observacao) VALUES (11, @IDSimples, @Observacao)"
-        '
-        Try
-            SQL.ExecQuery(myQuery)
-            '
-            If SQL.HasException Then
-                Throw New Exception(SQL.Exception)
-            End If
-            '
-            Return True
-            '
-        Catch ex As Exception
-            Throw ex
-        End Try
-        '
-    End Function
-    '
 #End Region '/ SIMPLES ENTRADA
     '
 End Class

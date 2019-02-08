@@ -29,6 +29,12 @@ Partial Class frmTransferenciaProcurar
         Me.chkPeriodoTodos = New System.Windows.Forms.CheckBox()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.dgvListagem = New System.Windows.Forms.DataGridView()
+        Me.clnIDTransferencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnTransferenciaData = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnContaDebito = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnContaCredito = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnMeio = New System.Windows.Forms.DataGridViewTextBoxColumn()
+        Me.clnTransferenciaValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.btnCancelar = New System.Windows.Forms.Button()
         Me.pnlVenda = New System.Windows.Forms.Panel()
         Me.Label9 = New System.Windows.Forms.Label()
@@ -47,12 +53,6 @@ Partial Class frmTransferenciaProcurar
         Me.btnEfetuarNova = New System.Windows.Forms.Button()
         Me.Label11 = New System.Windows.Forms.Label()
         Me.lblFilial = New System.Windows.Forms.Label()
-        Me.clnIDTransferencia = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnTransferenciaData = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnContaDebito = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnContaCredito = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnMeio = New System.Windows.Forms.DataGridViewTextBoxColumn()
-        Me.clnTransferenciaValor = New System.Windows.Forms.DataGridViewTextBoxColumn()
         Me.Panel1.SuspendLayout()
         Me.Panel2.SuspendLayout()
         CType(Me.dgvListagem, System.ComponentModel.ISupportInitialize).BeginInit()
@@ -191,6 +191,45 @@ Partial Class frmTransferenciaProcurar
         Me.dgvListagem.Size = New System.Drawing.Size(920, 368)
         Me.dgvListagem.TabIndex = 11
         '
+        'clnIDTransferencia
+        '
+        Me.clnIDTransferencia.HeaderText = "Reg,"
+        Me.clnIDTransferencia.Name = "clnIDTransferencia"
+        Me.clnIDTransferencia.ReadOnly = True
+        Me.clnIDTransferencia.Width = 80
+        '
+        'clnTransferenciaData
+        '
+        Me.clnTransferenciaData.HeaderText = "Data"
+        Me.clnTransferenciaData.Name = "clnTransferenciaData"
+        Me.clnTransferenciaData.ReadOnly = True
+        '
+        'clnContaDebito
+        '
+        Me.clnContaDebito.HeaderText = "Ct Débito"
+        Me.clnContaDebito.Name = "clnContaDebito"
+        Me.clnContaDebito.ReadOnly = True
+        Me.clnContaDebito.Width = 200
+        '
+        'clnContaCredito
+        '
+        Me.clnContaCredito.HeaderText = "Ct. Credito"
+        Me.clnContaCredito.Name = "clnContaCredito"
+        Me.clnContaCredito.ReadOnly = True
+        Me.clnContaCredito.Width = 200
+        '
+        'clnMeio
+        '
+        Me.clnMeio.HeaderText = "Meio"
+        Me.clnMeio.Name = "clnMeio"
+        Me.clnMeio.ReadOnly = True
+        '
+        'clnTransferenciaValor
+        '
+        Me.clnTransferenciaValor.HeaderText = "Valor"
+        Me.clnTransferenciaValor.Name = "clnTransferenciaValor"
+        Me.clnTransferenciaValor.ReadOnly = True
+        '
         'btnCancelar
         '
         Me.btnCancelar.DialogResult = System.Windows.Forms.DialogResult.Cancel
@@ -223,7 +262,7 @@ Partial Class frmTransferenciaProcurar
         '
         Me.Label9.AutoSize = True
         Me.Label9.BackColor = System.Drawing.Color.Transparent
-        Me.Label9.Location = New System.Drawing.Point(713, 4)
+        Me.Label9.Location = New System.Drawing.Point(765, 4)
         Me.Label9.Name = "Label9"
         Me.Label9.Size = New System.Drawing.Size(42, 19)
         Me.Label9.TabIndex = 5
@@ -329,7 +368,7 @@ Partial Class frmTransferenciaProcurar
         '
         Me.txtConta.Location = New System.Drawing.Point(140, 66)
         Me.txtConta.Name = "txtConta"
-        Me.txtConta.Size = New System.Drawing.Size(229, 27)
+        Me.txtConta.Size = New System.Drawing.Size(261, 27)
         Me.txtConta.TabIndex = 5
         '
         'btnContaEscolher
@@ -338,7 +377,7 @@ Partial Class frmTransferenciaProcurar
         Me.btnContaEscolher.BackColor = System.Drawing.Color.Transparent
         Me.btnContaEscolher.FlatAppearance.BorderColor = System.Drawing.Color.Black
         Me.btnContaEscolher.FlatStyle = System.Windows.Forms.FlatStyle.Flat
-        Me.btnContaEscolher.Location = New System.Drawing.Point(375, 66)
+        Me.btnContaEscolher.Location = New System.Drawing.Point(407, 66)
         Me.btnContaEscolher.Name = "btnContaEscolher"
         Me.btnContaEscolher.RoundedCornersMask = CType(15, Byte)
         Me.btnContaEscolher.RoundedCornersRadius = 0
@@ -368,7 +407,7 @@ Partial Class frmTransferenciaProcurar
         Me.btnEfetuarNova.Name = "btnEfetuarNova"
         Me.btnEfetuarNova.Size = New System.Drawing.Size(143, 41)
         Me.btnEfetuarNova.TabIndex = 13
-        Me.btnEfetuarNova.Text = "Efetuar &Nova"
+        Me.btnEfetuarNova.Text = "Inserir &Nova"
         Me.btnEfetuarNova.TextAlign = System.Drawing.ContentAlignment.MiddleRight
         Me.btnEfetuarNova.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText
         Me.btnEfetuarNova.UseVisualStyleBackColor = True
@@ -398,45 +437,6 @@ Partial Class frmTransferenciaProcurar
         Me.lblFilial.TabIndex = 4
         Me.lblFilial.Text = "Filial"
         Me.lblFilial.TextAlign = System.Drawing.ContentAlignment.MiddleCenter
-        '
-        'clnIDTransferencia
-        '
-        Me.clnIDTransferencia.HeaderText = "Reg,"
-        Me.clnIDTransferencia.Name = "clnIDTransferencia"
-        Me.clnIDTransferencia.ReadOnly = True
-        Me.clnIDTransferencia.Width = 80
-        '
-        'clnTransferenciaData
-        '
-        Me.clnTransferenciaData.HeaderText = "Data"
-        Me.clnTransferenciaData.Name = "clnTransferenciaData"
-        Me.clnTransferenciaData.ReadOnly = True
-        '
-        'clnContaDebito
-        '
-        Me.clnContaDebito.HeaderText = "Ct Débito"
-        Me.clnContaDebito.Name = "clnContaDebito"
-        Me.clnContaDebito.ReadOnly = True
-        Me.clnContaDebito.Width = 200
-        '
-        'clnContaCredito
-        '
-        Me.clnContaCredito.HeaderText = "Ct. Credito"
-        Me.clnContaCredito.Name = "clnContaCredito"
-        Me.clnContaCredito.ReadOnly = True
-        Me.clnContaCredito.Width = 200
-        '
-        'clnMeio
-        '
-        Me.clnMeio.HeaderText = "Meio"
-        Me.clnMeio.Name = "clnMeio"
-        Me.clnMeio.ReadOnly = True
-        '
-        'clnTransferenciaValor
-        '
-        Me.clnTransferenciaValor.HeaderText = "Valor"
-        Me.clnTransferenciaValor.Name = "clnTransferenciaValor"
-        Me.clnTransferenciaValor.ReadOnly = True
         '
         'frmTransferenciaProcurar
         '

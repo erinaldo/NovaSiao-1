@@ -1,6 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports System.Windows.Forms
-
+'
 Public Class Text_SoNumeros
     Inherits TextBox
     Private _inteiro As Boolean = True

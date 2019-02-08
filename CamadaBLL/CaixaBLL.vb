@@ -146,13 +146,13 @@ Public Class CaixaBLL
     '============================================================================================
     ' INSERE NIVELAMENTO NO CAIXA E RETORNA UMA NOVA MOVIMENTACAO DE CAIXA
     '============================================================================================
-    Public Function InserirNivelamento(IDCaixa As Integer, IDMovTipo As Int16, myValor As Decimal) As clMovimentacao
+    Public Function InserirNivelamento(IDCaixa As Integer, IDMeio As Int16, myValor As Decimal) As clMovimentacao
         '
         Dim db As New AcessoDados
         '
         db.LimparParametros()
         db.AdicionarParametros("@IDCaixa", IDCaixa)
-        db.AdicionarParametros("@IDMovTipo", IDMovTipo)
+        db.AdicionarParametros("@IDMeio", IDMeio)
         db.AdicionarParametros("@Valor", myValor)
         '
         Try

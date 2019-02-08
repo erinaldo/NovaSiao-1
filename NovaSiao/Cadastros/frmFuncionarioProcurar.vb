@@ -10,6 +10,8 @@ Public Class frmFuncionarioProcurar
     Property IDEscolhido As Integer?
     Property NomeEscolhido As String
     '
+#Region "SUBNEW E LOAD"
+    '
     '--- SUB NEW
     Public Sub New(Optional DestinoVenda As Boolean = False, Optional frmOrigem As Form = Nothing)
         '
@@ -46,6 +48,10 @@ Public Class frmFuncionarioProcurar
         AddHandler chkAtivo.CheckedChanged, AddressOf chkAtivo_CheckedChanged
         '
     End Sub
+    '
+#End Region '/ SUBNEW E LOAD
+    '
+#Region "LISTAGEM GET E CONTROLE"
     '
     Private Function PreencheData() As Boolean
         '
@@ -115,29 +121,6 @@ Public Class frmFuncionarioProcurar
         '
     End Sub
     '
-    ' BOTÃO FECHAR
-    Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
-        Me.DialogResult = DialogResult.Cancel
-    End Sub
-    '
-    ' ESCOLHER E SAIR
-    Private Sub btnEscolher_Click(sender As Object, e As EventArgs) Handles btnEscolher.Click
-        '
-        If lstListagem.SelectedItems.Count = 0 Then
-            MessageBox.Show("Não nenhum Funcionário selecionado..." & vbNewLine &
-                "Favor antes selecione um Funcionário!",
-                "Escolher Funcionário", MessageBoxButtons.OK, MessageBoxIcon.Information)
-            Exit Sub
-        End If
-        '
-        ' DEFINIR O VALOR
-        IDEscolhido = CInt(lstListagem.SelectedItems(0).Text) ' ID DO FUNCIONARIO/VENDEDOR
-        NomeEscolhido = lstListagem.SelectedItems(0).SubItems(1).Text ' NOME DO FUNCIONARIO/VENDEDOR
-        '
-        Me.DialogResult = DialogResult.OK
-        '
-    End Sub
-    '
     Private Sub lstListagem_ItemActivate(sender As Object, eventArgs As BetterListViewItemActivateEventArgs) Handles lstListagem.ItemActivate
         btnEscolher_Click(New Object, New System.EventArgs)
     End Sub
@@ -158,6 +141,54 @@ Public Class frmFuncionarioProcurar
             lblAtivo.Text = "Inativos"
         End If
     End Sub
+    '
+#End Region '/ LISTAGEM GET E CONTROLE
+    '
+#Region "BUTTONS FUNCTION"
+    '
+    ' BOTÃO FECHAR
+    '----------------------------------------------------------------------------------
+    Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click
+        Me.DialogResult = DialogResult.Cancel
+    End Sub
+    '
+    ' ESCOLHER E SAIR
+    '----------------------------------------------------------------------------------
+    Private Sub btnEscolher_Click(sender As Object, e As EventArgs) Handles btnEscolher.Click
+        '
+        If lstListagem.SelectedItems.Count = 0 Then
+            MessageBox.Show("Não nenhum Funcionário selecionado..." & vbNewLine &
+                "Favor antes selecione um Funcionário!",
+                "Escolher Funcionário", MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Exit Sub
+        End If
+        '
+        ' DEFINIR O VALOR
+        IDEscolhido = CInt(lstListagem.SelectedItems(0).Text) ' ID DO FUNCIONARIO/VENDEDOR
+        NomeEscolhido = lstListagem.SelectedItems(0).SubItems(1).Text ' NOME DO FUNCIONARIO/VENDEDOR
+        '
+        Me.DialogResult = DialogResult.OK
+        '
+    End Sub
+    '
+    '--- FECHAR QUANDO PRESS ESC
+    '----------------------------------------------------------------------------------
+    Private Sub Me_KeyDown(sender As Object, e As KeyEventArgs) Handles Me.KeyDown
+        '
+        If e.KeyCode = Keys.Escape Then
+            '
+            e.Handled = True
+            btnCancelar_Click(New Object, New EventArgs)
+            '
+        End If
+        '
+    End Sub
+    '
+#End Region '/ BUTTONS FUNCTION
+    '
+#Region "EFEITO VISUAL"
+
+    '
     '
     '-------------------------------------------------------------------------------------------------
     ' CONSTRUIR UMA BORDA NO FORMULÁRIO
@@ -203,5 +234,7 @@ Public Class frmFuncionarioProcurar
         Next
         '
     End Sub
+    '
+#End Region '/ EFEITO VISUAL
     '
 End Class

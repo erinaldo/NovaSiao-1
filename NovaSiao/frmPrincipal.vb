@@ -100,9 +100,9 @@ Public Class frmPrincipal
             '--- configurar DATAPADRAO
             If Not IsNothing(contaInicial.BloqueioData) Then
                 '
-                '--  adiciona um dia à data do caixa final
+                '--  adiciona um dia à data do caixa final ???
                 Dim dtPadrao As Date = contaInicial.BloqueioData
-                dtPadrao = dtPadrao.AddDays(1)
+                'dtPadrao = dtPadrao.AddDays(1)
                 '
                 '-- verifica se a data adicionada é DOMINGO, sendo adiciona um dia
                 If dtPadrao.DayOfWeek = DayOfWeek.Sunday Then dtPadrao.AddDays(1)

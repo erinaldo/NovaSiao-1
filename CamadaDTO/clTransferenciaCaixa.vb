@@ -8,6 +8,7 @@
     Property ContaDebito As String
     Property IDFilial As Integer
     Property IDMeio As Byte
+    Property Meio As String
     Property ApelidoFilial As String
     Property IDMovDebito As Integer
     Property IDMovCredito As Integer

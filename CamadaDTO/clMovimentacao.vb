@@ -26,10 +26,11 @@ Public Class clMovimentacao : Implements IEditableObject
         Dim _IDMovimentacao As Integer
         Dim _IDOrigem As Integer
         Dim _Origem As Byte
-        Dim _IDConta As Byte
+        Dim _IDConta As Int16
         'Conta As String
         Dim _IDMovForma As Int16?
         Dim _IDMeio As Byte
+        'Meio as String
         'MovForma As String
         'IDMovTipo As Int16
         'MovTipo as String
@@ -46,6 +47,7 @@ Public Class clMovimentacao : Implements IEditableObject
         Dim _Observacao As String
         'IDFilial As Int
         'ApelidoFilial As String
+        'IDContaPadrao  --> transferencia automatica
         '
     End Structure
     '
@@ -165,11 +167,11 @@ Public Class clMovimentacao : Implements IEditableObject
     End Property
     '
     '--- Propriedade IDConta
-    Public Property IDConta() As Byte
+    Public Property IDConta() As Int16
         Get
             Return MData._IDConta
         End Get
-        Set(ByVal value As Byte)
+        Set(ByVal value As Int16)
             If value <> MData._IDConta Then
                 RaiseEvent AoAlterar()
             End If
@@ -194,6 +196,10 @@ Public Class clMovimentacao : Implements IEditableObject
             MData._IDMeio = value
         End Set
     End Property
+    '
+    '--- Propriedade Meio
+    '------------------------------------------------------
+    Public Property Meio() As String
     '
     '--- Propriedade IDMovForma
     Public Property IDMovForma() As Int16?
@@ -352,6 +358,10 @@ Public Class clMovimentacao : Implements IEditableObject
     '--- Propriedade Filial
     '------------------------------------------------------
     Public Property ApelidoFilial() As String
+    '
+    '--- Propriedade IDContaPadrao --> Transf automatica
+    '------------------------------------------------------
+    Public Property IDContaPadrao() As Int16?
     '
 #End Region
     '

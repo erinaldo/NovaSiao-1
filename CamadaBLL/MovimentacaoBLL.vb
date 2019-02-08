@@ -165,23 +165,13 @@ Public Class MovimentacaoBLL
             '
             '--- DELETE / INSERT OBSERVACAO
             '--------------------------------------------------------
-            myQuery = "DELETE tblObservacao WHERE Origem = 3 AND IDOrigem = " & _mov.IDMovimentacao
+            Dim oBLL As New ObservacaoBLL
+            oBLL.SaveObservacao(3, _mov.IDMovimentacao, _mov.Observacao, db)
             '
-            If _mov.Observacao.Trim.Length > 0 Then
-                '--- limpa os parametros
-                db.LimparParametros()
-                db.AdicionarParametros("@Observacao", _mov.Observacao)
-                db.AdicionarParametros("@IDOrigem", _mov.IDMovimentacao)
-                '
-                myQuery = "INSERT INTO tblObservacao (Origem, IDOrigem, Observacao) " &
-                          "VALUES (3, @IDOrigem, @Observacao)"
-                '
-                db.ExecutarManipulacao(CommandType.Text, myQuery)
-                '
-            End If
-            '
+            '--- COMMIT
             If tranInterna Then db.CommitTransaction()
             '
+            '--- RETURN
             Return True
             '
         Catch ex As Exception
@@ -248,11 +238,11 @@ Public Class MovimentacaoBLL
             '
             '--- DELETE OBSERVACAO
             '------------------------------------------------------------------
-            db.LimparParametros()
-            db.AdicionarParametros("@IDMovimentacao", clMov.IDMovimentacao)
+            Dim oBLL As New ObservacaoBLL
+            oBLL.DeleteObservacao(3, clMov.IDMovimentacao, db)
             '
-            myQuery = "DELETE FROM tblObservacao WHERE Origem = 3 AND IDOrigem = @IDMovimentacao"
-            '
+            '--- FINALIZE
+            '------------------------------------------------------------------
             If tranInterna Then db.CommitTransaction()
             Return True
             '
@@ -316,6 +306,7 @@ Public Class MovimentacaoBLL
                         .IDConta = IIf(IsDBNull(r("IDConta")), Nothing, r("IDConta"))
                         .Conta = IIf(IsDBNull(r("Conta")), String.Empty, r("Conta"))
                         .IDMeio = If(IsDBNull(r("IDMeio")), Nothing, r("IDMeio"))
+                        .Meio = If(IsDBNull(r("Meio")), String.Empty, r("Meio"))
                         .IDMovForma = IIf(IsDBNull(r("IDMovForma")), Nothing, r("IDMovForma"))
                         .MovForma = IIf(IsDBNull(r("MovForma")), String.Empty, r("MovForma"))
                         .IDMovTipo = IIf(IsDBNull(r("IDMovTipo")), Nothing, r("IDMovTipo"))
@@ -332,6 +323,7 @@ Public Class MovimentacaoBLL
                         .Movimento = If(IsDBNull(r("Movimento")), Nothing, r("Movimento"))
                         .Mov = If(IsDBNull(r("Mov")), Nothing, r("Mov"))
                         .Descricao = IIf(IsDBNull(r("Descricao")), String.Empty, r("Descricao"))
+                        .IDContaPadrao = If(IsDBNull(r("IDContaPadrao")), Nothing, r("IDContaPadrao"))
                     End With
                     '
                     '--- Adiciona o ROW na listagem
@@ -577,20 +569,25 @@ Public Class MovimentacaoBLL
     '===================================================================================================
     ' OBTER LISTA DAS FORMAS DE PAGAMENTO
     '===================================================================================================
-    Public Function MovForma_GET_DT(Optional Ativo As Boolean? = Nothing) As DataTable
+    Public Function MovForma_GET_DT(IDFilial As Integer,
+                                    Optional Ativo As Boolean? = Nothing) As DataTable
         '
         Dim db As New AcessoDados
-        Dim dtFormas As DataTable
+        '
+        Dim myQuery = "SELECT * FROM qryMovForma WHERE IDFilial = @IDFilial"
+        '
+        db.LimparParametros()
+        db.AdicionarParametros("@IDFilial", IDFilial)
+        '
+        If Not IsNothing(Ativo) Then
+            db.AdicionarParametros("@Ativo", Ativo)
+            myQuery = myQuery + " AND Ativo = @Ativo"
+        End If
+        '
         '
         Try
             '
-            If IsNothing(Ativo) Then
-                dtFormas = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM qryMovForma")
-            Else
-                dtFormas = db.ExecutarConsulta(CommandType.Text, "SELECT * FROM qryMovForma WHERE Ativo = '" & Ativo & "'")
-            End If
-            '
-            Return dtFormas
+            Return db.ExecutarConsulta(CommandType.Text, myQuery)
             '
         Catch ex As Exception
             Throw ex
@@ -602,10 +599,11 @@ Public Class MovimentacaoBLL
     ' OBTER LISTA DAS FORMAS DE MOVIMENTACAO
     '=========================================================================================
     ' --- OBTER LISTA
-    Public Function MovForma_GET_List(Optional Ativo As Boolean? = Nothing) As List(Of clMovForma)
+    Public Function MovForma_GET_List(IDFilial As Integer,
+                                      Optional Ativo As Boolean? = Nothing) As List(Of clMovForma)
         '
         Try
-            Dim dt As DataTable = MovForma_GET_DT(Ativo)
+            Dim dt As DataTable = MovForma_GET_DT(IDFilial, Ativo)
             '
             Dim list As New List(Of clMovForma)
             '

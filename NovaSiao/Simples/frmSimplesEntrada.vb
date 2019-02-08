@@ -455,13 +455,13 @@ Public Class frmSimplesEntrada
         Else
             '
             '--- Save Observacao
-            Dim sBLL As New SimplesMovimentacaoBLL
+            Dim oBLL As New ObservacaoBLL
             '            
             Try
                 '--- Ampulheta ON
                 Cursor = Cursors.WaitCursor
                 '
-                sBLL.Updata_SimplesEntrada_Observacao(_Simples.IDTransacao, txtObservacao.Text)
+                oBLL.SaveObservacao(11, _Simples.IDTransacao, txtObservacao.Text)
                 '
             Catch ex As Exception
                 MessageBox.Show("Uma exceção ocorreu ao Salvar a Nova Observação..." & vbNewLine &

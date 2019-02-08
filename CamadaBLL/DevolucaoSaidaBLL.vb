@@ -147,23 +147,9 @@ Public Class DevolucaoSaidaBLL
         objDB.LimparParametros()
         '
         Try
-            'Delete Observacoes Anteriores
-            myQuery = "DELETE tblObservacao WHERE Origem = 12 AND IDOrigem = " & _dev.IDDevolucao
-            objDB.ExecutarManipulacao(CommandType.Text, myQuery)
             '
-            '--- Insert if exist
-            If _dev.Observacao.Trim.Length > 0 Then
-                '
-                '-- PARAMETROS DA TBLOBSERVACAO
-                objDB.AdicionarParametros("@Observacao", _dev.Observacao)
-                objDB.AdicionarParametros("@IDDevolucao", _dev.IDDevolucao)
-                '
-                myQuery = "INSERT INTO tblObservacao (Origem, IDOrigem, Observacao) " &
-                          "VALUES (12, @IDDevolucao, @Observacao)"
-                '
-                objDB.ExecutarManipulacao(CommandType.Text, myQuery)
-                '
-            End If
+            Dim oBLL As New ObservacaoBLL
+            oBLL.SaveObservacao(12, _dev.IDDevolucao, _dev.Observacao, objDB)
             '
         Catch ex As Exception
             If TranLocal Then objDB.RollBackTransaction()

@@ -3,6 +3,7 @@ Imports CamadaDTO
 Imports System.Drawing.Drawing2D
 '
 Public Class frmTransferenciaProcurar
+    Private tBLL As New TransferenciaCaixaBLL
     Private TransfLista As New List(Of clTransferenciaCaixa)
     Private _myMes As Date
     Private _Sit As EnumFlagEstado
@@ -34,9 +35,7 @@ Public Class frmTransferenciaProcurar
         End Get
         Set(ByVal value As Int16)
             _IDConta = value
-            '
             Get_Dados()
-            '
         End Set
     End Property
     '
@@ -93,8 +92,6 @@ Public Class frmTransferenciaProcurar
     '
     Private Sub Get_Dados()
         '
-        Dim tBLL As New TransferenciaCaixaBLL
-        '
         '--- consulta o banco de dados
         Try
             '
@@ -137,6 +134,7 @@ Public Class frmTransferenciaProcurar
             .ReadOnly = True
             .SortMode = DataGridViewColumnSortMode.NotSortable
             .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
+            .DefaultCellStyle.Format = "0000"
         End With
         '
         ' (1) COLUNA DATA
@@ -180,7 +178,7 @@ Public Class frmTransferenciaProcurar
             .Visible = True
             .ReadOnly = True
             .SortMode = DataGridViewColumnSortMode.NotSortable
-            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleRight
+            .DefaultCellStyle.Alignment = DataGridViewContentAlignment.MiddleLeft
             .DefaultCellStyle.Format = "C"
         End With
         '
@@ -205,6 +203,29 @@ Public Class frmTransferenciaProcurar
                                      clnTransferenciaValor})
     End Sub
     '
+    '--- FORMATA O DATAGRID
+    '----------------------------------------------------------------------------------
+    Private Sub dgvListagem_CellFormatting(sender As Object, e As DataGridViewCellFormattingEventArgs) Handles dgvListagem.CellFormatting
+        '
+        'If DirectCast(dgvListagem.Rows(e.RowIndex).DataBoundItem, clAPagar).Origem = 3 Then
+        '    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.ForeColor = Color.Blue
+        '    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionForeColor = Color.Yellow
+        'Else
+        '    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.ForeColor = Color.Black
+        '    dgvListagem.Rows(e.RowIndex).DefaultCellStyle.SelectionForeColor = Color.White
+        'End If
+        ''
+        ''--- Define o texto do APAGAR quando esta VENCIDO
+        'If e.ColumnIndex = 5 AndAlso e.Value = "Em Aberto" Then
+        '    Dim dtVenc As Date = dgvListagem.Rows(e.RowIndex).Cells(0).Value
+        '    If dtVenc < Date.Today Then
+        '        e.Value = "Vencida"
+        '        e.CellStyle.ForeColor = Color.Red
+        '    End If
+        'End If
+        '
+    End Sub
+    '
 #End Region
     '
 #Region "ACAO DOS BOTOES"
@@ -213,7 +234,49 @@ Public Class frmTransferenciaProcurar
     '----------------------------------------------------------------------------------
     Private Sub btnExcluir_Click(sender As Object, e As EventArgs) Handles btnExcluir.Click
         '
-        MessageBox.Show("Ainda não implementado")
+        '--- Verifica Selecao
+        If dgvListagem.SelectedRows.Count = 0 Then
+            MessageBox.Show("Favor selecionar uma Transferência antes para poder excluir...",
+                            "Excluir Transferencia",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information)
+            Return
+        End If
+        '
+        '--- GET Selected Transferencia
+        Dim tr As clTransferenciaCaixa = dgvListagem.SelectedRows(0).DataBoundItem
+        '
+        '--- PERGUNTA AO USER
+        '----------------------------------------------------------------------------------
+        If MessageBox.Show("Você deseja realmente excluir a Transferência de número: " &
+                           Format(tr.IDTransferencia, "0000") &
+                           vbNewLine & "ORIGEM: " & tr.ContaDebito &
+                           vbNewLine & "DESTINO: " & tr.ContaCredito,
+                           "Excluir Transferência",
+                           MessageBoxButtons.YesNo,
+                           MessageBoxIcon.Question,
+                           MessageBoxDefaultButton.Button2) = DialogResult.No Then Exit Sub
+        '
+        '
+        '--- DELETE TRANSFERENCIA
+        '----------------------------------------------------------------------------------
+        Try
+            '--- Ampulheta ON
+            Cursor = Cursors.WaitCursor
+            '
+            If tBLL.Excluir_Transferencia(tr) Then
+                Get_Dados()
+                MessageBox.Show("Transferência excluída com sucesso!",
+                                "Transferência Excluída",
+                                MessageBoxButtons.OK, MessageBoxIcon.Information)
+            End If
+            '
+        Catch ex As Exception
+            MessageBox.Show("Uma exceção ocorreu ao Excluir Transferência..." & vbNewLine &
+                            ex.Message, "Exceção", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        Finally
+            '--- Ampulheta OFF
+            Cursor = Cursors.Default
+        End Try
         '
     End Sub
     '
@@ -233,9 +296,7 @@ Public Class frmTransferenciaProcurar
         '
         frmConta.ShowDialog()
         '
-        If frmConta.DialogResult = DialogResult.Cancel Then
-            propIDConta = Nothing
-        Else
+        If frmConta.DialogResult = DialogResult.OK Then
             '
             txtConta.Text = frmConta.propConta_Escolha.Conta
             propIDConta = frmConta.propConta_Escolha.IDConta

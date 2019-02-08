@@ -1,7 +1,20 @@
-﻿Imports System.Windows.Forms
+﻿Imports System.ComponentModel
+Imports System.Windows.Forms
+'
 Public Class Text_Monetario
     Inherits TextBox
-
+    Private _onlypositivo As Boolean = True
+    '
+    <Browsable(True)>
+    Public Property SomentePositivos() As Boolean
+        Get
+            Return _onlypositivo
+        End Get
+        Set
+            _onlypositivo = Value
+        End Set
+    End Property
+    '
     Sub New()
         Me.TextAlign = LeftRightAlignment.Right
     End Sub
@@ -27,20 +40,31 @@ Public Class Text_Monetario
 
     Private Sub Text_Monetario_LostFocus(sender As Object, e As EventArgs) Handles Me.LostFocus
         If Me.TextLength > 0 Then
-            If IsNumeric(Me.Text) = False OrElse CDbl(Me.Text) < 0 Then
+            '
+            If Not IsNumeric(Me.Text) Then
+                '
                 MessageBox.Show("Valor númerico incorreto..." &
-                                vbNewLine & "Digite um valor numérico maior ou igual a 0 (zero)",
-                                "Valor Incorreto", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                                vbNewLine & "Favor digitar um valor numérico",
+                                "Valor Inválido", MessageBoxButtons.OK, MessageBoxIcon.Information)
                 Me.Focus()
+                '
+            ElseIf SomentePositivos AndAlso CDbl(Me.Text) < 0 Then
+                '
+                MessageBox.Show("Valor númerico incorreto..." &
+                                vbNewLine & "Favor inserir um valor maior ou igual a 0 (zero)",
+                                "Valor Negativo", MessageBoxButtons.OK, MessageBoxIcon.Information)
+                Me.Focus()
+                '
             Else
+                '
                 If Me.Text = String.Empty Then
                     Me.Text = 0
                 End If
-                Me.Text = FormatCurrency(Me.Text, 2, TriState.True, TriState.True,
-                                            TriState.True)
+                Me.Text = FormatCurrency(Me.Text, 2, TriState.True, TriState.True, TriState.True)
+                '
             End If
+            '
         End If
     End Sub
-
-
+    '
 End Class

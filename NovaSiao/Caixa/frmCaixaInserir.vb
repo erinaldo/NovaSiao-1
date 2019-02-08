@@ -4,6 +4,7 @@ Imports CamadaDTO
 Public Class frmCaixaInserir
     Private _IDFilial As Integer?
     Private _IDConta As Int16?
+    Private _IDFuncionario As Integer?
     Private _Conta As String
     Private _CaixaDiario As Boolean
     Private _IDCaixa As Integer?
@@ -61,6 +62,8 @@ Public Class frmCaixaInserir
         _IDFilial = myCaixa.IDFilial
         lblFilial.Text = myCaixa.ApelidoFilial
         txtConta.Text = myCaixa.Conta
+        _IDFuncionario = myCaixa.IDFuncionario
+        txtFuncionarioApelido.Text = myCaixa.ApelidoFuncionario
         '
         obterInfoConta()
         propMinDate = myCaixa.DataInicial
@@ -71,6 +74,7 @@ Public Class frmCaixaInserir
         chkDiario.Checked = False
         '
         btnContaEscolher.Enabled = False
+        btnFuncEscolher.Enabled = False
         '
         _formOrigem = formOrigem
         '
@@ -141,9 +145,7 @@ Public Class frmCaixaInserir
             If value = True Then
                 '--- controla o tamanho do form
                 pnlDtFinal.Visible = False
-                Me.Height = 338
-                btnCancelar.Location = New Point(197, 280)
-                btnInserir.Location = New Point(67, 280)
+                Me.Height = 368
                 '
                 '--- define o valor do maxDate
                 If Not IsNothing(propMinDate) Then dtpFinal.Value = propMinDate
@@ -154,9 +156,7 @@ Public Class frmCaixaInserir
             Else
                 '--- controla o tamanho do form
                 pnlDtFinal.Visible = True
-                Me.Height = 406
-                btnCancelar.Location = New Point(197, 341)
-                btnInserir.Location = New Point(67, 341)
+                Me.Height = 442
                 '
                 '--- define o valor do maxDate
                 If Not IsNothing(propMaxDate) Then dtpFinal.Value = propMaxDate
@@ -348,6 +348,7 @@ Public Class frmCaixaInserir
         newCaixa.IDSituacao = 1
         newCaixa.DataInicial = minDate
         newCaixa.DataFinal = maxDate
+        newCaixa.IDFuncionario = _IDFuncionario
         '
         Try
             '
@@ -429,6 +430,8 @@ Public Class frmCaixaInserir
     '
     Private Sub btnContaEscolher_Click(sender As Object, e As EventArgs) Handles btnContaEscolher.Click
         '
+        If btnContaEscolher.Enabled = False Then Exit Sub
+        '
         '--- Abre o frmContas
         Dim frmConta As New frmContaProcurar(Me, _IDFilial, _IDConta)
         '
@@ -442,12 +445,51 @@ Public Class frmCaixaInserir
         '
     End Sub
     '
+    Private Sub btnFuncEscolher_Click(sender As Object, e As EventArgs) Handles btnFuncEscolher.Click
+        '
+        If btnFuncEscolher.Enabled = False Then Exit Sub
+        '
+        '--- Ampulheta ON
+        Cursor = Cursors.WaitCursor
+        Dim fFunc As New frmFuncionarioProcurar(False, Me)
+        Cursor = Cursors.Default
+        '
+        fFunc.ShowDialog()
+        If fFunc.DialogResult = DialogResult.Cancel Then Exit Sub
+        '
+        _IDFuncionario = fFunc.IDEscolhido
+        txtFuncionarioApelido.Text = fFunc.NomeEscolhido
+        '
+    End Sub
+    '
 #End Region
     '
 #Region "OUTRAS FUNCOES"
     '
+    '---------------------------------------------------------------------------------------
+    '--- BLOQUEIA PRESS A TECLA (+)
+    '---------------------------------------------------------------------------------------
+    Private Sub me_KeyPress(sender As Object, e As KeyPressEventArgs) Handles Me.KeyPress
+        '
+        If e.KeyChar = "+" Then
+            '--- cria uma lista de controles que serao impedidos de receber '+'
+            Dim controlesBloqueados As String() = {
+            "txtConta",
+            "txtFuncionarioApelido"
+            }
+            '
+            If controlesBloqueados.Contains(ActiveControl.Name) Then
+                e.Handled = True
+            End If
+            '
+        End If
+        '
+    End Sub
+    '
     '--- EXECUTAR A FUNCAO DO BOTAO QUANDO PRESSIONA A TECLA (+) NO CONTROLE
-    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles txtConta.KeyDown
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs) Handles _
+        txtConta.KeyDown,
+        txtFuncionarioApelido.KeyDown
         '
         Dim ctr As Control = DirectCast(sender, Control)
         '
@@ -456,8 +498,10 @@ Public Class frmCaixaInserir
             Select Case ctr.Name
                 Case "txtConta"
                     btnContaEscolher_Click(New Object, New EventArgs)
-                    txtConta.Text = txtConta.Text.Replace("+", "")
                     txtConta.SelectAll()
+                Case "txtFuncionarioApelido"
+                    btnFuncEscolher_Click(New Object, New EventArgs)
+                    txtFuncionarioApelido.SelectAll()
             End Select
         ElseIf e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
             e.Handled = True
@@ -465,6 +509,15 @@ Public Class frmCaixaInserir
         Else
             e.Handled = True
             e.SuppressKeyPress = True
+        End If
+        '
+    End Sub
+    '
+    Private Sub chkDiario_KeyDown(sender As Object, e As KeyEventArgs) Handles chkDiario.KeyDown
+        '
+        If e.KeyCode = Keys.Enter OrElse e.KeyCode = Keys.Tab Then
+            e.Handled = True
+            SendKeys.Send("{Tab}")
         End If
         '
     End Sub
